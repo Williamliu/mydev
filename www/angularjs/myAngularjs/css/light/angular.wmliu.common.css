@@ -1,0 +1,859 @@
+/***  common input css ***/
+textarea.ng-invalid,
+select.ng-invalid,
+input.ng-invalid {
+	border: 1px solid pink;
+	box-shadow: 0px 0px 3px pink;
+}
+
+textarea.ng-pristine,
+select.ng-pristine,
+input.ng-pristine {
+	border: 1px solid black;
+	box-shadow: none;
+}
+
+.wmliu-common-input {
+    font-size:  12px;
+    width:      120px;    
+}
+
+.wmliu-common-date {
+    font-size:  12px;
+    width:      80px;    
+}
+
+.wmliu-common-time {
+    font-size:  12px;
+    width:      60px;    
+}
+
+.wmliu-common-date-yy {
+    width:      40px;  
+    text-align: center;  
+}
+
+.wmliu-common-date-mm {
+    width:      50px;    
+    text-align: center;  
+}
+
+.wmliu-common-date-dd {
+    width:      40px;    
+    text-align: center;  
+}
+
+.wmliu-common-date-hh {
+    width:      40px;    
+    text-align: center;  
+}
+
+.wmliu-common-date-ii {
+    width:      40px;    
+    text-align: center;  
+}
+
+.wmliu-common-time-hh {
+    width:      30px;    
+    text-align: center;  
+}
+
+.wmliu-common-time-ii {
+    width:      30px;    
+    text-align: center;  
+}
+
+
+.wmliu-common-textarea {
+    width:      100%;
+    height:     80px; 
+}
+
+.wmliu-common-select {
+    font-size:  12px;
+    width:      120px;    
+}
+
+.wmliu-common-button {
+    font-size:  12px;
+    min-width:  60px;    
+}
+
+.wmliu-common-input-other {
+    width:                  80px;
+	color:				    blue;
+    border:                 0px;
+    border-bottom:          1px solid #cccccc;
+}
+
+.wmliu-common-input-checked {
+	color:				    blue;
+}
+
+.wmliu-common-input-invalid {
+	    border:     1px solid pink;
+	    box-shadow: 0px 0px 3px pink;        
+}
+
+.wmliu-common-error-message {
+        color:      red;
+}
+
+
+/*** common input label css ***/
+.wmliu-common-label {
+    white-space:    nowrap;    
+}
+
+.wmliu-common-label-invalid {
+    cursor:             pointer;
+    color:              red;
+    text-decoration:    pink solid underline;  
+}
+
+.wmliu-common-label-required {
+    color:              red;
+    font-weight:        bold;
+}
+
+
+/*** checklist css ***/
+.wmliu-common-checklist {
+    display:                block;  
+    position:               relative; 
+    border:                 1px solid #cccccc; 
+    border-radius:          5px;
+    padding:                2px;  
+    overflow-y:             auto;
+    overflow-x:             hidden; 
+    height:                 100%;    
+	background-color:		#ffffff;
+}
+
+.wmliu-common-checklist-box {
+    display:                inline-block; 
+    margin-right:           10px; 
+    margin-bottom:          5px; 
+    border:                 0px dotted #cccccc; 
+    vertical-align:         top;
+    padding:                5px;
+}
+
+.wmliu-common-checklist-box1 {
+    display:                block; 
+    margin-right:           10px; 
+    margin-bottom:          5px; 
+    border:                 1px dotted #cccccc; 
+    vertical-align:         top;
+    padding:                5px;
+}
+
+.wmliu-common-checklist-header {
+    display:                block; 
+    font-weight:            bold; 
+    border-bottom:          1px solid #aaaaaa; 
+    margin-bottom:          2px; 
+}
+
+
+/****** change state  ******/
+.wmliu-common-state12 {
+	position:	relative;
+	display:	inline-block;
+	width:		12px;
+	height:		12px;
+	
+	background-image:	url(image/wmliu.common/wmliu-common-state12.png);
+	background-repeat:	no-repeat;
+	vertical-align:		middle;
+    margin-left:        0px;
+    margin-right:       1px;
+}
+
+.wmliu-common-state12-0 {
+	background-position:	-36px 0px;
+}
+
+.wmliu-common-state12-1 {
+	background-position:	0px 0px;
+}
+
+.wmliu-common-state12-2 {
+	background-position:	-24px 0px;
+}
+
+.wmliu-common-state12-3 {
+	background-position:	-12px 0px;
+}
+
+.wmliu-common-state12-4 {
+	background-position:	-48px 0px;
+}
+
+
+.wmliu-common-state16 {
+	position:	relative;
+	display:	inline-block;
+	width:		16px;
+	height:		16px;
+	
+	background-image:	url(image/wmliu.common/wmliu-common-state16.png);
+	background-repeat:	no-repeat;
+	vertical-align:		middle;
+    margin-left:        0px;
+    margin-right:       1px;
+}
+
+.wmliu-common-state16-0 {
+	background-position:	-48px 0px;
+}
+
+.wmliu-common-state16-1 {
+	background-position:	0px 0px;
+}
+
+.wmliu-common-state16-2 {
+	background-position:	-32px 0px;
+}
+
+.wmliu-common-state16-3 {
+	background-position:	-16px 0px;
+}
+
+.wmliu-common-state16-4 {
+	background-position:	-64px 0px;
+}
+
+
+
+.wmliu-common-state18 {
+	position:	relative;
+	display:	inline-block;
+	width:		18px;
+	height:		18px;
+	
+	background-image:	url(image/wmliu.common/wmliu-common-state18.png);
+	background-repeat:	no-repeat;
+	vertical-align:		middle;
+    margin-left:        0px;
+    margin-right:       1px;
+}
+
+.wmliu-common-state18-0 {
+	background-position:	-54px 0px;
+}
+
+.wmliu-common-state18-1 {
+	background-position:	0px 0px;
+}
+
+.wmliu-common-state18-2 {
+	background-position:	-36px 0px;
+}
+
+.wmliu-common-state18-3 {
+	background-position:	-18px 0px;
+}
+
+.wmliu-common-state18-4 {
+	background-position:	-72px 0px;
+}
+/**************************/
+
+
+/*** common icons ****/
+/*** icons 16 ****************/
+a.wmliu-common-icon16 {
+	position:	relative;
+	display:	inline-block;
+	width:		16px;
+	height:		16px;
+	
+	background-image:	url(image/wmliu.common/wmliu-common-buttons16.png);
+	background-repeat:	no-repeat;
+	vertical-align:		middle;
+    margin-left:        1px;
+    margin-right:       0px;
+}
+
+a.wmliu-common-icon16-detail {
+	background-position:	0px 0px;
+}
+a.wmliu-common-icon16-detail:hover {
+	background-position:	0px -32px;
+}
+a.wmliu-common-icon16-detail-na,
+a.wmliu-common-icon16-detail-na:hover {
+	display:				none;
+	background-position:	0px -16px;
+}
+
+a.wmliu-common-icon16-save {
+	background-position:	-16px 0px;
+}
+a.wmliu-common-icon16-save:hover {
+	background-position:	-16px -32px;
+}
+a.wmliu-common-icon16-save-na,
+a.wmliu-common-icon16-save-na:hover {
+	display:				none;
+	background-position:	-16px -16px;
+}
+
+a.wmliu-common-icon16-delete {
+	background-position:	-32px 0px;
+}
+a.wmliu-common-icon16-delete:hover {
+	background-position:	-32px -32px;
+}
+a.wmliu-common-icon16-delete-na,
+a.wmliu-common-icon16-delete-na:hover {
+	display:				none;
+	background-position:	-32px -16px;
+}
+
+a.wmliu-common-icon16-add {
+	background-position:	-48px 0px;
+}
+a.wmliu-common-icon16-add:hover {
+	background-position:	-48px -32px;
+}
+a.wmliu-common-icon16-add-na,
+a.wmliu-common-icon16-add-na:hover {
+	display:				none;
+	background-position:	-48px -16px;
+}
+
+a.wmliu-common-icon16-output {
+	background-position:	-64px 0px;
+}
+a.wmliu-common-icon16-output:hover {
+	background-position:	-64px -32px;
+}
+a.wmliu-common-icon16-output-na,
+a.wmliu-common-icon16-output-na:hover {
+	display:				none;
+	background-position:	-64px -16px;
+}
+
+a.wmliu-common-icon16-print {
+	background-position:	-80px 0px;
+}
+a.wmliu-common-icon16-print:hover {
+	background-position:	-80px -32px;
+}
+a.wmliu-common-icon16-print-na,
+a.wmliu-common-icon16-print-na:hover {
+	display:				none;
+	background-position:	-80px -16px;
+}
+
+a.wmliu-common-icon16-cancel {
+	background-position:	-96px 0px;
+}
+a.wmliu-common-icon16-cancel:hover {
+	background-position:	-96px -32px;
+}
+a.wmliu-common-icon16-cancel-na,
+a.wmliu-common-icon16-cancel-na:hover {
+	display:				none;
+	background-position:	-96px -16px;
+}
+
+a.wmliu-common-icon16-folder {
+	background-position:	-112px 0px;
+}
+a.wmliu-common-icon16-folder:hover {
+	background-position:	-112px -32px;
+}
+a.wmliu-common-icon16-folder-na,
+a.wmliu-common-icon16-folder-na:hover {
+	display:				none;
+	background-position:	-112px -16px;
+}
+
+a.wmliu-common-icon16-list {
+	background-position:	-128px 0px;
+}
+a.wmliu-common-icon16-list:hover {
+	background-position:	-128px -32px;
+}
+a.wmliu-common-icon16-list-na,
+a.wmliu-common-icon16-list-na:hover {
+	display:				none;
+	background-position:	-128px -16px;
+}
+
+a.wmliu-common-icon16-search {
+	background-position:	-144px 0px;
+}
+a.wmliu-common-icon16-search:hover {
+	background-position:	-144px -32px;
+}
+a.wmliu-common-icon16-search-na,
+a.wmliu-common-icon16-search-na:hover {
+	display:				none;
+	background-position:	-144px -16px;
+}
+
+
+/*** icons 18 ****************/
+a.wmliu-common-icon18 {
+	position:	relative;
+	display:	inline-block;
+	width:		18px;
+	height:		18px;
+	
+	background-image:	url(image/wmliu.common/wmliu-common-buttons18.png);
+	background-repeat:	no-repeat;
+	vertical-align:		middle;
+    margin-left:        1px;
+    margin-right:       0px;
+}
+
+a.wmliu-common-icon18-detail {
+	background-position:	0px 0px;
+}
+a.wmliu-common-icon18-detail:hover {
+	background-position:	0px -36px;
+}
+a.wmliu-common-icon18-detail-na,
+a.wmliu-common-icon18-detail-na:hover {
+	display:				none;
+	background-position:	0px -18px;
+}
+
+a.wmliu-common-icon18-save {
+	background-position:	-18px 0px;
+}
+a.wmliu-common-icon18-save:hover {
+	background-position:	-18px -36px;
+}
+a.wmliu-common-icon18-save-na,
+a.wmliu-common-icon18-save-na:hover {
+	display:				none;
+	background-position:	-18px -18px;
+}
+
+a.wmliu-common-icon18-delete {
+	background-position:	-36px 0px;
+}
+a.wmliu-common-icon18-delete:hover {
+	background-position:	-36px -36px;
+}
+a.wmliu-common-icon18-delete-na,
+a.wmliu-common-icon18-delete-na:hover {
+	display:				none;
+	background-position:	-36px -18px;
+}
+
+a.wmliu-common-icon18-add {
+	background-position:	-54px 0px;
+}
+a.wmliu-common-icon18-add:hover {
+	background-position:	-54px -36px;
+}
+a.wmliu-common-icon18-add-na,
+a.wmliu-common-icon18-add-na:hover {
+	display:				none;
+	background-position:	-54px -18px;
+}
+
+a.wmliu-common-icon18-output {
+	background-position:	-72px 0px;
+}
+a.wmliu-common-icon18-output:hover {
+	background-position:	-72px -36px;
+}
+a.wmliu-common-icon18-output-na,
+a.wmliu-common-icon18-output-na:hover {
+	display:				none;
+	background-position:	-72px -18px;
+}
+
+a.wmliu-common-icon18-print {
+	background-position:	-90px 0px;
+}
+a.wmliu-common-icon18-print:hover {
+	background-position:	-90px -36px;
+}
+a.wmliu-common-icon18-print-na,
+a.wmliu-common-icon18-print-na:hover {
+	display:				none;
+	background-position:	-90px -18px;
+}
+
+a.wmliu-common-icon18-cancel {
+	background-position:	-108px 0px;
+}
+a.wmliu-common-icon18-cancel:hover {
+	background-position:	-108px -36px;
+}
+a.wmliu-common-icon18-cancel-na,
+a.wmliu-common-icon18-cancel-na:hover {
+	display:				none;
+	background-position:	-108px -18px;
+}
+
+a.wmliu-common-icon18-folder {
+	background-position:	-126px 0px;
+}
+a.wmliu-common-icon18-folder:hover {
+	background-position:	-126px -36px;
+}
+a.wmliu-common-icon18-folder-na,
+a.wmliu-common-icon18-folder-na:hover {
+	display:				none;
+	background-position:	-126px -18px;
+}
+
+a.wmliu-common-icon18-list {
+	background-position:	-144px 0px;
+}
+a.wmliu-common-icon18-list:hover {
+	background-position:	-144px -36px;
+}
+a.wmliu-common-icon18-list-na,
+a.wmliu-common-icon18-list-na:hover {
+	display:				none;
+	background-position:	-144px -18px;
+}
+
+a.wmliu-common-icon18-search {
+	background-position:	-162px 0px;
+}
+a.wmliu-common-icon18-search:hover {
+	background-position:	-162px -36px;
+}
+a.wmliu-common-icon18-search-na,
+a.wmliu-common-icon18-search-na:hover {
+	display:				none;
+	background-position:	-162px -18px;
+}
+
+/*** icons 20px ****************/
+a.wmliu-common-icon20 {
+	position:	relative;
+	display:	inline-block;
+	width:		20px;
+	height:		20px;
+	
+	background-image:	url(image/wmliu.common/wmliu-common-buttons20.png);
+	background-repeat:	no-repeat;
+	vertical-align:		middle;
+    margin-left:        1px;
+    margin-right:       0px;
+}
+
+a.wmliu-common-icon20-detail {
+	background-position:	0px 0px;
+}
+a.wmliu-common-icon20-detail:hover {
+	background-position:	0px -40px;
+}
+a.wmliu-common-icon20-detail-na,
+a.wmliu-common-icon20-detail-na:hover {
+	background-position:	0px -20px;
+}
+
+a.wmliu-common-icon20-save {
+	background-position:	-20px 0px;
+}
+a.wmliu-common-icon20-save:hover {
+	background-position:	-20px -40px;
+}
+a.wmliu-common-icon20-save-na,
+a.wmliu-common-icon20-save-na:hover {
+	background-position:	-20px -20px;
+}
+
+a.wmliu-common-icon20-delete {
+	background-position:	-40px 0px;
+}
+a.wmliu-common-icon20-delete:hover {
+	background-position:	-40px -40px;
+}
+a.wmliu-common-icon20-delete-na,
+a.wmliu-common-icon20-delete-na:hover {
+	background-position:	-40px -20px;
+}
+
+a.wmliu-common-icon20-add {
+	background-position:	-60px 0px;
+}
+a.wmliu-common-icon20-add:hover {
+	background-position:	-60px -40px;
+}
+a.wmliu-common-icon20-add-na,
+a.wmliu-common-icon20-add-na:hover {
+	background-position:	-60px -20px;
+}
+
+a.wmliu-common-icon20-output {
+	background-position:	-80px 0px;
+}
+a.wmliu-common-icon20-output:hover {
+	background-position:	-80px -40px;
+}
+a.wmliu-common-icon20-output-na,
+a.wmliu-common-icon20-output-na:hover {
+	background-position:	-80px -20px;
+}
+
+a.wmliu-common-icon20-print {
+	background-position:	-100px 0px;
+}
+a.wmliu-common-icon20-print:hover {
+	background-position:	-100px -40px;
+}
+a.wmliu-common-icon20-print-na,
+a.wmliu-common-icon20-print-na:hover {
+	background-position:	-100px -20px;
+}
+
+a.wmliu-common-icon20-cancel {
+	background-position:	-120px 0px;
+}
+a.wmliu-common-icon20-cancel:hover {
+	background-position:	-120px -40px;
+}
+a.wmliu-common-icon20-cancel-na,
+a.wmliu-common-icon20-cancel-na:hover {
+	background-position:	-120px -20px;
+}
+
+a.wmliu-common-icon20-folder {
+	background-position:	-140px 0px;
+}
+a.wmliu-common-icon20-folder:hover {
+	background-position:	-140px -40px;
+}
+a.wmliu-common-icon20-folder-na,
+a.wmliu-common-icon20-folder-na:hover {
+	background-position:	-140px -20px;
+}
+
+a.wmliu-common-icon20-list {
+	background-position:	-160px 0px;
+}
+a.wmliu-common-icon20-list:hover {
+	background-position:	-160px -40px;
+}
+a.wmliu-common-icon20-list-na,
+a.wmliu-common-icon20-list-na:hover {
+	background-position:	-160px -20px;
+}
+
+a.wmliu-common-icon20-search {
+	background-position:	-180px 0px;
+}
+a.wmliu-common-icon20-search:hover {
+	background-position:	-180px -40px;
+}
+a.wmliu-common-icon20-search-na,
+a.wmliu-common-icon20-search-na:hover {
+	background-position:	-180px -20px;
+}
+
+
+/*** icons 22px****************/
+a.wmliu-common-icon22 {
+	position:	relative;
+	display:	inline-block;
+	width:		20px;
+	height:		20px;
+	
+	background-image:	url(image/wmliu.common/wmliu-common-buttons22.png);
+	background-repeat:	no-repeat;
+	vertical-align:		middle;
+    margin-left:        1px;
+    margin-right:       0px;
+}
+
+a.wmliu-common-icon22-detail {
+	background-position:	0px 0px;
+}
+a.wmliu-common-icon22-detail:hover {
+	background-position:	0px -44px;
+}
+a.wmliu-common-icon22-detail-na,
+a.wmliu-common-icon22-detail-na:hover {
+	background-position:	0px -22px;
+}
+
+a.wmliu-common-icon22-save {
+	background-position:	-22px 0px;
+}
+a.wmliu-common-icon22-save:hover {
+	background-position:	-22px -40px;
+}
+a.wmliu-common-icon22-save-na,
+a.wmliu-common-icon22-save-na:hover {
+	background-position:	-22px -22px;
+}
+
+a.wmliu-common-icon22-delete {
+	background-position:	-44px 0px;
+}
+a.wmliu-common-icon22-delete:hover {
+	background-position:	-44px -44px;
+}
+a.wmliu-common-icon22-delete-na,
+a.wmliu-common-icon22-delete-na:hover {
+	background-position:	-44px -22px;
+}
+
+a.wmliu-common-icon22-add {
+	background-position:	-66px 0px;
+}
+a.wmliu-common-icon22-add:hover {
+	background-position:	-66px -44px;
+}
+a.wmliu-common-icon22-add-na,
+a.wmliu-common-icon22-add-na:hover {
+	background-position:	-66px -22px;
+}
+
+a.wmliu-common-icon22-output {
+	background-position:	-88px 0px;
+}
+a.wmliu-common-icon22-output:hover {
+	background-position:	-88px -44px;
+}
+a.wmliu-common-icon22-output-na,
+a.wmliu-common-icon22-output-na:hover {
+	background-position:	-88px -22px;
+}
+
+a.wmliu-common-icon22-print {
+	background-position:	-110px 0px;
+}
+a.wmliu-common-icon22-print:hover {
+	background-position:	-110px -44px;
+}
+a.wmliu-common-icon22-print-na,
+a.wmliu-common-icon22-print-na:hover {
+	background-position:	-110px -22px;
+}
+
+a.wmliu-common-icon22-cancel {
+	background-position:	-132px 0px;
+}
+a.wmliu-common-icon22-cancel:hover {
+	background-position:	-132px -44px;
+}
+a.wmliu-common-icon22-cancel-na,
+a.wmliu-common-icon22-cancel-na:hover {
+	background-position:	-132px -22px;
+}
+
+a.wmliu-common-icon22-folder {
+	background-position:	-154px 0px;
+}
+a.wmliu-common-icon22-folder:hover {
+	background-position:	-154px -44px;
+}
+a.wmliu-common-icon22-folder-na,
+a.wmliu-common-icon22-folder-na:hover {
+	background-position:	-154px -22px;
+}
+
+
+a.wmliu-common-icon22-list {
+	background-position:	-176px 0px;
+}
+a.wmliu-common-icon22-list:hover {
+	background-position:	-176px -44px;
+}
+a.wmliu-common-icon22-list-na,
+a.wmliu-common-icon22-list-na:hover {
+	background-position:	-176px -22px;
+}
+
+a.wmliu-common-icon22-search {
+	background-position:	-198px 0px;
+}
+a.wmliu-common-icon22-search:hover {
+	background-position:	-198px -44px;
+}
+a.wmliu-common-icon22-search-na,
+a.wmliu-common-icon22-search-na:hover {
+	background-position:	-198px -22px;
+}
+
+
+/***********************************************/
+a.wmliu-common-state-stop {
+ 	position:	relative;
+	display:	inline-block;
+	width:		32px;
+	height:		32px;
+	
+	background-image:	url(image/wmliu.common/wmliu-common-stop.png);
+	background-repeat:	no-repeat;
+	vertical-align:		middle;
+}
+
+span.wmliu-common-state-error {
+    position:           relative;
+    vertical-align:     middle;
+    color:              red;
+    font-size:          18px;
+    margin-left:        10px;
+}
+
+span.wmliu-common-error-text {
+	font-size:			16px;
+}
+/***********************************************/
+
+
+/***********************************************/
+table.wmliu-tablelist {
+	color:				    #222222;
+	font-size:			    12px;
+	
+	border:			    	1px solid #cccccc;
+	border-collapse:		collapse;
+	empty-cells: 		    show;
+}
+
+table.wmliu-tablelist tr.header th {
+	border:			    	1px solid #cccccc;
+	background-color:		#eeeeee;
+	padding:				2px;
+}
+
+table.wmliu-tablelist tr.header th  a.selected {
+	display:				inline-block;
+	width:					12px;
+	height:					12px;
+	
+	background-image:		url(image/wmliu.common/wmliu-common-tick.png);
+	background-repeat:		no-repeat;
+	background-position:	center center;
+}
+
+
+table.wmliu-tablelist tr.row-even {
+	background-color:		#F4F9FD;
+}
+
+table.wmliu-tablelist tr.row-odd {
+	background-color:		#F4F9FD;
+}
+
+table.wmliu-tablelist tr.row-selected {
+	background-color:		#F7F6CD;
+}
+
+
+table.wmliu-tablelist tr.row td {
+	border:			    	1px solid #cccccc;
+}
+
+table.wmliu-tablelist tr.row td  .input
+{
+	width: 					60px;
+}
+/***********************************************/

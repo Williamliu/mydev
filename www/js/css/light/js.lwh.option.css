@@ -1,0 +1,328 @@
+div.lwhOption {
+	display:				block;
+	position:				relative;
+	background-color:		#ffffff;
+	border:					1px solid #cccccc;
+	min-width:				300px;
+	min-height:				60px;
+}
+
+div.lwhOption-head {
+	padding-top:			30px;
+}
+
+div.lwhOption-headarea { 
+	display: 				none;
+	height:					0px;
+}
+
+div.lwhOption-head > 
+div.lwhOption-headarea {
+	display:				block;
+	position:				absolute;
+	top:					0px;
+	left:					0px;
+	right:					0px;
+	height:					30px;
+	line-height:			30px;
+	background-color:		#81B9ED;
+	vertical-align:			middle;
+}
+
+a.lwhOption-button-search {
+	display: 				inline-block;
+	position:				relative;
+	background: 			#20afc5 right center url(image/lwhOption/search.png) no-repeat;
+	border:					1px solid #cccccc;
+	
+	border-radius:			3px;
+	
+	padding-right: 			30px;
+	vertical-align:			middle;
+	overflow:				hidden;
+}
+
+span.lwhOption-button-search-del {
+	display: 				inline-block;
+	position:				relative;
+	width:					20px;
+	height:					22px;
+	background: 			#ffffff center center url(image/lwhOption/selection_del.png) no-repeat;
+	vertical-align:			middle;
+}
+
+a.lwhOption-button-search > input {
+	border:					0px;
+	font-size:				14px;
+	font-weight: 			bold;
+	height:					20px;
+	line-height:			20px;
+	vertical-align:			middle;
+}
+
+a.lwhOption-button-selection {
+	display: 				inline-block;
+	position:				relative;
+	width:					22px;
+	height:					22px;
+	background: 			center center url(image/lwhOption/selection.png) no-repeat;
+	vertical-align:			middle;
+	z-index:				99;
+}
+
+a.lwhOption-button-selection >
+div.lwhOption-selectionarea {
+	display:				none;
+	position:				absolute;
+	background-color:		#E6E7E8;
+	top:					0px;
+	left:					0px;
+	min-width:				100px;
+	min-height:				30px;
+	border:					1px solid #aaaaaa;
+	border-radius:			3px;
+	padding:				3px;
+	white-space:			nowrap;
+	font-size:				16px;
+	z-index:				99;
+}
+
+a.lwhOption-button-selection:hover >
+div.lwhOption-selectionarea {
+	display:				block;
+}
+
+div.lwhOption-selectionarea-head {
+	display:				block;
+	position:				relative;
+	font-size:				14px;
+	text-align:				center;
+	height:					20px;
+	line-height:			20px;
+	color:					#ffffff;
+	background-color: 		#4988DA;
+}
+
+ul.lwhOption-selectionarea-content {
+	display:				block;
+	position:				relative;
+	list-style:				none;
+	margin:					0px;
+	padding:				0px;
+}
+
+ul.lwhOption-selectionarea-content > li {
+	display:				block;
+	position:				relative;
+	font-size:				16px;
+	text-align:				left;
+	padding-left:			10px;
+	color:					#FF605D;
+}
+
+
+div.lwhOption-content {
+	display:				block;
+	position:				relative;
+	margin:					0px;
+	padding:				0px;
+}
+
+span.lwhOption-noitem {
+	font-size:				0.8em;
+	font-style:				italic;
+	text-decoration:		line-through;
+}
+
+
+/****** level one style ******/
+div.lwhOption-one {
+	display:				block;
+	position:				relative;
+	border:					1px solid #cccccc;
+
+	font-size:				14px;
+	font-weight:			400;
+	
+	min-height:				260px;
+	min-width:				640px;
+}
+
+div.lwhOption-one > ul {
+	display:				inline-block;
+	position:				relative;
+	width:					120px;
+	z-index:				9;       !important
+	/*** flip over to div ***/
+}
+
+div.lwhOption-one > ul > li.item-one {
+	cursor:					pointer;
+	display:				block;
+	text-align:				center;
+
+	height:					30px;
+	line-height:			30px;
+	border-bottom:			1px dotted #cccccc;
+	margin-right:			-1px;    !important
+	/*** flip over to div ***/
+}
+
+div.lwhOption-one > ul > li:last-child {
+	border-bottom:			0px;
+}
+
+
+div.lwhOption-one > ul > li.head-one {
+	color:					#ffffff;
+	background-color:   	#ff4400;
+	border-bottom:			1px solid #cccccc;
+	font-weight:			700;
+	margin-left:			-1px;
+	margin-top:				-1px;	
+}
+
+div.lwhOption-one > div  {
+	display:				block;
+	position:				absolute;
+	border:					0px;
+	top:					0px;
+	left:					120px;
+	right:					0px;
+	bottom:					0px;
+	border-left:			1px solid #cccccc;
+	background-color:		#ffffff;
+}
+
+div.lwhOption-one > div > div {
+	display:				none;
+	position:				absolute;
+	border:					0px;
+	left:					0px;
+	right:					0px;
+	bottom:					0px;
+	
+	padding:				5px;
+	overflow:				auto;
+}
+
+div.lwhOption-one > div > div.head-one {
+	display:				block;
+	background-color:   	#363C4D;
+	height:					30px;
+	line-height:			30px;
+	
+	border-bottom:			1px solid #cccccc;
+	padding:				0px;
+	margin-top:				-1px;
+	margin-right:			-1px;
+	top:					0px;
+	color:					#ffffff;
+	
+    overflow:		    	hidden;
+}
+
+div.lwhOption-one > div > div.head-one > span.level-one-selection {
+	position:				absolute;
+	left:					10px;
+	font-size:				12px;
+	white-space:        	nowrap;
+}
+
+div.lwhOption-one > div > div.head-one > span.level-one-selection > span.level-one-selection-text {
+	cursor:					pointer;
+	font-size:				14px;
+	color:					#F98A61;
+	font-weight:			700;
+	white-space:        	nowrap;
+    overflow:		    	hidden;
+	text-overflow: 			ellipsis;
+	-o-text-overflow: 		ellipsis;
+	
+}
+
+div.lwhOption-one > div > div.content-one {
+	top:					30px;
+	padding:				0px;
+}
+
+div.lwhOption-one > div > div.main-one {
+	display:				block;
+	top:					30px;
+	padding:				0px;
+}
+
+
+div.lwhOption-one > ul > li.selected {
+	color:					#ffffff;
+	background-color:   	#363C4D;
+}
+
+div.lwhOption-one > div > div.selected {
+	display:				block;
+}
+/*****************************/
+
+/****** level two style ******/
+div.lwhOption-two {
+	background-color:		#ffffff;
+	border:					0px solid #cccccc;
+}
+
+ul.lwhOption-two {
+	display:				inline-block;
+	position:				relative;
+	margin:					0px;
+	padding:				0px;
+	vertical-align:			top;
+	text-align:				left;
+}
+
+ul.lwhOption-two > li.item-two {
+	display:				block;
+	cursor:					pointer;
+	padding:				0px 5px 10px 5px;
+	font-size:				14px;
+	color:					#0C6FB0;
+	font-weight:			700;
+	vertical-align:			top;
+	text-align:				left;
+}
+/*****************************/
+
+/****** level three style ******/
+ul.lwhOption-three {
+	padding-top:			2px; 
+	border-top:				1px dotted #cccccc;
+	vertical-align:			top;
+	text-align:				left;
+}
+
+ul.lwhOption-three > li.item-three {
+	cursor:					pointer;
+	padding-left:			4px;
+	padding-right:			12px;
+	display:				inline-block;
+	font-size:				14px;
+	color:					#333333;
+	font-weight:			500;
+	text-align:				left;
+	white-space:			nowrap;
+}
+
+ul.lwhOption-three > li.item-three:hover {
+	color:					blue;
+}
+
+ul.lwhOption-three > li.highlight {
+	color:					#FF4400;
+	text-decoration:		underline;
+	font-weight:			500;
+	background:				right 4px url(image/lwhOption/status_ok.png) no-repeat;
+}
+
+ul.lwhOption-three > li.highlight:hover {
+	color:					#FF4400;
+	text-decoration:		underline;
+}
+/*****************************/

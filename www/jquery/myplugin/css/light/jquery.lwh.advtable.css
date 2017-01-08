@@ -1,0 +1,325 @@
+/************************************************************************************/
+/*  JQuery Plugin Resize Table                     		                        	*/
+/*  Author:	William Liu                                                            	*/
+/*  Date: 	2012-2-15      															*/
+/*  Files: 	jquery.lwh.table.js ;  jquery.lwh.table.css								*/
+/************************************************************************************/
+/***** FOR Component ***********************/
+.lwhTable {
+	table-layout:	fixed;
+	padding:		0px;
+	margin:			0px;
+}
+
+.lwhTable th,
+.lwhTable td {
+	overflow: 				hidden;
+	padding:				2px;	!important
+}
+
+.lwhTable th.hidden,
+.lwhTable td.hidden {
+	display:		none;
+}
+
+.lwhTable .col-hidden,
+.lwhTable .col-hidden {
+	display:		none;
+}
+
+.lwhTable th .fullwidth,
+.lwhTable td .fullwidth,
+.lwhTable th .fullheight,
+.lwhTable td .fullheight {
+	white-space:	normal;
+}
+
+.lwhTable th div.nowrap,
+.lwhTable td div.nowrap{
+	display:		block;
+	overflow:		hidden;
+	white-space:	nowrap;
+	margin:			0px;
+	padding:        0px;
+}
+
+.lwhTable th div.nowrap div,
+.lwhTable td div.nowrap div{
+	white-space:	normal;
+}
+
+
+.lwhTable-container {
+	position: 		relative;
+	display:		inline-block;
+	border:			0px solid green;
+}
+
+/*  vertical  resizer border  and resizer */
+.lwhTable-border {
+	cursor:			e-resize;
+	position:		absolute;
+	
+	display:		block;
+	visibility:		hidden;
+	width:			12px;
+	height:			100%;
+
+	top:			0px;
+	margin-left:	-7px;
+	text-align:		center;
+
+	border:			0px solid red;
+}
+
+
+.lwhTable-border-resizable {
+	visibility:		visible;
+}
+
+.lwhTable-border-hidden {
+	visibility:		hidden;
+}
+
+.lwhTable-border-resizer {
+	cursor:			e-resize;
+	position:		absolute;
+
+	display: 		block;
+	visibility:		hidden;
+	width:			1px;
+	height:			100%;
+	
+	top:			0px;
+	left:			50%;
+
+	border-left:	2px dotted red;
+}
+
+.lwhTable-border-resizer-show {
+	visibility:		visible;
+}
+
+/*  horizon row  resizer border  and resizer */
+.lwhTable-horizon {
+	cursor:			s-resize;
+	position:		absolute;
+	display:		block;
+	width:			100%;
+	height:			12px;
+	
+	top:			0px;
+	margin-top:		-7px;
+	text-align:		center;
+	
+	border:			0px solid blue;
+}
+
+.lwhTable-horizon-resizer {
+	cursor:			s-resize;
+	position:		relative;
+	
+	display: 		block;
+	visibility:		hidden;
+	width:			100%;
+	height:			1px;
+	
+	top:			50%;
+	left:			0px;
+
+	border-top:		2px dotted red;
+}
+
+.lwhTable-horizon-resizer-show {
+	visibility:	visible;
+}
+
+
+/*  header column sortable */
+.lwhTable-sortable {
+	display:		inline-block;
+	width:			12px;
+	height:			12px;
+	margin-left:	2px;
+	vertical-align:	middle;
+	background:		url(image/icon/lwhTable-sq-sort.png) center center no-repeat;
+}
+
+.lwhTable-sortable-asc {
+	background:		url(image/icon/lwhTable-sq-asc.png) center center no-repeat;
+}
+
+.lwhTable-sortable-desc {
+	background:		url(image/icon/lwhTable-sq-desc.png) center center no-repeat;
+}
+
+
+/***For Compoent Skin*****************************/
+.lwhTable {
+	color:				#222222;
+	font-size:			12px;
+	
+	border-top:			1px solid #999999;
+	border-left:		1px solid #999999;
+	
+	border-bottom:		0px solid #999999;
+	border-right:		0px solid #999999;
+}
+
+/* border style */
+.lwhTable th,
+.lwhTable td {
+	border-bottom:		1px solid #999999;
+	border-right:		1px solid #999999;   /* default is resizable;  fixed is not resizable */
+
+	border-top:			0px solid #999999;
+	border-left:		0px solid #999999;
+}
+
+.lwhTable tr th.resizable,
+.lwhTable tr td.resizable {
+	border-right:		1px solid #333333;
+}
+
+.lwhTable tr.rowResize th,
+.lwhTable tr.rowResize td {
+	border-bottom:		1px solid #333333;
+}
+
+
+/* header column  padding top and bottome reset to 5px,  bold , bgcolor */
+.lwhTable th.header,
+.lwhTable td.header {
+	padding-top:        5px;
+	padding-bottom:     5px;
+	font-weight:		bold;
+	background-color: 	#87B9EB;
+}
+
+.lwhTable th .fullsize,
+.lwhTable td .fullsize {
+	width: 					100%;
+	height:					100%;
+	overflow:				auto;
+	margin:					0px;
+}
+
+.lwhTable th textarea.fullsize,
+.lwhTable td textarea.fullsize {
+	resize:					none;
+	margin:					0px;
+	height:					100%;
+	width:					100%;
+}
+
+/* tr even and odd */
+.lwhTable tr.lwhTable-even {
+	/* background-color: 	#efefef; */
+}
+
+.lwhTable tr.lwhTable-odd {
+	/* background-color: 	#dedede; */
+}
+
+
+
+
+
+
+
+/* Table Header Menu */
+.lwhTable-headmenu {
+	display:			none;
+	position:			absolute;
+	width:				auto;
+	margin:				0px;
+	padding:	    	5px 2px 5px 2px;
+	list-style:			none;
+	left:				-2000px;
+	top:				-2000px;
+
+	border:				1px solid #666666;
+	background-color:	#9DC8F1;
+}
+
+.lwhTable-headmenu li {
+	cursor:				pointer;
+	list-style:			none;
+	margin:				0px;
+	padding-left:       18px;
+	padding-right:      10px;
+	padding-top:        5px;
+	padding-bottom:		5px;
+	text-decoration:	none;
+	white-space:		nowrap;
+
+	color:				#333333;
+	font-size:			12px;
+	font-family:		Arial, Helvetica, sans-serif;
+}
+
+
+.lwhTable-headmenu li.separator {
+	margin-top: 		5px;
+	padding-top: 		4px;
+
+	border-top: 		1px solid #666666;
+}
+
+.lwhTable-headmenu li.title {
+	cursor:				default;
+    padding-left: 		2px;
+
+	color: 				#333333;
+	font-size:			12px;
+    font-weight:		bold;
+}
+
+
+.lwhTable-headmenu li.lwhTable-sort-selected {
+    font-weight: 	bold;
+	background: 	url(image/icon/lwhTable-menu-dotted.png) 6px center no-repeat;
+}
+
+.lwhTable-headmenu li a.lwhTable-sort-icon {
+	position:				relative;
+	display: 				none;
+	width:	 				12px;
+	height:	 				16px;
+	background-position:	center center;
+	background-repeat:		no-repeat;
+	vertical-align:			top;
+}
+
+.lwhTable-headmenu li a.lwhTable-sort-asc {
+	display:				inline-block;
+	background-image: 		url(image/icon/lwhTable-sort-asc.png);
+}
+
+.lwhTable-headmenu li a.lwhTable-sort-desc {
+	display:				inline-block;
+	background-image: 		url(image/icon/lwhTable-sort-desc.png);
+}
+
+.lwhTable-headmenu li s.lwhTable-middle {
+	display:				inline-block;
+	width:					5px;
+	height:					100%;
+	vertical-align:			middle;
+}
+
+.lwhTable-headmenu li.lwhTable-snh {
+	background: 			url(image/icon/lwhTable-menu-ok.png) 4px center no-repeat;
+}
+
+.lwhTable-headmenu li.lwhTable-colhidden {
+	background: 			none;
+}
+
+.lwhTable-headmenu li:hover {
+	background-color: 		#eeeeee;
+}
+
+.lwhTable-headmenu li.title:hover {
+  	background-color: 		#cccccc;
+}

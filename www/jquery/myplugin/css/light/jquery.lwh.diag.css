@@ -1,0 +1,155 @@
+/************************************************************************************/
+/*  JQuery Plugin Tab 							  	                     	*/
+/*  Author:	William Liu                                                            	*/
+/*  Date: 	2012-8-15      															*/
+/*  Files: 	jquery.lwh.tab.js ;  jquery.lwh.tab.css								*/
+/************************************************************************************/
+
+/* mask iframe and div */
+.lwhDiag-mask-ifrm {
+	display:	none;
+	position:	fixed;
+	border:		1px solid #eeeeee; 
+	width:		100%; 
+	height:		100%; 
+	left:		0px; 
+	top:		0px;
+
+	filter:				alpha(opacity:20);
+	opacity:			0.2;
+	background-color:	#000000;
+}
+
+.lwhDiag-mask-div {
+	display:	none;
+	position:	fixed;
+	border:     1px solid #eeeeee; 
+	width:      100%;
+	height:     100%; 
+	left:       0px; 
+	top:        0px;
+
+	filter:				alpha(opacity:20);
+	opacity:			0.2;
+	background-color:	#000000;
+}
+
+
+div.lwhDiag {
+	position:			absolute;
+	display:			none;
+	width:				100px;
+
+	padding:			5px;
+	margin:				0px;
+	overflow:			hidden;
+	
+	border:				1px solid #999999;
+	background-color:	#ffffff;
+	
+	border-radius:		8px 8px 8px 8px;
+	box-shadow:			1px 1px 1px #000000;
+	/* For IE 8 */
+	-ms-filter: progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#000000');
+	/** For IE 5.5 - 7 */
+	filter: 	progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#000000');			
+	
+}
+
+div.lwhDiag div.lwhDiag-head {
+	position:			relative;
+	display:			block;
+	
+	height:				26px;
+	line-height:		26px;
+	text-align:			center;
+	
+	padding-left:		2px;
+	padding-right:		2px;
+		
+	border-radius:		5px 5px 5px 5px;
+	border:				1px solid #999999;
+	background-color:	#cccccc;
+	
+	overflow:			hidden;
+}
+
+div.lwhDiag div.lwhDiag-head div.lwhDiag-title {
+	position:			relative;
+	color:				#000000;
+	font-size:			14px;
+	font-weight:		bold;
+	z-index:			90;
+	
+	border:				0px solid red;
+}
+
+div.lwhDiag div.lwhDiag-head span.lwhDiag-button {
+	position:			absolute;
+	height:				100%;
+	top:				0px;
+	right:				2px;
+	/*
+	left:				100%;
+	margin-left:		-20px;
+	*/
+	border:				0px solid red;
+	white-space:		nowrap;
+	z-index:			99;
+}
+
+div.lwhDiag div.lwhDiag-head span.lwhDiag-button a.lwhDiag-button {
+	cursor:				pointer;
+	position:			relative;
+	top:				3px;
+	display:			inline-block;
+	width:				20px;
+	height:				20px;
+	background-image:	url(image/dialog/lwhDiag-navy-all.png);
+	background-repeat:	no-repeat;
+	float:				right;
+}
+
+a.lwhDiag-button-close {
+	background-position:	0px 0px;
+}
+
+a.lwhDiag-button-close:hover {
+	background-position:	-30px 0px;
+}
+
+a.lwhDiag-button-max {
+	background-position:	0px -30px;
+}
+
+a.lwhDiag-button-max:hover {
+	background-position:	-30px -30px;
+}
+
+a.lwhDiag-button-min {
+	background-position:	0px -60px;
+}
+
+a.lwhDiag-button-min:hover {
+	background-position:	-30px -60px;
+}
+
+
+div.lwhDiag div.lwhDiag-content {
+	position:			relative;
+	margin-top:			5px;
+	
+	overflow-x:			hidden; 
+	overflow-y:			auto;
+	white-space:     	normal;
+
+	border-radius:		5px 5px 5px 5px;
+	border:				1px solid #999999;
+	background-color:	#ffffff;
+	
+	padding:			5px;
+}
+
+div.lwhDiag div.lwhDiag-no-border {
+	border:				0px;
+}

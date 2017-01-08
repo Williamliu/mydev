@@ -1,0 +1,178 @@
+li.lwhUpload-li {
+	display:		block;
+	list-style:		none;
+	border: 		0px solid red;
+	margin:			0px;  /*2px 2px 2px 2px;*/
+	white-space:	nowrap;
+	overflow:		hidden;
+}
+
+/***  filename ***/
+span.lwhUpload-filename {
+	display:		inline-block;
+	/* width:			300px; */
+	border:			0px solid blue;
+	font-size:		12px;
+	vertical-align:	middle;
+}
+
+span.lwhUpload-filesize {
+	display:		inline-block;
+	border:			0px solid blue;
+	font-size:		10px;
+	font-size:		12px;	
+	margin-left:	10px;
+	margin-right:	10px;
+}
+
+/***  status ***/
+a.lwhUpload-status {
+	display:		inline-block;
+	vertical-align:	middle;
+	width:			16px;
+	height:			16px;
+	
+	background-position:	center center;
+	background-repeat:		no-repeat;
+	
+	margin-left:  	2px;
+	margin-right:	2px;
+}
+
+a.lwhUpload-status0 {
+	background-image:	url(image/upload/upload-status0.png);
+}
+
+a.lwhUpload-status1 {
+	background-image:	url(image/upload/upload-status1.gif);
+}
+
+a.lwhUpload-status4 {
+	background-image:	url(image/upload/upload-status4.png);
+}
+
+a.lwhUpload-status8 {
+	background-image:	url(image/upload/upload-status8.png);
+}
+
+/***  cancel button ***/
+a.lwhUpload-cancel {
+	cursor:			pointer;
+	display:		inline-block;
+	vertical-align:	middle;
+	width:			16px;
+	height:			16px;
+	background-image:		url(image/upload/upload-cancel.png);
+	background-position:	center center;
+	background-repeat:		no-repeat;
+	
+	margin-left:  	2px;
+	margin-right:	2px;
+}
+
+a.lwhUpload-cancel-hide {
+	display:		none;
+}
+
+/***  progressbar ***/
+div.lwhUpload-progressbar {
+	position:				relative;
+	display:				inline-block;
+	width:					100px;
+	height:					10px;
+	line-height:			12px;
+
+	border:					1px solid #cccccc;
+	border-radius:			5px;
+	
+	overflow:				hidden;
+	text-align:				center;
+	vertical-align:			middle;
+	color:					#666666;
+	font-size:				10px;
+}
+
+div.lwhUpload-progressbar-ff {
+	background-color:		#ffffff;
+	background-repeat:		no-repeat;
+	background-position:	-250px center;
+	background-image:		url(image/upload/upload-progressbar-bg.png);
+	
+}
+
+
+div.lwhUpload-progressbar-ie {
+	position:				relative;
+	display:				inline-block;
+	overflow:				hidden;
+
+	background-color:		#ffffff;
+	background-repeat:		repeat-x;
+	background-position:	center center;
+	background-image:		url(image/upload/upload-progressbar-ie.gif);
+}
+
+
+div.lwhUpload-progressbar-hide {
+	display: 				none;
+}
+
+/***  filename ***/
+span.lwhUpload-log-title {
+	color:			#666666;
+	display:		inline-block;
+	font-size:		14px;
+	font-weight:	bold;
+	vertical-align:	middle;
+
+	margin-left:  	2px;
+	margin-right:	2px;
+}
+
+a.lwhUpload-log {
+	display:		inline-block;
+	vertical-align:	middle;
+	width:			24px;
+	height:			24px;
+	
+	background-image:		url(image/upload/upload-log.png);
+	background-position:	center center;
+	background-repeat:		no-repeat;
+
+	margin-left:  	2px;
+	margin-right:	2px;
+}
+
+a.lwhUpload-log-clean {
+	cursor:			pointer;
+	display:		inline-block;
+	vertical-align:	middle;
+	width:			24px;
+	height:			24px;
+	
+	background-image:		url(image/upload/upload-log-clean.png);
+	background-position:	center center;
+	background-repeat:		no-repeat;
+}
+
+.lwhUpload-buttton-upload {
+	position:		relative;
+	display: 		inline-block;
+	width:			128px;
+	height:			34px;
+	background-color:	transparent;
+	background-image: 	url(image/upload/file-upload.png);
+	background-position:center center;
+	background-repeat:	no-repeat;
+	overflow:			hidden;
+}
+
+.lwhUpload-queue {
+	display:		block;
+	overflow:		auto;
+}
+
+.lwhUpload-queue-table-head {
+	text-align:			center;
+	background-color:	#cccccc;
+}

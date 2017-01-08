@@ -1,0 +1,294 @@
+/****  page navigator ************************************/
+ul.wmliu-list-ul {
+	padding:	0px;
+	margin:		0px;
+	list-style: none;
+    min-width:  250px;
+}
+
+ul.wmliu-list-ul li.item {
+	cursor:			    pointer;
+	display:		    block;
+    position:           relative;
+	padding-left:	    20px;	
+    padding-right:      5px;
+	background:   	    5px center url(image/wmliu.list/wmliu-list-item.png) no-repeat;
+	border-bottom:	    1px solid #cccccc;
+	background-color:	#efefef;
+	/*
+	height:			    26px;
+	*/
+	line-height:	    26px;
+
+	font-size:			14px;
+	white-space:        nowrap;
+    overflow:		    hidden;
+	text-overflow: 		ellipsis;
+	-o-text-overflow: 	ellipsis;
+}
+
+
+ul.wmliu-list-ul li.item:hover {
+	color:				blue;
+	background-color:	#dddddd;
+}
+
+
+ul.wmliu-list-ul li.item-selected {
+	color:		        #eb2512;
+    font-weight:        bold;
+	background:         2px center url(image/wmliu.list/wmliu-list-item-selected.png) no-repeat;
+	background-color:	#eeeeee;
+	/*
+	height:			    30px;
+	line-height:	    30px;
+	*/
+}
+
+ul.wmliu-list-ul li.item-selected:hover {
+	color:		        #eb2512;
+	background-color:	#eeeeee;
+}
+
+/* Navi Header */
+ul.wmliu-list-ul li.wmliu-list-navi-bg-top {
+	background-color:		#EDEDFF; 
+	vertical-align:			middle;
+	padding:				0px; 
+	
+	border-top:			    2px solid #cccccc;
+    border-left:            1px solid #cccccc;
+    border-right:           1px solid #cccccc;
+    border-bottom:          1px solid #cccccc;
+
+	height:					26px;
+    line-height:            26px;
+
+	white-space:        	nowrap;
+    overflow:		    	hidden;
+	text-overflow: 			ellipsis;
+	-o-text-overflow: 		ellipsis;
+}
+
+ul.wmliu-list-ul li.wmliu-list-navi-bg-top
+span.wmliu-list-navi-search {
+    display:                block;
+    /* min-width:              120px; */
+    height:                 24px;
+    background-color:       #ffffff;
+    padding:                0px;
+}
+
+ul.wmliu-list-ul li.wmliu-list-navi-bg-top
+span.wmliu-list-navi-search 
+a.search {
+    cursor:                 pointer;
+    display:                inline-block;
+    width:                  24px;
+    height:                 24px;
+ 	background:             0px center url(image/wmliu.list/wmliu-list-search.png) no-repeat;
+	vertical-align:			middle;
+}
+
+ul.wmliu-list-ul li.wmliu-list-navi-bg-top 
+span.wmliu-list-navi-search 
+input
+{
+    display:                inline-block;
+    width:                  50%;
+	height:					100%;
+	line-height:			100%;
+    float:                  left;
+	font-size:              12px;
+	border:					0px solid #eeeeee;
+	vertical-align:			middle;
+}
+
+ul.wmliu-list-ul li.wmliu-list-navi-bg-bottom {
+	background-color:		#ffffff; 
+	vertical-align:			middle;
+	padding:				0px; 
+	
+	border-bottom:		    2px solid #69ADDC;
+    border-left:            1px solid #cccccc;
+    border-right:           1px solid #cccccc;
+
+	height:					30px;
+    line-height:            30px;
+
+	white-space:        nowrap;
+    overflow:		    hidden;
+	text-overflow: 		ellipsis;
+	-o-text-overflow: 	ellipsis;
+}
+
+
+span.wmliu-list-navi-pineline {
+	color:				black; 
+	font-size:			14px; 
+	font-weight:		bold; 
+	margin-left:		5px; 
+	margin-right:		5px;
+	vertical-align:		middle;
+}
+
+ul.wmliu-list-ul li span.wmliu-list-navi-label {
+	font-weight: 		bold;
+	font-size:			12px; 
+	vertical-align:		middle;
+}
+
+.wmliu-list-navi-pageSize {
+	text-align: 		    center;
+	vertical-align:		    middle;
+	width:				    30px;
+	font-size:              12px;
+    height:					14px;
+    line-height:            14px;
+    margin-bottom:          4px;
+    border:                 0px;
+    border-bottom:		    1px solid #cccccc;
+}
+/***************************************************/
+
+
+
+
+
+div.wmliu-list-dbnav {
+	position:	relative;
+	font-size:	12px;
+	color: 		black;
+}
+
+
+
+span.wmliu-list-dbnav-value {
+	font-weight: 		bold;
+	vertical-align:		middle;
+	font-size:			14px; 
+}
+
+
+
+
+a.wmliu-list-navi {
+    cursor:     pointer;
+	position:	relative;
+	display:	inline-block;
+	width:		16px;
+	height:		16px;
+	
+	background-image:	url(image/wmliu.list/wmliu-list-navi.png);
+	background-repeat:	no-repeat;
+	vertical-align:		middle;
+    
+    margin-left:    2px;
+    margin-bottom:  0px;
+}
+
+a.wmliu-list-navi-first {
+	background-position:	0px 0px;
+}
+a.wmliu-list-navi-first:hover {
+	background-position:	0px -16px;
+}
+a.wmliu-list-navi-first-na,
+a.wmliu-list-navi-first-na:hover {
+	background-position:	0px -32px;
+}
+
+a.wmliu-list-navi-prev {
+	background-position:	-16px 0px;
+}
+a.wmliu-list-navi-prev:hover {
+	background-position:	-16px -16px;
+}
+a.wmliu-list-navi-prev-na,
+a.wmliu-list-navi-prev-na:hover {
+	background-position:	-16px -32px;
+}
+
+a.wmliu-list-navi-next {
+	background-position:	-32px 0px;
+}
+a.wmliu-list-navi-next:hover {
+	background-position:	-32px -16px;
+}
+a.wmliu-list-navi-next-na,
+a.wmliu-list-navi-next-na:hover {
+	background-position:	-32px -32px;
+}
+
+a.wmliu-list-navi-last {
+	background-position:	-48px 0px;
+}
+a.wmliu-list-navi-last:hover {
+	background-position:	-48px -16px;
+}
+a.wmliu-list-navi-last-na,
+a.wmliu-list-navi-last-na:hover {
+	background-position:	-48px -32px;
+}
+
+a.wmliu-list-navi-refresh {
+	background-position:	-64px 0px;
+}
+a.wmliu-list-navi-refresh:hover {
+	background-position:	-64px -16px;
+}
+a.wmliu-list-navi-refresh-na,
+a.wmliu-list-navi-refresh-na:hover {
+	background-position:	-64px -32px;
+}
+
+a.wmliu-list-navi-loading {
+	background-image:		url(image/wmliu.list/wmliu-list-loading.gif);
+	background-repeat:		no-repeat;
+	background-position:	center center;
+	
+}
+
+a.wmliu-list-navi-loading-na {
+	visibility:				hidden;
+}
+
+/* imgvalue */
+a.wmliu-list-imgvalue {
+	position:	relative;
+	display:	inline-block;
+
+	vertical-align:		middle;
+    margin-left:        0px;
+    margin-right:       1px;
+}
+
+a.wmliu-list-imgvalue-status {
+    width:  12px;
+    height: 12px;
+    background-repeat: no-repeat;
+}
+
+a.wmliu-list-imgvalue-status-true {
+   background-image: url(image/wmliu.list/wmliu-list-tick.png);
+}
+
+a.wmliu-list-imgvalue-status-1 {
+   background-image: url(image/wmliu.list/wmliu-list-tick.png);
+}
+
+
+a.wmliu-list-imgvalue-locked {
+    width:  12px;
+    height: 12px;
+    background-repeat: no-repeat;
+	background-image: url(image/wmliu.list/wmliu-list-tick.png);
+}
+
+a.wmliu-list-imgvalue-locked-true {
+	background-image: url(image/wmliu.list/wmliu-list-locked.png);
+}
+
+a.wmliu-list-imgvalue-locked-1 {
+	background-image: url(image/wmliu.list/wmliu-list-locked.png);
+}

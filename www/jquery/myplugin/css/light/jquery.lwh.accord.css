@@ -1,0 +1,250 @@
+ul.lwhAccd {
+	display:				block;
+	position:				relative;
+	border:					1px solid #cccccc;	
+}
+
+ul.lwhAccd > li {
+	cursor:					pointer;
+	display:				block;
+	position:				relative;
+	font-size:				16px;
+	background:				0px center url(image/accord/lwhAccd-bg.jpg) repeat;;
+}
+
+ul.lwhAccd > li a {
+	color:					inherit;
+	text-decoration:		none;
+}
+
+ul.lwhAccd > li > div {
+	display:				block;
+	position:				relative;
+	padding:				8px 20px 8px 20px;
+	background:				8px center url(image/accord/lwhAccd.png) no-repeat;
+}
+
+ul.lwhAccd > li.selected > div {
+	background:				6px center url(image/accord/lwhAccd-selected.png) no-repeat;
+}
+
+ul.lwhAccd > li > ul {
+	display:				none;
+	position:				relative;
+	background-color:		#ffffff;
+}
+
+ul.lwhAccd > li.selected > ul {
+	display:				block;
+}
+
+ul.lwhAccd > li > ul > li {
+	cursor:					pointer;
+	display:				block;
+	position:				relative;
+	font-size:				14px;
+	border-top:				1px dotted #cccccc;
+	padding:				6px 20px 6px 36px;
+	background:				18px center url(image/accord/lwhAccd-item.png) no-repeat;
+}
+
+ul.lwhAccd > li > ul > li:hover {
+	background-color:		#dddddd;
+}
+
+ul.lwhAccd > li > ul > li:hover > a {
+	color:					blue;
+	text-decoration:		underline;
+}
+
+ul.lwhAccd > li > ul > li.selected {
+	color:					#ff4400;
+	background:				14px center url(image/accord/lwhAccd-item-selected.png) no-repeat;
+}
+
+ul.lwhAccd > li > ul > li.selected:hover > a {
+	color:					#ff4400;
+	text-decoration:		underline;
+}
+
+
+
+ul.wmliu-accord {
+	display:                block;
+    position:               relative;
+    list-style:             none;
+    min-width:              200px;
+	margin:				    0px;
+	padding:			    0px;
+
+    border:                 0px;
+    border-radius:          5px;
+}
+
+.wmliu-accord * {
+	list-style:  		    none;
+	margin:				    0px;
+	padding:			    0px;
+	white-space: 		    nowrap;
+	text-decoration:	    none;
+}
+
+ul.wmliu-accord > li {
+    cursor:                 pointer;
+    display:                block;
+    position:               relative;
+
+    color:			        #333333;
+	font-size:		        16px;
+    font-weight:            bold;
+    user-select:            none;
+    margin-top:             1px;
+	border-top:			    1px solid #cccccc;
+	border-bottom:			1px solid #aaaaaa;
+	border-left:	        1px solid #cccccc;
+	border-right:	        1px solid #aaaaaa;
+    border-radius:          5px;
+    
+    background:             linear-gradient(#efefef, #eeeeee, #efefef);
+    line-height:            30px;
+}
+
+ul.wmliu-accord > li:hover {
+    /* 
+    color:                  #5258C4;                 
+    */
+}
+
+ul.wmliu-accord > li > a.state {
+    display:                inline-block;
+    position:               relative;
+    width:                  8px;
+    height:                 8px;
+    margin-top:             -2px;
+    margin-left:            5px;
+    margin-right:           5px;
+    vertical-align:         middle;
+    
+    background-color:       transparent;
+    background-position:    center center;
+    background-repeat:      no-repeat;
+    background-image:       url(image/accord/wmliu-accord-close.png);
+}
+
+ul.wmliu-accord > li.open > a.state {
+    background-image:       url(image/accord/wmliu-accord-open.png);
+}
+
+ul.wmliu-accord > li.close > a.state {
+    background-image:       url(image/accord/wmliu-accord-close.png);
+}
+
+
+ul.wmliu-accord > li > ul {
+    display:                none;    
+}
+
+ul.wmliu-accord > li.open > ul {
+    display:                block;
+    border-top:             2px solid #aaaaaa; 
+    /*
+    border-left:            1px solid #999999; 
+    border-right:           2px solid #eeeeee; 
+    */
+    border-bottom:          1px solid #eeeeee; 
+}
+
+ul.wmliu-accord > li.close > ul {
+    display:        none;    
+}
+
+ul.wmliu-accord > li > ul > li{
+    cursor:                 pointer;
+    display:                block;
+    position:               relative;
+   
+    color:			        #333333;
+	font-size:		        16px;
+    font-weight:            bold;
+    user-select:            none;
+
+    padding-left:           10px;
+    line-height:            26px;
+
+    background-color:       #dddddd;
+}
+
+
+ul.wmliu-accord > li > ul > li > a.state{
+    display:                inline-block;
+    position:               relative;
+    width:                  14px;
+    height:                 14px;
+    margin-top:             -2px;
+    margin-left:            5px;
+    margin-right:           2px;
+    vertical-align:         middle;
+    
+    background-color:       transparent;
+    background-position:    center center;
+    background-repeat:      no-repeat;
+}
+
+
+ul.wmliu-accord >li > ul > li:hover {
+    /* 
+    color:                  #5258C4;                 
+    */
+    background-color:       #cccccc;
+}
+
+ul.wmliu-accord >li > ul > li:hover > a.state {
+    background-image:       url(image/accord/wmliu-accord-item.png);
+}
+
+ul.wmliu-accord >li > ul > li.selected {
+    color:                  #FD0000;
+}
+
+ul.wmliu-accord >li > ul > li.selected > a.state {
+    background-image:       url(image/accord/wmliu-accord-item-selected.png);
+    margin-left:            3px;
+    margin-right:           5px;
+}
+
+
+/*** blue ***/
+ul.wmliu-accord-blue > li {
+    color:                  #ffffff;
+
+	border-bottom:			1px solid #4F86DD;
+	border-left:	        1px solid #4F86DD;
+	border-right:	        1px solid #4F86DD;
+
+    background:             linear-gradient(#1B9FF2, #1A94E0, #1B9FF2);       
+}
+
+
+ul.wmliu-accord-blue > li.open > ul {
+    display:                block;
+    border-top:             2px solid #0774B7; 
+    /*
+    border-left:            1px solid #999999; 
+    border-right:           2px solid #eeeeee; 
+    */
+    border-bottom:          1px solid #78BDE8; 
+}
+
+ul.wmliu-accord-blue > li > ul > li{
+    color:			        #ffffff;
+    background-color:       #1885C9;
+}
+
+
+ul.wmliu-accord-blue >li > ul > li:hover {
+    background-color:       #1B5C84;
+}
+
+ul.wmliu-accord-blue >li > ul > li.selected {
+    color:                  #FD0000;
+}

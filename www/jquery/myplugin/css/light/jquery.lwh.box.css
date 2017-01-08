@@ -1,0 +1,49 @@
+/************************************************************************************/
+/*  JQuery Plugin Box		 							  	                     	*/
+/*  Author:	William Liu                                                            	*/
+/*  Date: 	2012-2-15      															*/
+/*  Files: 	jquery.lwh.box.js ;  jquery.lwh.box.css									*/
+/************************************************************************************/
+.lwhBox {
+	position:		relative;
+	display:		block;
+
+	border-radius:		10px 10px 5px 5px;
+
+	box-shadow:			2px 2px 2px #000000;
+}
+
+.lwhBox-head {
+	position:		relative;
+	display:		block;
+	height:			25px;
+	line-height:	25px;
+	
+	border-top:			1px solid #999999;
+	border-bottom:		0px solid #999999;
+	border-left:		1px solid #999999;
+	border-right:		1px solid #999999;
+	border-radius:		10px 10px 0px 0px;
+
+	background-color:	#7B90AC;
+}
+
+.lwhBox-head span {
+	color:			#eeeeee;
+	font-size:		12px;
+	font-weight:	bold;
+	padding-left:	10px;
+}
+
+.lwhBox-content {
+	position:		relative;
+	display:		block;
+
+	border-top:			0px solid #999999;
+	border-bottom:		1px solid #999999;
+	border-left:		1px solid #999999;
+	border-right:		1px solid #999999;
+	border-radius:		0px 0px 5px 5px;
+	
+	padding: 			5px;
+}

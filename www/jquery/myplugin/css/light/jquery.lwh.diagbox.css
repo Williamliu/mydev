@@ -1,0 +1,149 @@
+/************************************************************************************/
+/*  JQuery Plugin:  LOADING                                                       	*/
+/*  Author:	William Liu                                                            	*/
+/*  Date: 	2012-3-30      															*/
+/*  Files: 	jquery.lwh.loading.js ;  jquery.lwh.loading.css							*/
+/************************************************************************************/
+.lwhDiagBox {
+    display:        none;
+    width:          70%;
+    height:         70%;
+    min-width:      400px;
+    min-height:     300px;
+
+    position:       absolute;  
+    border:         1px solid #cccccc;
+    border-radius:  5px;
+    padding:        5px 5px 8px 5px;
+    box-shadow:     2px 2px 8px #666666;
+    background-color: #ffffff;
+
+    
+    top:            15%;
+    margin-top:     -20px;
+    left:           15%;
+    margin-left:    -20px;
+	overflow:		hidden;
+}
+
+
+.lwhDiagBox > .lwhDiagBox-header {
+    display:            block; 
+    position:           relative; 
+    cursor:             default;   
+
+    height:             22px; 
+    border:             1px solid #cccccc; 
+    border-radius:      5px;
+    background:         linear-gradient(#efefef, #eeeeee, #efefef);
+
+    text-align:         center;
+}
+
+.lwhDiagBox > .lwhDiagBox-header span.lwhDiagBox-title {
+    font-size:          16px;
+    vertical-align:     middle;
+}
+
+.lwhDiagBox > .lwhDiagBox-content {
+    /*** important skill for fill up remaining space ***/
+    display:            block; 
+    position:           absolute;      
+    top:                30px;           
+	bottom:             5px;            
+    left:               5px;            
+    right:              5px;           
+   
+    margin-top:         2px;    
+    border-radius:      5px; 
+    padding:            2px;
+   
+    font-size:          14px;
+    border:             1px solid #dddddd; 
+    overflow:           auto;
+}
+
+.lwhDiagBox > .lwhDiagBox-header > a.lwhDiagBox-button {
+    cursor:             pointer;
+    display:            inline-block;
+    position:           absolute;
+    width:              19px;
+    height:             18px;
+    top:                2px;
+    
+    background-image:   url(image/diagBox/wmliu-dropbox-button.png);
+    background-repeat:  no-repeat;  
+    vertical-align:     middle;      
+}
+
+.lwhDiagBox > .lwhDiagBox-header > a.lwhDiagBox-button-close {
+    background-position:    0px 0px;
+    right:                  2px;
+}
+
+.lwhDiagBox > .lwhDiagBox-header > a.lwhDiagBox-button-close:hover {
+    background-position:    0px -18px;
+}
+
+.lwhDiagBox > .lwhDiagBox-header > a.lwhDiagBox-button-max {
+    background-position:    -18px 0px;
+    right:                  21px
+}
+
+.lwhDiagBox > .lwhDiagBox-header > a.lwhDiagBox-button-max:hover {
+    background-position:    -18px -18px;
+}
+
+.lwhDiagBox > .lwhDiagBox-header > a.lwhDiagBox-button-min {
+    background-position:    -36px 0px;
+    right:                  21px
+}
+
+.lwhDiagBox > .lwhDiagBox-header > a.lwhDiagBox-button-min:hover {
+    background-position:    -36px -18px;
+}
+
+
+
+
+
+/**** blue ****/
+.lwhDiagBox-blue > .lwhDiagBox-header {
+    background:             linear-gradient(#A9F6FC, #4ED6DB, #A9F6FC);
+}
+
+/**** white ****/
+.lwhDiagBox-white > .lwhDiagBox-header {
+    background:             linear-gradient(#dddddd, #cccccc, #dddddd);
+}
+
+
+
+/* mask iframe and div */
+.lwhDiagBox-mask-ifrm {
+	display:	none;
+	position:   fixed;
+	border:		1px solid #eeeeee; 
+	width:		100%; 
+	height:		100%; 
+	left:		0px; 
+	top:		0px;
+
+	filter:				alpha(opacity:20);
+	opacity:			0.2;
+	background-color:	#000000;
+}
+
+.lwhDiagBox-mask-div {
+	display:	none;
+	position:	fixed;
+	border:     1px solid #eeeeee; 
+	width:      100%;
+	height:     100%; 
+	left:       0px; 
+	top:        0px;
+
+	filter:				alpha(opacity:20);
+	opacity:			0.2;
+	background-color:	#000000;
+}

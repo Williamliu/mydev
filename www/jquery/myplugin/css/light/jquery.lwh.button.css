@@ -1,0 +1,1903 @@
+a.lwhBtn {
+	cursor:					pointer;
+	position:				relative;
+	display:				inline-block;
+	padding-left:			13px;
+	margin-right:			13px;	
+	
+	background-image:		url(image/button/lwhBtn-allpng.png);
+	background-repeat:		no-repeat;
+	
+	vertical-align:			middle;
+	color:					white;
+	font-weight:			bold;
+}
+
+a.lwhBtn s {
+	position:				absolute;
+	top:					0px;
+	left:					100%;
+	
+	display:				inline-block;
+	width:					13px;
+	height:					100%;
+
+	background-image:		url(image/button/lwhBtn-allpng.png);
+	background-repeat:		no-repeat;
+
+}
+
+/*** different height ***/
+a.H18 {
+	height:					21px;
+	line-height:			18px;
+	font-size:				12px;
+}
+
+a.H18-2D {
+	height:					21px;
+	line-height:			22px;
+	font-size:				12px;
+}
+
+a.H18:hover,
+a.H18-2D:hover {
+	line-height:			22px;
+}
+
+
+
+a.H22 {
+	height:					25px;
+	line-height:			22px;
+	font-size:				12px;
+}
+a.H22-2D {
+	height:					25px;
+	line-height:			26px;
+	font-size:				12px;
+}
+
+a.H22:hover,
+a.H22-2D:hover {
+	line-height:			26px;
+}
+
+
+a.H26 {
+	height:					29px;
+	line-height:			26px;
+	font-size:				14px;
+}
+a.H26-2D {
+	height:					29px;
+	line-height:			30px;
+	font-size:				14px;
+}
+
+a.H26:hover,
+a.H26-2D:hover {
+	line-height:			30px;
+}
+
+
+/*** different color ***/
+/*** 1. grey ***/
+a.H18-grey {
+	color:					#333333;
+	background-position:	0px	0px;
+}
+a.H18-grey s {
+	background-position:	-230px	0px;
+}
+a.H18-2D-grey {
+	color:					#333333;
+	background-position:	0px 	-60px;
+}
+a.H18-2D-grey s {
+	background-position:	-230px	-60px;
+}
+a.H18-grey:hover,
+a.H18-2D-grey:hover {
+	background-position:	0px	-30px;
+}
+a.H18-grey:hover s,
+a.H18-2D-grey:hover s {
+	background-position:	-230px	-30px;
+}
+
+a.H22-grey {
+	color:					#333333;
+	background-position:	-250px 0px;
+}
+a.H22-grey s {
+	background-position:	-480px	0px;
+}
+a.H22-2D-grey {
+	color:					#333333;
+	background-position:	-250px -60px;
+}
+a.H22-2D-grey s {
+	background-position:	-480px	-60px;
+}
+a.H22-grey:hover,
+a.H22-2D-grey:hover {
+	background-position:	-250px -30px;
+}
+a.H22-grey:hover s,
+a.H22-2D-grey:hover s {
+	background-position:	-480px	-30px;
+}
+
+a.H26-grey {
+	color:					#333333;
+	background-position:	-500px 0px;
+}
+a.H26-grey s {
+	background-position:	-730px	0px;
+}
+a.H26-2D-grey {
+	color:					#333333;
+	background-position:	-500px 	-60px;
+}
+a.H26-2D-grey s {
+	background-position:	-730px	-60px;
+}
+a.H26-grey:hover,
+a.H26-2D-grey:hover {
+	background-position:	-500px -30px;
+}
+a.H26-grey:hover s,
+a.H26-2D-grey:hover s {
+	background-position:	-730px	-30px;
+}
+
+
+/*** 2.bluesky ***/
+a.H18-bluesky {
+	background-position:	0px 	-90px;
+}
+a.H18-bluesky s {
+	background-position:	-230px 	-90px;
+}
+a.H18-2D-bluesky {
+	background-position:	0px 	-150px;
+}
+a.H18-2D-bluesky s {
+	background-position:	-230px 	-150px;
+}
+a.H18-bluesky:hover,
+a.H18-2D-bluesky:hover {
+	background-position:	0px 	-120px;
+}
+a.H18-bluesky:hover s,
+a.H18-2D-bluesky:hover s {
+	background-position:	-230px 	-120px;
+}
+
+a.H22-bluesky {
+	background-position:	-250px 	-90px;
+}
+a.H22-bluesky s {
+	background-position:	-480px 	-90px;
+}
+a.H22-2D-bluesky {
+	background-position:	-250px 	-150px;
+}
+a.H22-2D-bluesky s {
+	background-position:	-480px 	-150px;
+}
+a.H22-bluesky:hover,
+a.H22-2D-bluesky:hover {
+	background-position:	-250px 	-120px;
+}
+a.H22-bluesky:hover s,
+a.H22-2D-bluesky:hover s {
+	background-position:	-480px 	-120px;
+}
+
+a.H26-bluesky {
+	background-position:	-500px 	-90px;
+}
+a.H26-bluesky s {
+	background-position:	-730px 	-90px;
+}
+a.H26-2D-bluesky {
+	background-position:	-500px 	-150px;
+}
+a.H26-2D-bluesky s {
+	background-position:	-730px 	-150px;
+}
+a.H26-bluesky:hover,
+a.H26-2D-bluesky:hover {
+	background-position:	-500px 	-120px;
+}
+a.H26-bluesky:hover s,
+a.H26-2D-bluesky:hover s {
+	background-position:	-730px 	-120px;
+}
+
+/*** 3.salmon ***/
+a.H18-salmon {
+	background-position:	0px 	-180px;
+}
+a.H18-salmon s {
+	background-position:	-230px 	-180px;
+}
+a.H18-2D-salmon {
+	background-position:	0px 	-240px;
+}
+a.H18-2D-salmon s {
+	background-position:	-230px 	-240px;
+}
+a.H18-salmon:hover,
+a.H18-2D-salmon:hover {
+	background-position:	0px 	-210px;
+}
+a.H18-salmon:hover s,
+a.H18-2D-salmon:hover s {
+	background-position:	-230px 	-210px;
+}
+
+a.H22-salmon {
+	background-position:	-250px 	-180px;
+}
+a.H22-salmon s {
+	background-position:	-480px 	-180px;
+}
+a.H22-2D-salmon {
+	background-position:	-250px 	-240px;
+}
+a.H22-2D-salmon s {
+	background-position:	-480px 	-240px;
+}
+a.H22-salmon:hover,
+a.H22-2D-salmon:hover {
+	background-position:	-250px 	-210px;
+}
+a.H22-salmon:hover s,
+a.H22-2D-salmon:hover s {
+	background-position:	-480px 	-210px;
+}
+
+a.H26-salmon {
+	background-position:	-500px 	-180px;
+}
+a.H26-salmon s {
+	background-position:	-730px 	-180px;
+}
+a.H26-2D-salmon {
+	background-position:	-500px 	-240px;
+}
+a.H26-2D-salmon s {
+	background-position:	-730px 	-240px;
+}
+a.H26-salmon:hover,
+a.H26-2D-salmon:hover {
+	background-position:	-500px 	-210px;
+}
+a.H26-salmon:hover s,
+a.H26-2D-salmon:hover s {
+	background-position:	-730px 	-210px;
+}
+
+/*** 4.white ***/
+a.H18-white {
+	color:					#333333;
+	background-position:	0px 	-270px;
+}
+a.H18-white s {
+	background-position:	-230px 	-270px;
+}
+a.H18-2D-white {
+	color:					#333333;
+	background-position:	0px 	-330px;
+}
+a.H18-2D-white s {
+	background-position:	-230px 	-330px;
+}
+a.H18-white:hover,
+a.H18-2D-white:hover {
+	background-position:	0px 	-300px;
+}
+a.H18-white:hover s,
+a.H18-2D-white:hover s {
+	background-position:	-230px 	-300px;
+}
+
+a.H22-white {
+	color:					#333333;
+	background-position:	-250px 	-270px;
+}
+a.H22-white s {
+	background-position:	-480px 	-270px;
+}
+a.H22-2D-white {
+	color:					#333333;
+	background-position:	-250px 	-330px;
+}
+a.H22-2D-white s {
+	background-position:	-480px 	-330px;
+}
+a.H22-white:hover,
+a.H22-2D-white:hover {
+	background-position:	-250px 	-300px;
+}
+a.H22-white:hover s,
+a.H22-2D-white:hover s {
+	background-position:	-480px 	-300px;
+}
+
+a.H26-white {
+	color:					#333333;
+	background-position:	-500px 	-270px;
+}
+a.H26-white s {
+	background-position:	-730px 	-270px;
+}
+a.H26-2D-white {
+	color:					#333333;
+	background-position:	-500px 	-330px;
+}
+a.H26-2D-white s {
+	background-position:	-730px 	-330px;
+}
+a.H26-white:hover,
+a.H26-2D-white:hover {
+	background-position:	-500px 	-300px;
+}
+a.H26-white:hover s,
+a.H26-2D-white:hover s {
+	background-position:	-730px 	-300px;
+}
+
+/*** 5.green ***/
+a.H18-green {
+	background-position:	0px 	-360px;
+}
+a.H18-green s {
+	background-position:	-230px 	-360px;
+}
+a.H18-2D-green {
+	background-position:	0px 	-420px;
+}
+a.H18-2D-green s {
+	background-position:	-230px 	-420px;
+}
+a.H18-green:hover,
+a.H18-2D-green:hover {
+	background-position:	0px 	-390px;
+}
+a.H18-green:hover s,
+a.H18-2D-green:hover s {
+	background-position:	-230px 	-390px;
+}
+
+a.H22-green {
+	background-position:	-250px 	-360px;
+}
+a.H22-green s {
+	background-position:	-480px 	-360px;
+}
+a.H22-2D-green {
+	background-position:	-250px 	-420px;
+}
+a.H22-2D-green s {
+	background-position:	-480px 	-420px;
+}
+a.H22-green:hover,
+a.H22-2D-green:hover {
+	background-position:	-250px 	-390px;
+}
+a.H22-green:hover s,
+a.H22-2D-green:hover s {
+	background-position:	-480px 	-390px;
+}
+
+a.H26-green {
+	background-position:	-500px 	-360px;
+}
+a.H26-green s {
+	background-position:	-730px 	-360px;
+}
+a.H26-2D-green {
+	background-position:	-500px 	-420px;
+}
+a.H26-2D-green s {
+	background-position:	-730px 	-420px;
+}
+a.H26-green:hover,
+a.H26-2D-green:hover {
+	background-position:	-500px 	-390px;
+}
+a.H26-green:hover s,
+a.H26-2D-green:hover s {
+	background-position:	-730px 	-390px;
+}
+
+/*** 6.red ***/
+a.H18-red {
+	background-position:	0px 	-450px;
+}
+a.H18-red s {
+	background-position:	-230px 	-450px;
+}
+a.H18-2D-red {
+	background-position:	0px 	-510px;;
+}
+a.H18-2D-red s {
+	background-position:	-230px 	-510px;
+}
+a.H18-red:hover,
+a.H18-2D-red:hover {
+	background-position:	0px 	-480px;
+}
+a.H18-red:hover s,
+a.H18-2D-red:hover s {
+	background-position:	-230px 	-480px;
+}
+
+a.H22-red {
+	background-position:	-250px 	-450px;
+}
+a.H22-red s {
+	background-position:	-480px 	-450px;
+}
+a.H22-2D-red {
+	background-position:	-250px 	-510px;
+}
+a.H22-2D-red s {
+	background-position:	-480px 	-510px;
+}
+a.H22-red:hover,
+a.H22-2D-red:hover {
+	background-position:	-250px 	-480px;
+}
+a.H22-red:hover s,
+a.H22-2D-red:hover s {
+	background-position:	-480px 	-480px;
+}
+
+a.H26-red {
+	background-position:	-500px 	-450px;
+}
+a.H26-red s {
+	background-position:	-730px 	-450px;
+}
+a.H26-2D-red {
+	background-position:	-500px 	-510px;
+}
+a.H26-2D-red s {
+	background-position:	-730px 	-510px;
+}
+a.H26-red:hover,
+a.H26-2D-red:hover {
+	background-position:	-500px 	-480px;
+}
+a.H26-red:hover s,
+a.H26-2D-red:hover s {
+	background-position:	-730px 	-480px;
+}
+
+/*** 7.fuzzy ***/
+a.H18-fuzzy {
+	background-position:	0px 	-540px;
+}
+a.H18-fuzzy s {
+	background-position:	-230px 	-540px;
+}
+a.H18-2D-fuzzy {
+	background-position:	0px 	-600px;;
+}
+a.H18-2D-fuzzy s {
+	background-position:	-230px 	-600px;
+}
+a.H18-fuzzy:hover,
+a.H18-2D-fuzzy:hover {
+	background-position:	0px 	-570px;
+}
+a.H18-fuzzy:hover s,
+a.H18-2D-fuzzy:hover s {
+	background-position:	-230px 	-570px;
+}
+
+a.H22-fuzzy {
+	background-position:	-250px 	-540px;
+}
+a.H22-fuzzy s {
+	background-position:	-480px 	-540px;
+}
+a.H22-2D-fuzzy {
+	background-position:	-250px 	-600px;
+}
+a.H22-2D-fuzzy s {
+	background-position:	-480px 	-600px;
+}
+a.H22-fuzzy:hover,
+a.H22-2D-fuzzy:hover {
+	background-position:	-250px 	-570px;
+}
+a.H22-fuzzy:hover s,
+a.H22-2D-fuzzy:hover s {
+	background-position:	-480px 	-570px;
+}
+
+a.H26-fuzzy {
+	background-position:	-500px 	-540px;
+}
+a.H26-fuzzy s {
+	background-position:	-730px 	-540px;
+}
+a.H26-2D-fuzzy {
+	background-position:	-500px 	-600px;
+}
+a.H26-2D-fuzzy s {
+	background-position:	-730px 	-600px;
+}
+a.H26-fuzzy:hover,
+a.H26-2D-fuzzy:hover {
+	background-position:	-500px 	-570px;
+}
+a.H26-fuzzy:hover s,
+a.H26-2D-fuzzy:hover s {
+	background-position:	-730px 	-570px;
+}
+
+/*** 8.iris ***/
+a.H18-iris {
+	background-position:	0px 	-630px;
+}
+a.H18-iris s {
+	background-position:	-230px 	-630px;
+}
+a.H18-2D-iris {
+	background-position:	0px 	-690px;;
+}
+a.H18-2D-iris s {
+	background-position:	-230px 	-690px;
+}
+a.H18-iris:hover,
+a.H18-2D-iris:hover {
+	background-position:	0px 	-660px;
+}
+a.H18-iris:hover s,
+a.H18-2D-iris:hover s {
+	background-position:	-230px 	-660px;
+}
+
+a.H22-iris {
+	background-position:	-250px 	-630px;
+}
+a.H22-iris s {
+	background-position:	-480px 	-630px;
+}
+a.H22-2D-iris {
+	background-position:	-250px 	-690px;
+}
+a.H22-2D-iris s {
+	background-position:	-480px 	-690px;
+}
+a.H22-iris:hover,
+a.H22-2D-iris:hover {
+	background-position:	-250px 	-660px;
+}
+a.H22-iris:hover s,
+a.H22-2D-iris:hover s {
+	background-position:	-480px 	-660px;
+}
+
+a.H26-iris {
+	background-position:	-500px 	-630px;
+}
+a.H26-iris s {
+	background-position:	-730px 	-630px;
+}
+a.H26-2D-iris {
+	background-position:	-500px 	-690px;
+}
+a.H26-2D-iris s {
+	background-position:	-730px 	-690px;
+}
+a.H26-iris:hover,
+a.H26-2D-iris:hover {
+	background-position:	-500px 	-660px;
+}
+a.H26-iris:hover s,
+a.H26-2D-iris:hover s {
+	background-position:	-730px 	-660px;
+}
+
+/*** 9.purple ***/
+a.H18-purple {
+	background-position:	0px 	-720px;
+}
+a.H18-purple s {
+	background-position:	-230px 	-720px;
+}
+a.H18-2D-purple {
+	background-position:	0px 	-780px;;
+}
+a.H18-2D-purple s {
+	background-position:	-230px 	-780px;
+}
+a.H18-purple:hover,
+a.H18-2D-purple:hover {
+	background-position:	0px 	-750px;
+}
+a.H18-purple:hover s,
+a.H18-2D-purple:hover s {
+	background-position:	-230px 	-750px;
+}
+
+a.H22-purple {
+	background-position:	-250px 	-720px;
+}
+a.H22-purple s {
+	background-position:	-480px 	-720px;
+}
+a.H22-2D-purple {
+	background-position:	-250px 	-780px;
+}
+a.H22-2D-purple s {
+	background-position:	-480px 	-780px;
+}
+a.H22-purple:hover,
+a.H22-2D-purple:hover {
+	background-position:	-250px 	-750px;
+}
+a.H22-purple:hover s,
+a.H22-2D-purple:hover s {
+	background-position:	-480px 	-750px;
+}
+
+a.H26-purple {
+	background-position:	-500px 	-720px;
+}
+a.H26-purple s {
+	background-position:	-730px 	-720px;
+}
+a.H26-2D-purple {
+	background-position:	-500px 	-780px;
+}
+a.H26-2D-purple s {
+	background-position:	-730px 	-780px;
+}
+a.H26-purple:hover,
+a.H26-2D-purple:hover {
+	background-position:	-500px 	-750px;
+}
+a.H26-purple:hover s,
+a.H26-2D-purple:hover s {
+	background-position:	-730px 	-750px;
+}
+
+/*** 10.goldenrod ***/
+a.H18-goldenrod {
+	background-position:	0px 	-810px;
+}
+a.H18-goldenrod s {
+	background-position:	-230px 	-810px;
+}
+a.H18-2D-goldenrod {
+	background-position:	0px 	-870px;;
+}
+a.H18-2D-goldenrod s {
+	background-position:	-230px 	-870px;
+}
+a.H18-goldenrod:hover,
+a.H18-2D-goldenrod:hover {
+	background-position:	0px 	-840px;
+}
+a.H18-goldenrod:hover s,
+a.H18-2D-goldenrod:hover s {
+	background-position:	-230px 	-840px;
+}
+
+a.H22-goldenrod {
+	background-position:	-250px 	-810px;
+}
+a.H22-goldenrod s {
+	background-position:	-480px 	-810px;
+}
+a.H22-2D-goldenrod {
+	background-position:	-250px 	-870px;
+}
+a.H22-2D-goldenrod s {
+	background-position:	-480px 	-870px;
+}
+a.H22-goldenrod:hover,
+a.H22-2D-goldenrod:hover {
+	background-position:	-250px 	-840px;
+}
+a.H22-goldenrod:hover s,
+a.H22-2D-goldenrod:hover s {
+	background-position:	-480px 	-840px;
+}
+
+a.H26-goldenrod {
+	background-position:	-500px 	-810px;
+}
+a.H26-goldenrod s {
+	background-position:	-730px 	-810px;
+}
+a.H26-2D-goldenrod {
+	background-position:	-500px 	-870px;
+}
+a.H26-2D-goldenrod s {
+	background-position:	-730px 	-870px;
+}
+a.H26-goldenrod:hover,
+a.H26-2D-goldenrod:hover {
+	background-position:	-500px 	-840px;
+}
+a.H26-goldenrod:hover s,
+a.H26-2D-goldenrod:hover s {
+	background-position:	-730px 	-840px;
+}
+
+/*** 11.mint ***/
+a.H18-mint {
+	background-position:	0px 	-900px;
+}
+a.H18-mint s {
+	background-position:	-230px 	-900px;
+}
+a.H18-2D-mint {
+	background-position:	0px 	-960px;;
+}
+a.H18-2D-mint s {
+	background-position:	-230px 	-960px;
+}
+a.H18-mint:hover,
+a.H18-2D-mint:hover {
+	background-position:	0px 	-930px;
+}
+a.H18-mint:hover s,
+a.H18-2D-mint:hover s {
+	background-position:	-230px 	-930px;
+}
+
+a.H22-mint {
+	background-position:	-250px 	-900px;
+}
+a.H22-mint s {
+	background-position:	-480px 	-900px;
+}
+a.H22-2D-mint {
+	background-position:	-250px 	-960px;
+}
+a.H22-2D-mint s {
+	background-position:	-480px 	-960px;
+}
+a.H22-mint:hover,
+a.H22-2D-mint:hover {
+	background-position:	-250px 	-930px;
+}
+a.H22-mint:hover s,
+a.H22-2D-mint:hover s {
+	background-position:	-480px 	-930px;
+}
+
+a.H26-mint {
+	background-position:	-500px 	-900px;
+}
+a.H26-mint s {
+	background-position:	-730px 	-900px;
+}
+a.H26-2D-mint {
+	background-position:	-500px 	-960px;
+}
+a.H26-2D-mint s {
+	background-position:	-730px 	-960px;
+}
+a.H26-mint:hover,
+a.H26-2D-mint:hover {
+	background-position:	-500px 	-930px;
+}
+a.H26-mint:hover s,
+a.H26-2D-mint:hover s {
+	background-position:	-730px 	-930px;
+}
+
+/*** 12.smitten ***/
+a.H18-smitten {
+	background-position:	0px 	-990px;
+}
+a.H18-smitten s {
+	background-position:	-230px 	-990px;
+}
+a.H18-2D-smitten {
+	background-position:	0px 	-1050px;;
+}
+a.H18-2D-smitten s {
+	background-position:	-230px 	-1050px;
+}
+a.H18-smitten:hover,
+a.H18-2D-smitten:hover {
+	background-position:	0px 	-1020px;
+}
+a.H18-smitten:hover s,
+a.H18-2D-smitten:hover s {
+	background-position:	-230px 	-1020px;
+}
+
+a.H22-smitten {
+	background-position:	-250px 	-990px;
+}
+a.H22-smitten s {
+	background-position:	-480px 	-990px;
+}
+a.H22-2D-smitten {
+	background-position:	-250px 	-1050px;
+}
+a.H22-2D-smitten s {
+	background-position:	-480px 	-1050px;
+}
+a.H22-smitten:hover,
+a.H22-2D-smitten:hover {
+	background-position:	-250px 	-1020px;
+}
+a.H22-smitten:hover s,
+a.H22-2D-smitten:hover s {
+	background-position:	-480px 	-1020px;
+}
+
+a.H26-smitten {
+	background-position:	-500px 	-990px;
+}
+a.H26-smitten s {
+	background-position:	-730px 	-990px;
+}
+a.H26-2D-smitten {
+	background-position:	-500px 	-1050px;
+}
+a.H26-2D-smitten s {
+	background-position:	-730px 	-1050px;
+}
+a.H26-smitten:hover,
+a.H26-2D-smitten:hover {
+	background-position:	-500px 	-1020px;
+}
+a.H26-smitten:hover s,
+a.H26-2D-smitten:hover s {
+	background-position:	-730px 	-1020px;
+}
+
+/*** 13.yellow ***/
+a.H18-yellow {
+	color:					#333333;
+	background-position:	0px 	-1080px;
+}
+a.H18-yellow s {
+	background-position:	-230px 	-1080px;
+}
+a.H18-2D-yellow {
+	color:					#333333;
+	background-position:	0px 	-1140px;;
+}
+a.H18-2D-yellow s {
+	background-position:	-230px 	-1140px;
+}
+a.H18-yellow:hover,
+a.H18-2D-yellow:hover {
+	background-position:	0px 	-1110px;
+}
+a.H18-yellow:hover s,
+a.H18-2D-yellow:hover s {
+	background-position:	-230px 	-1110px;
+}
+
+a.H22-yellow {
+	color:					#333333;
+	background-position:	-250px 	-1080px;
+}
+a.H22-yellow s {
+	background-position:	-480px 	-1080px;
+}
+a.H22-2D-yellow {
+	color:					#333333;
+	background-position:	-250px 	-1140px;
+}
+a.H22-2D-yellow s {
+	background-position:	-480px 	-1140px;
+}
+a.H22-yellow:hover,
+a.H22-2D-yellow:hover {
+	background-position:	-250px 	-1110px;
+}
+a.H22-yellow:hover s,
+a.H22-2D-yellow:hover s {
+	background-position:	-480px 	-1110px;
+}
+
+a.H26-yellow {
+	color:					#333333;
+	background-position:	-500px 	-1080px;
+}
+a.H26-yellow s {
+	background-position:	-730px 	-1080px;
+}
+a.H26-2D-yellow {
+	color:					#333333;
+	background-position:	-500px 	-1140px;
+}
+a.H26-2D-yellow s {
+	background-position:	-730px 	-1140px;
+}
+a.H26-yellow:hover,
+a.H26-2D-yellow:hover {
+	background-position:	-500px 	-1110px;
+}
+a.H26-yellow:hover s,
+a.H26-2D-yellow:hover s {
+	background-position:	-730px 	-1110px;
+}
+
+/*** 12.black ***/
+a.H18-black {
+	background-position:	0px 	-1170px;
+}
+a.H18-black s {
+	background-position:	-230px 	-1170px;
+}
+a.H18-2D-black {
+	background-position:	0px 	-1230px;;
+}
+a.H18-2D-black s {
+	background-position:	-230px 	-1230px;
+}
+a.H18-black:hover,
+a.H18-2D-black:hover {
+	background-position:	0px 	-1200px;
+}
+a.H18-black:hover s,
+a.H18-2D-black:hover s {
+	background-position:	-230px 	-1200px;
+}
+
+a.H22-black {
+	background-position:	-250px 	-1170px;
+}
+a.H22-black s {
+	background-position:	-480px 	-1170px;
+}
+a.H22-2D-black {
+	background-position:	-250px 	-1230px;
+}
+a.H22-2D-black s {
+	background-position:	-480px 	-1230px;
+}
+a.H22-black:hover,
+a.H22-2D-black:hover {
+	background-position:	-250px 	-1200px;
+}
+a.H22-black:hover s,
+a.H22-2D-black:hover s {
+	background-position:	-480px 	-1200px;
+}
+
+a.H26-black {
+	background-position:	-500px 	-1170px;
+}
+a.H26-black s {
+	background-position:	-730px 	-1170px;
+}
+a.H26-2D-black {
+	background-position:	-500px 	-1230px;
+}
+a.H26-2D-black s {
+	background-position:	-730px 	-1230px;
+}
+a.H26-black:hover,
+a.H26-2D-black:hover {
+	background-position:	-500px 	-1200px;
+}
+a.H26-black:hover s,
+a.H26-2D-black:hover s {
+	background-position:	-730px 	-1200px;
+}
+
+/*** 13.dark ***/
+a.H18-dark {
+	background-position:	0px 	-1260px;
+}
+a.H18-dark s {
+	background-position:	-230px 	-1260px;
+}
+a.H18-2D-dark {
+	background-position:	0px 	-1320px;;
+}
+a.H18-2D-dark s {
+	background-position:	-230px 	-1320px;
+}
+a.H18-dark:hover,
+a.H18-2D-dark:hover {
+	background-position:	0px 	-1290px;
+}
+a.H18-dark:hover s,
+a.H18-2D-dark:hover s {
+	background-position:	-230px 	-1290px;
+}
+
+a.H22-dark {
+	background-position:	-250px 	-1260px;
+}
+a.H22-dark s {
+	background-position:	-480px 	-1260px;
+}
+a.H22-2D-dark {
+	background-position:	-250px 	-1320px;
+}
+a.H22-2D-dark s {
+	background-position:	-480px 	-1320px;
+}
+a.H22-dark:hover,
+a.H22-2D-dark:hover {
+	background-position:	-250px 	-1290px;
+}
+a.H22-dark:hover s,
+a.H22-2D-dark:hover s {
+	background-position:	-480px 	-1290px;
+}
+
+a.H26-dark {
+	background-position:	-500px 	-1260px;
+}
+a.H26-dark s {
+	background-position:	-730px 	-1260px;
+}
+a.H26-2D-dark {
+	background-position:	-500px 	-1320px;
+}
+a.H26-2D-dark s {
+	background-position:	-730px 	-1320px;
+}
+a.H26-dark:hover,
+a.H26-2D-dark:hover {
+	background-position:	-500px 	-1290px;
+}
+a.H26-dark:hover s,
+a.H26-2D-dark:hover s {
+	background-position:	-730px 	-1290px;
+}
+
+/*** 14.orange ***/
+a.H18-orange {
+	background-position:	0px 	-1350px;
+}
+a.H18-orange s {
+	background-position:	-230px 	-1350px;
+}
+a.H18-2D-orange {
+	background-position:	0px 	-1410px;;
+}
+a.H18-2D-orange s {
+	background-position:	-230px 	-1410px;
+}
+a.H18-orange:hover,
+a.H18-2D-orange:hover {
+	background-position:	0px 	-1380px;
+}
+a.H18-orange:hover s,
+a.H18-2D-orange:hover s {
+	background-position:	-230px 	-1380px;
+}
+
+a.H22-orange {
+	background-position:	-250px 	-1350px;
+}
+a.H22-orange s {
+	background-position:	-480px 	-1350px;
+}
+a.H22-2D-orange {
+	background-position:	-250px 	-1410px;
+}
+a.H22-2D-orange s {
+	background-position:	-480px 	-1410px;
+}
+a.H22-orange:hover,
+a.H22-2D-orange:hover {
+	background-position:	-250px 	-1380px;
+}
+a.H22-orange:hover s,
+a.H22-2D-orange:hover s {
+	background-position:	-480px 	-1380px;
+}
+
+a.H26-orange {
+	background-position:	-500px 	-1350px;
+}
+a.H26-orange s {
+	background-position:	-730px 	-1350px;
+}
+a.H26-2D-orange {
+	background-position:	-500px 	-1410px;
+}
+a.H26-2D-orange s {
+	background-position:	-730px 	-1410px;
+}
+a.H26-orange:hover,
+a.H26-2D-orange:hover {
+	background-position:	-500px 	-1380px;
+}
+a.H26-orange:hover s,
+a.H26-2D-orange:hover s {
+	background-position:	-730px 	-1380px;
+}
+
+/*** 15.awesome ***/
+a.H18-awesome {
+	background-position:	0px 	-1440px;
+}
+a.H18-awesome s {
+	background-position:	-230px 	-1440px;
+}
+a.H18-2D-awesome {
+	background-position:	0px 	-1500px;;
+}
+a.H18-2D-awesome s {
+	background-position:	-230px 	-1500px;
+}
+a.H18-awesome:hover,
+a.H18-2D-awesome:hover {
+	background-position:	0px 	-1470px;
+}
+a.H18-awesome:hover s,
+a.H18-2D-awesome:hover s {
+	background-position:	-230px 	-1470px;
+}
+
+a.H22-awesome {
+	background-position:	-250px 	-1440px;
+}
+a.H22-awesome s {
+	background-position:	-480px 	-1440px;
+}
+a.H22-2D-awesome {
+	background-position:	-250px 	-1500px;
+}
+a.H22-2D-awesome s {
+	background-position:	-480px 	-1500px;
+}
+a.H22-awesome:hover,
+a.H22-2D-awesome:hover {
+	background-position:	-250px 	-1470px;
+}
+a.H22-awesome:hover s,
+a.H22-2D-awesome:hover s {
+	background-position:	-480px 	-1470px;
+}
+
+a.H26-awesome {
+	background-position:	-500px 	-1440px;
+}
+a.H26-awesome s {
+	background-position:	-730px 	-1440px;
+}
+a.H26-2D-awesome {
+	background-position:	-500px 	-1500px;
+}
+a.H26-2D-awesome s {
+	background-position:	-730px 	-1500px;
+}
+a.H26-awesome:hover,
+a.H26-2D-awesome:hover {
+	background-position:	-500px 	-1470px;
+}
+a.H26-awesome:hover s,
+a.H26-2D-awesome:hover s {
+	background-position:	-730px 	-1470px;
+}
+
+/*** 16.blue ***/
+a.H18-blue {
+	background-position:	0px 	-1530px;
+}
+a.H18-blue s {
+	background-position:	-230px 	-1530px;
+}
+a.H18-2D-blue {
+	background-position:	0px 	-1590px;;
+}
+a.H18-2D-blue s {
+	background-position:	-230px 	-1590px;
+}
+a.H18-blue:hover,
+a.H18-2D-blue:hover {
+	background-position:	0px 	-1560px;
+}
+a.H18-blue:hover s,
+a.H18-2D-blue:hover s {
+	background-position:	-230px 	-1560px;
+}
+
+a.H22-blue {
+	background-position:	-250px 	-1530px;
+}
+a.H22-blue s {
+	background-position:	-480px 	-1530px;
+}
+a.H22-2D-blue {
+	background-position:	-250px 	-1590px;
+}
+a.H22-2D-blue s {
+	background-position:	-480px 	-1590px;
+}
+a.H22-blue:hover,
+a.H22-2D-blue:hover {
+	background-position:	-250px 	-1560px;
+}
+a.H22-blue:hover s,
+a.H22-2D-blue:hover s {
+	background-position:	-480px 	-1560px;
+}
+
+a.H26-blue {
+	background-position:	-500px 	-1530px;
+}
+a.H26-blue s {
+	background-position:	-730px 	-1530px;
+}
+a.H26-2D-blue {
+	background-position:	-500px 	-1590px;
+}
+a.H26-2D-blue s {
+	background-position:	-730px 	-1590px;
+}
+a.H26-blue:hover,
+a.H26-2D-blue:hover {
+	background-position:	-500px 	-1560px;
+}
+a.H26-blue:hover s,
+a.H26-2D-blue:hover s {
+	background-position:	-730px 	-1560px;
+}
+
+/*** 17.neon ***/
+a.H18-neon {
+	background-position:	0px 	-1620px;
+}
+a.H18-neon s {
+	background-position:	-230px 	-1620px;
+}
+a.H18-2D-neon {
+	background-position:	0px 	-1680px;;
+}
+a.H18-2D-neon s {
+	background-position:	-230px 	-1680px;
+}
+a.H18-neon:hover,
+a.H18-2D-neon:hover {
+	background-position:	0px 	-1650px;
+}
+a.H18-neon:hover s,
+a.H18-2D-neon:hover s {
+	background-position:	-230px 	-1650px;
+}
+
+a.H22-neon {
+	background-position:	-250px 	-1620px;
+}
+a.H22-neon s {
+	background-position:	-480px 	-1620px;
+}
+a.H22-2D-neon {
+	background-position:	-250px 	-1680px;
+}
+a.H22-2D-neon s {
+	background-position:	-480px 	-1680px;
+}
+a.H22-neon:hover,
+a.H22-2D-neon:hover {
+	background-position:	-250px 	-1650px;
+}
+a.H22-neon:hover s,
+a.H22-2D-neon:hover s {
+	background-position:	-480px 	-1650px;
+}
+
+a.H26-neon {
+	background-position:	-500px 	-1620px;
+}
+a.H26-neon s {
+	background-position:	-730px 	-1620px;
+}
+a.H26-2D-neon {
+	background-position:	-500px 	-1680px;
+}
+a.H26-2D-neon s {
+	background-position:	-730px 	-1680px;
+}
+a.H26-neon:hover,
+a.H26-2D-neon:hover {
+	background-position:	-500px 	-1650px;
+}
+a.H26-neon:hover s,
+a.H26-2D-neon:hover s {
+	background-position:	-730px 	-1650px;
+}
+
+/*** 18.phlox ***/
+a.H18-phlox {
+	background-position:	0px 	-1710px;
+}
+a.H18-phlox s {
+	background-position:	-230px 	-1710px;
+}
+a.H18-2D-phlox {
+	background-position:	0px 	-1770px;;
+}
+a.H18-2D-phlox s {
+	background-position:	-230px 	-1770px;
+}
+a.H18-phlox:hover,
+a.H18-2D-phlox:hover {
+	background-position:	0px 	-1740px;
+}
+a.H18-phlox:hover s,
+a.H18-2D-phlox:hover s {
+	background-position:	-230px 	-1740px;
+}
+
+a.H22-phlox {
+	background-position:	-250px 	-1710px;
+}
+a.H22-phlox s {
+	background-position:	-480px 	-1710px;
+}
+a.H22-2D-phlox {
+	background-position:	-250px 	-1770px;
+}
+a.H22-2D-phlox s {
+	background-position:	-480px 	-1770px;
+}
+a.H22-phlox:hover,
+a.H22-2D-phlox:hover {
+	background-position:	-250px 	-1740px;
+}
+a.H22-phlox:hover s,
+a.H22-2D-phlox:hover s {
+	background-position:	-480px 	-1740px;
+}
+
+a.H26-phlox {
+	background-position:	-500px 	-1710px;
+}
+a.H26-phlox s {
+	background-position:	-730px 	-1710px;
+}
+a.H26-2D-phlox {
+	background-position:	-500px 	-1770px;
+}
+a.H26-2D-phlox s {
+	background-position:	-730px 	-1770px;
+}
+a.H26-phlox:hover,
+a.H26-2D-phlox:hover {
+	background-position:	-500px 	-1740px;
+}
+a.H26-phlox:hover s,
+a.H26-2D-phlox:hover s {
+	background-position:	-730px 	-1740px;
+}
+
+/*** 19.brown ***/
+a.H18-brown {
+	background-position:	0px 	-1800px;
+}
+a.H18-brown s {
+	background-position:	-230px 	-1800px;
+}
+a.H18-2D-brown {
+	background-position:	0px 	-1860px;;
+}
+a.H18-2D-brown s {
+	background-position:	-230px 	-1860px;
+}
+a.H18-brown:hover,
+a.H18-2D-brown:hover {
+	background-position:	0px 	-1830px;
+}
+a.H18-brown:hover s,
+a.H18-2D-brown:hover s {
+	background-position:	-230px 	-1830px;
+}
+
+a.H22-brown {
+	background-position:	-250px 	-1800px;
+}
+a.H22-brown s {
+	background-position:	-480px 	-1800px;
+}
+a.H22-2D-brown {
+	background-position:	-250px 	-1860px;
+}
+a.H22-2D-brown s {
+	background-position:	-480px 	-1860px;
+}
+a.H22-brown:hover,
+a.H22-2D-brown:hover {
+	background-position:	-250px 	-1830px;
+}
+a.H22-brown:hover s,
+a.H22-2D-brown:hover s {
+	background-position:	-480px 	-1830px;
+}
+
+a.H26-brown {
+	background-position:	-500px 	-1800px;
+}
+a.H26-brown s {
+	background-position:	-730px 	-1800px;
+}
+a.H26-2D-brown {
+	background-position:	-500px 	-1860px;
+}
+a.H26-2D-brown s {
+	background-position:	-730px 	-1860px;
+}
+a.H26-brown:hover,
+a.H26-2D-brown:hover {
+	background-position:	-500px 	-1830px;
+}
+a.H26-brown:hover s,
+a.H26-2D-brown:hover s {
+	background-position:	-730px 	-1830px;
+}
+
+/*** 20.portland ***/
+a.H18-portland {
+	background-position:	0px 	-1890px;
+}
+a.H18-portland s {
+	background-position:	-230px 	-1890px;
+}
+a.H18-2D-portland {
+	background-position:	0px 	-1950px;;
+}
+a.H18-2D-portland s {
+	background-position:	-230px 	-1950px;
+}
+a.H18-portland:hover,
+a.H18-2D-portland:hover {
+	background-position:	0px 	-1920px;
+}
+a.H18-portland:hover s,
+a.H18-2D-portland:hover s {
+	background-position:	-230px 	-1920px;
+}
+
+a.H22-portland {
+	background-position:	-250px 	-1890px;
+}
+a.H22-portland s {
+	background-position:	-480px 	-1890px;
+}
+a.H22-2D-portland {
+	background-position:	-250px 	-1950px;
+}
+a.H22-2D-portland s {
+	background-position:	-480px 	-1950px;
+}
+a.H22-portland:hover,
+a.H22-2D-portland:hover {
+	background-position:	-250px 	-1920px;
+}
+a.H22-portland:hover s,
+a.H22-2D-portland:hover s {
+	background-position:	-480px 	-1920px;
+}
+
+a.H26-portland {
+	background-position:	-500px 	-1890px;
+}
+a.H26-portland s {
+	background-position:	-730px 	-1890px;
+}
+a.H26-2D-portland {
+	background-position:	-500px 	-1950px;
+}
+a.H26-2D-portland s {
+	background-position:	-730px 	-1950px;
+}
+a.H26-portland:hover,
+a.H26-2D-portland:hover {
+	background-position:	-500px 	-1920px;
+}
+a.H26-portland:hover s,
+a.H26-2D-portland:hover s {
+	background-position:	-730px 	-1920px;
+}
+
+/*** 21.sea ***/
+a.H18-sea {
+	background-position:	0px 	-1980px;
+}
+a.H18-sea s {
+	background-position:	-230px 	-1980px;
+}
+a.H18-2D-sea {
+	background-position:	0px 	-2040px;;
+}
+a.H18-2D-sea s {
+	background-position:	-230px 	-2040px;
+}
+a.H18-sea:hover,
+a.H18-2D-sea:hover {
+	background-position:	0px 	-2010px;
+}
+a.H18-sea:hover s,
+a.H18-2D-sea:hover s {
+	background-position:	-230px 	-2010px;
+}
+
+a.H22-sea {
+	background-position:	-250px 	-1980px;
+}
+a.H22-sea s {
+	background-position:	-480px 	-1980px;
+}
+a.H22-2D-sea {
+	background-position:	-250px 	-2040px;
+}
+a.H22-2D-sea s {
+	background-position:	-480px 	-2040px;
+}
+a.H22-sea:hover,
+a.H22-2D-sea:hover {
+	background-position:	-250px 	-2010px;
+}
+a.H22-sea:hover s,
+a.H22-2D-sea:hover s {
+	background-position:	-480px 	-2010px;
+}
+
+a.H26-sea {
+	background-position:	-500px 	-1980px;
+}
+a.H26-sea s {
+	background-position:	-730px 	-1980px;
+}
+a.H26-2D-sea {
+	background-position:	-500px 	-2040px;
+}
+a.H26-2D-sea s {
+	background-position:	-730px 	-2040px;
+}
+a.H26-sea:hover,
+a.H26-2D-sea:hover {
+	background-position:	-500px 	-2010px;
+}
+a.H26-sea:hover s,
+a.H26-2D-sea:hover s {
+	background-position:	-730px 	-2010px;
+}
+
+/*** 22.lime ***/
+a.H18-lime {
+	background-position:	0px 	-2070px;
+}
+a.H18-lime s {
+	background-position:	-230px 	-2070px;
+}
+a.H18-2D-lime {
+	background-position:	0px 	-2130px;;
+}
+a.H18-2D-lime s {
+	background-position:	-230px 	-2130px;
+}
+a.H18-lime:hover,
+a.H18-2D-lime:hover {
+	background-position:	0px 	-2100px;
+}
+a.H18-lime:hover s,
+a.H18-2D-lime:hover s {
+	background-position:	-230px 	-2100px;
+}
+
+a.H22-lime {
+	background-position:	-250px 	-2070px;
+}
+a.H22-lime s {
+	background-position:	-480px 	-2070px;
+}
+a.H22-2D-lime {
+	background-position:	-250px 	-2130px;
+}
+a.H22-2D-lime s {
+	background-position:	-480px 	-2130px;
+}
+a.H22-lime:hover,
+a.H22-2D-lime:hover {
+	background-position:	-250px 	-2100px;
+}
+a.H22-lime:hover s,
+a.H22-2D-lime:hover s {
+	background-position:	-480px 	-2100px;
+}
+
+a.H26-lime {
+	background-position:	-500px 	-2070px;
+}
+a.H26-lime s {
+	background-position:	-730px 	-2070px;
+}
+a.H26-2D-lime {
+	background-position:	-500px 	-2130px;
+}
+a.H26-2D-lime s {
+	background-position:	-730px 	-2130px;
+}
+a.H26-lime:hover,
+a.H26-2D-lime:hover {
+	background-position:	-500px 	-2100px;
+}
+a.H26-lime:hover s,
+a.H26-2D-lime:hover s {
+	background-position:	-730px 	-2100px;
+}
+
+/*** 23.earth ***/
+a.H18-earth {
+	background-position:	0px 	-2160px;
+}
+a.H18-earth s {
+	background-position:	-230px 	-2160px;
+}
+a.H18-2D-earth {
+	background-position:	0px 	-2220px;;
+}
+a.H18-2D-earth s {
+	background-position:	-230px 	-2220px;
+}
+a.H18-earth:hover,
+a.H18-2D-earth:hover {
+	background-position:	0px 	-2190px;
+}
+a.H18-earth:hover s,
+a.H18-2D-earth:hover s {
+	background-position:	-230px 	-2190px;
+}
+
+a.H22-earth {
+	background-position:	-250px 	-2160px;
+}
+a.H22-earth s {
+	background-position:	-480px 	-2160px;
+}
+a.H22-2D-earth {
+	background-position:	-250px 	-2220px;
+}
+a.H22-2D-earth s {
+	background-position:	-480px 	-2220px;
+}
+a.H22-earth:hover,
+a.H22-2D-earth:hover {
+	background-position:	-250px 	-2190px;
+}
+a.H22-earth:hover s,
+a.H22-2D-earth:hover s {
+	background-position:	-480px 	-2190px;
+}
+
+a.H26-earth {
+	background-position:	-500px 	-2160px;
+}
+a.H26-earth s {
+	background-position:	-730px 	-2160px;
+}
+a.H26-2D-earth {
+	background-position:	-500px 	-2220px;
+}
+a.H26-2D-earth s {
+	background-position:	-730px 	-2220px;
+}
+a.H26-earth:hover,
+a.H26-2D-earth:hover {
+	background-position:	-500px 	-2190px;
+}
+a.H26-earth:hover s,
+a.H26-2D-earth:hover s {
+	background-position:	-730px 	-2190px;
+}
+
+/*** 24.peridot ***/
+a.H18-peridot {
+	color:					#333333;
+	background-position:	0px 	-2250px;
+}
+a.H18-peridot s {
+	background-position:	-230px 	-2250px;
+}
+a.H18-2D-peridot {
+	color:					#333333;
+	background-position:	0px 	-2310px;;
+}
+a.H18-2D-peridot s {
+	background-position:	-230px 	-2310px;
+}
+a.H18-peridot:hover,
+a.H18-2D-peridot:hover {
+	background-position:	0px 	-2280px;
+}
+a.H18-peridot:hover s,
+a.H18-2D-peridot:hover s {
+	background-position:	-230px 	-2280px;
+}
+
+a.H22-peridot {
+	color:					#333333;
+	background-position:	-250px 	-2250px;
+}
+a.H22-peridot s {
+	background-position:	-480px 	-2250px;
+}
+a.H22-2D-peridot {
+	color:					#333333;
+	background-position:	-250px 	-2310px;
+}
+a.H22-2D-peridot s {
+	background-position:	-480px 	-2310px;
+}
+a.H22-peridot:hover,
+a.H22-2D-peridot:hover {
+	background-position:	-250px 	-2280px;
+}
+a.H22-peridot:hover s,
+a.H22-2D-peridot:hover s {
+	background-position:	-480px 	-2280px;
+}
+
+a.H26-peridot {
+	color:					#333333;
+	background-position:	-500px 	-2250px;
+}
+a.H26-peridot s {
+	background-position:	-730px 	-2250px;
+}
+a.H26-2D-peridot {
+	color:					#333333;
+	background-position:	-500px 	-2310px;
+}
+a.H26-2D-peridot s {
+	background-position:	-730px 	-2310px;
+}
+a.H26-peridot:hover,
+a.H26-2D-peridot:hover {
+	background-position:	-500px 	-2280px;
+}
+a.H26-peridot:hover s,
+a.H26-2D-peridot:hover s {
+	background-position:	-730px 	-2280px;
+}
+
+/*** 25.gold ***/
+a.H18-gold {
+	color:					#333333;
+	background-position:	0px 	-2340px;
+}
+a.H18-gold s {
+	background-position:	-230px 	-2340px;
+}
+a.H18-2D-gold {
+	color:					#333333;
+	background-position:	0px 	-2400px;;
+}
+a.H18-2D-gold s {
+	background-position:	-230px 	-2400px;
+}
+a.H18-gold:hover,
+a.H18-2D-gold:hover {
+	background-position:	0px 	-2370px;
+}
+a.H18-gold:hover s,
+a.H18-2D-gold:hover s {
+	background-position:	-230px 	-2370px;
+}
+
+a.H22-gold {
+	color:					#333333;
+	background-position:	-250px 	-2340px;
+}
+a.H22-gold s {
+	background-position:	-480px 	-2340px;
+}
+a.H22-2D-gold {
+	color:					#333333;
+	background-position:	-250px 	-2400px;
+}
+a.H22-2D-gold s {
+	background-position:	-480px 	-2400px;
+}
+a.H22-gold:hover,
+a.H22-2D-gold:hover {
+	background-position:	-250px 	-2370px;
+}
+a.H22-gold:hover s,
+a.H22-2D-gold:hover s {
+	background-position:	-480px 	-2370px;
+}
+
+a.H26-gold {
+	color:					#333333;
+	background-position:	-500px 	-2340px;
+}
+a.H26-gold s {
+	background-position:	-730px 	-2340px;
+}
+a.H26-2D-gold {
+	color:					#333333;
+	background-position:	-500px 	-2400px;
+}
+a.H26-2D-gold s {
+	background-position:	-730px 	-2400px;
+}
+a.H26-gold:hover,
+a.H26-2D-gold:hover {
+	background-position:	-500px 	-2370px;
+}
+a.H26-gold:hover s,
+a.H26-2D-gold:hover s {
+	background-position:	-730px 	-2370px;
+}
+
+
+
+
+/*** disable button ***/
+a.H18-disable,
+a.H18-2D-disable {
+	line-height:			22px;
+	color:					#666666;
+	background-position:	0px 	-60px;
+}
+a.H18-disable s,
+a.H18-2D-disable s {
+	background-position:	-230px	-60px;
+}
+a.H18-disable:hover,
+a.H18-2D-disable:hover {
+	background-position:	0px	-60px;
+}
+a.H18-disable:hover s,
+a.H18-2D-disable:hover s {
+	background-position:	-230px	-60px;
+}
+
+a.H22-disable,
+a.H22-2D-disable {
+	line-height:			26px;
+	color:					#666666;
+	background-position:	-250px 	-60px;
+}
+a.H22-disable s,
+a.H22-2D-disable s {
+	background-position:	-480px	-60px;
+}
+a.H22-disable:hover,
+a.H22-2D-disable:hover {
+	background-position:	-250px	-60px;
+}
+a.H22-disable:hover s,
+a.H22-2D-disable:hover s {
+	background-position:	-480px	-60px;
+}
+
+a.H26-disable,
+a.H26-2D-disable {
+	line-height:			30px;
+	color:					#666666;
+	background-position:	-500px 	-60px;
+}
+a.H26-disable s,
+a.H26-2D-disable s {
+	background-position:	-730px	-60px;
+}
+a.H26-disable:hover,
+a.H26-2D-disable:hover {
+	background-position:	-500px	-60px;
+}
+a.H26-disable:hover s,
+a.H26-2D-disable:hover s {
+	background-position:	-730px	-60px;
+}

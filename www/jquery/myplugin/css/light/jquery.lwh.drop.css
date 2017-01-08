@@ -1,0 +1,238 @@
+s.lwhDrop {
+	position:		relative;
+	display:		inline-block;
+	
+	height:			24px;
+	padding-left:	12px;
+	margin-right:	26px;
+	
+	background-image:		url(image/button/lwhDrop-allpng.png);
+	background-position:	0px 0px;
+	background-repeat:		no-repeat;
+
+	border:					0px solid blue;
+	
+	vertical-align:			middle;
+	text-decoration:		none;
+}
+
+s.lwhDrop span.lwhDrop-span {
+	position: 		relative;
+	display:		inline-block;
+	height:			24px;
+	line-height:	24px;
+	text-align:		center;
+
+	padding-left:	4px;
+	padding-right:	4px;
+	border:			0px solid red;
+	
+	color:			#eeeeee;
+	font-size:		12px;
+}
+
+s.lwhDrop s.lwhDrop-s {
+	position:		absolute;
+	top:			0px;
+	left:			100%;
+	
+	display:		inline-block;
+	width:			24px;
+	height:			100%;
+	
+	background-image:		url(image/button/lwhDrop-allpng.png);
+	background-position:	-219px 0px;
+	background-repeat:		no-repeat;
+
+	vertical-align:	middle;
+}
+
+
+
+s.lwhDrop span.lwhDrop-span-hover {
+	background-color:	#4BAFDE;	/* #5d8aa8; */
+}
+
+
+
+div.lwhDrop-div {
+	position:		absolute;
+	display:		none;
+	
+	width:			120px;
+	/* height:			200px; */
+	
+	background-color:   #4BAFDE;   /* #5d8aa8; */
+
+	border-top:			0px;
+	border-bottom:		1px solid #3787ad;  /*  #1c9edb */
+	border-left:		1px solid #3787ad;
+	border-right:		1px solid #3787ad;
+	border-radius:		0px 0px 5px 5px;
+	box-shadow:			2px 2px 2px #000000;
+	/* For IE 8 */
+	-ms-filter: 		progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000');
+	/** For IE 5.5 - 7 */
+	filter: 			progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000');
+
+	padding:			5px 2px 2px 3px;
+	z-index:			1999;
+}
+
+div.lwhDrop-white {
+	position:			relative;
+	width:				100%;
+	height:				100%;
+	background-color:	#ffffff;
+	
+	border-radius:		2px 2px 2px 2px;
+	
+	overflow-x:			hidden;
+	overflow-y:			auto;
+}
+
+div.lwhDrop-ban { 
+	position:				relative;
+	display:				block;
+	margin:					2px;
+	height:					18px;
+	line-height:			18px;
+	text-align:				center;
+	font-size:				12px;
+	color:					#ffffff;
+	background-color:		#FE703E;
+}
+
+ul.lwhDrop-items {
+	padding: 	0px;
+	margin:		0px;
+	list-style:	none;
+}
+
+li.lwhDrop-item {
+	display:		block;
+	width:			100%;
+	cursor:			pointer;
+
+	color:			#4096BE;
+	border-bottom: 	1px solid #999999;
+	padding:		5px 5px 5px 20px;
+}
+
+li.lwhDrop-item:hover,
+li.lwhDrop-itemHover  {
+	color:				blue;
+	background-color:	#cccccc;
+}
+
+/*** 1. Orange ***/
+s.lwhDrop-orange {
+	background-position:	0px 0px;
+}
+s.lwhDrop-orange s.lwhDrop-s { 
+	background-position:	-219px 0px;
+}
+div.lwhDrop-ban-orange {
+	background-color:		#FE703E;
+}
+
+/*** 2. green ***/
+s.lwhDrop-green {
+	background-position:	0px 	-30px;
+}
+a.lwhDrop-green s.lwhDrop-s { 
+	background-position:	-219px 	-30px;
+}
+div.lwhDrop-ban-green {
+	background-color:		#3EB489;
+}
+
+/*** 3. red ***/
+s.lwhDrop-red {
+	background-position:	0px 	-60px;
+}
+s.lwhDrop-red s.lwhDrop-s { 
+	background-position:	-219px 	-60px;
+}
+div.lwhDrop-ban-red {
+	background-color:		#C71585;
+}
+
+/*** 4. brown ***/
+s.lwhDrop-brown {
+	background-position:	0px 	-90px;
+}
+s.lwhDrop-brown s.lwhDrop-s { 
+	background-position:	-219px 	-90px;
+}
+div.lwhDrop-ban-brown {
+	background-color:		#D2691E;
+}
+
+/*** 5. coffee ***/
+s.lwhDrop-coffee {
+	background-position:	0px 	-120px;
+}
+s.lwhDrop-coffee s.lwhDrop-s { 
+	background-position:	-219px 	-120px;
+}
+div.lwhDrop-ban-coffee {
+	background-color:		#996666;
+}
+
+/*** 6. blue ***/
+s.lwhDrop-blue {
+	background-position:	0px 	-150px;
+}
+s.lwhDrop-blue s.lwhDrop-s { 
+	background-position:	-219px 	-150px;
+}
+div.lwhDrop-ban-blue {
+	background-color:		#1E90FF;
+}
+
+/*** 7. tan ***/
+s.lwhDrop-tan {
+	background-position:	0px 	-180px;
+}
+s.lwhDrop-tan s.lwhDrop-s { 
+	background-position:	-219px 	-180px;
+}
+div.lwhDrop-ban-tan {
+	background-color:		#C19A6B;
+}
+
+/*** 8. gold ***/
+s.lwhDrop-gold {
+	background-position:	0px 	-210px;
+}
+s.lwhDrop-gold s.lwhDrop-s { 
+	background-position:	-219px 	-210px;
+}
+div.lwhDrop-ban-gold {
+	background-color:		#FFA343;
+}
+
+/*** 9. pink ***/
+s.lwhDrop-pink {
+	background-position:	0px 	-240px;
+}
+s.lwhDrop-pink s.lwhDrop-s { 
+	background-position:	-219px 	-240px;
+}
+div.lwhDrop-ban-pink {
+	background-color:		#FE59C2;
+}
+
+/*** 10. grey ***/
+s.lwhDrop-grey {
+	background-position:	0px 	-270px;
+}
+s.lwhDrop-grey s.lwhDrop-s { 
+	background-position:	-219px 	-270px;
+}
+div.lwhDrop-ban-grey {
+	background-color:		#708090;
+}
+
+

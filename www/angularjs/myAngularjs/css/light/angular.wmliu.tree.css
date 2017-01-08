@@ -1,0 +1,256 @@
+/***  ul common ***/
+ul.wmliu-tree {
+	list-style-type:		none;
+	list-style-image:		none;
+	list-style-position:	outside;
+	margin:					0px;
+	padding:				0px;
+	padding-left:			20px;
+}
+/********************/
+
+/***  li common ***/
+/***  li vertical through line |  L ***/
+ul.wmliu-tree > li {
+    cursor:					default;
+	padding: 				0px;
+	vertical-align:			middle;
+	white-space:			nowrap;
+
+	background-color:		#ffffff;
+	background-position: 	0px 0px;
+
+	background-repeat:		repeat-y; 
+	background-image:		url(image/wmliu.tree/wmliu-tree-vline.png);
+}
+
+ul.wmliu-tree > li > span {
+    vertical-align:         middle;
+}
+
+ul.wmliu-tree > li:last-child {
+	background-repeat:		no-repeat; 
+	background-image:		url(image/wmliu.tree/wmliu-tree-vline-last.png);
+}
+/********************/
+
+
+/***  li horizontal line for node |- L ***/
+ul.wmliu-tree > li > s {
+	cursor:					pointer;
+	display: 				inline-block;
+	vertical-align:			middle;
+
+	background-color:		#ffffff;
+	background-repeat:		no-repeat; 
+	background-position: 	center center;
+}
+
+ul.wmliu-tree > li > s.line {
+	width:	 				20px;
+	height:					20px;
+
+	background-image:		url(image/wmliu.tree/wmliu-tree-hline.png);
+}
+
+ul.wmliu-tree > li:last-child > s.line  {
+	background-image:		url(image/wmliu.tree/wmliu-tree-hline-last.png);
+}
+
+ul.wmliu-tree > li.nodes > s.line {
+	background-image:		url(image/wmliu.tree/wmliu-tree-hline-close.png);
+}
+
+ul.wmliu-tree > li.nodes:last-child > s.line {
+	background-image:		url(image/wmliu.tree/wmliu-tree-hline-last-close.png);
+}
+
+ul.wmliu-tree > li.nodes > s.line-open {
+	background-image:		url(image/wmliu.tree/wmliu-tree-hline-open.png);
+}
+
+ul.wmliu-tree > li.nodes:last-child > s.line-open {
+	background-image:		url(image/wmliu.tree/wmliu-tree-hline-last-open.png);
+}
+
+/*** here nochild case*/
+ul.wmliu-tree > li.nodes-nochild > s.line {
+	background-image:		url(image/wmliu.tree/wmliu-tree-hline.png);
+}
+
+ul.wmliu-tree > li.nodes-nochild:last-child > s.line {
+	background-image:		url(image/wmliu.tree/wmliu-tree-hline-last.png);
+}
+
+ul.wmliu-tree > li.nodes-nochild > s.line-open {
+	background-image:		url(image/wmliu.tree/wmliu-tree-hline.png);
+}
+
+ul.wmliu-tree > li.nodes-nochild:last-child > s.line-open {
+	background-image:		url(image/wmliu.tree/wmliu-tree-hline-last.png);
+}
+/********************/
+
+/*** s img default ***/
+ul.wmliu-tree > li > s.img {
+	width:	 				20px;
+	height:					20px;
+	background-image:		url(image/wmliu.tree/wmliu-tree-node.png);
+}
+
+ul.wmliu-tree > li.nodes > s.img {
+	background-image:		url(image/wmliu.tree/wmliu-tree-nodes.png);
+}
+
+ul.wmliu-tree > li.nodes > s.img-open {
+	background-image:		url(image/wmliu.tree/wmliu-tree-nodes-open.png);
+}
+
+ul.wmliu-tree > li.tttable > s.img {
+	background-image:		url(image/wmliu.tree/wmliu-tree-tt-nodes.png);
+}
+
+ul.wmliu-tree > li.tttable > s.img-open {
+	background-image:		url(image/wmliu.tree/wmliu-tree-tt-nodes-open.png);
+}
+
+ul.wmliu-tree > li >        s.node-selected-img {
+	width:	 				20px;
+	height:					20px;
+    display:                none;
+	background-image:		url(image/wmliu.tree/wmliu-tree-node-selected.png);
+}
+
+ul.wmliu-tree > li.selected > s.node-selected-img {
+    display:                inline-block;
+}
+/********************/
+
+
+
+/*** s other image here  type="user"  ***/
+ul.wmliu-tree > li > s.imguser {
+	background-image:		url(image/wmliu.tree/wmliu-tree-user.png);
+}
+
+ul.wmliu-tree > li.nodes > s.imguser {
+	background-image:		url(image/wmliu.tree/wmliu-tree-users.png);
+}
+
+ul.wmliu-tree > li.nodes > s.imguser-open {
+	background-image:		url(image/wmliu.tree/wmliu-tree-users-open.png);
+}
+/********************/
+
+/*** s custom image here  type="option" ***/
+ul.wmliu-tree > li > s.imgoption {
+	background-image:		url(image/wmliu.tree/wmliu-tree-option-user.png);
+}
+ul.wmliu-tree > li > s.imgoptionmale {
+	background-image:		url(image/wmliu.tree/wmliu-tree-option-gender-1.png);
+}
+ul.wmliu-tree > li > s.imgoptionfemale {
+	background-image:		url(image/wmliu.tree/wmliu-tree-option-gender-2.png);
+}
+ul.wmliu-tree > li > s.imgoptionvolunteer {
+	background-image:		url(image/wmliu.tree/wmliu-tree-option-volunteer-1.png);
+}
+ul.wmliu-tree > li > s.imgoptionvolunteer1 {
+	background-image:		url(image/wmliu.tree/wmliu-tree-option-volunteer-2.png);
+}
+ul.wmliu-tree > li.nodes > s.imgoption {
+	background-image:		url(image/wmliu.tree/wmliu-tree-users.png);
+}
+
+ul.wmliu-tree > li.nodes > s.imgoption-open {
+	background-image:		url(image/wmliu.tree/wmliu-tree-users-open.png);
+}
+/********************/
+
+
+
+/*** text lable ***/
+ul.wmliu-tree > li label.title {
+    cursor:                 pointer;
+}
+
+ul.wmliu-tree > li span.edit {
+    margin-left:            5px;
+}
+
+ul.wmliu-tree > li span.edit span.inputlabel {
+    color:                  #666666;
+    font-size:              0.8em;
+    vertical-align:         middle;
+}
+
+ul.wmliu-tree > li span.edit input.input {
+    font-size:              12px;
+    width:                  100px;
+    vertical-align:         middle;
+}
+
+ul.wmliu-tree > li span.edit input.checkbox {
+    vertical-align:         middle;
+}
+/********************/
+
+
+
+
+
+/*** node status ***/
+ul.wmliu-tree > li > s.wmliu-tree-nodestate,
+ul.wmliu-tree > li:last-child > s.wmliu-tree-nodestate {
+	position:	relative;
+	display:	inline-block;
+	width:		16px;
+	height:		16px;
+	
+	background-image:	url(image/wmliu.common/wmliu-common-state16.png);
+	background-repeat:	no-repeat;
+	vertical-align:		middle;
+    margin-left:        2px;
+    margin-right:       2px;
+}
+
+ul.wmliu-tree > li.nodes > s.wmliu-tree-nodestate {
+	position:	relative;
+	display:	inline-block;
+	width:		16px;
+	height:		16px;
+	
+	background-image:	url(image/wmliu.common/wmliu-common-state16.png);
+	background-repeat:	no-repeat;
+	vertical-align:		middle;
+    margin-left:        2px;
+    margin-right:       2px;
+}
+
+ul.wmliu-tree > li > s.wmliu-tree-nodestate-0 {
+	background-position:	-48px 0px;
+}
+
+ul.wmliu-tree > li > s.wmliu-tree-nodestate-1 {
+	background-position:	0px 0px;
+}
+
+ul.wmliu-tree > li > s.wmliu-tree-nodestate-2 {
+	background-position:	-32px 0px;
+}
+
+ul.wmliu-tree > li > s.wmliu-tree-nodestate-3 {
+	background-position:	-16px 0px;
+}
+
+
+ul.wmliu-tree  li span.edit span.wmliu-common-label-invalid {
+    color:              red;  
+}
+
+
+
+
+
+
+

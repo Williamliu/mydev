@@ -1,0 +1,55 @@
+div.wliu-popup {
+    display:            none;
+    position:           absolute;
+    border: 		    1px solid #cccccc;
+    box-shadow:		    1px 1px 5px #666666;
+    padding: 		    0px;
+    z-index:            9600;
+    background-color: #ffffff;
+    overflow:          visible;
+    
+    max-width:          50vw;
+    margin:             0px 12px 12px 12px;
+}
+
+div.wliu-popup div.wliu-popup-header {
+    display:            block;
+    position:           relative;
+    padding:            2px 5px;
+    color:              #ffffff;
+    background-color: #0099CC;
+    text-align:         center;
+    font-weight:        bold;
+    font-size:          0.8em;
+} 
+
+div.wliu-popup div.wliu-popup-content {
+    display:            block;
+    position:           relative;
+    padding:            5px;
+    background-color:   #ffffff;
+    text-align:         left;
+}
+
+div.wliu-popup-active {
+	display:					inline-block;
+	opacity:					1;
+    animation-name:             popupFadein;
+    animation-duration:         0.6s;
+    animation-timing-function:  cubic-bezier(0.735, 0.275, 0.220, 1);
+}
+
+
+
+
+@keyframes popupFadein {
+    from    { opacity: 0;}
+    to      { opacity: 1; }
+    /*
+    to      { opacity: 0.8; }
+    0%      { opacity: 0}
+    25%     { opacity: 0.1}
+    50%     { opacity: 0.2}
+    100%    { opacity: 0.6}
+    */
+}

@@ -1,0 +1,357 @@
+/*********** viewer **************************************************/
+div.lwhImageEditor {
+	display:				none;
+	position:               fixed;
+    
+	top:					50%;
+	left:					50%;
+	
+    background-color:       #ffffff;
+    border:                 0px solid #333333;
+  	border-radius:		    10px 10px 10px 10px;
+    padding:                10px 10px 10px 10px;
+}
+
+div.lwhImageEditor  div.lwhImageEditor-list {
+	position		relative;
+	border:			1px solid #dddddd;
+	border-radius:	5px;
+}
+
+div.lwhImageEditor  div.lwhImageEditor-list-v {
+	display:		inline-block;
+	min-width:		50px;
+	min-height:		120px;
+	padding:		2px 20px 2px 5px;
+
+	overflow-x:		hidden;
+	overflow-y: 	auto;
+}
+
+div.lwhImageEditor  div.lwhImageEditor-list-h {
+	display:		block;
+	min-width:		50px;
+	min-height:		50px;
+	padding:		2px 2px 2px 2px;
+
+	overflow-x:		auto;
+	overflow-y: 	hidden;
+		
+	white-space:    nowrap;
+}
+
+div.lwhImageEditor  div.lwhImageEditor-list-hv {
+	display:		block;
+	min-width:		50px;
+	min-height:		50px;
+	padding:		2px 2px 2px 2px;
+
+	overflow-x:		auto;
+	overflow-y: 	auto;
+}
+
+div.lwhImageEditor  div.lwhImageEditor-list div.lwhImageEditor-box {
+	position:		relative;
+	text-align:		center;
+	vertical-align:	middle;
+}
+
+div.lwhImageEditor  div.lwhImageEditor-list div.lwhImageEditor-box img {
+	border:			2px solid #666666;
+	border-radius:	5px;
+}
+
+div.lwhImageEditor  div.lwhImageEditor-list div.lwhImageEditor-box-selected img {
+	border:			2px solid red;
+
+}
+
+div.lwhImageEditor  div.lwhImageEditor-list div.lwhImageEditor-box-v {
+	display:		block;
+	margin-bottom:	5px;
+}
+
+div.lwhImageEditor  div.lwhImageEditor-list div.lwhImageEditor-box-h {
+	display:		inline-block;
+	margin:			5px;
+}
+
+div.lwhImageEditor  div.lwhImageEditor-list div.lwhImageEditor-box-hv {
+	display:		inline-block;
+	margin:			5px;
+}
+
+
+div.lwhImageEditor div.lwhImageEditor-content {
+	display:		inline-block; 
+	position:		relative;
+	min-width:		120px;
+	min-height:		120px;
+	padding:		0px;
+	text-align:		center;
+	border:			0px solid #dddddd;
+	white-space:	nowrap;
+	vertical-align:	middle; 
+}
+
+div.lwhImageEditor div.lwhImageEditor-content-v {
+	margin-left:	5px;
+}
+
+div.lwhImageEditor div.lwhImageEditor-content-h {
+	margin-bottom:	5px;
+}
+
+div.lwhImageEditor div.lwhImageEditor-content-hv {
+	margin-bottom:	5px;
+}
+
+div.lwhImageEditor-content-window {
+	display:		inline-block;
+	position:		relative;
+	border:			0px solid blue;
+}
+
+div.lwhImageEditor div.lwhImageEditor-content-view {
+	display:		inline-block; 
+	position:		relative;
+	border:			1px solid #666666;
+	border-radius:	2px;
+	overflow:		hidden;
+}
+
+
+
+
+/**** button *****/
+div.lwhImageEditor-content a.lwhImageEditor-btn-delete {
+	display:				none;
+	position:				absolute;
+	width:					24px; 
+	height:					24px; 
+	top:					4px;
+	left:					2px;
+	opacity:				1;
+	
+    background-image:       url(image/common/icon/lwhCommon-imagebox.png);
+	background-position:	-24px 0px;
+	background-repeat:		no-repeat;
+	z-index:				199;
+}
+
+div.lwhImageEditor-content:hover a.lwhImageEditor-btn-delete {
+	display:		block;
+}
+
+div.lwhImageEditor-content a.lwhImageEditor-btn-reset {
+	display:				none;
+	position:				absolute;
+	width:					24px; 
+	height:					24px; 
+	top:					30px;
+	left:					2px;
+	opacity:				1;
+	
+    background-image:       url(image/common/icon/lwhCommon-imagebox.png);
+	background-position:	-96px 0px;
+	background-repeat:		no-repeat;
+	z-index:				199;
+}
+
+div.lwhImageEditor-content:hover a.lwhImageEditor-btn-reset {
+	display:		block;
+}
+
+
+div.lwhImageEditor-content a.lwhImageEditor-btn-edit {
+	display:				none;
+	position:				absolute;
+	width:					24px; 
+	height:					24px; 
+	top:					56px;
+	left:					2px;
+	opacity:				1;
+	
+    background-image:       url(image/common/icon/lwhCommon-imagebox.png);
+	background-position:	0px 0px;
+	background-repeat:		no-repeat;
+	z-index:				199;
+}
+
+div.lwhImageEditor-content:hover a.lwhImageEditor-btn-edit {
+	display:		block;
+}
+
+
+
+div.lwhImageEditor-content a.lwhImageEditor-btn-crop {
+	display:				none;
+	position:				absolute;
+	width:					24px; 
+	height:					24px; 
+	top:					82px;
+	left:					2px;
+	opacity:				1;
+	
+    background-image:       url(image/common/icon/lwhCommon-imagebox.png);
+	background-position:	-48px 0px;
+	background-repeat:		no-repeat;
+	z-index:				199;
+}
+
+div.lwhImageEditor-content:hover a.lwhImageEditor-btn-crop {
+	display:		block;
+}
+
+
+div.lwhImageEditor-content a.lwhImageEditor-btn-crop-cut {
+	background-position:	-72px 0px;
+}
+
+div.lwhImageEditor-content:hover a.lwhImageEditor-btn-crop-cut {
+	display:		block;
+}
+
+
+
+
+
+div.lwhImageEditor > a.lwhImageEditor-button-close {
+    display:                inline-block;
+    position:               absolute;
+    width:                  16px;
+    height:                 16px;
+    right:                  2px;
+    top:                    5px;
+    background-image:       url(image/common/icon/lwhCommon-imagebox.png);
+	background-position:	-120px 0px;
+	background-repeat:		no-repeat;
+	z-index:                199;
+}
+
+
+/*** image comment ***/
+div.lwhImageEditor-content-view div.lwhImageEditor-subject {
+	display: 			inline-block;
+	position: 			absolute;
+	top:				0px;
+	left:				0px;
+
+	color: 				#333333;
+	font-family: 		Arial;
+	font-size: 			16px;
+	font-weight:		bold;
+
+	background-color: 	rgba(220, 220, 220, 0.4);
+	border-radius:  	0px 0px 20px 0px;
+	padding: 			6px 10px 6px 6px;
+}
+
+
+div.lwhImageEditor-content-view:hover div.lwhImageEditor-subject {
+	background-color: 	rgba(220, 220, 220, 1);
+}
+
+div.lwhImageEditor-content-view div.lwhImageEditor-detail {
+	display: 			inline-block;
+	position: 			absolute;
+	bottom:				0px;
+	left:				0px;
+
+	color: 				#000000;
+	font-family: 		Arial;
+	font-size: 			12px;
+	
+	overflow:			visible;
+	white-space:		normal;
+	text-align:			left;
+
+	background-color: 	rgba(220, 220, 220, 0.4);
+	border-radius:  	0px 0px 0px 0px;
+	padding: 			5px;
+}
+
+div.lwhImageEditor-content-view:hover div.lwhImageEditor-detail {
+	background-color: 	rgba(220, 220, 220, 1);
+}
+
+
+/*** Crop Image ***/
+div.lwhImageEditor div.imageCrop {
+	display:			none;
+	position:			absolute;
+	top:				10%; 			
+	left:				10%; 
+	width:				80%; 
+	height:				80%; 
+	border:				2px solid white;
+
+	z-index:			99; 
+}
+
+div.lwhImageEditor div.imageCrop div.pixel {
+	display:			block;
+	position:			absolute;
+	text-align:			center;
+	top:				0%;
+	left:				0%;
+	margin-left:		10px;
+	margin-top:			10px;
+	color:				#ffffff;
+	font-size:			14px;
+}
+
+div.lwhImageEditor div.imageCrop div.imageCrop-grid {
+	display:			block; 
+	position:			absolute;
+	box-sizing:			border-box;
+}
+
+div.lwhImageEditor div.imageCrop div.imageCrop-grid-h {
+	width:				100%;
+	height:				33%; 	
+	top:				33%; 	
+	border:				1px dotted #cccccc; 
+	border-left:		0px;
+	border-right:		0px;
+}
+
+div.lwhImageEditor div.imageCrop div.imageCrop-grid-v {
+	height:				100%; 	
+	width:				33%;  
+	left:				33%;	
+	border:				1px dotted #cccccc; 
+	border-top:			0px;
+	border-bottom:		0px;
+}
+/*********************************************************************/
+
+/* mask iframe and div */
+.lwhImageEditor-mask-ifrm {
+	display:	none;
+	position:   fixed;
+	border:		1px solid #eeeeee; 
+	width:		100%; 
+	height:		100%; 
+	left:		0px; 
+	top:		0px;
+
+	filter:				alpha(opacity:20);
+	opacity:			0.2;
+	background-color:	#000000;
+}
+
+.lwhImageEditor-mask-div {
+	display:	none;
+	position:	fixed;
+	border:     1px solid #eeeeee; 
+	width:      100%;
+	height:     100%; 
+	left:       0px; 
+	top:        0px;
+
+	filter:				alpha(opacity:20);
+	opacity:			0.2;
+	background-color:	#000000;
+}
+

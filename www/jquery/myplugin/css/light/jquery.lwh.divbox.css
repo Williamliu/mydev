@@ -1,0 +1,146 @@
+/************************************************************************************/
+/*  JQuery Plugin:  LOADING                                                       	*/
+/*  Author:	William Liu                                                            	*/
+/*  Date: 	2012-3-30      															*/
+/*  Files: 	jquery.lwh.loading.js ;  jquery.lwh.loading.css							*/
+/************************************************************************************/
+div.lwhDivBox {
+	display:				none;
+	position:               fixed;
+
+	width:					70%;
+	height:					70%;
+    min-width:              200px;
+    min-height:             100px;
+	
+	top:					15%;
+    margin-top:             -20px;
+    
+	left:					15%;
+	margin-left:            -20px;
+    
+    background-color:       #ffffff;
+    border:                 0px solid #333333;
+  	border-radius:		    10px 10px 10px 10px;
+    padding:                10px 10px 16px 10px;
+}
+
+div.lwhDivBox > a.lwhDivBox-button-close {
+    display:                inline-block;
+    position:               absolute;
+    width:                  16px;
+    height:                 16px;
+    right:                  2px;
+    top:                    2px;
+    background:             center center url(image/icon/lwhDivBox-close.png);
+    z-index:                9;
+}
+
+div.lwhDivBox > div.lwhDivBox-content {
+    display:                block;  
+    position:               relative; 
+    border:                 1px solid #cccccc; 
+    border-radius:          5px;
+    padding:                2px;  
+    overflow-y:             auto;
+    overflow-x:             auto; 
+    height:                 100%;    
+}
+
+
+/* mask iframe and div */
+.lwhDivBox-mask-ifrm {
+	display:	none;
+	position:   fixed;
+	border:		1px solid #eeeeee; 
+	width:		100%; 
+	height:		100%; 
+	left:		0px; 
+	top:		0px;
+
+	filter:				alpha(opacity:20);
+	opacity:			0.2;
+	background-color:	#000000;
+}
+
+.lwhDivBox-mask-div {
+	display:	none;
+	position:	fixed;
+	border:     1px solid #eeeeee; 
+	width:      100%;
+	height:     100%; 
+	left:       0px; 
+	top:        0px;
+
+	filter:				alpha(opacity:20);
+	opacity:			0.2;
+	background-color:	#000000;
+}
+
+
+
+/************************************************************************************/
+/*  JQuery Plugin:  LOADING                                                       	*/
+/*  Author:	William Liu                                                            	*/
+/*  Date: 	2012-3-30      															*/
+/*  Files: 	jquery.lwh.loading.js ;  jquery.lwh.loading.css							*/
+/************************************************************************************/
+div.lwhWrapBox {
+	display:				none;
+	position:               fixed;
+    
+	top:					50%;
+	left:					50%;
+	
+    background-color:       #ffffff;
+    border:                 0px solid #333333;
+  	border-radius:		    10px 10px 10px 10px;
+    padding:                10px 10px 10px 10px;
+}
+
+div.lwhWrapBox  div.lwhWrapBox-content {
+    display:                block;  
+    position:               relative; 
+}
+
+
+div.lwhWrapBox > a.lwhWrapBox-button-close {
+    display:                inline-block;
+    position:               absolute;
+    width:                  16px;
+    height:                 16px;
+    right:                  2px;
+    top:                    2px;
+    background:             center center url(image/icon/lwhDivBox-close.png);
+    z-index:                9;
+}
+
+
+/* mask iframe and div */
+.lwhWrapBox-mask-ifrm {
+	display:	none;
+	position:   fixed;
+	border:		1px solid #eeeeee; 
+	width:		100%; 
+	height:		100%; 
+	left:		0px; 
+	top:		0px;
+
+	filter:				alpha(opacity:20);
+	opacity:			0.2;
+	background-color:	#000000;
+}
+
+.lwhWrapBox-mask-div {
+	display:	none;
+	position:	fixed;
+	border:     1px solid #eeeeee; 
+	width:      100%;
+	height:     100%; 
+	left:       0px; 
+	top:        0px;
+
+	filter:				alpha(opacity:20);
+	opacity:			0.2;
+	background-color:	#000000;
+}

@@ -1,0 +1,283 @@
+/*** Category **********************************************************/
+div.lwhCategory {
+	background-color:		#ffffff;
+	border:					1px solid #cccccc;
+}
+
+ul.lwhCategory-ul {
+}
+
+ul.lwhCategory-ul > li {
+	cursor:					pointer;
+	padding:				0px 5px 10px 5px;
+	font-size:				14px;
+	color:					#0C6FB0;
+	font-weight:			700;
+}
+
+ul.lwhCategory-ul > li > ul {
+	padding-top:			2px; 
+	border-top:				1px dotted #cccccc;
+}
+
+ul.lwhCategory-ul > li > ul > li.item {
+	padding-left:			4px;
+	padding-right:			12px;
+	display:				inline-block;
+	font-size:				14px;
+	color:					#333333;
+	font-weight:			500;
+}
+
+ul.lwhCategory-ul > li > ul > li.item:hover {
+	color:					blue;
+}
+
+ul.lwhCategory-ul > li > ul > li.highlight {
+	color:					#FF4400;
+	text-decoration:		underline;
+	font-weight:			500;
+	background:				right 4px url(image/common/icon/status_ok.png) no-repeat;
+}
+
+
+ul.lwhCategory-ul > li > ul > li.highlight:hover {
+	color:					#FF4400;
+	text-decoration:		underline;
+}
+
+
+/**** lwhCategroy3 - for product category ***/
+div.lwhCategory3 {
+	display:				block;
+	position:				relative;
+	border:					1px solid #cccccc;
+
+	font-size:				14px;
+	font-weight:			400;
+	
+	min-height:				260px;
+	min-width:				640px;
+}
+
+
+div.lwhCategory3 > ul {
+	display:				inline-block;
+	position:				relative;
+	width:					120px;
+	z-index:				9;       !important
+	/*** flip over to div ***/
+}
+
+div.lwhCategory3 > ul > li {
+	cursor:					pointer;
+	display:				block;
+	text-align:				center;
+
+	height:					36px;
+	line-height:			36px;
+	border-bottom:			1px dotted #cccccc;
+	margin-right:			-1px;    !important
+	/*** flip over to div ***/
+}
+
+div.lwhCategory3 > ul > li:last-child {
+	border-bottom:			0px;
+}
+
+
+div.lwhCategory3 > ul > li.header {
+	color:					#ffffff;
+	background-color:   	#ff4400;
+	border-bottom:			1px solid #cccccc;
+	font-weight:			700;
+	margin-left:			-1px;
+	margin-top:				-1px;	
+}
+
+div.lwhCategory3 > div  {
+	display:				block;
+	position:				absolute;
+	border:					0px;
+	top:					0px;
+	left:					120px;
+	right:					0px;
+	bottom:					0px;
+	border-left:			1px solid #cccccc;
+	background-color:		#ffffff;
+}
+
+div.lwhCategory3 > div > div {
+	display:				none;
+	position:				absolute;
+	border:					0px;
+	left:					0px;
+	right:					0px;
+	bottom:					0px;
+	
+	padding:				5px;
+	overflow:				auto;
+}
+
+div.lwhCategory3 > div > div.header {
+	display:				block;
+	background-color:   	#363C4D;
+	height:					36px;
+	line-height:			36px;
+	
+	border-bottom:			1px solid #cccccc;
+	padding:				0px;
+	margin-top:				-1px;
+	margin-right:			-1px;
+	top:					0px;
+	color:					#ffffff;
+}
+
+div.lwhCategory3 > div > div.header > span.cate_choose_title {
+	position:				absolute;
+	left:					10px;
+	font-size:				12px;
+}
+
+div.lwhCategory3 > div > div.header > span.cate_choose_title > span.cate_choose_text {
+	font-size:				14px;
+	color:					#ffffff;
+	font-weight:			700;
+}
+
+div.lwhCategory3 > div > div.content {
+	top:					36px;
+}
+
+div.lwhCategory3 > div > div.main {
+	display:				block;
+	top:					36px;
+}
+
+
+div.lwhCategory3 > ul > li.selected {
+	color:					#ffffff;
+	background-color:   	#363C4D;
+}
+
+div.lwhCategory3 > div > div.selected {
+	display:				block;
+}
+
+
+
+div.lwhCategory3 > div > div.main 
+ul > li, 
+div.lwhCategory3 > div > div.content 
+ul > li 
+{
+	padding:				0px 5px 10px 5px;
+	text-align:				left;
+	font-size:				14px;
+	font-weight:			700;
+	color:					#0C6FB0;
+}
+
+div.lwhCategory3 > div > div.main 
+ul > li > span, 
+div.lwhCategory3 > div > div.content 
+ul > li > span 
+{
+}
+
+
+div.lwhCategory3 > div > div.main 
+ul > li > ul,
+div.lwhCategory3 > div > div.content 
+ul > li > ul 
+{
+	padding-top:			2px; 
+	border-top:				1px solid #cccccc;
+}
+
+
+div.lwhCategory3 > div > div.main 
+ul > li > ul > li.category,
+div.lwhCategory3 > div > div.content 
+ul > li > ul > li.category
+{
+	cursor:					pointer;
+	display:				inline-block;
+	padding-top:			0px;
+	padding-left:			2px;
+	padding-right:			12px;
+	padding-bottom:			0px;
+	font-size:				12px;
+	color:					#000000;
+	font-weight:			400;
+	text-align:				left;
+}
+
+div.lwhCategory3 > div > div.main 
+ul > li > ul > li.category:hover, 
+div.lwhCategory3 > div > div.content 
+ul > li > ul > li.category:hover 
+{
+	color:					blue;
+}
+
+div.lwhCategory3 > div > div.main 
+ul > li > ul > li.highlight, 
+div.lwhCategory3 > div > div.content 
+ul > li > ul > li.highlight 
+{
+	color:					#FF4400;
+	text-decoration:		underline;
+	background:				right 4px url(image/common/icon/status_ok.png) no-repeat;
+}
+
+
+div.lwhCategory3 > div > div.main 
+ul > li > ul > li.highlight:hover, 
+div.lwhCategory3 > div > div.content 
+ul > li > ul > li.highlight:hover 
+{
+	color:					#FF4400;
+	text-decoration:		underline;
+}
+
+
+
+/*
+.lwhCategory3-second > ul > li.category
+{
+	cursor:					pointer;
+	display:				inline-block;
+	padding-top:			0px;
+	padding-left:			2px;
+	padding-right:			12px;
+	padding-bottom:			0px;
+	font-size:				14px;
+	color:					#333333;
+	font-weight:			400;
+	text-align:				left;
+}
+
+.lwhCategory3-second > ul > li.category:hover, 
+.lwhCategory3-second > ul > li.category:hover 
+{
+	color:					blue;
+}
+
+.lwhCategory3-second > ul > li.highlight, 
+.lwhCategory3-second > ul > li.highlight 
+{
+	color:					#FF4400;
+	text-decoration:		underline;
+	background:				right 4px url(image/common/icon/status_ok.png) no-repeat;
+}
+
+
+.lwhCategory3-second ul > li.highlight:hover, 
+.lwhCategory3-second ul > li.highlight:hover 
+{
+	color:					#FF4400;
+	text-decoration:		underline;
+}
+*/
+

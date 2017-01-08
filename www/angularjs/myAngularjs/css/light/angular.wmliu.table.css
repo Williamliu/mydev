@@ -1,0 +1,330 @@
+.wmliu-table {
+	color:				    #222222;
+	font-size:			    12px;
+	
+	border-top:			    1px solid #999999;
+	border-left:		    1px solid #999999;
+	
+	border-bottom:		    0px solid #999999;
+	border-right:		    0px solid #999999;
+
+	background-color:	    #EDF8FA; 
+	empty-cells: 		    show;
+}
+
+.wmliu-table th,
+.wmliu-table td {
+	overflow: 				hidden;
+	padding:				0px;	
+
+	border-bottom:		    1px solid #999999;
+	border-right:		    1px solid #999999;   /* default is resizable;  fixed is not resizable */
+
+	border-top:			    0px solid #999999;
+	border-left:		    0px solid #999999;
+
+	padding: 			    2px 5px 2px 5px;
+}
+
+.wmliu-table th {
+	height:					22px;
+	background-color:  		#eeeeee;  /*#FCE9CD;*/
+	font-size:				12px;
+	font-weight:			bold;
+	white-space:			nowrap;
+}
+
+/**** custom your head css ***/
+.wmliu-table-row {
+	color:					black;
+	vertical-align:			middle;
+	text-align:				left;
+}
+
+.wmliu-table-row-even {
+	background-color:		#E2F4FB;
+}
+
+.wmliu-table-row-odd {
+	background-color:		#EDF8FA; 
+}
+
+.wmliu-table .wmliu-table-row-highlight {
+	background-color: 	    #dddddd; 
+}
+
+.wmliu-table .wmliu-table-row-selected {
+	background-color: 	    #F7B896; 
+}
+
+.wmliu-table-row-nowrap {
+	white-space:			nowrap;
+	overflow:				hidden;
+}
+/*******************************/
+
+
+/**** custom your head css ***/
+.wmliu-table-head-title {
+	font-size:				12px;
+	font-weight:			bold;
+	color: 					black;
+}
+/*******************************/
+
+/**** custom your column input ***/
+.wmliu-table-col-input {
+    padding:                1px 1px 1px 0px;
+	margin:					0px;
+}
+
+.wmliu-table-col-mtext,
+.wmliu-table-col-cktext {
+}
+
+.wmliu-table-col-vtext {
+/*
+    height:                 1.1em;
+    color:                  #eb2512;
+*/
+}
+/*******************************/
+
+
+
+/***   common ,  don't need to change  ****/
+/*** sort icon : asc; desc  ***/
+.wmliu-table-sort {
+	cursor:					pointer;
+	display:				inline-block;
+	width:					14px;
+	height:					14px;
+	background-image:		url(image/wmliu.table/wmliu-table-sort.png);
+	background-position:	0px 0px;
+	background-repeat:		no-repeat;
+	vertical-align:			middle;
+}
+
+.wmliu-table-sort-asc {
+	background-position:	-14px center;
+}
+
+.wmliu-table-sort-desc {
+	background-position:	-28px center;
+}
+/********************************/
+
+/**** custom your column css ***/
+.wmliu-table-col-xxx {
+	color: 					red;
+}
+/*******************************/
+
+
+/****  page navigator ************************************/
+
+div.wmliu-table-dbnav {
+	position:	        relative;
+	font-size:	        12px;
+	color: 		        black;
+}
+
+span.wmliu-table-dbnav-label {
+	font-weight: 		bold;
+	font-size:			12px; 
+	vertical-align:		middle;
+	margin-left:		5px; 
+	margin-right:		5px;
+}
+
+
+span.wmliu-table-dbnav-value {
+	font-weight: 		bold;
+	vertical-align:		middle;
+	font-size:			14px; 
+}
+
+span.wmliu-table-dbnav-pineline {
+	color:				black; 
+	font-size:			14px; 
+	font-weight:		bold; 
+	margin-left:		5px; 
+	margin-right:		5px;
+	vertical-align:		middle;
+}
+
+input.wmliu-table-dbnav-pageSize {
+	text-align: 		center;
+	vertical-align:		middle;
+	width:				48px;
+}
+
+
+div.wmliu-table-dbnav-background {
+	background-color:		#cccccc; 
+	background-image:		url(image/wmliu.table/wmliu-table-navi-bg.png);
+	background-repeat:		repeat-x;
+	background-position:	center center;
+	vertical-align:			middle;
+
+	border-top:				1px solid #cccccc;
+	border-bottom:			1px solid #cccccc;
+	/*
+s	border-top:				1px solid #90bce2;
+	border-bottom:			1px solid #026167;
+	*/
+	height:					24px;
+}
+
+a.wmliu-table-dbnav-button {
+	position:	relative;
+	display:	inline-block;
+	width:		24px;
+	height:		24px;
+	
+	background-image:	url(image/wmliu.table/wmliu-table-navi.png);
+	background-repeat:	no-repeat;
+	vertical-align:		middle;
+}
+
+a.wmliu-table-dbnav-button-first {
+	background-position:	0px 0px;
+}
+a.wmliu-table-dbnav-button-first:hover {
+	background-position:	0px -24px;
+}
+a.wmliu-table-dbnav-button-first-na,
+a.wmliu-table-dbnav-button-first-na:hover {
+	background-position:	0px -48px;
+}
+
+a.wmliu-table-dbnav-button-prev {
+	background-position:	-24px 0px;
+}
+a.wmliu-table-dbnav-button-prev:hover {
+	background-position:	-24px -24px;
+}
+a.wmliu-table-dbnav-button-prev-na,
+a.wmliu-table-dbnav-button-prev-na:hover {
+	background-position:	-24px -48px;
+}
+
+a.wmliu-table-dbnav-button-next {
+	background-position:	-48px 0px;
+}
+a.wmliu-table-dbnav-button-next:hover {
+	background-position:	-48px -24px;
+}
+a.wmliu-table-dbnav-button-next-na,
+a.wmliu-table-dbnav-button-next-na:hover {
+	background-position:	-48px -48px;
+}
+
+a.wmliu-table-dbnav-button-last {
+	background-position:	-72px 0px;
+}
+a.wmliu-table-dbnav-button-last:hover {
+	background-position:	-72px -24px;
+}
+a.wmliu-table-dbnav-button-last-na,
+a.wmliu-table-dbnav-button-last-na:hover {
+	background-position:	-72px -48px;
+}
+
+a.wmliu-table-dbnav-button-go {
+	background-position:	-96px 0px;
+}
+a.wmliu-table-dbnav-button-go:hover {
+	background-position:	-96px -24px;
+}
+a.wmliu-table-dbnav-button-go-na,
+a.wmliu-table-dbnav-button-go-na:hover {
+	background-position:	-96px -48px;
+}
+
+a.wmliu-table-dbnav-button-refresh {
+	background-position:	-120px 0px;
+}
+a.wmliu-table-dbnav-button-refresh:hover {
+	background-position:	-120px -24px;
+}
+a.wmliu-table-dbnav-button-refresh-na,
+a.wmliu-table-dbnav-button-refresh-na:hover {
+	background-position:	-120px -48px;
+}
+
+a.wmliu-table-dbnav-button-loading {
+	background-image:		url(image/wmliu.table/wmliu-table-loading.gif);
+	background-repeat:		no-repeat;
+	background-position:	center center;
+	
+}
+
+a.wmliu-table-dbnav-button-loading-na {
+	visibility:				hidden;
+}
+
+
+/*** Text Button ****************/
+a.wmliu-table-textbutton {
+	cursor:             pointer;
+    font-size:          14px;
+	color:			    blue;
+    text-decoration:    underline;
+    margin-right:       5px;
+}
+a.wmliu-table-textbutton:hover {
+	color:				#E22424;
+}
+
+
+/*** Buttons ****************/
+input.wmliu-table-button {
+	position:	        relative;
+	display:	        inline-block;
+    font-size:          14px;
+    margin-left:        0px;
+    margin-right:       1px;
+    vertical-align:     middle;
+    border-radius:      3px 3px 3px 3px;
+    padding-left:       2px;
+    padding-right:      2px;
+    padding-top:        2px;
+    padding-bottom:     2px;
+}
+
+/*** Link Button ****************/
+a.wmliu-table-linkbutton {
+	cursor:             pointer;
+	color:				blue;
+    text-decoration:    underline;
+}
+a.wmliu-table-linkbutton:hover {
+	color:				#E22424;
+}
+
+
+/*** imgvalue ***************/
+a.wmliu-table-imgvalue {
+	position:	relative;
+	display:	inline-block;
+
+	vertical-align:		middle;
+    margin-left:        0px;
+    margin-right:       1px;
+}
+
+a.wmliu-table-imgvalue-sex {
+    width:  16px;
+    height: 16px;
+    background-repeat: no-repeat;
+}
+
+a.wmliu-table-imgvalue-sex-1 {
+   background-image: url(image/wmliu.table/wmliu-table-imgvalue-gender-male.png);
+}
+
+a.wmliu-table-imgvalue-sex-2 {
+   background-image: url(image/wmliu.table/wmliu-table-imgvalue-gender-female.png);
+}
+

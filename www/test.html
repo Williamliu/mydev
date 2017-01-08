@@ -1,0 +1,33 @@
+<html>
+<head>
+    <style>
+        #header:before {
+            content: " ";
+            display: table;
+            box-sizing: border-box;
+        }
+        #header:after {
+            content: " ";
+            display: table;
+            box-sizing: border-box;
+        } 
+    </style>
+</head>
+<body>
+    <br>
+    <div style="display:block; position:static;border:1px solid green;">
+
+        <div id="header" style="position:relative; display:block; box-sizing:border-box; clear:both; border:1px solid red; width:300px; float:left;">
+            <div style="position:relative; float:left; height:50px;">Hello</div>
+            <div style="position:relative; float:right; height:50px;">Hello</div>
+        </div>
+
+        <div id="header" style="position:relative; display:block; box-sizing:border-box; border:1px solid red; margin-left:300px;">
+            <div style="position:relative;">Hello</div>
+            <div style="position:relative;">Hello</div>
+        </div>
+
+    </div>
+
+</body>
+</html>
