@@ -1,6 +1,6 @@
 <?php
 date_default_timezone_set('America/Los_Angeles');
-
+test test
 $CFG = array();
 $CFG["http"]			= "http://";
 //$CFG["web_domain"] 		= $CFG["http"] . $_SERVER['HTTP_HOST'] . "";
