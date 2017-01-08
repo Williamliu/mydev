@@ -1,6 +1,7 @@
 <?php
 date_default_timezone_set('America/Los_Angeles');
 test test
+test 22222
 $CFG = array();
 $CFG["http"]			= "http://";
 //$CFG["web_domain"] 		= $CFG["http"] . $_SERVER['HTTP_HOST'] . "";
