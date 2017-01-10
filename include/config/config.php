@@ -22,7 +22,6 @@ $CFG["lang"]["cn"] 		= "cn";
 $CFG["lang"]["tw"] 		= "tw";
 $CFG["lang"]["en"] 		= "en";
 
-
 $CFG["theme_default"] 	= "blue";
 $CFG["theme"]["blue"] 	= "Blue";
 
