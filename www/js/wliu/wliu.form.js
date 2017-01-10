@@ -1,7 +1,7 @@
-/******* Table & ArraySearch  *******/
+/******* FORM & ArraySearch  *******/
 var WLIU = WLIU || {};
 // Table Object
-WLIU.TABLE = function( opts ) {
+WLIU.FORM = function( opts ) {
 	this.sc			= null;
 
 	this.lang       = opts.lang?opts.lan:"cn";
@@ -14,92 +14,24 @@ WLIU.TABLE = function( opts ) {
 	this.tooltip 	= opts.tooltip?opts.tooltip:"";
 	this.tips 		= opts.tips?opts.tips:"";
 	
-	this.rindex 	= -1; // private for rowno
-	this.single     = 0;  // private for edit one Row - form input
-	this.singleKeys = undefined;
 	this.action		= "get";
 	this.error		= {errorCode:0, errorMessage:""};  // table level error : action rights 
 	this.rights 	= {view:1, save:0, cancel:1, clear:1, delete:0, add:1, detail:1, output:0, print:1};
 	this.cols 		= [];
-	this.rows 		= [];
-	this.navi		= { paging:1, pageno: 0, pagesize:20, pagetotal:0, recordtotal:0, match: 1, loading:0, orderby: "", sortby:"" };
-	this.filters 	= [];
+	this.row 		= {};
 	this.lists		= {};  // { gender: { loaded: 1, keys: { rowsn: -1, name: "" }, list: [{key:1, value:"Male", desc:""}, {key:2, value:"Female", desc:""}] },  	xxx: {} }
 	this.callback   = {ajaxBefore: null, ajaxAfter: null, ajaxComplete: null, ajaxError: null,  ajaxSuccess: null};
 	
 	$.extend(this.rights, opts.rights);
 	$.extend(this.cols, opts.cols);
-	$.extend(this.navi, opts.navi);
-	$.extend(this.filters, opts.filters);
 	$.extend(this.lists, opts.lists);
 	$.extend(this.callback, opts.callback);
 }
 
-WLIU.TABLE.prototype = {
+WLIU.FORM.prototype = {
 	setScope: function(p_scope) {
 		p_scope.table = this;
 		this.sc = p_scope;
-	},
-
-	index:  function(p_keys) {
-		return FUNC.ROWS.index(this.rows, p_keys);
-	},
-	rowno: function(p_ridx) {
-		if(p_ridx!=undefined) {
-			if(p_ridx<0) this.rindex = -1;
-			if(p_ridx >= this.rows.length) this.rindex = this.rows.length - 1;
-			if(p_ridx>=0 && p_ridx < this.rows.length) this.rindex = p_ridx;
-			return this.rindex;
-		} else {
-			return this.rindex;
-		}
-	},
-	rowKeys: function(p_row, p_keys) {
-		if(p_keys!=undefined) {
-			if( p_row.keys || p_row.rowstate) {
-				FUNC.ROW.keys(p_row, p_keys);
-				return p_keys
-			} else {
-				if(this.rowByIndex(p_row)) {
-					FUNC.ROW.keys(this.rowByIndex(p_row), p_keys);
-					return p_keys;
-				} else { 
-					return undefined;
-				}
-			}
-		} else {
-			if(  p_row.keys || p_row.rowstate ) {
-				return p_row.keys;
-			} else {
-				if(this.rowByIndex(p_row)) 
-					return this.rowByIndex(p_row).keys;
-				else 
-					return undefined;
-			}
-		}
-	},
-
-	rownoByKeys : function(p_keys) {
-		if( p_keys!=undefined) {
-			var ridx = this.index(p_keys);
-			return this.rowno(ridx);
-		} else {
-			return this.rindex;
-		}
-	},
-	rownoByRow: function(p_row) {
-		return this.rownoByKeys(p_row.keys);
-	},
-
-	rowstate: function(p_keys, p_rowstate) {
-		return FUNC.ROWS.rowstate(this.rows, p_keys, p_rowstate);
-	},
-
-	rowByIndex: function(ridx) {
-		return FUNC.ROWS.rowByIndex(this.rows, ridx);
-	},
-	rowByKeys: function(p_keys) {
-		return FUNC.ROWS.rowByKeys(this.rows, p_keys);
 	},
 
 	colMeta: function(col_name) {
@@ -129,110 +61,6 @@ WLIU.TABLE.prototype = {
 			return undefined;
 		}
 	},
-	/*** relationship */
-	relationCol: function(ridx, col_name) {
-		var theRow = this.rowByIndex(ridx);
-		if( theRow ) {
-			if(col_name) 
-				return FUNC.ARRAY.Single( theRow.cols,  {name: col_name});
-			else 
-				return FUNC.ARRAY.Single( theRow.cols,  {coltype: "relation"});
-		} else {
-			return undefined;
-		}
-	},
-	relationHide: function(ridx, col_name) {
-		var theRow = this.rowByIndex(ridx);
-		if( theRow ) {
-				var curCol = FUNC.ARRAY.Single( theRow.cols,  {name: col_name});
-				if( curCol.relation ) {
-					var relCol = this.relationCol(ridx, curCol.relation);
-					if(relCol!=undefined) {
-						if(relCol.value) 
-							return false;
-						else 
-							return true;
-					} else {
-						return false;
-					}
-				} else {
-					return false;
-				}
-		} else {
-			return false;
-		}
-	},
-	relationChange: function(ridx) {
-		var relationObj = undefined;
-		relationObj = this.relationCol(ridx);
-		if( relationObj ) {
-			var theRow = this.rowByIndex(ridx);
-			if( theRow ) {
-				if( relationObj.value ) {
-					// true - check
-					if( relationObj.current ) {
-						var rCols = FUNC.ARRAY.Search(theRow.cols, {relation: relationObj.name});				
-						for(var cidx in rCols) {
-							var nameVal = {};
-							nameVal[rCols[cidx].name] = angular.copy(rCols[cidx].current);
-							this.restoreByIndex(ridx, nameVal);
-						}
-					} 
-				} else {
-					// false - uncheck
-					var rCols = FUNC.ARRAY.Search(theRow.cols, {relation: relationObj.name});				
-					for(var cidx in rCols) {
-						var nameVal = {};
-						nameVal[rCols[cidx].name] = "";
-						this.editByIndex(ridx, nameVal);
-					}
-				}
-			} 
-		}
-	},
-	/******************/
-
-	filterMeta: function(col_name) {
-		return FUNC.ARRAY.Single(this.filters, {name: col_name});
-	},
-	filterClear: function() {
-		for(var fidx in this.filters) {
-			this.setColVal( this.filters[fidx],"");
-		}
-	},
-	filterValue: function( name, val) {
-		if(val!=undefined) {
-			if( this.filterMeta(name) ) {
-				return this.setColVal( this.filterMeta(name), val );
-			} else {
-				return undefined;
-			}
-		} else {
-			if( this.filterMeta(name) ) {
-				return this.getColVal( this.filterMeta(name) );
-			} else {
-				return undefined;
-			}
-		}
-	},
-	filterDefault: function( name, val) {
-		if(val!=undefined) {
-			if( this.filterMeta(name) ) {
-				this.filterMeta(name).defval = val;
-				this.filterMeta(name).value = val;
-				return val;
-			} else {
-				return undefined;
-			}
-		} else {
-			if( this.filterMeta(name) ) {
-				return this.filterMeta(name).defval?this.filterMeta(name).defval:undefined;
-			} else {
-				return undefined;
-			}
-		}
-	},
-    
 	
 	// return rows[ridx].cols[index of col_name]
 	colByIndex: function(ridx, col_name) {

@@ -37,7 +37,7 @@
 
 		<!-- wliu components -->
 		<script src="js/wliu/wliu.common.js" type="text/javascript"></script>
-		<script src="js/wliu/wliu.table.js" type="text/javascript"></script>
+		<script src="js/wliu/wliu.form.js" type="text/javascript"></script>
 		<script	src="angularjs/wliu/wliu.table.js" type="text/javascript"></script>
 		<script	src="angularjs/wliu/wliu.table.filter.js" type="text/javascript"></script>
 		<script	src="angularjs/wliu/wliu.table.list.js" type="text/javascript"></script>
@@ -56,16 +56,6 @@
 
 
         <script language="javascript" type="text/javascript">
-			var dt = new Date();
-			console.log( dt.toString("YYYY-MM-DD THH:mm:ss") );
-			console.log( dt.toUTCString() );
-			console.log( dt.getTimezoneOffset() );
-
-			console.log( Date.UTC( dt.getFullYear(), dt.getMonth(), dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds() ) /1000 );	
-			var ts = Date.UTC( dt.getFullYear(), dt.getMonth(), dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds() );
-
-			console.log( Date.UTC(2016,11,8, 9, 53, 0)/1000 );
-
 		   	var col1 = new WLIU.COL({key:1, coltype:"hidden", 		name:"id", 			colname:"Admin ID",  	coldesc:"Administrator ID", defval:0 });
 		   	var col2 = new WLIU.COL({key:0, coltype:"textbox", 		name:"uuu",			col:"user_name", 		colname:"User Name", 	coldesc:"Login User", 	sort:"ASC", need:1, notnull: 1});
 		   	var col3 = new WLIU.COL({key:0, coltype:"textbox", 		name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
@@ -77,8 +67,8 @@
 		   	var col9 = new WLIU.COL({key:0, coltype:"checkbox1", 	name:"country_id",	colname:"Country ISO",  coldesc:"Country ID", list:"countryCategory"});
 		   	var col10 = new WLIU.COL({key:0, coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status"});
 
-		   	var cols = [];
-		   	cols.push(col1);
+            var cols = {};
+            cols.push(col1);
 		   	cols.push(col2);
 		   	cols.push(col3);
 		   	cols.push(col4);
@@ -89,19 +79,8 @@
 		   	cols.push(col9);
 		   	cols.push(col10);
 
-			var filter1 = new WLIU.FILTER({name:"adminname", 	coltype:"textbox", 		cols:"user_name, full_name", 				colname:"Name", 	coldesc:"Search by Name"});
-			var filter2 = new WLIU.FILTER({name:"color", 		coltype:"radio",		cols:"color",  		colname:"Color", 		compare:"", list:"colorCategory", coldesc:"Color Name"});
-			var filter3 = new WLIU.FILTER({name:"bbdate", 		coltype:"daterange",	cols:"birth_date", 	colname:"BirthDate", 	coldesc:"search by Email" });
-			var filter4 = new WLIU.FILTER({name:"bstatus", 		coltype:"bool",			cols:"status",  	colname:"Active?",  	coldesc:"search by Email", defval:""});
-			var filter5 = new WLIU.FILTER({name:"bcccc", 		coltype:"select",		cols:"lang",  		colname:"Language",  	list: "langCategory"});
-			var filters = [];
-			filters.push(filter1);
-			filters.push(filter2);
-			filters.push(filter3);
-			filters.push(filter4);
-			filters.push(filter5);
 
-		    var table = new WLIU.TABLE({
+		    var form = new WLIU.FORM({
 				scope: 	"mytab",
 				url:   	"ajax/one_action.php",
 				wait:   "#tabwait",
@@ -109,8 +88,6 @@
 				tooltip:"#tabtip",
 				tips: 	"#tabtips",
 				rights: {detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
-				navi:   {pagesize:20, match: 1, orderby:"created_time", sortby:"DESC"},
-				filters: filters,
 				cols: 	cols,
 				lists: 	{
 							colorCategory: 		{ loaded: 0 },
@@ -129,14 +106,8 @@
 
             var app = angular.module("myApp", ["wliuTable"]);
             app.controller("myForm", function ($scope) {
-				table.setScope( $scope );
-				table.getRows();
-				$scope.searchAjax = function(table) {
-				}
-
-				$scope.detail = function(theRow) {
-					console.log(theRow);
-				}
+				form.setScope( $scope );
+				form.getRows();
 		    });
 
 			$(function(){
