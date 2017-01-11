@@ -37,11 +37,11 @@ wliu_form.directive("form.ckeditor", function () {
         },
         template: [
                     '<span>',
-                        '<a class="wliu-btn16 wliu-btn16-rowstate-error" ng-if="form.row.errorCode"></a>',
-                        '<span style="color:red; vertical-align:middle;" ng-if="form.row.errorCode">Error: {{form.row.errorCode?form.row.errorMessage:""}}</span>',
+                        '<a class="wliu-btn16 wliu-btn16-rowstate-error" ng-if="form.colByName(name).errorCode"></a>',
+                        '<span style="color:red; vertical-align:middle;" ng-if="form.colByName(name).errorCode">Error: {{form.colByName(name).errorCode?form.colByName(name).errorMessage:""}}</span>',
                         //'<input type="hidden" ng-model="rowsn" ng-change="modelChange()" />',
-                        '<textarea scope="{{ form.scope }}" ng-model="form.colByIndex(name).value" id="{{form.scope}}_{{name}}"" ',
-                                  'title="{{ form.rowByIndex(rowsn).error.errorCode ? form.rowByIndex(rowsn).error.errorMessage : \'\' }}"',
+                        '<textarea scope="{{ form.scope }}" ng-model="form.colByName(name).value" id="{{form.scope}}_{{name}}"" ',
+                                  'title="{{ form.row.error.errorCode ? form.row.error.errorMessage : \'\' }}"',
                         '>',
                         '</textarea>',
                     '</span>'
@@ -65,10 +65,10 @@ wliu_form.directive("form.ckeditor", function () {
                 htmlObj_cn = CKEDITOR.replace(sc.form.scope + "_" + sc.name,{});
                 // The "change" event is fired whenever a change is made in the editor.
                 htmlObj_cn.on('change', function (evt) {
-                    if( sc.form.colByIndex(sc.rowsn, sc.name) ) {
-                        if( sc.form.colByIndex(sc.rowsn, sc.name).value != CKEDITOR.instances[sc.form.scope+"_"+sc.name].getData() ) {
-                            sc.form.colByIndex(sc.rowsn, sc.name).value = CKEDITOR.instances[sc.form.scope+"_"+sc.name].getData();
-                            sc.form.changeByIndex(sc.rowsn, sc.form.colByIndex(sc.rowsn, sc.name));
+                    if( sc.form.colByName(sc.name) ) {
+                        if( sc.form.colByName(sc.name).value != CKEDITOR.instances[sc.form.scope+"_"+sc.name].getData() ) {
+                            sc.form.colByName(sc.name).value = CKEDITOR.instances[sc.form.scope+"_"+sc.name].getData();
+                            sc.form.changeByCol(sc.form.colByName(sc.name));
                             // to prevent diggest in progress in angular.
                             if( !sc.$root.$$phase) sc.$apply();
                             

@@ -63,54 +63,21 @@ WLIU.FORM.prototype = {
 	},
 	
 	// return rows[ridx].cols[index of col_name]
-	colByIndex: function(ridx, col_name) {
-		return FUNC.ROWS.colByIndex(this.rows, ridx, col_name);
-	},
-	colByKeys: function(p_keys, col_name) {
-		return FUNC.ROWS.colByKeys(this.rows, p_keys, col_name);
-	},
-	colByRow: function(p_row, col_name) {
-		return FUNC.ROWS.colByRow(p_row, col_name);
+	colByName: function(col_name) {
+		return FUNC.ROW.col(this.row, col_name);
 	},
 	/********************************************** */
 
 
-	// insert a row to table.rows
-	addByRow: function(ridx, p_row) {
-		if( p_row != undefined ) {
-			p_row.scope = this.scope;
-			return FUNC.ROWS.insert(this.rows, ridx, p_row);
-		} else {
-			return FUNC.ROWS.create(this.rows, this.cols, ridx, null, this.scope);
-		}
-	},
-	/****************************/
-
-
 	// update  rows[ridx].cols[index of colname].value 
-	restoreByIndex: function(ridx, nameValues) {
-		return FUNC.ROWS.updateByIndex(this.rows, ridx, nameValues);
+	updateByName: function(nameValues) {
+		return FUNC.ROW.update(this.row, nameValues);
 	},
-
-	updateByIndex: function(ridx, nameValues) {
-		return FUNC.ROWS.updateByIndex(this.rows, ridx, nameValues);
+	cancelByRow: function(p_row) {
+		return  FUNC.ROW.cancel(this.row);
 	},
-	updateByKeys: function(p_keys, nameValues) {
-		return FUNC.ROWS.updateByKeys(this.rows, p_keys, nameValues);
-	},
-	updateByRow: function(p_row, nameValues) {
-		return FUNC.ROWS.updateByRow(p_row, nameValues);
-	},
-
-
-	editByIndex: function(ridx, nameValues) {
-		for(var colName in nameValues) {
-			var vCol = this.colByIndex(ridx, colName);
-			if( vCol ) {
-				nameValues[colName] = this.updateColVal(vCol, nameValues[colName]);
-			}
-		}
-		return this.updateByIndex(ridx, nameValues);
+	detachByRow: function(p_row) {
+		return FUNC.ROW.detach(this.row);
 	},
 	
 	updateColVal: function(vCol, p_val) {
@@ -169,30 +136,6 @@ WLIU.FORM.prototype = {
 	/*********************************************/
 
     //  operate the row : table.rows[ridx]
-	cancelByRow: function(p_row) {
-		return  FUNC.ROWS.cancelByRow(p_row);
-	},
-
-	deleteByIndex: function(ridx) {
-		return FUNC.ROWS.deleteByIndex(this.rows, ridx);
-	},
-	deleteByKeys: function(p_keys) {
-		return FUNC.ROWS.deleteByKeys(this.rows, p_keys);
-	},
-	deleteByRow: function(p_row) {
-		return FUNC.ROWS.deleteByRow(this.rows, p_row);
-	},
-
-	detachByIndex: function(ridx) {
-		return FUNC.ROWS.detachByIndex(this.rows, ridx);
-	},
-	detachByKeys: function(p_keys) {
-		return FUNC.ROWS.detachByKeys(this.rows, p_keys);
-	},
-	detachByRow: function(p_row) {
-		return FUNC.ROWS.detachByRow(this.rows, p_row);
-	},
-
 	tableError: function(p_error) {
 		if(p_error!=undefined) {
 			this.error = p_error;
@@ -200,49 +143,25 @@ WLIU.FORM.prototype = {
 			return this.error; 
 		}
 	},
-	rowErrorByIndex: function(ridx, p_error) {
-		return FUNC.ROWS.rowErrorByIndex(this.rows, ridx, p_error);
-	},
-	rowErrorByKeys: function(p_keys, p_error) {
-		return FUNC.ROWS.rowErrorByKeys(this.rows, p_keys, p_error);
-	},
-	rowErrorByRow: function(p_row, p_error) {
-		return FUNC.ROWS.rowErrorByRow(p_row, p_error);
+	rowError: function( p_error) {
+		return FUNC.ROW.rowError(this.row, p_error);
 	},
 	/************************************/
 
 	// set row's col's  error 
-	colErrorByIndex: function(ridx, col_name, p_error) {
-		return FUNC.ROWS.colErrorByIndex(this.rows, ridx, col_name, p_error);
-	},
-	colErrorByKeys: function(p_keys, col_name, p_error) {
-		return FUNC.ROWS.colErrorByKeys(this.rows, p_keys, col_name, p_error);
-	},
-	colErrorByRow: function(p_row, col_name, p_error) {
-		return FUNC.ROWS.colErrorByRow(p_row, col_name, p_error);
-	},
-	colErrorByCol: function(p_row, col, p_error) {
-		return FUNC.ROWS.colErrorByCol(p_row, col, p_error);
+	colErrorByName: function(col_name, p_error) {
+		return FUNC.ROW.colError(this.row, col_name, p_error);
 	},
 	/***********************/
 
 
 	/*** event for external call ***/
-	changeByKeys: function(p_keys, p_col) {
+	changeByCol: function(p_col) {
 		var nameValues = {};
 		nameValues[p_col.name] = p_col.value;
-		return this.updateByKeys(p_keys, nameValues);
+		return this.updateByName(nameValues);
 	},
-	changeByIndex: function(ridx, p_col) {
-		var nameValues = {};
-		nameValues[p_col.name] = p_col.value;
-		return this.updateByIndex(ridx, nameValues);
-	},
-	changeByRow: function(p_row, p_col) {
-		var nameValues = {};
-		nameValues[p_col.name] = p_col.value;
-		return this.updateByRow(p_row, nameValues);
-	},
+
 	getChangeRows: function() {
 		var nrows = [];
 		for(var ridx in this.rows) {
@@ -262,6 +181,7 @@ WLIU.FORM.prototype = {
 		}
 		return nrows;
 	},
+
 	getChangeRow: function( theRow ) {
 		var nrows = [];
 		//if( theRow.error.errorCode <= 0 ) { 
@@ -300,6 +220,7 @@ WLIU.FORM.prototype = {
 		}
 		return ncols;
 	},
+	
 	getChangeCol: function(vCol) {
 		var nCol = undefined;
 		switch(vCol.coltype) {
@@ -512,52 +433,6 @@ WLIU.FORM.prototype = {
 			}
 		}
 		return nlists;
-	},
-
-	// Navigation
-	firstPage: function() {
-		if(this.navi.pageno<=0){
-			this.navi.pageno=1;
-		}
-		if(this.navi.pagetotal<=0) this.navi.pageno=0;
-		if(this.navi.pageno>1 && this.navi.pagetotal>0) {
-			this.navi.pageno=1;
-			this.getRows();
-		}
-	},
-	previousPage: function() {
-		if(this.navi.pageno<=0){
-			this.navi.pageno=1;
-		}
-		if(this.navi.pagetotal<=0) this.navi.pageno=0;
-		if(this.navi.pageno>1){
-			this.navi.pageno--;
-			this.getRows();
-		}
-	},
-	nextPage: function() {
-		if(this.navi.pagetotal<=0) this.navi.pageno=0;
-		if(this.navi.pageno>this.navi.pagetotal){
-			this.navi.pageno = this.navi.pagetotal;
-			this.getRows();
-		}
-		if(this.navi.pageno<this.navi.pagetotal){
-			this.navi.pageno++;
-			this.getRows();
-		}
-	},
-	lastPage: function() {
-		if(this.navi.pagetotal<=0) this.navi.pageno=0;
-		if(this.navi.pageno!=this.navi.pagetotal){
-			this.navi.pageno = this.navi.pagetotal;
-			this.getRows();
-		}
-	},	
-	nextRecord: function() {
-		this.rowno( this.rowno() + 1 );
-	},
-	previousRecord: function() {
-		this.rowno( this.rowno() - 1 );
 	},
 
 	/****** ajax call ********** */
@@ -989,34 +864,6 @@ WLIU.FORM.prototype = {
 			}
 		}
 	}
-}
-
-// Table Filter Metadata Object
-WLIU.FILTER = function(opts) {
-	this.col = {
-		scope: 		"",
-		name: 		"",
-		cols:		"", // default same as name, col is database colname
-		colname:	"", // display name
-		coldesc:    "", // display description
-		coltype:	"textbox",  //hidden, textbox, checkbox,checkbox1,checkbox2,checkbox3, radio, select, textarea, datetime, date, time, intdate ....
-		datatype:   "ALL",  // number, email, date, datetime, ....
-		need:		0,     // required  must include this col even if value not change.  other is must change
-		minlength:  0,    
-		maxlength:  0,		 
-		min:		0,    
-		max:		0,
-		list:       "",    // select , checkbox, radio base on list
-		compare:	"",    // default defined in server side php 
-		defval:     "",
-		value:		""     // default value for add case
-	};
-	
-	$.extend(this.col, opts);
-	this.col.cols = this.col.cols?this.col.cols:this.col.name; // important for mapping js to database 
-	this.col.value = this.col.defval?this.col.defval:""; // important for mapping js to database 
-	
-	return this.col;
 }
 
 // Table Col Metadata Object
