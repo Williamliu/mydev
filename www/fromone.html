@@ -104,7 +104,7 @@
 				}
 			});
 
-            var app = angular.module("myApp", ["wliuTable"]);
+            var app = angular.module("myApp", ["wliuForm"]);
             app.controller("myForm", function ($scope) {
 				form.setScope( $scope );
 				form.getRows();
@@ -118,115 +118,13 @@
 <!-- container -->
 <div class="container">
 		<div class="row">
-		<div class="col-md-12">
-			<fieldset>
-				<legend>Search</legend>
-				<filter.label table="table" name="user_name"></filter.label> : <filter.textbox class="input-medium" table="table" name="adminname" tooltip="#mytips"></filter.textbox><br /><br />
-				<filter.label table="table" name="color"></filter.label> : <filter.radio table="table" name="color" colnum="3" targetid="#color_filter1" bar="1"  tooltip="#mytips"></filter.radio><br />
-				<filter.label table="table" name="bbdate"></filter.label> : <filter.daterange  table="table" name="bbdate"></filter.daterange><br />
-				<filter.label table="table" name="bstatus"></filter.label> : <filter.bool  table="table" name="bstatus"></filter.bool><br />
-				<filter.label table="table" name="bcccc"></filter.label> : <filter.select  table="table" name="bcccc"></filter.select><br />
-			</feildset>
-			<div style="margin-top:20px;">
-			<table.tablebutton table="table" name="search" actname="Search" outline=1 before="searchAjax(table)"></table.tablebutton>
+			<div class="col-md-2">
+				<form.label form="form" name="uuu"></form.label>
+			</div>		
+			<div class="col-md-4">
+				<form.textbox form="form" name="uuu"></form.textbox>
 			</div>
-			<br>
-			<table.navi table="table" tooltip=""></table.navi>
-			<table class="table table-condensed">
-				<tr style="background-color:#efefef;"> 
-					<td width=20>
-						<table.hgroup table="table" actname="DO All">
-							<table.hlink table="table" name="add" 		actname="Add"  	action=""></table.hlink>
-							<table.hlink table="table" name="save" 		actname="Save" 	action=""></table.hlink>
-							<table.hlink table="table" name="cancel" 	actname="Undo" 	action=""></table.hlink>
-							<table.hlink table="table" name="output" 	actname="Excel" action=""></table.hlink>
-							<table.hlink table="table" name="print" 	actname="Print" action=""></table.hlink>
-						</table.hgroup>
-					</td>
-					<td width=30 align="center">
-						<table.head table="table" name="SN" tooltip="#mytips"></table.head>
-					</td>
-					<td>
-						<table.head table="table" name="id" tooltip="#mytips"></table.head>
-					</td>
-					<td>
-						<table.head table="table" name="uuu" tooltip="#mytips"></table.head>
-					</td>
-					<td>
-						<table.head table="table" name="full_name" tooltip="#mytips"></table.head>
-					</td>
-					<td>
-						<table.head table="table"  name="bbb" tooltip="1"></table.head>
-					</td>
-					<td>
-						<table.head table="table"  name="email" tooltip="1"></table.head>
-					</td>
-					<td>
-						<table.head table="table"  name="created_time" tooltip="1"></table.head>
-					</td>
-					<td>
-						<table.head table="table"  name="lang" tooltip="1"></table.head>
-					</td>
-					<td>
-						<table.head table="table" name="color" tooltip="#mytips"></table.head>
-					</td>
-					<td>
-						<table.head table="table" name="country_id" tooltip="1"></table.head>
-					</td>
-					<td>
-						<table.head table="table" name="status" tooltip="1"></table.head>
-					</td>
-				</tr>	
-				<tr ng-repeat="row in table.rows">
-					<td style="white-space:nowrap; width:20px;padding-right:10px;">
-						<table.bgroup table="table" actname="Action" rowsn="{{$index}}">
-						<table.blink table="table" name="detail" 	actname="Detail" 	rowsn="{{$index}}" 	action="detail(row)" wliu-diag diag-toggle="click" diag-target="#frm"></table.blink>
-						<table.blink table="table" name="save"  	actname="Save" 		rowsn="{{$index}}" 	action=""></table.blink>
-						<table.blink table="table" name="cancel"	actname="Cancel" 	rowsn="{{$index}}" 	action=""></table.blink>
-						<table.blink table="table" name="output" 	actname="Output" 	rowsn="{{$index}}" 	action=""></table.blink>
-						<table.blink table="table" name="print"		actname="Print" 	rowsn="{{$index}}" 	action=""></table.blink>
-						<table.blink table="table" name="delete" 	actname="Delete" 	rowsn="{{$index}}" 	action=""></table.blink>
-						</table.bgroup>
-					</td>
-					<td width=30 align="center">
-						<table.rowno table="table"  rowsn="{{$index}}" tooltip="#mytips"></table.rowno>
-					</td>
-					<td align="center">
-						<table.text table="table" name="id" rowsn="{{$index}}" tooltip="#mytips"></table.text>
-					</td>
-					<td>
-						<table.textbox class="input-small" table="table" name="uuu" rowsn="{{$index}}" tooltip="#mytips"></table.textbox>
-					</td>
-					<td>
-						<table.textbox class="input-small" table="table" name="full_name" rowsn="{{$index}}" tooltip="#mytips"></table.textbox>
-					</td>
-					<td>
-						<table.datetime class="input-small" table="table" name="bbb" rowsn="{{$index}}" tooltip="#mytips"></table.datetime>
-					</td>
-					<td>
-						<table.textbox class="input-small" table="table" name="email" rowsn="{{$index}}" tooltip="#mytips"></table.textbox>
-					</td>
-					<td>
-						<table.intdate class="input-small" table="table" name="created_time" rowsn="{{$index}}" tooltip="#mytips"></table.intdate>
-					</td>
-					<td>
-						<table.select class="input-small" table="table" name="lang" rowsn="{{$index}}" tooltip="#mytips"></table.select>
-					</td>
-					<td>
-						<table.radio3 class="input-small" table="table" name="color" rowsn="{{$index}}" targetid="#colorCategory_diag" tooltip="#mytips"></table.radio3>
-					</td>
-					<td>
-						<table.checkbox1 class="input-small" table="table" name="country_id" rowsn="{{$index}}" targetid="#countryCategory_diag" tooltip="#mytips"></table.checkbox1>
-					</td>
-					<td>
-						<table.bool table="table" name="status" rowsn="{{$index}}" tooltip="#mytips"></table.bool>
-					</td>
-				</tr>
-			</table>
-		</div>		
-
-		<br>
-		<br>
+		</div>
 </div>
 <!-- container -->
 

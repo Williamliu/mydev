@@ -80,49 +80,6 @@ wliu_form.directive("form.ckeditor", function () {
     }
 });
 
-wliu_form.directive("form.head", function () {
-    return {
-        restrict: "E",
-        replace: true,
-        scope: {
-            form:      "=",
-            name:       "@",
-            tooltip:    "@"
-        },
-        template: [
-                    '<label for="navi_{{form.scope}}_{{name}}" class="wliuCommon-label" scope="{{ form.scope }}" ',
-                        'wliu-popup popup-target="{{tooltip?form.tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname?form.colMeta(name).colname:name}}" ',
-                        'title="{{tooltip? \'\':form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname?form.colMeta(name).colname:name}}" ',
-                    '>',
-                        '<span style="vertival-align:middle;">{{ form.colMeta(name).colname?form.colMeta(name).colname:name }}</span>',
-                        '<span style="vertival-align:middle;" class="wliuCommon-text-error" ng-if="form.colMeta(name).notnull"> <b>*</b></span> ',
-                        '<a id="navi_{{form.scope}}_{{name}}" ng-click="changeOrder()" class="wliu-btn16 wliu-btn16-sort" ng-if="form.colMeta(name).sort" ',
-                                'ng-class="{\'wliu-btn16-sort-asc\':(name==form.navi.orderby && ( form.navi.sortby.toLowerCase()==\'asc\' || ( form.navi.sortby==\'\' && form.colMeta(name).sort.toLowerCase()==\'asc\'))) ',
-                                ',\'wliu-btn16-sort-desc\':(name==form.navi.orderby && ( form.navi.sortby.toLowerCase()==\'desc\' || (form.navi.sortby==\'\' && form.colMeta(name).sort.toLowerCase()==\'desc\') )) }" title="Sort by {{form.colMeta(name).colname}}"',
-                        '>',
-                        '</a>',
-                    '</label>'
-                ].join(''),
-        controller: function ($scope) {
-            $scope.changeOrder=function() {
-                if( $scope.form.navi.orderby.toLowerCase()==$scope.name.toLowerCase() ) {
-                    if($scope.form.navi.sortby.toLowerCase()=="asc") {
-                        $scope.form.navi.sortby = "DESC";
-                    } else {
-                        $scope.form.navi.sortby = "ASC";
-                    }
-                } else {
-                    $scope.form.navi.orderby = $scope.name;
-                    $scope.form.navi.sortby = $scope.form.colMeta($scope.name).sort?$scope.form.colMeta($scope.name).sort.toUpperCase():"ASC";
-                }
-                $scope.form.getRows();
-            }
-        },
-        link: function (sc, el, attr) {
-        }
-    }
-});
-
 wliu_form.directive("form.label", function () {
     return {
         restrict: "E",
@@ -154,16 +111,15 @@ wliu_form.directive("form.html", function ($sce) {
         replace: true,
         scope: {
             form:      "=",
-            rowsn:      "@",
             name:       "@"
         },
         template: [
-                    '<span scope="{{ form.scope }}" ng-bind-html="getHTML()" ng-hide="form.relationHide(rowsn, name)"></span>'
+                    '<span scope="{{ form.scope }}" ng-bind-html="getHTML()"></span>'
                 ].join(''),
         controller: function ($scope, $sce) {
             $scope.getHTML = function() {
-                if( $scope.form.colByIndex($scope.rowsn, $scope.name) )
-                    return $sce.trustAsHtml($scope.form.colByIndex($scope.rowsn, $scope.name).value);
+                if( $scope.form.colByName($scope.name) )
+                    return $sce.trustAsHtml($scope.form.colByName($scope.name).value);
                 else 
                     return $sce.trustAsHtml("");
             }
@@ -181,17 +137,16 @@ wliu_form.directive("form.text", function () {
         replace: true,
         scope: {
             form:      "=",
-            rowsn:      "@",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<span class="wliu-text" scope="{{ form.scope }}" ng-hide="form.relationHide(rowsn, name)" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': form.colByIndex(rowsn, name).errorCode }" ',
-                        'wliu-popup popup-target="{{tooltip?form.tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByIndex(rowsn, name).errorCode?form.colByIndex(rowsn, name).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                        'title="{{ tooltip?\'\':form.colByIndex(rowsn, name).errorCode?form.colByIndex(rowsn, name).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}"',
+                    '<span class="wliu-text" scope="{{ form.scope }}" ',
+                        'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
+                        'wliu-popup popup-target="{{tooltip?form.tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                        'title="{{ tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}"',
                     '>',
-                        '{{ form.colByIndex(rowsn, name).value }}',
+                        '{{ form.colByName(name).value }}',
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
@@ -230,12 +185,11 @@ wliu_form.directive("form.textbox", function () {
         replace: true,
         scope: {
             form:      "=",
-            rowsn:      "@",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<input type="textbox" scope="{{ form.scope }}" ng-hide="form.relationHide(rowsn, name)" ',
+                    '<input type="textbox" scope="{{ form.scope }}" ',
                         //'ng-init="col=form.colByIndex(rowsn, name)" ',
                         'ng-class="{ \'wliuCommon-input-invalid\': form.colByIndex(rowsn, name).errorCode }" ',
                         'ng-model="form.colByIndex(rowsn, name).value" ',
