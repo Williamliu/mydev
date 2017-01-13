@@ -18,7 +18,15 @@ WLIU.FORM = function( opts ) {
 	this.error		= {errorCode:0, errorMessage:""};  // table level error : action rights 
 	this.rights 	= {view:1, save:0, cancel:1, clear:1, delete:0, add:1, detail:1, output:0, print:1};
 	this.cols 		= [];
-	this.row 		= {};
+
+	this.row 		= {
+							scope: opts.scope, 
+							keys: {},
+							rowstate: 0,  //default is new row;   0 - normal; 1 - changed;  2 - added;  3 - deleted
+							error: { errorCode: 0, errorMessage: "" },
+							cols:[]
+						};
+
 	this.lists		= {};  // { gender: { loaded: 1, keys: { rowsn: -1, name: "" }, list: [{key:1, value:"Male", desc:""}, {key:2, value:"Female", desc:""}] },  	xxx: {} }
 	this.callback   = {ajaxBefore: null, ajaxAfter: null, ajaxComplete: null, ajaxError: null,  ajaxSuccess: null};
 	
@@ -30,7 +38,7 @@ WLIU.FORM = function( opts ) {
 
 WLIU.FORM.prototype = {
 	setScope: function(p_scope) {
-		p_scope.table = this;
+		p_scope.form = this;
 		this.sc = p_scope;
 	},
 
@@ -78,6 +86,12 @@ WLIU.FORM.prototype = {
 	},
 	detachByRow: function(p_row) {
 		return FUNC.ROW.detach(this.row);
+	},
+
+	changeByCol: function(p_col) {
+		var nameValues = {};
+		nameValues[p_col.name] = p_col.value;
+		return this.updateByName(nameValues);
 	},
 	
 	updateColVal: function(vCol, p_val) {
@@ -156,12 +170,6 @@ WLIU.FORM.prototype = {
 
 
 	/*** event for external call ***/
-	changeByCol: function(p_col) {
-		var nameValues = {};
-		nameValues[p_col.name] = p_col.value;
-		return this.updateByName(nameValues);
-	},
-
 	getChangeRows: function() {
 		var nrows = [];
 		for(var ridx in this.rows) {

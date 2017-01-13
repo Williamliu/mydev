@@ -38,9 +38,7 @@
 		<!-- wliu components -->
 		<script src="js/wliu/wliu.common.js" type="text/javascript"></script>
 		<script src="js/wliu/wliu.form.js" type="text/javascript"></script>
-		<script	src="angularjs/wliu/wliu.table.js" type="text/javascript"></script>
-		<script	src="angularjs/wliu/wliu.table.filter.js" type="text/javascript"></script>
-		<script	src="angularjs/wliu/wliu.table.list.js" type="text/javascript"></script>
+		<script	src="angularjs/wliu/wliu.form.js" type="text/javascript"></script>
 	
 		<script src="jquery/wliu/diag/wliu.jquery.diag.js" type="text/javascript"></script>
 		<link 	href='jquery/wliu/diag/wliu.jquery.diag.css' type='text/css' rel='stylesheet' />
@@ -67,7 +65,7 @@
 		   	var col9 = new WLIU.COL({key:0, coltype:"checkbox1", 	name:"country_id",	colname:"Country ISO",  coldesc:"Country ID", list:"countryCategory"});
 		   	var col10 = new WLIU.COL({key:0, coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status"});
 
-            var cols = {};
+            var cols = [];
             cols.push(col1);
 		   	cols.push(col2);
 		   	cols.push(col3);
@@ -107,7 +105,7 @@
             var app = angular.module("myApp", ["wliuForm"]);
             app.controller("myForm", function ($scope) {
 				form.setScope( $scope );
-				form.getRows();
+				//form.getRows();
 		    });
 
 			$(function(){
@@ -117,24 +115,30 @@
 <body ng-app="myApp" ng-controller="myForm" style="padding-top:80px;position:relative;">
 <!-- container -->
 <div class="container">
+		<form.rowstatus form="form"></form.rowstatus>
 		<div class="row">
-			<div class="col-md-2">
+			<div class="col-md-1">
 				<form.label form="form" name="uuu"></form.label>
 			</div>		
-			<div class="col-md-4">
+			<div class="col-md-3">
 				<form.textbox form="form" name="uuu"></form.textbox>
+			</div>
+			<div class="col-md-1">
+				<form.label form="form" name="full_name"></form.label>
+			</div>		
+			<div class="col-md-3">
+				<form.textbox form="form" name="full_name"></form.textbox>
+			</div>
+			<div class="col-md-1">
+				<form.label form="form" name="bbb"></form.label>
+			</div>		
+			<div class="col-md-3">
+				<form.datetime form="form" name="bbb"></form.datetime>
 			</div>
 		</div>
 </div>
 <!-- container -->
 
-<table.taberror table="table" targetid="taberror"></table.taberror>
-<table.tooltip table="table" targetid="tabtip"></table.tooltip>
-<table.wait table="table" targetid="tabwait"></table.wait>
-<table.tips table="table" targetid="tabtips" halign="right" valign="bottom"></table.tips>
-
-<table.checkdiag1 table="table" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></table.checkdiag1>
-<table.radiodiag3 table="table" targetid="colorCategory_diag" name="colorCategory" colnum="3" colnum1="0" bar="1" title="Please Select"></table.radiodiag3>
 
 <!-- MD Bootstrap 4.0 js -- must place at the end of body -->
 <script type="text/javascript" src="theme/mdb4.0/js/mdb.min.js"></script>
