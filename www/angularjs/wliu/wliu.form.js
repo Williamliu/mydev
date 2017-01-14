@@ -177,36 +177,6 @@ wliu_form.directive("form.hidden", function () {
     }
 });
 
-/*
-wliu_form.directive("form.textbox", function () {
-    return {
-        restrict: "E",
-        replace: true,
-        scope: {
-            form:      "=",
-            name:       "@",
-            tooltip:    "@"
-        },
-        template: [
-                    '<input type="textbox" scope="{{ form.scope }}" ',
-                        //'ng-init="col=form.colByName(name)" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
-                        'ng-model="form.colByName(name).value" ',
-                        'ng-change="form.changeByCol(form.colByName(name))" ',
-                        'ng-disabled="form.colByName(name)==undefined" ',
-                        'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ',
-
-                        //'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                        //'title="{{tooltip? \'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                    '/>'
-                ].join(''),
-        controller: function ($scope) {
-        },
-        link: function (sc, el, attr) {
-        }
-    }
-});
-*/
 
 wliu_form.directive("form.textbox", function () {
     return {
@@ -314,13 +284,11 @@ wliu_form.directive("form.textarea", function () {
         replace: true,
         scope: {
             form:      "=",
-            rowsn:      "@",
             name:       "@",
             tooltip:    "@"
         },
         template: [
                     '<textarea scope="{{ form.scope }}" ',
-                        //'ng-init="col=form.colByName(name)" ',
                         'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
                         'ng-model="form.colByName(name).value" ',
                         'ng-change="form.changeByCol(form.colByName(name))" ',
@@ -468,7 +436,6 @@ wliu_form.directive("form.date", function () {
         replace: true,
         scope: {
             form:      "=",
-            rowsn:      "@",
             name:       "@",
             tooltip:    "@"
         },
@@ -510,12 +477,11 @@ wliu_form.directive("form.time", function () {
         replace: true,
         scope: {
             form:      "=",
-            rowsn:      "@",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<input type="textbox" class="wliuCommon-timepicker" scope="{{ form.scope }}" placeholder="hh:mm" ng-hide="form.relationHide(rowsn, name)" ',
+                    '<input type="textbox" class="wliuCommon-timepicker" scope="{{ form.scope }}" placeholder="hh:mm" ',
                         //'ng-init="col=form.colByName(name)" ',
                         'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
                         'ng-model="form.colByName(name).value" ',
@@ -544,12 +510,11 @@ wliu_form.directive("form.intdate", function () {
         transclude: true,
         scope: {
             form:      "=",
-            rowsn:      "@",
             name:       "@",
             format:     "@"
         },
         template: [
-                    '<span ng-hide="form.relationHide(rowsn, name)">{{ form.colByName(name).value?(form.colByName(name).value>0?(form.colByName(name).value * 1000 | date : (format?format:"yyyy-MM-dd hh:mm") ):"") :"" }}</span>'
+                    '<span>{{ form.colByName(name).value?(form.colByName(name).value>0?(form.colByName(name).value * 1000 | date : (format?format:"yyyy-MM-dd hh:mm") ):"") :"" }}</span>'
 				  ].join(''),
         controller: function ($scope) {
         }
@@ -563,19 +528,16 @@ wliu_form.directive("form.checkbox", function () {
         scope: {
             form:      "=",
             name:       "@",
-            rowsn:      "@",
             colnum:     "@",
             tooltip:    "@"
         },
         template: [
-                    '<div  scope="{{ form.scope }}" ng-hide="form.relationHide(rowsn, name)" ',
-                        //'ng-init="form.colByName(name).value=$.isPlainObject(form.colByName(name).value)?form.colByName(name).value:{}" ',
+                    '<div  scope="{{ form.scope }}" ',
                         'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
                         'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                     '>',
                         '<span ',
-                            //'ng-init="form.colByName(name).value=form.colByName(name).value?form.colByName(name).value:{};" ',                          
                             'ng-repeat="rdObj in form.lists[form.colMeta(name).list].list">',
                                 '<span class="checkbox">',
 
@@ -608,14 +570,13 @@ wliu_form.directive("form.checkbox1", function () {
         replace: true,
         scope: {
             form:      "=",
-            rowsn:      "@",
             name:       "@",
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                    '<input type="text" readonly scope="{{ form.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ng-hide="form.relationHide(rowsn, name)" ',
-                            'ng-click="change(rowsn, name)" ',
+                    '<input type="text" readonly scope="{{ form.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ',
+                            'ng-click="change(name)" ',
                             'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
                             'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
                             'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
@@ -624,14 +585,13 @@ wliu_form.directive("form.checkbox1", function () {
                 ].join(''),
         controller: function ($scope) {
             $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys = $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys || {};
-            $scope.change = function(rowsn, name) {
-                $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.rowsn = rowsn;
+            $scope.change = function(name) {
                 $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.name = name;
             }
             $scope.valueText = function() {
                     var text = $.map( $scope.form.lists[$scope.form.colMeta($scope.name).list].list , function(n) {
-                    if( $scope.form.colByIndex( $scope.rowsn, $scope.name )!= undefined ) {
-                        if($scope.form.colByIndex( $scope.rowsn, $scope.name ).value[n.key]) 
+                    if( $scope.form.colByName( $scope.name )!= undefined ) {
+                        if($scope.form.colByName( $scope.name ).value[n.key]) 
                             return n.value;
                         else
                             return null;
@@ -661,15 +621,12 @@ wliu_form.directive("form.checkdiag1", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag" scope="{{ form.scope }}" ',
-                        //'ng-init="form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name ).value=$.isPlainObject(form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name ).value)?form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name ).value:{}" ',
-                    '>',
-
+                    '<div id="{{targetid}}" class="wliu-diag" scope="{{ form.scope }}">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '<li ng-repeat="vObj in valueArr(form.lists[name].keys.rowsn, form.lists[name].keys.name)">',
+                                    '<li ng-repeat="vObj in valueArr(form.lists[name].keys.name)">',
                                     '{{ vObj.value }}',
                                     '</li>',
                                 '</ul>',
@@ -677,8 +634,8 @@ wliu_form.directive("form.checkdiag1", function () {
                         '</a>',
 
                         '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
-                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(form.lists[name].keys.rowsn, form.lists[name].keys.name)" title="check all"  ng-show="bar==1"></a>',
-                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(form.lists[name].keys.rowsn, form.lists[name].keys.name)" title="remove all"  ng-show="bar==1"></a>',
+                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(form.lists[name].keys.name)" title="check all"  ng-show="bar==1"></a>',
+                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(form.lists[name].keys.name)" title="remove all"  ng-show="bar==1"></a>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="font-size:14px;">',
                         '<span ',
@@ -686,9 +643,9 @@ wliu_form.directive("form.checkdiag1", function () {
                                 '<span class="checkbox">',
 
                                         '<input type="checkbox" scope="{{ form.scope }}" id="{{form.scope}}_{{name}}_{{rdObj.key}}" ',
-                                            'ng-model="form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name ).value[rdObj.key]" ng-value="rdObj.key"  ',
-                                            'ng-change="form.changeByIndex( form.lists[name].keys.rowsn, form.colByIndex(form.lists[name].keys.rowsn, form.lists[name].keys.name) )" ',
-                                            'ng-disabled="form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name )==undefined" ',
+                                            'ng-model="form.colByName( form.lists[name].keys.name ).value[rdObj.key]" ng-value="rdObj.key"  ',
+                                            'ng-change="form.changeByCol( form.colByName(form.lists[name].keys.name) )" ',
+                                            'ng-disabled="form.colByName( form.lists[name].keys.name )==undefined" ',
                                         '/>',
 
                                         '<label for="{{form.scope}}_{{name}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
@@ -704,31 +661,26 @@ wliu_form.directive("form.checkdiag1", function () {
                 ].join(''),
         controller: function ($scope) {
             $scope.form.lists[$scope.name].keys = $scope.form.lists[$scope.name].keys || {};
-            $scope.change = function(rowsn, name) {
-                // $scope.name is  lists[name],   name is colname
-                $scope.form.lists[$scope.name].keys.rowsn = rowsn;
-                $scope.form.lists[$scope.name].keys.name = name;
-            }
 
-            $scope.checkall = function(rowsn, name) {
-                $scope.form.colByIndex( rowsn, name ).value = $scope.form.colByIndex( rowsn, name ).value || {};
+            $scope.checkall = function( name) {
+                $scope.form.colByName( name ).value = $scope.form.colByName( name ).value || {};
                 for( var key in $scope.form.lists[$scope.name].list  ) {
-                    $scope.form.colByIndex( rowsn, name ).value[ $scope.form.lists[$scope.name].list[key].key ] = true;
+                    $scope.form.colByName( name ).value[ $scope.form.lists[$scope.name].list[key].key ] = true;
                 }
-                $scope.form.changeByIndex(rowsn, $scope.form.colByIndex( rowsn, name ));
+                $scope.form.changeByCol( $scope.form.colByName( name ));
             }
 
-            $scope.removeall = function(rowsn, name) {
+            $scope.removeall = function(name) {
                 for( var key in $scope.form.lists[$scope.name].list  ) {
-                    $scope.form.colByIndex( rowsn, name ).value = {};
+                    $scope.form.colByName( name ).value = {};
                 }
-                $scope.form.changeByIndex(rowsn, $scope.form.colByIndex( rowsn, name ));
+                $scope.form.changeByCol($scope.form.colByName( name ));
             }
 
-            $scope.valueArr = function(rowsn, name) {
+            $scope.valueArr = function(name) {
                var valueArr = $.map( $scope.form.lists[$scope.name].list , function(n) {
-                   if( $scope.form.colByIndex( rowsn, name  )!= undefined  ) {
-                        if( $scope.form.colByIndex( rowsn, name  ).value[n.key] ) 
+                   if( $scope.form.colByName(name)!= undefined  ) {
+                        if( $scope.form.colByName( name  ).value[n.key] ) 
                                 return n;
                         else
                                 return null;
@@ -756,15 +708,12 @@ wliu_form.directive("form.checklist1", function () {
         scope: {
             form:      "=",
             name:       "@",
-            rowsn:      "@",
             colnum:     "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px; padding:2px; overflow-y:auto;text-align:left; min-width:240px;" scope="{{ form.scope }}" ng-hide="form.relationHide(rowsn, name)" ',
-                        //'ng-init="form.colByIndex( rowsn, name ).value=$.isPlainObject(form.colByIndex( rowsn, name ).value)?form.colByIndex( rowsn, name ).value:{}"',
-                    '>',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px; padding:2px; overflow-y:auto;text-align:left; min-width:240px;" scope="{{ form.scope }}">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
@@ -786,9 +735,9 @@ wliu_form.directive("form.checklist1", function () {
                                 '<span class="checkbox">',
 
                                         '<input type="checkbox" scope="{{ form.scope }}" id="{{form.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" ',
-                                            'ng-model="form.colByIndex( rowsn, name ).value[rdObj.key]" ng-value="rdObj.key"  ',
-                                            'ng-change="form.changeByIndex( rowsn, form.colByName(name) )" ',
-                                            'ng-disabled="form.colByIndex( rowsn, name )==undefined" ',
+                                            'ng-model="form.colByName( name ).value[rdObj.key]" ng-value="rdObj.key"  ',
+                                            'ng-change="form.changeByCol( form.colByName(name) )" ',
+                                            'ng-disabled="form.colByName( name )==undefined" ',
                                         '/>',
 
                                         '<label for="{{form.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
@@ -806,25 +755,25 @@ wliu_form.directive("form.checklist1", function () {
             $scope.form.lists[$scope.form.colMeta($scope.name).list].keys = $scope.form.lists[$scope.form.colMeta($scope.name).list].keys || {};
 
             $scope.checkall = function() {
-                $scope.form.colByIndex( $scope.rowsn, $scope.name ).value = $scope.form.colByIndex( $scope.rowsn, $scope.name ).value || {};
+                $scope.form.colByName( $scope.name ).value = $scope.form.colByName( $scope.name ).value || {};
                 for( var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list  ) {
-                    $scope.form.colByIndex( $scope.rowsn, $scope.name ).value[ $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key].key ] = true;
+                    $scope.form.colByName( $scope.name ).value[ $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key].key ] = true;
                 }
 
-                $scope.form.changeByIndex($scope.rowsn, $scope.form.colByIndex( $scope.rowsn, $scope.name ));
+                $scope.form.changeByCol( $scope.form.colByName( $scope.name ));
             }
 
             $scope.removeall = function() {
                 for( var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list  ) {
-                    $scope.form.colByIndex( $scope.rowsn, $scope.name ).value = {};
+                    $scope.form.colByName( $scope.name ).value = {};
                 }
-                $scope.form.changeByIndex($scope.rowsn, $scope.form.colByIndex( $scope.rowsn, $scope.name ));
+                $scope.form.changeByCol( $scope.form.colByName( $scope.name ));
             }
 
             $scope.valueArr = function() {
                var valueArr = $.map( $scope.form.lists[$scope.form.colMeta($scope.name).list].list , function(n) {
-                   if( $scope.form.colByIndex( $scope.rowsn, $scope.name  )!= undefined  ) {
-                        if( $scope.form.colByIndex( $scope.rowsn, $scope.name  ).value[n.key] ) 
+                   if( $scope.form.colByName( $scope.name  )!= undefined  ) {
+                        if( $scope.form.colByName( $scope.name ).value[n.key] ) 
                                 return n;
                         else
                                 return null;
@@ -848,14 +797,13 @@ wliu_form.directive("form.checkbox2", function () {
         replace: true,
         scope: {
             form:      "=",
-            rowsn:      "@",
             name:       "@",
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                        '<input type="text" readonly scope="{{ form.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ng-hide="form.relationHide(rowsn, name)" ',
-                                'ng-click="change(rowsn, name)" ',
+                        '<input type="text" readonly scope="{{ form.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ',
+                                'ng-click="change(name)" ',
                                 'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
 
                                 'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
@@ -865,8 +813,7 @@ wliu_form.directive("form.checkbox2", function () {
                 ].join(''),
         controller: function ($scope) {
             $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys = $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys || {};
-            $scope.change = function(rowsn, name) {
-                $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.rowsn = rowsn;
+            $scope.change = function(name) {
                 $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.name = name;
             }
             $scope.valueText = function() {
@@ -874,8 +821,8 @@ wliu_form.directive("form.checkbox2", function () {
                 for(var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list) {
                     var dList = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key].list;
                     var text = $.map( dList , function(n) {
-                        if( $scope.form.colByIndex( $scope.rowsn, $scope.name )!=undefined ) {
-                            if($scope.form.colByIndex( $scope.rowsn, $scope.name ).value[n.key]) 
+                        if( $scope.form.colByName( $scope.name )!=undefined ) {
+                            if($scope.form.colByName( $scope.name ).value[n.key]) 
                                     return n.value;
                             else
                                     return null;
@@ -908,22 +855,20 @@ wliu_form.directive("form.checkdiag2", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ form.scope }}" ',
-                        //'ng-init="form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name ).value=$.isPlainObject(form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name ).value)?form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name ).value:{}"',
-                    '>',
+                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ form.scope }}">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '<li ng-repeat="vObj in valueArr(form.lists[name].keys.rowsn, form.lists[name].keys.name)">',
+                                    '<li ng-repeat="vObj in valueArr(form.lists[name].keys.name)">',
                                     '{{ vObj.value }}',
                                     '</li>',
                                 '</ul>',
                             '</div>',
                         '</a>',
                         '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
-                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(form.lists[name].keys.rowsn, form.lists[name].keys.name)" title="check all" ng-show="bar==1"></a>',
-                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(form.lists[name].keys.rowsn, form.lists[name].keys.name)" title="remove all" ng-show="bar==1"></a>',
+                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(form.lists[name].keys.name)" title="check all" ng-show="bar==1"></a>',
+                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(form.lists[name].keys.name)" title="remove all" ng-show="bar==1"></a>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="font-size:14px;">',
                             '<span style="display:none;" ng-repeat-start="rdObj in form.lists[name].list|filter:search"></span>',
@@ -935,9 +880,9 @@ wliu_form.directive("form.checkdiag2", function () {
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="checkbox">',
                                                                     '<input type="checkbox" scope="{{ form.scope }}" id="{{form.scope}}_{{name}}_{{tdObj.key}}" ',
-                                                                        'ng-model="form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name ).value[tdObj.key]" ng-value="tdObj.key"  ',
-                                                                        'ng-change="form.changeByIndex( form.lists[name].keys.rowsn, form.colByIndex(form.lists[name].keys.rowsn, form.lists[name].keys.name) )" ',
-                                                                        'ng-disabled="form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name )==undefined" ',
+                                                                        'ng-model="form.colByName( form.lists[name].keys.name ).value[tdObj.key]" ng-value="tdObj.key"  ',
+                                                                        'ng-change="form.changeByCol( form.colByName(form.lists[name].keys.name) )" ',
+                                                                        'ng-disabled="form.colByName( form.lists[name].keys.name )==undefined" ',
                                                                     '/>',
 
                                                                     '<label for="{{form.scope}}_{{name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
@@ -958,38 +903,37 @@ wliu_form.directive("form.checkdiag2", function () {
                 ].join(''),
         controller: function ($scope) {
             $scope.form.lists[$scope.name].keys = $scope.form.lists[$scope.name].keys || {};
-            $scope.change = function(rowsn, name) {
+            $scope.change = function(name) {
                 // $scope.name is  lists[name],   name is colname
-                $scope.form.lists[$scope.name].keys.rowsn = rowsn;
                 $scope.form.lists[$scope.name].keys.name = name;
             }
 
-            $scope.checkall = function(rowsn, name) {
-                $scope.form.colByIndex( rowsn, name ).value = $scope.form.colByIndex( rowsn, name ).value || {};
+            $scope.checkall = function(name) {
+                $scope.form.colByName( name ).value = $scope.form.colByName( name ).value || {};
                 for( var key in $scope.form.lists[$scope.name].list  ) {
                     var dList = $scope.form.lists[$scope.name].list[key].list;
                     for( var dkey in dList) {
-                        $scope.form.colByIndex( rowsn, name ).value[ dList[dkey].key ] = true;
+                        $scope.form.colByName( name ).value[ dList[dkey].key ] = true;
                     }
                 }
 
-                $scope.form.changeByIndex(rowsn, $scope.form.colByIndex( rowsn, name ));
+                $scope.form.changeByCol($scope.form.colByName( name ));
             }
 
-            $scope.removeall = function(rowsn, name) {
+            $scope.removeall = function(name) {
                 for( var key in $scope.form.lists[$scope.name].list  ) {
-                    $scope.form.colByIndex( rowsn, name ).value = {};
+                    $scope.form.colByName( name ).value = {};
                 }
-                $scope.form.changeByIndex(rowsn, $scope.form.colByIndex( rowsn, name ));
+                $scope.form.changeByCol($scope.form.colByName( name ));
             }
 
-            $scope.valueArr = function(rowsn, name) {
+            $scope.valueArr = function(name) {
                 var ret_arr = [];
                 for(var key in $scope.form.lists[$scope.name].list) {
                     var dList = $scope.form.lists[$scope.name].list[key].list;
                     var valueArr = $.map( dList , function(n) {
-                        if( $scope.form.colByIndex( rowsn, name  )!= undefined  ) {
-                                if( $scope.form.colByIndex( rowsn, name  ).value[n.key] ) 
+                        if( $scope.form.colByName( name  )!= undefined  ) {
+                                if( $scope.form.colByName( name  ).value[n.key] ) 
                                         return n;
                                 else
                                         return null;
@@ -1018,16 +962,13 @@ wliu_form.directive("form.checklist2", function () {
         scope: {
             form:      "=",
             name:       "@",
-            rowsn:      "@",
             colnum:     "@",
             colnum1:    "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ form.scope }}" ng-hide="form.relationHide(rowsn, name)" ',
-                        //'ng-init="form.colByIndex( rowsn, name ).value=$.isPlainObject(form.colByIndex( rowsn, name ).value)?form.colByIndex( rowsn, name ).value:{}"',
-                    '>',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ form.scope }}">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
@@ -1052,9 +993,9 @@ wliu_form.directive("form.checklist2", function () {
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="checkbox">',
                                                                     '<input type="checkbox" scope="{{ form.scope }}" id="{{form.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" ',
-                                                                        'ng-model="form.colByIndex( rowsn, name ).value[tdObj.key]" ng-value="tdObj.key"  ',
-                                                                        'ng-change="form.changeByIndex( rowsn, form.colByName(name) )" ',
-                                                                        'ng-disabled="form.colByIndex( rowsn, name )==undefined" ',
+                                                                        'ng-model="form.colByName( name ).value[tdObj.key]" ng-value="tdObj.key"  ',
+                                                                        'ng-change="form.changeByCol( form.colByName(name) )" ',
+                                                                        'ng-disabled="form.colByName( name )==undefined" ',
                                                                     '/>',
 
                                                                     '<label for="{{form.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
@@ -1077,21 +1018,21 @@ wliu_form.directive("form.checklist2", function () {
             $scope.form.lists[$scope.form.colMeta($scope.name).list].keys = $scope.form.lists[$scope.form.colMeta($scope.name).list].keys || {};
 
             $scope.checkall = function() {
-                $scope.form.colByIndex( $scope.rowsn, $scope.name ).value = $scope.form.colByIndex( $scope.rowsn, $scope.name ).value || {};
+                $scope.form.colByName( $scope.name ).value = $scope.form.colByName( $scope.name ).value || {};
                 for( var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list  ) {
                     var dList = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key].list;
                     for( var dkey in dList) {
-                        $scope.form.colByIndex( $scope.rowsn, $scope.name ).value[ dList[dkey].key ] = true;
+                        $scope.form.colByName( $scope.name ).value[ dList[dkey].key ] = true;
                     }
                 }
-                $scope.form.changeByIndex($scope.rowsn, $scope.form.colByIndex( $scope.rowsn, $scope.name ));
+                $scope.form.changeByName($scope.form.colByName( $scope.name ));
             }
 
             $scope.removeall = function() {
                 for( var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list  ) {
-                    $scope.form.colByIndex( $scope.rowsn, $scope.name ).value = {};
+                    $scope.form.colByName( $scope.name ).value = {};
                 }
-                $scope.form.changeByIndex($scope.rowsn, $scope.form.colByIndex( $scope.rowsn, $scope.name ));
+                $scope.form.changeByCol($scope.form.colByName( $scope.name ));
             }
 
             $scope.valueArr = function() {
@@ -1099,8 +1040,8 @@ wliu_form.directive("form.checklist2", function () {
                 for(var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list) {
                     var dList = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key].list;
                     var valueArr = $.map( dList , function(n) {
-                        if( $scope.form.colByIndex( $scope.rowsn, $scope.name  )!= undefined  ) {
-                                if( $scope.form.colByIndex( $scope.rowsn, $scope.name  ).value[n.key] ) 
+                        if( $scope.form.colByName( $scope.name  )!= undefined  ) {
+                                if( $scope.form.colByName( $scope.name  ).value[n.key] ) 
                                         return n;
                                 else
                                         return null;
@@ -1125,14 +1066,13 @@ wliu_form.directive("form.checkbox3", function () {
         replace: true,
         scope: {
             form:      "=",
-            rowsn:      "@",
             name:       "@",
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                    '<input type="text" readonly scope="{{ form.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ng-hide="form.relationHide(rowsn, name)" ',
-                            'ng-click="change(rowsn, name)" ',
+                    '<input type="text" readonly scope="{{ form.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ',
+                            'ng-click="change(name)" ',
                             'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
 
                             'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
@@ -1142,8 +1082,7 @@ wliu_form.directive("form.checkbox3", function () {
                 ].join(''),
         controller: function ($scope) {
             $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys = $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys || {};
-            $scope.change = function(rowsn, name) {
-                $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.rowsn = rowsn;
+            $scope.change = function(name) {
                 $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.name = name;
             }
             $scope.valueText = function() {
@@ -1153,8 +1092,8 @@ wliu_form.directive("form.checkbox3", function () {
                     for(var key2 in list2) {
                         var list3 = list2[key2].list;
                         var text = $.map( list3 , function(n) {
-                            if( $scope.form.colByIndex( $scope.rowsn, $scope.name )!= undefined ) {
-                                if($scope.form.colByIndex( $scope.rowsn, $scope.name ).value[n.key]) 
+                            if( $scope.form.colByName( $scope.name )!= undefined ) {
+                                if($scope.form.colByName( $scope.name ).value[n.key]) 
                                         return n.value;
                                 else
                                         return null;
@@ -1188,22 +1127,20 @@ wliu_form.directive("form.checkdiag3", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ form.scope }}" ',
-                        //'ng-init="form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name ).value=$.isPlainObject(form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name ).value)?form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name ).value:{}"',
-                    '>',
+                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ form.scope }}">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '<li ng-repeat="vObj in valueArr(form.lists[name].keys.rowsn, form.lists[name].keys.name)">',
+                                    '<li ng-repeat="vObj in valueArr(form.lists[name].keys.name)">',
                                     '{{ vObj.value }}',
                                     '</li>',
                                 '</ul>',
                             '</div>',
                         '</a>',
                         '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
-                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(form.lists[name].keys.rowsn, form.lists[name].keys.name)" title="check all" ng-show="bar==1"></a>',
-                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(form.lists[name].keys.rowsn, form.lists[name].keys.name)" title="remove all" ng-show="bar==1"></a>',
+                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(form.lists[name].keys.name)" title="check all" ng-show="bar==1"></a>',
+                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(form.lists[name].keys.name)" title="remove all" ng-show="bar==1"></a>',
                         
                         '<select class="wliuCommon-filter" ',
                                 'ng-model="listFilter.key" ',
@@ -1223,9 +1160,9 @@ wliu_form.directive("form.checkdiag3", function () {
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="checkbox">',
                                                                     '<input type="checkbox" scope="{{ form.scope }}" id="{{form.scope}}_{{name}}_{{tdObj.key}}" ',
-                                                                        'ng-model="form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name ).value[tdObj.key]" ng-value="tdObj.key"  ',
-                                                                        'ng-change="form.changeByIndex( form.lists[name].keys.rowsn, form.colByIndex(form.lists[name].keys.rowsn, form.lists[name].keys.name) )" ',
-                                                                        'ng-disabled="form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name )==undefined" ',
+                                                                        'ng-model="form.colByName( form.lists[name].keys.name ).value[tdObj.key]" ng-value="tdObj.key"  ',
+                                                                        'ng-change="form.changeByCol( form.colByName(form.lists[name].keys.name) )" ',
+                                                                        'ng-disabled="form.colByName( form.lists[name].keys.name )==undefined" ',
                                                                     '/>',
 
                                                                     '<label for="{{form.scope}}_{{name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
@@ -1248,31 +1185,30 @@ wliu_form.directive("form.checkdiag3", function () {
         controller: function ($scope) {
             $scope.form.lists[$scope.name].keys = $scope.form.lists[$scope.name].keys || {};
             $scope.listFilter = $scope.listFilter || {};
-            $scope.change = function(rowsn, name) {
+            $scope.change = function(name) {
                 // $scope.name is  lists[name],   name is colname
-                $scope.form.lists[$scope.name].keys.rowsn = rowsn;
                 $scope.form.lists[$scope.name].keys.name = name;
             }
 
-            $scope.checkall = function(rowsn, name) {
-                $scope.form.colByIndex( rowsn, name ).value = $scope.form.colByIndex( rowsn, name ).value || {};
+            $scope.checkall = function(name) {
+                $scope.form.colByName( name ).value = $scope.form.colByName( name ).value || {};
                 for( var key1 in $scope.form.lists[$scope.name].list  ) {
                     var list2 = $scope.form.lists[$scope.name].list[key1].list;
                     for( var key2 in list2) {
                         var list3 = list2[key2].list;
                         for(var key3 in list3) {
-                            $scope.form.colByIndex( rowsn, name ).value[ list3[key3].key ] = true;
+                            $scope.form.colByName( name ).value[ list3[key3].key ] = true;
                         }
                      }
                 }
-                $scope.form.changeByIndex(rowsn, $scope.form.colByIndex( rowsn, name ));
+                $scope.form.changeByCol( $scope.form.colByName( name ));
             }
 
-            $scope.removeall = function(rowsn, name) {
+            $scope.removeall = function(name) {
                 for( var key in $scope.form.lists[$scope.name].list  ) {
-                    $scope.form.colByIndex( rowsn, name ).value = {};
+                    $scope.form.colByName( name ).value = {};
                 }
-                $scope.form.changeByIndex(rowsn, $scope.form.colByIndex( rowsn, name ));
+                $scope.form.changeByCol( $scope.form.colByName( name ));
             }
 
             $scope.getListFilter = function() {
@@ -1280,15 +1216,15 @@ wliu_form.directive("form.checkdiag3", function () {
                 return $scope.listFilter;
             }
 
-            $scope.valueArr = function(rowsn, name) {
+            $scope.valueArr = function(name) {
                 var ret_arr = [];
                 for(var key1 in $scope.form.lists[$scope.name].list) {
                     var list2 = $scope.form.lists[$scope.name].list[key1].list;
                     for(var key2 in list2) {
                         var list3 = list2[key2].list;
                         var valueArr = $.map( list3 , function(n) {
-                            if( $scope.form.colByIndex( rowsn, name  )!= undefined  ) {
-                                    if( $scope.form.colByIndex( rowsn, name  ).value[n.key] ) 
+                            if( $scope.form.colByName( name  )!= undefined  ) {
+                                    if( $scope.form.colByName( name  ).value[n.key] ) 
                                             return n;
                                     else
                                             return null;
@@ -1318,16 +1254,13 @@ wliu_form.directive("form.checklist3", function () {
         scope: {
             form:      "=",
             name:       "@",
-            rowsn:      "@",
             colnum:     "@",
             colnum1:    "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ form.scope }}" ng-hide="form.relationHide(rowsn, name)" ',
-                        //'ng-init="form.colByIndex( rowsn, name ).value=$.isPlainObject(form.colByIndex( rowsn, name ).value)?form.colByIndex( rowsn, name ).value:{}"',
-                    '>',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ form.scope }}">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
@@ -1361,8 +1294,8 @@ wliu_form.directive("form.checklist3", function () {
                                                             '<span class="checkbox">',
                                                                     '<input type="checkbox" scope="{{ form.scope }}" id="{{form.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" ',
                                                                         'ng-model="form.colByIndex( rowsn, name ).value[tdObj.key]" ng-value="tdObj.key"  ',
-                                                                        'ng-change="form.changeByIndex( rowsn, form.colByName(name) )" ',
-                                                                        'ng-disabled="form.colByIndex( rowsn, name )==undefined" ',
+                                                                        'ng-change="form.changeByIndex( form.colByName(name) )" ',
+                                                                        'ng-disabled="form.colByIndex( name )==undefined" ',
                                                                     '/>',
 
                                                                     '<label for="{{form.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
@@ -1387,24 +1320,24 @@ wliu_form.directive("form.checklist3", function () {
             $scope.listFilter = $scope.listFilter || {};
 
             $scope.checkall = function() {
-                $scope.form.colByIndex( $scope.rowsn, $scope.name ).value = $scope.form.colByIndex( $scope.rowsn, $scope.name ).value || {};
+                $scope.form.colByName( $scope.name ).value = $scope.form.colByName( $scope.name ).value || {};
                 for( var key1 in $scope.form.lists[$scope.form.colMeta($scope.name).list].list ) {
                     var list2 = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key1].list;
                     for( var key2 in list2) {
                         var list3 = list2[key2].list;
                         for(var key3 in list3) {
-                            $scope.form.colByIndex( $scope.rowsn, $scope.name ).value[ list3[key3].key ] = true;
+                            $scope.form.colByName( $scope.name ).value[ list3[key3].key ] = true;
                         }
                      }
                 }
-                $scope.form.changeByIndex($scope.rowsn, $scope.form.colByIndex( $scope.rowsn, $scope.name ));
+                $scope.form.changeByCol($scope.form.colByName( $scope.name ));
             }
 
             $scope.removeall = function() {
                 for( var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list  ) {
-                    $scope.form.colByIndex( $scope.rowsn, $scope.name ).value = {};
+                    $scope.form.colByName( $scope.name ).value = {};
                 }
-                $scope.form.changeByIndex($scope.rowsn, $scope.form.colByIndex( $scope.rowsn, $scope.name ));
+                $scope.form.changeByCol($scope.form.colByName( $scope.name ));
             }
 
             $scope.getListFilter = function() {
@@ -1419,8 +1352,8 @@ wliu_form.directive("form.checklist3", function () {
                     for(var key2 in list2) {
                         var list3 = list2[key2].list;
                         var valueArr = $.map( list3 , function(n) {
-                            if( $scope.form.colByIndex( $scope.rowsn, $scope.name )!= undefined  ) {
-                                    if( $scope.form.colByIndex( $scope.rowsn, $scope.name ).value[n.key] ) 
+                            if( $scope.form.colByName( $scope.name )!= undefined  ) {
+                                    if( $scope.form.colByName( $scope.name ).value[n.key] ) 
                                             return n;
                                     else
                                             return null;
@@ -1446,19 +1379,17 @@ wliu_form.directive("form.radio", function () {
         replace: true,
         scope: {
             form:      "=",
-            rowsn:      "@",
             colnum:     "@",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<div scope="{{ form.scope }}" ng-hide="form.relationHide(rowsn, name)" ',
+                    '<div scope="{{ form.scope }}" ',
                         'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
                         'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                     '>',
                         '<span ',
-                            //'ng-init="form.colByName(name).value=form.colByName(name).value?form.colByName(name).value:{};" ',                          
                             'ng-repeat="rdObj in form.lists[form.colMeta(name).list].list">',
                                 '<span class="radio">',
 
@@ -1469,7 +1400,6 @@ wliu_form.directive("form.radio", function () {
                                         '/>',
 
                                         '<label scope="{{ form.scope }}" for="{{form.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
-                                            //'<abbr title="{{rdObj.desc}}" ng-if="rdObj.desc!=\'\'">{{ rdObj.value }}</abbr>',
                                             '{{ rdObj.value }}',
                                         '</label>',
 
@@ -1491,14 +1421,13 @@ wliu_form.directive("form.radio1", function () {
         replace: true,
         scope: {
             form:      "=",
-            rowsn:      "@",
             name:       "@",
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                        '<input  type="text" readonly scope="{{ form.scope }}" class="wliuCommon-radiolist" value="{{ valueText() }}" ng-hide="form.relationHide(rowsn, name)" ',
-                                'ng-click="change(rowsn, name)" ',
+                        '<input  type="text" readonly scope="{{ form.scope }}" class="wliuCommon-radiolist" value="{{ valueText() }}" ',
+                                'ng-click="change(name)" ',
                                 'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
 
                                 'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
@@ -1508,12 +1437,11 @@ wliu_form.directive("form.radio1", function () {
                 ].join(''),
         controller: function ($scope) {
             $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys = $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys || {};
-            $scope.change = function(rowsn, name) {
-                $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.rowsn = rowsn;
+            $scope.change = function(name) {
                 $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.name = name;
             }
             $scope.valueText = function() {
-                var val =  $scope.form.colByIndex( $scope.rowsn, $scope.name  )?$scope.form.colByIndex( $scope.rowsn, $scope.name ).value:"";
+                var val =  $scope.form.colByName( $scope.name )?$scope.form.colByName( $scope.name ).value:"";
                 var valueText = FUNC.ARRAY.Single( $scope.form.lists[$scope.form.colMeta($scope.name).list].list, {key:val} )?FUNC.ARRAY.Single( $scope.form.lists[$scope.form.colMeta($scope.name).list].list, {key:val} ).value:"";
                 return valueText;
             }
