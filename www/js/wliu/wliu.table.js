@@ -1286,8 +1286,6 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 	}
 }
 
-
-
 /*******************************************************************************/
 // COL Function - change col metadata
 var WLIUCOL = function() {};

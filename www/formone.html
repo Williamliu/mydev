@@ -38,6 +38,7 @@
 		<!-- wliu components -->
 		<script src="js/wliu/wliu.common.js" type="text/javascript"></script>
 		<script src="js/wliu/wliu.form.js" type="text/javascript"></script>
+		<script src="js/wliu/wliu.table.action.js" type="text/javascript"></script>
 		<script	src="angularjs/wliu/wliu.form.js" type="text/javascript"></script>
 	
 		<script src="jquery/wliu/diag/wliu.jquery.diag.js" type="text/javascript"></script>
@@ -54,17 +55,22 @@
 
 
         <script language="javascript" type="text/javascript">
+		 	var colact = new WLIU.OBJECT();
+			var lstact = new WLIU.COLLECTION();
+
 		   	var col1 = new WLIU.COL({key:1, coltype:"hidden", 		name:"id", 			colname:"Admin ID",  	coldesc:"Administrator ID", defval:0 });
 		   	var col2 = new WLIU.COL({key:0, coltype:"textbox", 		name:"uuu",			col:"user_name", 		colname:"User Name", 	coldesc:"Login User", 	sort:"ASC", need:1, notnull: 1});
 		   	var col3 = new WLIU.COL({key:0, coltype:"textbox", 		name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
-		   	var col4 = new WLIU.COL({key:0, coltype:"datetime", 	name:"bbb", 		col:"birth_date", 		colname:"Brith Date", 	coldesc:"Date of Birth",  sort:"DESC", notnull:1});
+		   	var col4 = new WLIU.COL({key:0, coltype:"datetime", 	name:"bbb",  keys:{id:1, id1:110},		col:"birth_date", 		colname:"Brith Date", 	coldesc:"Date of Birth",  sort:"DESC", notnull:1});
 		   	var col5 = new WLIU.COL({key:0, coltype:"textbox", 		name:"email", 		colname:"Email",   		coldesc:"Email Address", sort:"ASC", need:1, datatype:"email", notnull:1});
 		   	var col6 = new WLIU.COL({key:0, coltype:"text", 		name:"created_time",colname:"Created", 		coldesc:"Password for Login"});
 			var col7 = new WLIU.COL({key:0, coltype:"select", 		name:"lang", 		colname:"LangISO", 		coldesc:"Language ISO Code", 	defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory"});
 		   	var col8 = new WLIU.COL({key:0, coltype:"radio", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name", 			defval: 77, notnull:1, 			list:"colorCategory"});
 		   	var col9 = new WLIU.COL({key:0, coltype:"checkbox1", 	name:"country_id",	colname:"Country ISO",  coldesc:"Country ID", list:"countryCategory"});
 		   	var col10 = new WLIU.COL({key:0, coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status"});
-
+			
+			colact.update(col1, {coltype:"good", colname:"test"});
+			console.log(col1);
             var cols = [];
             cols.push(col1);
 		   	cols.push(col2);
@@ -77,6 +83,7 @@
 		   	cols.push(col9);
 		   	cols.push(col10);
 
+			console.log( lstact.objectByKeys(cols, {id:1, id1:10} ) );
 
 		    var form = new WLIU.FORM({
 				scope: 	"mytab",
@@ -121,13 +128,13 @@
 				<form.label form="form" name="uuu"></form.label>
 			</div>		
 			<div class="col-md-3">
-				<form.textbox form="form" name="uuu"></form.textbox>
+				<form.textbox form="form" name="uuu" tooltip="#mytips"></form.textbox>
 			</div>
 			<div class="col-md-1">
 				<form.label form="form" name="full_name"></form.label>
 			</div>		
 			<div class="col-md-3">
-				<form.textbox form="form" name="full_name"></form.textbox>
+				<form.textbox form="form" name="full_name" tooltip="#mytips"></form.textbox>
 			</div>
 			<div class="col-md-1">
 				<form.label form="form" name="bbb"></form.label>
@@ -160,6 +167,7 @@
 </div>
 <!-- container -->
 
+<form.tooltip form="form" targetid="mytips"></form.tooltip>
 
 <!-- MD Bootstrap 4.0 js -- must place at the end of body -->
 <script type="text/javascript" src="theme/mdb4.0/js/mdb.min.js"></script>

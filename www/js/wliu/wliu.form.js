@@ -418,19 +418,6 @@ WLIU.FORM.prototype = {
 		return ret_val;
 	},
 
-	getFilters: function() {
-		var nfilters = [];
-		for(var fidx in this.filters) {
-			var nfilter = angular.copy(this.filters[fidx]);
-			nfilter.value = this.getColVal(this.filters[fidx]);
-			if(nfilter.need) nfilters.push(nfilter);
-			if($.isArray(nfilter.value) && nfilter.value.length>0 && !nfilter.need ) nfilters.push(nfilter);
-			if(!$.isArray(nfilter.value) && nfilter.value && !$.isPlainObject(nfilter.value) && !nfilter.need ) nfilters.push(nfilter);
-			if($.isPlainObject(nfilter.value) && (nfilter.value.from!="" || nfilter.value.to!="") && !nfilter.need) nfilters.push(nfilter);
-		}
-		return nfilters;
-	},
-	
 	getLists: function() {
 		var nlists = {};
 		for(var lname in this.lists) {
