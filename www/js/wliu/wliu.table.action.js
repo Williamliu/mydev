@@ -108,4 +108,6 @@ WLIU.COLLECTION.prototype = {
 		var ncollection = this.collectionByKV(collection, keyvalues);
 		return ncollection?(ncollection.length>0?ncollection[0]:[]):[];
 	}
+
+	// update collection object
 }
