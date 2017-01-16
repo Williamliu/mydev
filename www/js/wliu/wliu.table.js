@@ -14,7 +14,7 @@ WLIU.TABLE = function( opts ) {
 	this.tooltip 	= opts.tooltip?opts.tooltip:"";
 	this.tips 		= opts.tips?opts.tips:"";
 	
-	this.rindex 	= -1; // private for rowno
+	this._rowno 	= -1; // private for rowno
 	this.single     = 0;  // private for edit one Row - form input
 	this.singleKeys = undefined;
 	this.action		= "get";
@@ -27,6 +27,10 @@ WLIU.TABLE = function( opts ) {
 	this.lists		= {};  // { gender: { loaded: 1, keys: { rowsn: -1, name: "" }, list: [{key:1, value:"Male", desc:""}, {key:2, value:"Female", desc:""}] },  	xxx: {} }
 	this.callback   = {ajaxBefore: null, ajaxAfter: null, ajaxComplete: null, ajaxError: null,  ajaxSuccess: null};
 	
+	this.FCOLLECT = new WLIU.COLLECTION();
+	this.FOBJECT  = new WLIU.OBJECT();
+	this.FROW     = new WLIU.ROWACTION();
+
 	$.extend(this.rights, opts.rights);
 	$.extend(this.cols, opts.cols);
 	$.extend(this.navi, opts.navi);
@@ -41,50 +45,26 @@ WLIU.TABLE.prototype = {
 		this.sc = p_scope;
 	},
 
-	index:  function(p_keys) {
-		return FUNC.ROWS.index(this.rows, p_keys);
-	},
-	rowno: function(p_ridx) {
-		if(p_ridx!=undefined) {
-			if(p_ridx<0) this.rindex = -1;
-			if(p_ridx >= this.rows.length) this.rindex = this.rows.length - 1;
-			if(p_ridx>=0 && p_ridx < this.rows.length) this.rindex = p_ridx;
-			return this.rindex;
-		} else {
-			return this.rindex;
-		}
-	},
-	rowKeys: function(p_row, p_keys) {
-		if(p_keys!=undefined) {
-			if( p_row.keys || p_row.rowstate) {
-				FUNC.ROW.keys(p_row, p_keys);
-				return p_keys
-			} else {
-				if(this.rowByIndex(p_row)) {
-					FUNC.ROW.keys(this.rowByIndex(p_row), p_keys);
-					return p_keys;
-				} else { 
-					return undefined;
-				}
-			}
-		} else {
-			if(  p_row.keys || p_row.rowstate ) {
-				return p_row.keys;
-			} else {
-				if(this.rowByIndex(p_row)) 
-					return this.rowByIndex(p_row).keys;
-				else 
-					return undefined;
-			}
-		}
+	indexByKeys:  function(p_keys) {
+		return this.FCOLLECT.indexByKeys(this.rows, p_keys);
 	},
 
+	rowno: function(p_ridx) {
+		if(p_ridx!=undefined) {
+			if(p_ridx<0) this._rowno = -1;
+			if(p_ridx >= this.rows.length) this._rowno = this.rows.length - 1;
+			if(p_ridx>=0 && p_ridx < this.rows.length) this._rowno = p_ridx;
+			return this._rowno;
+		} else {
+			return this._rowno;
+		}
+	},
 	rownoByKeys : function(p_keys) {
 		if( p_keys!=undefined) {
-			var ridx = this.index(p_keys);
+			var ridx = this.indexByKeys(p_keys);
 			return this.rowno(ridx);
 		} else {
-			return this.rindex;
+			return this._rowno;
 		}
 	},
 	rownoByRow: function(p_row) {
@@ -92,18 +72,29 @@ WLIU.TABLE.prototype = {
 	},
 
 	rowstate: function(p_keys, p_rowstate) {
-		return FUNC.ROWS.rowstate(this.rows, p_keys, p_rowstate);
-	},
-
-	rowByIndex: function(ridx) {
-		return FUNC.ROWS.rowByIndex(this.rows, ridx);
-	},
-	rowByKeys: function(p_keys) {
-		return FUNC.ROWS.rowByKeys(this.rows, p_keys);
+		var t_row = this.FCOLLECT.objectByKeys(rows, p_keys);
+		if(t_row!=undefined) {
+			if(p_rowstate!=undefined) {
+				t_row.rowstate = p_rowstate;
+				if(p_rowstate=="0") {
+					for(var cidx in t_row.cols) {
+						t_row.cols[cidx].errorCode 		= 0;
+						t_row.cols[cidx].errorMessage 	= "";
+					}
+					t_row.error.errorCode 			= 0;
+					t_row.cols[cidx].errorMessage 	= "";
+				}
+				return t_row.rowstate;
+			}  else {
+				return t_row.rowstate;
+			}
+		} else {
+			return undefined;
+		}
 	},
 
 	colMeta: function(col_name) {
-		return FUNC.COLS.col(this.cols, {name: col_name});
+		return this.FCOLLECT.objectByKV(this.cols, {name: col_name});
 	},
 	colDefault: function(col_name, p_value) {
 		var t_col = this.colMeta(col_name);
@@ -134,9 +125,9 @@ WLIU.TABLE.prototype = {
 		var theRow = this.rowByIndex(ridx);
 		if( theRow ) {
 			if(col_name) 
-				return FUNC.ARRAY.Single( theRow.cols,  {name: col_name});
+				return this.FCOLLECT.firstByKV(theRow.cols,  {name: col_name});
 			else 
-				return FUNC.ARRAY.Single( theRow.cols,  {coltype: "relation"});
+				return this.FCOLLECT.firstByKV(theRow.cols,  {coltype: "relation"});
 		} else {
 			return undefined;
 		}
@@ -144,7 +135,7 @@ WLIU.TABLE.prototype = {
 	relationHide: function(ridx, col_name) {
 		var theRow = this.rowByIndex(ridx);
 		if( theRow ) {
-				var curCol = FUNC.ARRAY.Single( theRow.cols,  {name: col_name});
+				var curCol = this.FCOLLECT.firstByKV(theRow.cols,  {name: col_name});
 				if( curCol.relation ) {
 					var relCol = this.relationCol(ridx, curCol.relation);
 					if(relCol!=undefined) {
@@ -171,7 +162,7 @@ WLIU.TABLE.prototype = {
 				if( relationObj.value ) {
 					// true - check
 					if( relationObj.current ) {
-						var rCols = FUNC.ARRAY.Search(theRow.cols, {relation: relationObj.name});				
+						var rCols = this.FCOLLECT.collectionByKV(theRow.cols, {relation: relationObj.name});				
 						for(var cidx in rCols) {
 							var nameVal = {};
 							nameVal[rCols[cidx].name] = angular.copy(rCols[cidx].current);
@@ -180,7 +171,7 @@ WLIU.TABLE.prototype = {
 					} 
 				} else {
 					// false - uncheck
-					var rCols = FUNC.ARRAY.Search(theRow.cols, {relation: relationObj.name});				
+					var rCols = this.FCOLLECT.collectionByKV(theRow.cols, {relation: relationObj.name});				
 					for(var cidx in rCols) {
 						var nameVal = {};
 						nameVal[rCols[cidx].name] = "";
@@ -193,7 +184,7 @@ WLIU.TABLE.prototype = {
 	/******************/
 
 	filterMeta: function(col_name) {
-		return FUNC.ARRAY.Single(this.filters, {name: col_name});
+		return this.FCOLLECT.firstByKV(this.filters,  {name: col_name});
 	},
 	filterClear: function() {
 		for(var fidx in this.filters) {
@@ -233,30 +224,26 @@ WLIU.TABLE.prototype = {
 		}
 	},
     
+
+	// get row object
+	rowByIndex: function(ridx) {
+		return this.FCOLLECT.objectByIndex(this.rows, ridx);
+	},
+	rowByKeys: function(p_keys) {
+		return this.FCOLLECT.objectByKeys(this.rows, p_keys);
+	},
 	
 	// return rows[ridx].cols[index of col_name]
 	colByIndex: function(ridx, col_name) {
-		return FUNC.ROWS.colByIndex(this.rows, ridx, col_name);
-	},
-	colByKeys: function(p_keys, col_name) {
-		return FUNC.ROWS.colByKeys(this.rows, p_keys, col_name);
-	},
-	colByRow: function(p_row, col_name) {
-		return FUNC.ROWS.colByRow(p_row, col_name);
+		var t_row = this.FCOLLECT.objectByIndex(this.rows, ridx);
+		if( t_row != undefined ) {
+			return this.FCOLLECT.objectByKV(t_row.cols, {name:col_name});
+		} else {
+			return undefined;
+		}
 	},
 	/********************************************** */
 
-
-	// insert a row to table.rows
-	addByRow: function(ridx, p_row) {
-		if( p_row != undefined ) {
-			p_row.scope = this.scope;
-			return FUNC.ROWS.insert(this.rows, ridx, p_row);
-		} else {
-			return FUNC.ROWS.create(this.rows, this.cols, ridx, null, this.scope);
-		}
-	},
-	/****************************/
 
 
 	// update  rows[ridx].cols[index of colname].value 
@@ -341,30 +328,6 @@ WLIU.TABLE.prototype = {
 	/*********************************************/
 
     //  operate the row : table.rows[ridx]
-	cancelByRow: function(p_row) {
-		return  FUNC.ROWS.cancelByRow(p_row);
-	},
-
-	deleteByIndex: function(ridx) {
-		return FUNC.ROWS.deleteByIndex(this.rows, ridx);
-	},
-	deleteByKeys: function(p_keys) {
-		return FUNC.ROWS.deleteByKeys(this.rows, p_keys);
-	},
-	deleteByRow: function(p_row) {
-		return FUNC.ROWS.deleteByRow(this.rows, p_row);
-	},
-
-	detachByIndex: function(ridx) {
-		return FUNC.ROWS.detachByIndex(this.rows, ridx);
-	},
-	detachByKeys: function(p_keys) {
-		return FUNC.ROWS.detachByKeys(this.rows, p_keys);
-	},
-	detachByRow: function(p_row) {
-		return FUNC.ROWS.detachByRow(this.rows, p_row);
-	},
-
 	tableError: function(p_error) {
 		if(p_error!=undefined) {
 			this.error = p_error;
@@ -763,7 +726,8 @@ WLIU.TABLE.prototype = {
 				var t_row 	= arguments[1];
 				break;
 		}
-		this.addByRow(ridx, t_row);
+
+		this.FCOLLECT.insert(this.rows, ridx, t_row );
 		return t_row;
 	},	
 	cancelRow: function( theRow ) {
@@ -772,14 +736,17 @@ WLIU.TABLE.prototype = {
 				case 0: 
 					break;
 				case 1:
-
-					this.cancelByRow(theRow);
+					this.FROW.cancel(theRow);
 				    break;
 				case 2:
-					this.deleteByRow(theRow);
+					var ridx = this.indexByKeys(theRow.keys);
+					console.log(this.rows);
+					console.log(theRow);
+					console.log("ridx: " + ridx);
+					this.FCOLLECT.delete(this.rows, ridx);
 					break;
 				case 3:
-					this.cancelByRow(theRow);
+					this.FROW.cancel(theRow);
 					break;
 			}
 		}
@@ -790,7 +757,7 @@ WLIU.TABLE.prototype = {
 		}
 	},
 	deleteRow: function(theRow) {
-		this.detachByRow(theRow);
+		this.FROW.detach(theRow);
 	},
 	deleteRows: function() {
 		// none - to danger
@@ -987,7 +954,7 @@ WLIU.TABLE.prototype = {
 			nrow.rowstate = 0;
 
 			for(var colName in theRow) {
-				ncol = FUNC.ARRAY.Single(nrow.cols, {name: colName});
+				ncol = this.FCOLLECT.firstByKV(nrow.cols, {name: colName});
 				this.setColVal(ncol, theRow[colName] );
 			}
 			this.addRow(-1, nrow);
@@ -1119,7 +1086,7 @@ WLIU.TABLE.prototype = {
 									tableRow.cols[cidx].current 	= angular.copy(tableRow.cols[cidx].value);
 									this.colErrorByCol(tableRow, tableRow.cols[cidx], {errorCode:0, errorMessage:""} );
 									if(tableRow.cols[cidx].key) {
-										var keyColObj = FUNC.ARRAY.Single( nRow.cols, { name: tableRow.cols[cidx].name } );
+										var keyColObj = this.FCOLLECT.firstByKV( nRow.cols, { name: tableRow.cols[cidx].name } );
 										if( keyColObj ) {
 											tableRow.cols[cidx].value 	= keyColObj.value?keyColObj.value:"";
 											tableRow.cols[cidx].current = tableRow.cols[cidx].value;  
@@ -1221,6 +1188,7 @@ WLIU.COL = function(opts) {
 
 // Table Row Metadata Object
 WLIU.ROW = function( cols, nameValues, scope ) {
+	this.FCOLLECT = new WLIU.COLLECTION();
 	if( scope == undefined ) scope = "";
 	this.scope			= scope;
 	this.keys 			= {};
@@ -1230,7 +1198,8 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 	
 	if( nameValues == undefined ) nameValues = {};
 	// create keys : { id1 : "",  id2: "" }
-	var key_cols = FUNC.ARRAY.Search(cols, {key:1});
+	var key_cols = this.FCOLLECT.firstByKV(cols, {key:1});
+	console.log(key_cols);
 	for(var kidx in key_cols) {
 		this.keys[key_cols[kidx].name] = nameValues[key_cols[kidx].name]?nameValues[key_cols[kidx].name]:"";
 	}
@@ -1286,68 +1255,13 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 	}
 }
 
-/*******************************************************************************/
-// COL Function - change col metadata
-var WLIUCOL = function() {};
-WLIUCOL.prototype = {
-	defval: function(col, p_defval) {
-		if( p_defval!=undefined ) {
-			col.defval = p_defval;
-			return col.defval;
-		} else {
-			return col.defval;
-		}
-	},
-	
-	value: function(col, col_name, p_value) {
-		if( p_value!=undefined ) {
-			col[col_name] = p_value;
-			return col[col_name];
-		} else {
-			return col[col_name];
-		}
-	},
-	
-	update: function(col, nameValues) {
-		for(var colName in nameValues) {
-			this.value(col, colName, nameValues[colName]);
-		}
-		return col;
-	}
-	
-}
-/*******************************************************************************/
 
-/*******************************************************************************/
-// COLS Function - change col metadata
-var WLIUCOLS = function() {};
-WLIUCOLS.prototype = {
-	index: function(cols, nameValues) {
-		return FUNC.ARRAY.index(cols, nameValues);
-	},
-	col: function(cols, nameValues) {
-		var cidx = this.index(cols, nameValues);
-		if(cidx >=0) {
-			return cols[cidx];
-		} else {
-			return undefined;
-		}
-	},
-	value: function(cols, keyValues, nameValues) {
-		var t_col = this.col(cols, keyValues);
-		if( t_col!=undefined ) {
-			FUNC.COL.update(t_col, nameValues);
-			return t_col;
-		} else {
-			return undefined;
-		}
-	}	
-}
 /*******************************************************************************/
 
 /*******************************************************************************/
 // ROW Function
-var WLIUROW = function() {};
+var WLIUROW = function() {
+};
 WLIUROW.prototype = {
 	rowstate: function(row, p_rowstate) {
 		if(p_rowstate!=undefined) {
@@ -1412,7 +1326,7 @@ WLIUROW.prototype = {
 	},
 	
 	col: function(row, col_name) {
-		return FUNC.ARRAY.Single(row.cols, {name:col_name});
+		return this.FCOLLECT.firstByKV(row.cols, {name:col_name});
 	},
 
 	validate: function(row) {
@@ -1527,32 +1441,11 @@ WLIUROW.prototype = {
 
 /********************************************************************************************************/
 // ROWS Function
-var WLIUROWS = function() {};
+var WLIUROWS = function() {
+};
 WLIUROWS.prototype = {
-	index: function(rows, p_keys) {
-		return FUNC.ARRAY.indexByKeys(rows, p_keys);
-	},
 	
 	rowstate: function(rows, p_keys, p_rowstate) {
-		var t_row = this.rowByKeys(rows, p_keys);
-		if(t_row!=undefined) {
-			if(p_rowstate!=undefined) {
-				t_row.rowstate = p_rowstate;
-				if(p_rowstate=="0") {
-					for(var cidx in t_row.cols) {
-						t_row.cols[cidx].errorCode 		= 0;
-						t_row.cols[cidx].errorMessage 	= "";
-					}
-					t_row.error.errorCode 			= 0;
-					t_row.cols[cidx].errorMessage 	= "";
-				}
-				return t_row.rowstate;
-			}  else {
-				return t_row.rowstate;
-			}
-		} else {
-			return undefined;
-		}
 	},
 
 	rowErrorByIndex: function(rows, ridx, p_error) {
@@ -1629,13 +1522,14 @@ WLIUROWS.prototype = {
 	},
 
 	rowByKeys: function(rows, p_keys, p_row) {
-		var ridx = this.index(rows, p_keys);
+		var ridx = this.indexByKeys(rows, p_keys);
 		return this.rowByIndex(rows, ridx, p_row);
 	},
 	
 	colByIndex: function(rows, ridx, col_name) {
-		var t_row = this.rowByIndex(rows, ridx);
+		var t_row = this.FCOLLECT.objectByIndex(rows, ridx);
 		if( t_row != undefined ) {
+			return this.FCOLLECT.objectByKV(t_row.cols, {name:col_name});
 			return FUNC.ROW.col(t_row, col_name);
 		} else {
 			return undefined;
@@ -1722,7 +1616,7 @@ WLIUROWS.prototype = {
 	},
 	
 	deleteByKeys: function(rows, p_keys) {
-		var ridx = this.index(rows, p_keys);
+		var ridx = this.indexByKeys(rows, p_keys);
 		if( ridx >= 0 ) {
 			return rows.splice(ridx, 1);
 		} else {
@@ -1739,7 +1633,7 @@ WLIUROWS.prototype = {
 	},
 	
 	deleteByRow: function(rows, p_row) {
-		var ridx = this.index(rows, p_row.keys);
+		var ridx = this.indexByKeys(rows, p_row.keys);
 		if( ridx >= 0 ) {
 			return rows.splice(ridx, 1);
 		} else {
@@ -1748,7 +1642,7 @@ WLIUROWS.prototype = {
 	},
 
 	detachByKeys: function(rows, p_keys) {
-		var ridx = this.index(rows, p_keys);
+		var ridx = this.indexByKeys(rows, p_keys);
 		if( ridx >= 0  ) {
 		    FUNC.ROW.detach(rows[ridx]);
 			return rows[ridx];
@@ -1767,7 +1661,7 @@ WLIUROWS.prototype = {
 	},
 
 	detachByRow: function(rows, p_row) {
-		var ridx = this.index(rows, p_row.keys);
+		var ridx = this.indexByKeys(rows, p_row.keys);
 		if( ridx >= 0  ) {
 		    FUNC.ROW.detach(rows[ridx]);
 			return rows[ridx];
@@ -1783,68 +1677,6 @@ WLIUROWS.prototype = {
 // Array Function
 var WLIUARRAY = function() {};
 WLIUARRAY.prototype = {
-	//arr = [{name: xxx, age: xxx}, {name: xxx, age: xxx}] ,  sobj = {name:xxx, age:xxx}  return array [{name:xxx, age: xxx}]
-	Search: function(arr, sobj) {
-	   return $.grep(arr, function(n,i) {
-			var not_found = false;
-			for(var key in sobj) {
-				if( n[key] != sobj[key] ) not_found = true; 
-			}
-			return !not_found;
-		});
-	},
-	
-	//arr = [{name: xxx, age: xxx}, {name: xxx, age: xxx}] ,  sobj = {name:xxx, age:xxx}  return first {name:xxx, age: xxx}
-	Single: function(arr, sobj) {
-		var cols = $.grep(arr, function(n,i) {
-			var not_found = false;
-			for(var key in sobj) {
-				if( n[key] != sobj[key] ) not_found = true; 
-			}
-			return !not_found;
-		});
-		return cols?(cols.length>0?cols[0]:undefined):undefined;
-	},
-	index: function(arr, sobj) {
-		var aidx = -1;
-		$.each(arr, function(i, n) {
-			var not_found = false;
-			for(var key in sobj) {
-				if( n[key] != sobj[key] ) not_found = true; 
-			}
-			if(!not_found) aidx = i;
-			return not_found;
-		});
-		return aidx;
-	},
-	singleByKeys: function(arr, keys) {
-		var cols = $.grep(arr, function(n,i) {
-			var not_found = false;
-			for(var key in keys) {
-				if( n.keys[key] != keys[key] ) not_found = true; 
-			}
-			return !not_found;
-		});
-		return cols.length>0?cols[0]:null;
-	},
-	indexByKeys: function(arr, keys) {
-		var aidx = -1;
-		$.each(arr, function(i, n) {
-			var found = 0;
-			var cnt = 0;
-			for(var key in keys) {
-				cnt++;
-				if( n.keys[key] == keys[key] ) {
-					found++;
-				} else {
-					found--;
-				}
-			}
-			if( cnt > 0 && found == cnt ) aidx = i;
-			return aidx;
-		});
-		return aidx;
-	},
 	check2Array: function(jObj) {
 		var nval = [];
 		if( $.isPlainObject(jObj) ) {
@@ -1918,7 +1750,7 @@ WLIUARRAY.prototype = {
 				var colNames 	= colNames_str.split(":");
 				var colName 	= colNames[0] ? colNames[0] : "";
 				var colPrefix 	= colNames[1] ? colNames[1] : "";
-				var colValObj	= FUNC.ARRAY.Single(rowCols, {name: colName});
+				var colValObj	= this.FCOLLECT.firstByKV(rowCols, {name: colName});
 				var colVal = colValObj?(colValObj.value?colValObj.value:""):"";
 
 				if (colPrefix != "" && colVal!="")
@@ -1929,14 +1761,14 @@ WLIUARRAY.prototype = {
 				var colNames 	= colNames_str.split(".");
 				var colName 	= colNames[0] ? colNames[0] : "";
 				var colPrefix 	= colNames[1] ? colNames[1] : "";
-				var colValObj	= FUNC.ARRAY.Single(rowCols, {name: colName});
+				var colValObj	= this.FCOLLECT.firstByKV(rowCols, {name: colName});
 				var colVal = colValObj?(colValObj.value[colPrefix]?colValObj.value[colPrefix]:""):"";
 				ret_val = ret_val.replaceAll(colArr[cidx], colVal);
 
 			} else {
 				var colNames 	= colNames_str;
 				var colName 	= colNames.trim();
-				var colValObj	= FUNC.ARRAY.Single(rowCols, {name: colName});
+				var colValObj	= this.FCOLLECT.firstByKV(rowCols, {name: colName});
 				var colVal = colValObj?(colValObj.value?colValObj.value:""):"";
 				ret_val = ret_val.replaceAll(colArr[cidx], colVal);
 			}
@@ -1948,8 +1780,6 @@ WLIUARRAY.prototype = {
 // Create Global Function
 var FUNC = FUNC || {};
 
-FUNC.COLS	= new WLIUCOLS();
-FUNC.COL	= new WLIUCOL();
 FUNC.ROWS	= new WLIUROWS();
 FUNC.ROW	= new WLIUROW();
 FUNC.ARRAY 	= new WLIUARRAY();

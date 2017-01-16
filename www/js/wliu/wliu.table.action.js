@@ -33,7 +33,7 @@ WLIU.OBJECT.prototype = {
 WLIU.COLLECTION = function(){}
 WLIU.COLLECTION.prototype = {
 	// return collection index:  0 ~ collection.length -1 
-	index: function(collection, keyvalues) {
+	indexByKV: function(collection, keyvalues) {
 		var cidx = -1;
 		$.each(collection, function(i, n) {
 			var not_found = false;
@@ -72,13 +72,13 @@ WLIU.COLLECTION.prototype = {
 	// return object : {xxx: xxx, ...}
 	objectByIndex: function(collection, cidx) {
 		if(cidx >= 0 && cidx < collection.length) {
-			return collection[ridx];
+			return collection[cidx];
 		}  else {
 			return undefined;
 		}
 	},
 	objectByKV: function(collection, keyvalues) {
-		var cidx = this.index(collection, keyvalues);
+		var cidx = this.indexByKV(collection, keyvalues);
 		if(cidx >=0) {
 			return collection[cidx];
 		} else {
@@ -93,7 +93,7 @@ WLIU.COLLECTION.prototype = {
 			return undefined;
 		}
 	},
-
+      
 	// return array of object: [{}, {}]  or  [] if not found
 	collectionByKV: function(collection, keyvalues) {
 	   return $.grep(collection, function(n,i) {
@@ -107,7 +107,55 @@ WLIU.COLLECTION.prototype = {
 	firstByKV: function( collection, keyvalues) {
 		var ncollection = this.collectionByKV(collection, keyvalues);
 		return ncollection?(ncollection.length>0?ncollection[0]:[]):[];
-	}
+	},
 
-	// update collection object
+	// CRUD collection object
+	insert: function( collection, cidx, nobject) {
+		if( cidx >= 0 ) {
+			if( cidx < collection.length ) {
+				collection.splice(cidx, 0, nobject);				
+			} else {
+				collection.push(nobject);
+			}
+		} else if(cidx < 0) {
+			collection.push(nobject);
+		}
+		return collection;
+	},
+	update: function( collection, cidx, nobject) {
+		if( cidx >= 0  && cidx < collection.length) {
+			collection[cidx] = nobject;
+		}
+		return collection;
+	},
+	delete: function( collection, cidx ) {
+		if( cidx >= 0 && cidx < collection.length ) {
+			collection.splice(cidx, 1);
+			return collection;
+		} else {
+			return collection;
+		}
+	}
+}
+
+WLIU.ROWACTION = function(){}
+WLIU.ROWACTION.prototype = {
+	cancel: function(theRow) {
+		var errorCode 		= 0;
+		var errorMessage 	= "";
+		theRow.error.errorCode 	= errorCode;
+		theRow.error.errorMessage 	= errorMessage;
+		theRow.rowstate = 0;
+		for(var colName in theRow.cols) {
+			theRow.cols[colName].colstate = 0;
+			theRow.cols[colName].errorCode = 0;
+			theRow.cols[colName].errorMessage = "";
+			theRow.cols[colName].value = angular.copy(theRow.cols[colName].current);
+		}
+		return theRow;
+	},
+	detach: function(theRow) {
+		if(theRow.rowstate<=1) theRow.rowstate = 3;
+		return theRow;
+	}
 }

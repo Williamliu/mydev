@@ -1813,7 +1813,7 @@ wliu_table.directive("table.radio1", function () {
             }
             $scope.valueText = function() {
                 var val =  $scope.table.colByIndex( $scope.rowsn, $scope.name  )?$scope.table.colByIndex( $scope.rowsn, $scope.name ).value:"";
-                var valueText = FUNC.ARRAY.Single( $scope.table.lists[$scope.table.colMeta($scope.name).list].list, {key:val} )?FUNC.ARRAY.Single( $scope.table.lists[$scope.table.colMeta($scope.name).list].list, {key:val} ).value:"";
+                var valueText = $scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.table.colMeta($scope.name).list].list, {key:val} )?$scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.table.colMeta($scope.name).list].list, {key:val} ).value:"";
                 return valueText;
             }
         },
@@ -1873,7 +1873,7 @@ wliu_table.directive("table.radiodiag1", function () {
 
             $scope.valueText = function(rowsn, name) {
                 var val =  $scope.table.colByIndex( rowsn, name  )?$scope.table.colByIndex( rowsn, name  ).value:"";
-                var valueText = FUNC.ARRAY.Single( $scope.table.lists[$scope.name].list, {key:val} )?FUNC.ARRAY.Single( $scope.table.lists[$scope.name].list, {key:val} ).value:"";
+                var valueText = $scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.name].list, {key:val} )?$scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.name].list, {key:val} ).value:"";
                 return valueText;
             }
             
@@ -1935,7 +1935,7 @@ wliu_table.directive("table.radiolist1", function () {
         controller: function ($scope) {
             $scope.valueText = function() {
                 var val =  $scope.table.colByIndex( $scope.rowsn, $scope.name  )?$scope.table.colByIndex( $scope.rowsn, $scope.name  ).value:"";
-                var valueText = FUNC.ARRAY.Single( $scope.table.lists[$scope.table.colMeta($scope.name).list].list, {key:val} )?FUNC.ARRAY.Single( $scope.table.lists[$scope.table.colMeta($scope.name).list].list, {key:val} ).value:"";
+                var valueText = $scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.table.colMeta($scope.name).list].list, {key:val} )?$scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.table.colMeta($scope.name).list].list, {key:val} ).value:"";
                 return valueText;
             }
             

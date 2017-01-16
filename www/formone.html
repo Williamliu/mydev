@@ -82,8 +82,8 @@
 		   	cols.push(col8);
 		   	cols.push(col9);
 		   	cols.push(col10);
-
-			console.log( lstact.objectByKeys(cols, {id:1, id1:10} ) );
+			lstact.delete(cols, 7);
+			console.log( lstact.delete(cols, 2 ) );
 
 		    var form = new WLIU.FORM({
 				scope: 	"mytab",
