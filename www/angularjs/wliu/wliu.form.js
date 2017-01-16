@@ -1469,7 +1469,7 @@ wliu_form.directive("form.radiodiag1", function () {
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '{{ valueText(form.lists[name].keys.rowsn, form.lists[name].keys.name) }}',
+                                    '{{ valueText(form.lists[name].keys.name) }}',
                                 '</ul>',
                             '</div>',
                         '</a>',
@@ -1481,9 +1481,9 @@ wliu_form.directive("form.radiodiag1", function () {
                                 '<span class="radio">',
 
                                         '<input type="radio" scope="{{ form.scope }}" name="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}" id="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}_{{rdObj.key}}" ',
-                                            'ng-model="form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name ).value" ng-value="rdObj.key"  ',
-                                            'ng-change="form.changeByIndex( form.lists[name].keys.rowsn, form.colByIndex(form.lists[name].keys.rowsn, form.lists[name].keys.name) )" ',
-                                            'ng-disabled="form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name )==undefined" ',
+                                            'ng-model="form.colByName( form.lists[name].keys.name ).value" ng-value="rdObj.key"  ',
+                                            'ng-change="form.changeByCol( form.colByName(form.lists[name].keys.name) )" ',
+                                            'ng-disabled="form.colByName( form.lists[name].keys.name )==undefined" ',
                                         '/>',
 
                                         '<label for="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
@@ -1500,8 +1500,8 @@ wliu_form.directive("form.radiodiag1", function () {
         controller: function ($scope) {
             $scope.form.lists[$scope.name].keys = $scope.form.lists[$scope.name].keys || {};
 
-            $scope.valueText = function(rowsn, name) {
-                var val =  $scope.form.colByIndex( rowsn, name  )?$scope.form.colByIndex( rowsn, name  ).value:"";
+            $scope.valueText = function(name) {
+                var val =  $scope.form.colByName( name  )?$scope.form.colByName( name  ).value:"";
                 var valueText = FUNC.ARRAY.Single( $scope.form.lists[$scope.name].list, {key:val} )?FUNC.ARRAY.Single( $scope.form.lists[$scope.name].list, {key:val} ).value:"";
                 return valueText;
             }
@@ -1522,13 +1522,12 @@ wliu_form.directive("form.radiolist1", function () {
         scope: {
             form:      "=",
             name:       "@",
-            rowsn:      "@",
             colnum:     "@",
             bar:        "@", 
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px; padding:2px; overflow-y:auto;text-align:left; min-width:240px;" scope="{{ form.scope }}" ng-hide="form.relationHide(rowsn, name)">',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px; padding:2px; overflow-y:auto;text-align:left; min-width:240px;" scope="{{ form.scope }}">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
@@ -1545,9 +1544,9 @@ wliu_form.directive("form.radiolist1", function () {
                                 '<span class="radio">',
 
                                         '<input type="radio" scope="{{ form.scope }}" name="{{form.scope}}_{{name}}_{{rowsn}}" id="{{form.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" ',
-                                            'ng-model="form.colByIndex( rowsn, name ).value" ng-value="rdObj.key"  ',
-                                            'ng-change="form.changeByIndex( rowsn, form.colByName(name) )" ',
-                                            'ng-disabled="form.colByIndex( rowsn, name )==undefined" ',
+                                            'ng-model="form.colByName( name ).value" ng-value="rdObj.key"  ',
+                                            'ng-change="form.changeByCol( form.colByName(name) )" ',
+                                            'ng-disabled="form.colByName( name )==undefined" ',
                                         '/>',
 
                                         '<label for="{{form.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
@@ -1563,7 +1562,7 @@ wliu_form.directive("form.radiolist1", function () {
                 ].join(''),
         controller: function ($scope) {
             $scope.valueText = function() {
-                var val =  $scope.form.colByIndex( $scope.rowsn, $scope.name  )?$scope.form.colByIndex( $scope.rowsn, $scope.name  ).value:"";
+                var val =  $scope.form.colByName( $scope.name  )?$scope.form.colByName( $scope.name  ).value:"";
                 var valueText = FUNC.ARRAY.Single( $scope.form.lists[$scope.form.colMeta($scope.name).list].list, {key:val} )?FUNC.ARRAY.Single( $scope.form.lists[$scope.form.colMeta($scope.name).list].list, {key:val} ).value:"";
                 return valueText;
             }
@@ -1580,14 +1579,13 @@ wliu_form.directive("form.radio2", function () {
         replace: true,
         scope: {
             form:      "=",
-            rowsn:      "@",
             name:       "@",
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                        '<input type="text" readonly scope="{{ form.scope }}" class="wliuCommon-radiolist" value="{{ valueText() }}" ng-hide="form.relationHide(rowsn, name)" ',
-                                'ng-click="change(rowsn, name)" ',
+                        '<input type="text" readonly scope="{{ form.scope }}" class="wliuCommon-radiolist" value="{{ valueText() }}" ',
+                                'ng-click="change(name)" ',
                                 'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
 
                                 'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
@@ -1597,8 +1595,7 @@ wliu_form.directive("form.radio2", function () {
                 ].join(''),
         controller: function ($scope) {
             $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys = $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys || {};
-            $scope.change = function(rowsn, name) {
-                $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.rowsn = rowsn;
+            $scope.change = function(name) {
                 $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.name = name;
             }
             $scope.valueText = function() {
@@ -1606,8 +1603,8 @@ wliu_form.directive("form.radio2", function () {
                 for(var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list) {
                     var dList = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key].list;
                     var text = $.map( dList , function(n) {
-                        if($scope.form.colByIndex( $scope.rowsn, $scope.name )!=undefined) {
-                            if($scope.form.colByIndex( $scope.rowsn, $scope.name ).value == n.key) 
+                        if($scope.form.colByName( $scope.name )!=undefined) {
+                            if($scope.form.colByName( $scope.name ).value == n.key) 
                                     return n.value;
                             else
                                     return null;
@@ -1645,7 +1642,7 @@ wliu_form.directive("form.radiodiag2", function () {
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '<li ng-repeat="vObj in valueArr(form.lists[name].keys.rowsn, form.lists[name].keys.name)">',
+                                    '<li ng-repeat="vObj in valueArr(form.lists[name].keys.name)">',
                                     '{{ vObj.value }}',
                                     '</li>',
                                 '</ul>',
@@ -1663,9 +1660,9 @@ wliu_form.directive("form.radiodiag2", function () {
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="radio">',
                                                                     '<input type="radio" scope="{{ form.scope }}" name="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}" id="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}_{{tdObj.key}}" ',
-                                                                        'ng-model="form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name ).value" ng-value="tdObj.key"  ',
-                                                                        'ng-change="form.changeByIndex( form.lists[name].keys.rowsn, form.colByIndex(form.lists[name].keys.rowsn, form.lists[name].keys.name) )" ',
-                                                                        'ng-disabled="form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name )==undefined" ',
+                                                                        'ng-model="form.colByName( form.lists[name].keys.name ).value" ng-value="tdObj.key"  ',
+                                                                        'ng-change="form.changeByCol( form.colByName(form.lists[name].keys.name) )" ',
+                                                                        'ng-disabled="form.colByName( form.lists[name].keys.name )==undefined" ',
                                                                     '/>',
 
                                                                     '<label for="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
@@ -1687,13 +1684,13 @@ wliu_form.directive("form.radiodiag2", function () {
         controller: function ($scope) {
             $scope.form.lists[$scope.name].keys = $scope.form.lists[$scope.name].keys || {};
 
-            $scope.valueArr = function(rowsn, name) {
+            $scope.valueArr = function(name) {
                 var ret_arr = [];
                 for(var key in $scope.form.lists[$scope.name].list) {
                     var dList = $scope.form.lists[$scope.name].list[key].list;
                     var valueArr = $.map( dList , function(n) {
-                        if( $scope.form.colByIndex( rowsn, name  )!= undefined  ) {
-                                if( $scope.form.colByIndex( rowsn, name  ).value == n.key ) 
+                        if( $scope.form.colByName( name  )!= undefined  ) {
+                                if( $scope.form.colByName( name  ).value == n.key ) 
                                         return n;
                                 else
                                         return null;
@@ -1722,14 +1719,13 @@ wliu_form.directive("form.radiolist2", function () {
         scope: {
             form:      "=",
             name:       "@",
-            rowsn:      "@",
             colnum:     "@",
             colnum1:    "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ form.scope }}" ng-hide="form.relationHide(rowsn, name)">',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ form.scope }}">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
@@ -1752,9 +1748,9 @@ wliu_form.directive("form.radiolist2", function () {
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="radio">',
                                                                     '<input type="radio" scope="{{ form.scope }}" name="{{form.scope}}_{{name}}_{{rowsn}}" id="{{form.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" ',
-                                                                        'ng-model="form.colByIndex( rowsn, name ).value" ng-value="tdObj.key"  ',
-                                                                        'ng-change="form.changeByIndex( rowsn, form.colByName(name) )" ',
-                                                                        'ng-disabled="form.colByIndex( rowsn, name )==undefined" ',
+                                                                        'ng-model="form.colByName( name ).value" ng-value="tdObj.key"  ',
+                                                                        'ng-change="form.changeByCol( form.colByName(name) )" ',
+                                                                        'ng-disabled="form.colByName( name )==undefined" ',
                                                                     '/>',
 
                                                                     '<label for="{{form.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
@@ -1779,8 +1775,8 @@ wliu_form.directive("form.radiolist2", function () {
                 for(var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list) {
                     var dList = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key].list;
                     var valueArr = $.map( dList , function(n) {
-                        if( $scope.form.colByIndex( $scope.rowsn, $scope.name  )!= undefined  ) {
-                                if( $scope.form.colByIndex( $scope.rowsn, $scope.name  ).value == n.key ) 
+                        if( $scope.form.colByName( $scope.name  )!= undefined  ) {
+                                if( $scope.form.colByName( $scope.name  ).value == n.key ) 
                                         return n;
                                 else
                                         return null;
@@ -1805,14 +1801,13 @@ wliu_form.directive("form.radio3", function () {
         replace: true,
         scope: {
             form:      "=",
-            rowsn:      "@",
             name:       "@",
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                    '<input type="text" readonly scope="{{ form.scope }}" class="wliuCommon-radiolist" value="{{ valueText() }}" ng-hide="form.relationHide(rowsn, name)" ',
-                            'ng-click="change(rowsn, name)" ',
+                    '<input type="text" readonly scope="{{ form.scope }}" class="wliuCommon-radiolist" value="{{ valueText() }}" ',
+                            'ng-click="change(name)" ',
                             'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
 
                             'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
@@ -1822,8 +1817,7 @@ wliu_form.directive("form.radio3", function () {
                 ].join(''),
         controller: function ($scope) {
             $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys = $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys || {};
-            $scope.change = function(rowsn, name) {
-                $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.rowsn = rowsn;
+            $scope.change = function(name) {
                 $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.name = name;
             }
             $scope.valueText = function() {
@@ -1833,8 +1827,8 @@ wliu_form.directive("form.radio3", function () {
                     for(var pkey in dList) {
                         var pList = dList[pkey].list;
                         var text = $.map( pList , function(n) {
-                            if( $scope.form.colByIndex( $scope.rowsn, $scope.name )!=undefined ) {
-                                if($scope.form.colByIndex( $scope.rowsn, $scope.name ).value==n.key) 
+                            if( $scope.form.colByName( $scope.name )!=undefined ) {
+                                if($scope.form.colByName( $scope.name ).value==n.key) 
                                         return n.value;
                                 else
                                         return null;
@@ -1873,7 +1867,7 @@ wliu_form.directive("form.radiodiag3", function () {
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '<li ng-repeat="vObj in valueArr(form.lists[name].keys.rowsn, form.lists[name].keys.name)">',
+                                    '<li ng-repeat="vObj in valueArr(form.lists[name].keys.name)">',
                                     '{{ vObj.value }}',
                                     '</li>',
                                 '</ul>',
@@ -1898,9 +1892,9 @@ wliu_form.directive("form.radiodiag3", function () {
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="radio">',
                                                                     '<input type="radio" scope="{{ form.scope }}" name="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}" id="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}_{{tdObj.key}}" ',
-                                                                        'ng-model="form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name ).value" ng-value="tdObj.key"  ',
-                                                                        'ng-change="form.changeByIndex( form.lists[name].keys.rowsn, form.colByIndex(form.lists[name].keys.rowsn, form.lists[name].keys.name) )" ',
-                                                                        'ng-disabled="form.colByIndex( form.lists[name].keys.rowsn, form.lists[name].keys.name )==undefined" ',
+                                                                        'ng-model="form.colByName( form.lists[name].keys.name ).value" ng-value="tdObj.key"  ',
+                                                                        'ng-change="form.changeByCol( form.colByName(form.lists[name].keys.name) )" ',
+                                                                        'ng-disabled="form.colByName( form.lists[name].keys.name )==undefined" ',
                                                                     '/>',
 
                                                                     '<label for="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
@@ -1927,13 +1921,13 @@ wliu_form.directive("form.radiodiag3", function () {
                 return $scope.listFilter;
             }
 
-            $scope.valueArr = function(rowsn, name) {
+            $scope.valueArr = function(name) {
                 var ret_arr = [];
                 for(var key in $scope.form.lists[$scope.name].list) {
                     var dList = $scope.form.lists[$scope.name].list[key].list;
                     var valueArr = $.map( dList , function(n) {
-                        if( $scope.form.colByIndex( rowsn, name  )!= undefined  ) {
-                                if( $scope.form.colByIndex( rowsn, name  ).value == n.key ) 
+                        if( $scope.form.colByName( name  )!= undefined  ) {
+                                if( $scope.form.colByName( name  ).value == n.key ) 
                                         return n;
                                 else
                                         return null;
@@ -1962,14 +1956,13 @@ wliu_form.directive("form.radiolist3", function () {
         scope: {
             form:      "=",
             name:       "@",
-            rowsn:      "@",
             colnum:     "@",
             colnum1:    "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ form.scope }}" ng-hide="form.relationHide(rowsn, name)">',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ form.scope }}">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
@@ -1999,9 +1992,9 @@ wliu_form.directive("form.radiolist3", function () {
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="radio">',
                                                                     '<input type="radio" scope="{{ form.scope }}" name="{{form.scope}}_{{name}}_{{rowsn}}" id="{{form.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" ',
-                                                                        'ng-model="form.colByIndex( rowsn, name ).value" ng-value="tdObj.key"  ',
-                                                                        'ng-change="form.changeByIndex( rowsn, form.colByName(name) )" ',
-                                                                        'ng-disabled="form.colByIndex( rowsn, name )==undefined" ',
+                                                                        'ng-model="form.colByName( name ).value" ng-value="tdObj.key"  ',
+                                                                        'ng-change="form.changeByCol( form.colByName(name) )" ',
+                                                                        'ng-disabled="form.colByName( name )==undefined" ',
                                                                     '/>',
 
                                                                     '<label for="{{form.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
@@ -2035,8 +2028,8 @@ wliu_form.directive("form.radiolist3", function () {
                 for(var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list) {
                     var dList = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key].list;
                     var valueArr = $.map( dList , function(n) {
-                        if( $scope.form.colByIndex( $scope.rowsn, $scope.name  )!= undefined  ) {
-                                if( $scope.form.colByIndex( $scope.rowsn, $scope.name  ).value == n.key ) 
+                        if( $scope.form.colByName( $scope.name  )!= undefined  ) {
+                                if( $scope.form.colByName( $scope.name  ).value == n.key ) 
                                         return n;
                                 else
                                         return null;
@@ -2085,71 +2078,7 @@ wliu_form.directive("form.bgroup", function () {
     }
 });
 
-wliu_form.directive("form.next", function (wliuFormService) {
-    return {
-        restrict: "E",
-        replace: true,
-        scope: {
-            form:      "=",
-            name:       "@",
-            actname:    "@",
-            action:     "&"
-        },
-        template: [
-                    '<span>',
-                        '<button class="btn btn-outline-primary waves-effect" ',
-                            'ng-click="naviRecord()" ',
-                            'ng-if="form.rowno()<form.rows.length-1 && form.rows.length>0 && form.rowno()>=0"',
-                        '>',
-                            '{{actname?actname:name}}',
-                        '</button>',
-                    '</span>'
-                ].join(''),
-        controller: function ($scope) {
-            $scope.naviRecord = function() {
-                // add you code here 
-                $scope.form.nextRecord();
-                // end of code
-                $scope.action(); // trigger outside event
-            }
-        },
-        link: function (sc, el, attr) {
-        }
-    }
-});
 
-wliu_form.directive("form.previous", function (wliuFormService) {
-    return {
-        restrict: "E",
-        replace: true,
-        scope: {
-            form:      "=",
-            name:       "@",
-            actname:    "@",
-            action:     "&"
-        },
-        template: [
-                    '<span>',
-                        '<button class="btn btn-outline-primary waves-effect" ',
-                            'ng-click="naviRecord()" ',
-                            'ng-if="form.rows.length>0 && form.rowno()>0"',
-                        '>',
-                            '{{actname?actname:name}}',
-                        '</button>',
-                    '</span>'
-                ].join(''),
-        controller: function ($scope) {
-            $scope.naviRecord = function() {
-                // add you code here 
-                $scope.form.previousRecord();
-                // end of code
-                $scope.action(); // trigger outside event
-            }
-        },
-        link: function (sc, el, attr) {
-        }
-    }
-});
 
 wliu_form.directive("form.blink", function (wliuFormService) {
     return {
@@ -2627,41 +2556,6 @@ wliu_form.directive("form.btext", function (wliuFormService) {
     }
 });
 
-wliu_form.directive("form.hgroup", function () {
-    return {
-        restrict:   "E",
-        replace:    true,
-        transclude: true,           
-        scope: {
-            form:      "=",
-            actname:    "@"
-        },
-        template: [
-                    '<div class="dropdown" style="white-space:nowrap;">',
-                        '<button scope="{{ form.scope }} class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ',
-                             'style="font-size:0.8em;" ',
-                             'ng-class="{\'btn-info\':  rowstate()==0, \'btn-warning\':  rowstate()!=0}"',
-                         '>',
-                            '{{actname}} ',
-                            '<i class="fa fa-1 fa-caret-down"></i>',
-                        '</button>',
-                        '<ul class="dropdown-menu" style="white-space:nowrap;" ng-transclude>',
-                        '</ul>',
-                    '</div>'
-                ].join(''),
-        controller: function ($scope) {
-            $scope.rowstate = function() {
-                var _state = 0;
-                for(var ridx in $scope.form.rows) {
-                    _state = Math.max( _state, $scope.form.rows[ridx].rowstate );
-                }
-                return _state;
-            }
-        },
-        link: function (sc, el, attr) {
-        }
-    }
-});
 
 wliu_form.directive("form.hlink", function (wliuFormService) {
     return {
