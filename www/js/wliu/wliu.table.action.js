@@ -140,6 +140,77 @@ WLIU.COLLECTION.prototype = {
 
 WLIU.ROWACTION = function(){}
 WLIU.ROWACTION.prototype = {
+	objectByKV: function(collection, keyvalues) {
+		var cidx = this.indexByKV(collection, keyvalues);
+		if(cidx >=0) {
+			return collection[cidx];
+		} else {
+			return undefined;
+		}
+	},
+
+	rowstate: function(theRow, p_rowstate) {
+		if( theRow!=undefined ) {
+			if(p_rowstate!=undefined) theRow.rowstate = p_rowstate;
+			return theRow.rowstate;
+		} else {
+			return undefined;
+		}
+	},
+	error: function(theRow, p_error) {
+		if( theRow!=undefined) {
+			if(p_error!=undefined) theRow.error = p_error;
+			return theRow.error;
+		} else {
+			return undefined;
+		}
+	},
+	colError: function(theRow, col_name, p_error) {
+		if( theRow != undefined ) {
+			var theCol = this.objectByKV(theRow.cols, {name:col_name});
+			if(theCol!=undefined) {
+				if(p_error!=undefined) {
+					theCol.errorCode 		= p_error.errorCode;
+					theCol.errorMessage  	= p_error.errorMessage;
+					this.validate(theRow);
+				} 
+				return {errorCode: t_col.errorCode, errorMessage: t_col.errorMessage}; 
+			} else {
+				return undefined;
+			}
+		} else {
+			return undefined;
+		}
+	},
+
+	validate: function(theRow) {
+		// handle row level:  error and rowstate 
+		// add, delete case :  don't change rowstate , keep it 
+		// normal , changed :  it will verify all col  colstate , nochanged set 0,  changed set 1;
+		var changed = false;
+		var errorCode 		= 0;
+		var errorMessage 	= "";
+		for(var colName in theRow.cols) {
+			var t_col = theRow.cols[colName];
+			
+			if( t_col.errorCode > 0 ) {
+				errorCode 		= Math.max(errorCode, t_col.errorCode);
+				errorMessage 	+= (errorMessage!="" && t_col.errorMessage!=""?"\n":"") + t_col.errorMessage;
+			}
+			
+			if(t_col.colstate==1) changed = true;
+		}
+		
+		theRow.error.errorCode 		= theRow.error.errorCode<=1?errorCode	:theRow.error.errorCode;
+		theRow.error.errorMessage 	= theRow.error.errorCode<=1?errorMessage:theRow.error.errorMessage.join("\n",errorMessage);
+		if( theRow.rowstate <= 1) {
+			if(changed) 
+				theRow.rowstate = 1;
+			else 
+				theRow.rowstate = 0;
+		}
+	},
+
 	cancel: function(theRow) {
 		var errorCode 		= 0;
 		var errorMessage 	= "";
@@ -157,5 +228,30 @@ WLIU.ROWACTION.prototype = {
 	detach: function(theRow) {
 		if(theRow.rowstate<=1) theRow.rowstate = 3;
 		return theRow;
+	},
+
+	colChange: function(theRow, theCol){
+		if( theRow!=undefined ) {
+			if( theCol!=undefined ) {
+
+				return theCol.value;
+			} else {
+				return undefined;
+			}
+		} else {
+			return undefined;
+		}
+	},
+	change: function(theRow, col_name) {
+		if( theRow!=undefined ) {
+			var t_col = this.objectByKV(theRow.cols, {name:col_name});
+			if( t_col!=undefined ) {
+				return this.colChange(theRow, theCol);
+			} else {
+				return undefined;
+			}
+		} else {
+			return undefined;
+		}
 	}
 }

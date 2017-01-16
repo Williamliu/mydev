@@ -2548,7 +2548,8 @@ wliu_table.directive("table.blink", function (wliuTableService) {
                 // add you code here 
                 switch( $scope.name.toLowerCase() ) {
                     case "detail":
-                        $scope.table.rownoByRow(theRow);
+                        var ridx = $scope.table.indexByKeys(theRow.keys);
+                        $scope.table.rowno(ridx);
                         break;
                     case "save":
                         $scope.table.saveRow(theRow);
@@ -2819,7 +2820,8 @@ wliu_table.directive("table.rowbutton", function (wliuTableService) {
                 // add you code here 
                 switch( $scope.name.toLowerCase() ) {
                     case "detail":
-                        $scope.table.rownoByRow(theRow);
+                        var ridx = $scope.table.indexByKeys(theRow.keys);
+                        $scope.table.rowno(ridx);
                         break;
                     case "save":
                         $scope.table.saveRow(theRow);
@@ -2897,7 +2899,8 @@ wliu_table.directive("table.bicon", function (wliuTableService) {
                 // add you code here 
                  switch( $scope.name.toLowerCase() ) {
                     case "detail":
-                        $scope.table.rownoByRow(theRow);
+                        var ridx = $scope.table.indexByKeys(theRow.keys);
+                        $scope.table.rowno(ridx);
                         break;
                     case "save":
                         $scope.table.saveRow(theRow);
@@ -2961,7 +2964,8 @@ wliu_table.directive("table.btext", function (wliuTableService) {
                 // add you code here 
                  switch( $scope.name.toLowerCase() ) {
                     case "detail":
-                        $scope.table.rownoByRow(theRow);
+                        var ridx = $scope.table.indexByKeys(theRow.keys);
+                        $scope.table.rowno(ridx);
                         break;
                     case "save":
                         $scope.table.saveRow(theRow);

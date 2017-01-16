@@ -45,6 +45,10 @@ WLIU.TABLE.prototype = {
 		this.sc = p_scope;
 	},
 
+	rowstate: function(theRow, p_rowstate) {
+		this.FROW.rowstate(theRow, p_rowstate);
+	},
+
 	indexByKeys:  function(p_keys) {
 		return this.FCOLLECT.indexByKeys(this.rows, p_keys);
 	},
@@ -59,55 +63,13 @@ WLIU.TABLE.prototype = {
 			return this._rowno;
 		}
 	},
-	rownoByKeys : function(p_keys) {
-		if( p_keys!=undefined) {
-			var ridx = this.indexByKeys(p_keys);
-			return this.rowno(ridx);
-		} else {
-			return this._rowno;
-		}
-	},
-	rownoByRow: function(p_row) {
-		return this.rownoByKeys(p_row.keys);
-	},
-
-	rowstate: function(p_keys, p_rowstate) {
-		var t_row = this.FCOLLECT.objectByKeys(rows, p_keys);
-		if(t_row!=undefined) {
-			if(p_rowstate!=undefined) {
-				t_row.rowstate = p_rowstate;
-				if(p_rowstate=="0") {
-					for(var cidx in t_row.cols) {
-						t_row.cols[cidx].errorCode 		= 0;
-						t_row.cols[cidx].errorMessage 	= "";
-					}
-					t_row.error.errorCode 			= 0;
-					t_row.cols[cidx].errorMessage 	= "";
-				}
-				return t_row.rowstate;
-			}  else {
-				return t_row.rowstate;
-			}
-		} else {
-			return undefined;
-		}
-	},
 
 	colMeta: function(col_name) {
 		return this.FCOLLECT.objectByKV(this.cols, {name: col_name});
 	},
 	colDefault: function(col_name, p_value) {
 		var t_col = this.colMeta(col_name);
-		if(t_col!=undefined) {
-			if( p_value != undefined ) {
-				t_col.defval = p_value;
-				return t_col.defval;
-			} else {
-				return t_col.defval;
-			}
-		} else {
-			return undefined;
-		}
+		this.FOBJECT.update(t_col, {defval: p_value} );
 	},
 
 	listByName: function(listName) {
@@ -335,32 +297,13 @@ WLIU.TABLE.prototype = {
 			return this.error; 
 		}
 	},
-	rowErrorByIndex: function(ridx, p_error) {
-		return FUNC.ROWS.rowErrorByIndex(this.rows, ridx, p_error);
+	rowError: function(theRow, p_error) {
+		return this.FROW.error(theRow, p_error);
 	},
-	rowErrorByKeys: function(p_keys, p_error) {
-		return FUNC.ROWS.rowErrorByKeys(this.rows, p_keys, p_error);
-	},
-	rowErrorByRow: function(p_row, p_error) {
-		return FUNC.ROWS.rowErrorByRow(p_row, p_error);
+	colError: function(theRow, col_name, p_error) {
+		return this.FROW.colerror(theRow, col_name, p_error);
 	},
 	/************************************/
-
-	// set row's col's  error 
-	colErrorByIndex: function(ridx, col_name, p_error) {
-		return FUNC.ROWS.colErrorByIndex(this.rows, ridx, col_name, p_error);
-	},
-	colErrorByKeys: function(p_keys, col_name, p_error) {
-		return FUNC.ROWS.colErrorByKeys(this.rows, p_keys, col_name, p_error);
-	},
-	colErrorByRow: function(p_row, col_name, p_error) {
-		return FUNC.ROWS.colErrorByRow(p_row, col_name, p_error);
-	},
-	colErrorByCol: function(p_row, col, p_error) {
-		return FUNC.ROWS.colErrorByCol(p_row, col, p_error);
-	},
-	/***********************/
-
 
 	/*** event for external call ***/
 	changeByKeys: function(p_keys, p_col) {
@@ -368,10 +311,13 @@ WLIU.TABLE.prototype = {
 		nameValues[p_col.name] = p_col.value;
 		return this.updateByKeys(p_keys, nameValues);
 	},
-	changeByIndex: function(ridx, p_col) {
-		var nameValues = {};
-		nameValues[p_col.name] = p_col.value;
-		return this.updateByIndex(ridx, nameValues);
+	changeByIndex: function(ridx, col_name) {
+		var t_row = this.rowByIndex(this.rows, ridx );
+		if( t_row !=undefined ) {
+			this.FROW.change(t_row, col_name);
+		} else {
+			return undefined;
+		}
 	},
 	changeByRow: function(p_row, p_col) {
 		var nameValues = {};
@@ -740,9 +686,6 @@ WLIU.TABLE.prototype = {
 				    break;
 				case 2:
 					var ridx = this.indexByKeys(theRow.keys);
-					console.log(this.rows);
-					console.log(theRow);
-					console.log("ridx: " + ridx);
 					this.FCOLLECT.delete(this.rows, ridx);
 					break;
 				case 3:
@@ -980,19 +923,19 @@ WLIU.TABLE.prototype = {
 							case 0:
 								break;
 							case 1:
-								this.rowErrorByRow(tableRow, nRow.error);
+								this.FROW.error(tableRow, nRow.error);
 								for(var cidx in nRow.cols) {
-									this.colErrorByRow(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
+									this.colError(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
 								}
 								break;
 							case 2:
-								this.rowErrorByRow(tableRow, nRow.error);
+								this.FROW.error(tableRow, nRow.error);
 								for(var cidx in nRow.cols) {
-									this.colErrorByRow(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
+									this.colError(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
 								}
 								break;
 							case 3:
-								this.rowErrorByRow(tableRow, nRow.error);
+								this.FROW.error(tableRow, nRow.error);
 								break;
 						} 
 
@@ -1050,19 +993,19 @@ WLIU.TABLE.prototype = {
 							case 0:
 								break;
 							case 1:
-								this.rowErrorByRow(tableRow, nRow.error);
+								this.FROW.error(tableRow, nRow.error);
 								for(var cidx in nRow.cols) {
-									this.colErrorByRow(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
+									this.colError(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
 								}
 								break;
 							case 2:
-								this.rowErrorByRow(tableRow, nRow.error);
+								this.FROW.error(tableRow, nRow.error);
 								for(var cidx in nRow.cols) {
-									this.colErrorByRow(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
+									this.colError(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
 								}
 								break;
 							case 3:
-								this.rowErrorByRow(tableRow, nRow.error);
+								this.rowError(tableRow, nRow.error);
 								break;
 						} 
 					} else {
@@ -1070,21 +1013,21 @@ WLIU.TABLE.prototype = {
 							case 0:
 								break;
 							case 1:
-								this.rowErrorByRow(tableRow, nRow.error);
+								this.FROW.error(tableRow, nRow.error);
 								tableRow.rowstate = 0;
 								for(var cidx in tableRow.cols) {
 									tableRow.cols[cidx].colstate 	= 0;
 									tableRow.cols[cidx].current 	= angular.copy(tableRow.cols[cidx].value);
-									this.colErrorByCol(tableRow, tableRow.cols[cidx], {errorCode:0, errorMessage:""} );
+									this.colError(tableRow, tableRow.cols[cidx].name, {errorCode:0, errorMessage:""} );
 								}
 								break;
 							case 2:
-								this.rowErrorByRow(tableRow, nRow.error);
+								this.FROW.error(tableRow, nRow.error);
 								tableRow.rowstate = 0;
 								for(var cidx in tableRow.cols) {
 									tableRow.cols[cidx].colstate 	= 0;
 									tableRow.cols[cidx].current 	= angular.copy(tableRow.cols[cidx].value);
-									this.colErrorByCol(tableRow, tableRow.cols[cidx], {errorCode:0, errorMessage:""} );
+									this.colError(tableRow, tableRow.cols[cidx].name, {errorCode:0, errorMessage:""} );
 									if(tableRow.cols[cidx].key) {
 										var keyColObj = this.FCOLLECT.firstByKV( nRow.cols, { name: tableRow.cols[cidx].name } );
 										if( keyColObj ) {
@@ -1097,7 +1040,7 @@ WLIU.TABLE.prototype = {
 								table.navi.recordtotal++;
 								break;
 							case 3:
-								this.rowErrorByRow(tableRow, nRow.error);
+								this.rowError(tableRow, nRow.error);
 								tableRow.rowstate = 0;
 								this.deleteByRow(tableRow);
 								table.navi.recordtotal--;
@@ -1188,7 +1131,6 @@ WLIU.COL = function(opts) {
 
 // Table Row Metadata Object
 WLIU.ROW = function( cols, nameValues, scope ) {
-	this.FCOLLECT = new WLIU.COLLECTION();
 	if( scope == undefined ) scope = "";
 	this.scope			= scope;
 	this.keys 			= {};
@@ -1198,8 +1140,7 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 	
 	if( nameValues == undefined ) nameValues = {};
 	// create keys : { id1 : "",  id2: "" }
-	var key_cols = this.FCOLLECT.firstByKV(cols, {key:1});
-	console.log(key_cols);
+	var key_cols =  $.grep(cols, function(n,i) { return  n.key == 1;});
 	for(var kidx in key_cols) {
 		this.keys[key_cols[kidx].name] = nameValues[key_cols[kidx].name]?nameValues[key_cols[kidx].name]:"";
 	}
@@ -1269,46 +1210,6 @@ WLIUROW.prototype = {
 			return p_rowstate;
 		} else {
 			return row.rowstate;
-		}
-	},
-	
-	rowError: function(row, p_error) {
-		if(p_error!=undefined) {
-			row.error = p_error;
-		} else {
-			return row.error; 
-		}
-	},
-
-	colError: function(row, col_name, p_error) {
-		var t_col =	this.col(row, col_name);
-		if(t_col!=null) {
-			if(p_error!=undefined) {
-				t_col.errorCode 	= p_error.errorCode;
-				t_col.errorMessage  = p_error.errorMessage;
-				this.validate(row);
-				return {errorCode: t_col.errorCode, errorMessage: t_col.errorMessage}; 
-			} else {
-				return {errorCode: t_col.errorCode, errorMessage: t_col.errorMessage}; 
-			}
-		} else {
-			return undefined;
-		}
-	},
-
-	colError1: function(row, col, p_error) {
-		var t_col =	col; 
-		if(t_col!=null) {
-			if(p_error!=undefined) {
-				t_col.errorCode 	= p_error.errorCode;
-				t_col.errorMessage  = p_error.errorMessage;
-				this.validate(row);
-				return {errorCode: t_col.errorCode, errorMessage: t_col.errorMessage}; 
-			} else {
-				return {errorCode: t_col.errorCode, errorMessage: t_col.errorMessage}; 
-			}
-		} else {
-			return undefined;
 		}
 	},
 	
@@ -1445,68 +1346,6 @@ var WLIUROWS = function() {
 };
 WLIUROWS.prototype = {
 	
-	rowstate: function(rows, p_keys, p_rowstate) {
-	},
-
-	rowErrorByIndex: function(rows, ridx, p_error) {
-		var t_row = this.rowByIndex(rows, ridx);
-		if(t_row!=undefined) {
-			return FUNC.ROW.rowError(t_row, p_error);
-		} else {
-			return undefined;
-		}
-	},
-
-	rowErrorByKeys: function(rows, p_keys, p_error) {
-		var t_row = this.rowByKeys(rows, p_keys);
-		if(t_row!=undefined) {
-			return FUNC.ROW.rowError(t_row, p_error);
-		} else {
-			return undefined;
-		}
-	},
-
-	rowErrorByRow: function(p_row, p_error) {
-		if(p_row!=undefined) {
-			return FUNC.ROW.rowError(p_row, p_error);
-		} else {
-			return undefined;
-		}
-	},
-
-	colErrorByIndex: function(rows, ridx, col_name, p_error) {
-		var t_row = this.rowByIndex(rows, ridx);
-		if(t_row!=undefined) {
-			return FUNC.ROW.colError(t_row, col_name, p_error);
-		} else {
-			return undefined;
-		}
-	},
-
-	colErrorByKeys: function(rows, p_keys, col_name, p_error) {
-		var t_row = this.rowByKeys(rows, p_keys);
-		if(t_row!=undefined) {
-			return FUNC.ROW.colError(t_row, col_name, p_error);
-		} else {
-			return undefined;
-		}
-	},
-
-	colErrorByRow: function(p_row, col_name, p_error) {
-		if(p_row!=undefined) {
-			return FUNC.ROW.colError(p_row, col_name, p_error);
-		} else {
-			return undefined;
-		}
-	},
-
-	colErrorByCol: function(p_row, col, p_error) {
-		if(p_row!=undefined) {
-			return FUNC.ROW.colError1(p_row, col, p_error);
-		} else {
-			return undefined;
-		}
-	},
 
 	rowByIndex: function(rows, ridx, p_row) {
 		if(ridx >= 0 && ridx < rows.length) {
