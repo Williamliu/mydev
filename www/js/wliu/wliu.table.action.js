@@ -140,6 +140,18 @@ WLIU.COLLECTION.prototype = {
 
 WLIU.ROWACTION = function(){}
 WLIU.ROWACTION.prototype = {
+	indexByKV: function(collection, keyvalues) {
+		var cidx = -1;
+		$.each(collection, function(i, n) {
+			var not_found = false;
+			for(var key in keyvalues) {
+				if( n[key] != keyvalues[key] ) not_found = true; 
+			}
+			if(!not_found) cidx = i;
+			return not_found;
+		});
+		return cidx;
+	},
 	objectByKV: function(collection, keyvalues) {
 		var cidx = this.indexByKV(collection, keyvalues);
 		if(cidx >=0) {
@@ -230,11 +242,57 @@ WLIU.ROWACTION.prototype = {
 		return theRow;
 	},
 
-	colChange: function(theRow, theCol){
+	colChange: function(theRow, theCol, val){
 		if( theRow!=undefined ) {
 			if( theCol!=undefined ) {
 
-				return theCol.value;
+				// set value; and change rowstate 
+				if(val==null) val = "";
+				if(val != undefined) {
+					// write value
+					theCol.value = val;
+					
+					// if it is key col,  need to update row key value
+					var t_keys = theRow.keys;
+					for(var colName in t_keys) {
+						if(colName == theCol.name) theRow.keys[colName] = theCol.value; 	
+					}
+					
+					if( $.isPlainObject(theCol.value) ) {
+						// compare object {1:true, 2:true}
+						var objectSame = true;
+						for(var vkey in theCol.value) {
+							var curVal = theCol.value[vkey]?theCol.value[vkey]:"";
+							var curCur = theCol.current[vkey]?theCol.current[vkey]:"";
+							if(curVal!=curCur) objectSame = false;
+						} 
+						for(var vkey in theCol.current) {
+							var curVal = theCol.value[vkey]?theCol.value[vkey]:"";
+							var curCur = theCol.current[vkey]?theCol.current[vkey]:"";
+							if(curVal!=curCur) objectSame = false;
+						} 
+						if(objectSame) 
+							theCol.colstate = 0; 
+						else  
+							theCol.colstate = 1; 
+
+					} else {
+						if( theCol.value==theCol.current )  // safe or not ?? null, 0, undefined
+							theCol.colstate 	= 0; 
+						else	
+							theCol.colstate 	= 1; 
+					}
+
+					theCol.errorCode 	= 0;
+					theCol.errorMessage 	= "";	
+					this.validate(theRow);
+					return theCol.value;
+				} else {
+					// read value
+					return theCol.value;
+				}
+				// end of set value
+
 			} else {
 				return undefined;
 			}
@@ -242,14 +300,15 @@ WLIU.ROWACTION.prototype = {
 			return undefined;
 		}
 	},
-	change: function(theRow, col_name) {
+	change: function(theRow, keyvalues) {
 		if( theRow!=undefined ) {
-			var t_col = this.objectByKV(theRow.cols, {name:col_name});
-			if( t_col!=undefined ) {
-				return this.colChange(theRow, theCol);
-			} else {
-				return undefined;
+			for(var key in keyvalues) {
+				var t_col = this.objectByKV(theRow.cols, {name:key});
+				if( t_col!=undefined ) {
+					return this.colChange(theRow, t_col, keyvalues[key]);
+				} 
 			}
+			return theRow;
 		} else {
 			return undefined;
 		}

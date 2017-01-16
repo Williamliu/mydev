@@ -47,7 +47,7 @@ try {
 							"name"=>"public_user", 
 							"keys"=>array("id"),  
 							"fkeys"=>array(), 
-							"cols"=>array("id","user_name", "full_name"), 
+							"cols"=>array("id","uuu", "full_name"), 
 							"insert"=>array(), 
 							"update"=>array() 
 					),

@@ -196,7 +196,7 @@ WLIU.TABLE.prototype = {
 	},
 	
 	// return rows[ridx].cols[index of col_name]
-	colByIndex: function(ridx, col_name) {
+	colByName: function(ridx, col_name) {
 		var t_row = this.FCOLLECT.objectByIndex(this.rows, ridx);
 		if( t_row != undefined ) {
 			return this.FCOLLECT.objectByKV(t_row.cols, {name:col_name});
@@ -226,7 +226,7 @@ WLIU.TABLE.prototype = {
 
 	editByIndex: function(ridx, nameValues) {
 		for(var colName in nameValues) {
-			var vCol = this.colByIndex(ridx, colName);
+			var vCol = this.colByName(ridx, colName);
 			if( vCol ) {
 				nameValues[colName] = this.updateColVal(vCol, nameValues[colName]);
 			}
@@ -306,23 +306,20 @@ WLIU.TABLE.prototype = {
 	/************************************/
 
 	/*** event for external call ***/
-	changeByKeys: function(p_keys, p_col) {
-		var nameValues = {};
-		nameValues[p_col.name] = p_col.value;
-		return this.updateByKeys(p_keys, nameValues);
-	},
-	changeByIndex: function(ridx, col_name) {
-		var t_row = this.rowByIndex(this.rows, ridx );
+	changeByName: function(ridx, col_name) {
+		var t_row = this.rowByIndex(ridx);
 		if( t_row !=undefined ) {
-			this.FROW.change(t_row, col_name);
+			var t_col = this.colByName(ridx, col_name);
+			if( t_col!=undefined ) {
+				var keyvalues = {};
+				keyvalues[t_col.name] = t_col.value;
+				return this.FROW.change(t_row, keyvalues);
+			}  else {
+				return undefined;
+			}
 		} else {
 			return undefined;
 		}
-	},
-	changeByRow: function(p_row, p_col) {
-		var nameValues = {};
-		nameValues[p_col.name] = p_col.value;
-		return this.updateByRow(p_row, nameValues);
 	},
 	getChangeRows: function() {
 		var nrows = [];
@@ -1230,92 +1227,7 @@ WLIUROW.prototype = {
 		return this.FCOLLECT.firstByKV(row.cols, {name:col_name});
 	},
 
-	validate: function(row) {
-		// handle row level:  error and rowstate 
-		// add, delete case :  don't change rowstate , keep it 
-		// normal , changed :  it will verify all col  colstate , nochanged set 0,  changed set 1;
-		var changed = false;
-		var errorCode 		= 0;
-		var errorMessage 	= "";
-		for(var colName in row.cols) {
-			var t_col = row.cols[colName];
-			
-			if( t_col.errorCode > 0 ) {
-				errorCode 		= Math.max(errorCode, t_col.errorCode);
-				errorMessage 	+= (errorMessage!="" && t_col.errorMessage!=""?"\n":"") + t_col.errorMessage;
-			}
-			
-			if(t_col.colstate==1) changed = true;
-		}
-		
-		row.error.errorCode 	= row.error.errorCode<=1?errorCode:row.error.errorCode;
-		row.error.errorMessage 	= row.error.errorCode<=1?errorMessage:row.error.errorMessage.join("\n",errorMessage);
-		if( row.rowstate <= 1) {
-			if(changed) 
-				row.rowstate = 1;
-			else 
-				row.rowstate = 0;
-		}
-	},
 	
-	value: function(row, col_name, val) {
-		var t_col =	this.col(row, col_name);
-		if(t_col!=null) {
-			if(val==null) val = "";
-			if(val != undefined) {
-				// write value
-				t_col.value = val;
-				
-				// if it is key col,  need to update row key value
-				var t_keys = this.keys(row);
-				for(var colName in t_keys) {
-					if(colName == t_col.name) row.keys[colName] = t_col.value; 	
-				}
-				
-				if( $.isPlainObject(t_col.value) ) {
-					// compare object {1:true, 2:true}
-					var objectSame = true;
-					for(var vkey in t_col.value) {
-						var curVal = t_col.value[vkey]?t_col.value[vkey]:"";
-						var curCur = t_col.current[vkey]?t_col.current[vkey]:"";
-						if(curVal!=curCur) objectSame = false;
-					} 
-					for(var vkey in t_col.current) {
-						var curVal = t_col.value[vkey]?t_col.value[vkey]:"";
-						var curCur = t_col.current[vkey]?t_col.current[vkey]:"";
-						if(curVal!=curCur) objectSame = false;
-					} 
-					if(objectSame) 
-						t_col.colstate = 0; 
-					else  
-						t_col.colstate = 1; 
-
-				} else {
-					if( t_col.value==t_col.current )  // safe or not ?? null, 0, undefined
-						t_col.colstate 	= 0; 
-					else	
-						t_col.colstate 	= 1; 
-				}
-
-				t_col.errorCode 	= 0;
-				t_col.errorMessage 	= "";	
-				this.validate(row);
-				return t_col.value;
-			} else {
-				// read value
-				return t_col.value;
-			}
-		} else {
-			return undefined;
-		}
-	},
-	
-	update: function(row, nameValues) {
-		for(var colName in nameValues) {
-			this.value(row, colName, nameValues[colName]);
-		}
-		return row;
-	},
 
 	cancel: function(row) {
 		var errorCode 		= 0;
@@ -1365,7 +1277,7 @@ WLIUROWS.prototype = {
 		return this.rowByIndex(rows, ridx, p_row);
 	},
 	
-	colByIndex: function(rows, ridx, col_name) {
+	colByName: function(rows, ridx, col_name) {
 		var t_row = this.FCOLLECT.objectByIndex(rows, ridx);
 		if( t_row != undefined ) {
 			return this.FCOLLECT.objectByKV(t_row.cols, {name:col_name});

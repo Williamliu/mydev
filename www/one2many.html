@@ -38,6 +38,7 @@
 		<!-- wliu components -->
 		<script src="js/wliu/wliu.common.js" type="text/javascript"></script>
 		<script src="js/wliu/wliu.table.js" type="text/javascript"></script>
+		<script src="js/wliu/wliu.table.action.js" type="text/javascript"></script>
 		<script	src="angularjs/wliu/wliu.table.js" type="text/javascript"></script>
 		<script	src="angularjs/wliu/wliu.table.filter.js" type="text/javascript"></script>
 		<script	src="angularjs/wliu/wliu.table.list.js" type="text/javascript"></script>
@@ -55,8 +56,6 @@
 
 
         <script language="javascript" type="text/javascript">
-			var a = "00:30";
-			console.log( parseInt(a));
 		   	var col1 = new WLIU.COL({key:1, coltype:"hidden", 		name:"id", 			colname:"User No.",  	coldesc:"User ID" });
 		   	var col2 = new WLIU.COL({key:0, coltype:"textbox", 		name:"user_name",	colname:"User Name", 	coldesc:"Login User",  	sort:"ASC", need:1, notnull: 1});
 		   	var col3 = new WLIU.COL({key:0, coltype:"textbox", 		name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});

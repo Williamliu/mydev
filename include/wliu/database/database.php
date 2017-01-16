@@ -1972,13 +1972,25 @@ class cACTION {
 		switch( $filter["coltype"] ) {
 			case "textbox":
 				$compare 	= $filter["compare"]?$filter["compare"]:"LIKE";
+
+				/*** common part ***/
+				$val 		= $filter["value"]?trim($filter["value"]):"";
+				if($need) {
+					if($val!="") 
+						$ret_ccc = cACTION::getOperation($tableCol, $compare, $val);
+					else 
+						$ret_ccc = "1=0";
+				} else {
+					if($val!="") $ret_ccc = cACTION::getOperation($tableCol, $compare, $val);
+				}
+				/*** end of common part ***/
+				break;
+
 			case "radio":
-				$compare 	= $filter["compare"]?$filter["compare"]:"=";
 			case "date":
-				$compare 	= $filter["compare"]?$filter["compare"]:"=";
 			case "time":
 				$compare 	= $filter["compare"]?$filter["compare"]:"=";
-			
+
 				/*** common part ***/
 				$val 		= $filter["value"]?trim($filter["value"]):"";
 				if($need) {
