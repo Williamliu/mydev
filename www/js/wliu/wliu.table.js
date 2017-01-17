@@ -76,63 +76,14 @@ WLIU.TABLE.prototype = {
 		}
 	},
 	/*** relationship */
-	relationCol: function(ridx, col_name) {
-		var theRow = this.rowByIndex(ridx);
-		if( theRow ) {
-			if(col_name) 
-				return FCOLLECT.firstByKV(theRow.cols,  {name: col_name});
-			else 
-				return FCOLLECT.firstByKV(theRow.cols,  {coltype: "relation"});
-		} else {
-			return undefined;
-		}
-	},
 	relationHide: function(ridx, col_name) {
-		var theRow = this.rowByIndex(ridx);
-		if( theRow ) {
-				var curCol = FCOLLECT.firstByKV(theRow.cols,  {name: col_name});
-				if( curCol.relation ) {
-					var relCol = this.relationCol(ridx, curCol.relation);
-					if(relCol!=undefined) {
-						if(relCol.value) 
-							return false;
-						else 
-							return true;
-					} else {
-						return false;
-					}
-				} else {
-					return false;
-				}
-		} else {
-			return false;
-		}
+		var theRow = this.getRow(ridx);
+		var theCol = this.getCol(col_name, ridx);
+		return FROW.relationHide(theRow, theCol);
 	},
 	relationChange: function(ridx) {
-		var relationObj = undefined;
-		relationObj = this.relationCol(ridx);
-		if( relationObj ) {
-			var theRow = this.rowByIndex(ridx);
-			if( theRow ) {
-				if( relationObj.value ) {
-					// true - check
-					if( relationObj.current ) {
-						var rCols = FCOLLECT.collectionByKV(theRow.cols, {relation: relationObj.name});				
-						for(var cidx in rCols) {
-							FROW.colRestore(theRow, rCols[cidx]);
-						}
-					} 
-				} else {
-					// false - uncheck
-					var rCols = FCOLLECT.collectionByKV(theRow.cols, {relation: relationObj.name});				
-					for(var cidx in rCols) {
-						var nameVal = {};
-						nameVal[rCols[cidx].name] = FROW.toColVal(rCols[cidx].coltype, "");
-						FROW.update(theRow, nameVal);
-					}
-				}
-			} 
-		}
+		var theRow = this.getRow(ridx);
+		FROW.relationChange(theRow);
 	},
 	/******************/
 
@@ -179,15 +130,15 @@ WLIU.TABLE.prototype = {
     
 
 	// get row object
-	rowByIndex: function(ridx) {
+	getRow: function(ridx) {
 		return FCOLLECT.objectByIndex(this.rows, ridx);
 	},
-	rowByKeys: function(p_keys) {
+	getRowByKeys: function(p_keys) {
 		return FCOLLECT.objectByKeys(this.rows, p_keys);
 	},
 	
 	// return rows[ridx].cols[index of col_name]
-	colByName: function(ridx, col_name) {
+	getCol: function(col_name, ridx) {
 		var t_row = FCOLLECT.objectByIndex(this.rows, ridx);
 		if( t_row != undefined ) {
 			return FCOLLECT.objectByKV(t_row.cols, {name:col_name});
@@ -215,20 +166,10 @@ WLIU.TABLE.prototype = {
 	/************************************/
 
 	/*** event for external call ***/
-	changeByName: function(ridx, col_name) {
-		var t_row = this.rowByIndex(ridx);
-		if( t_row !=undefined ) {
-			var t_col = this.colByName(ridx, col_name);
-			if( t_col!=undefined ) {
-				var keyvalues = {};
-				keyvalues[t_col.name] = t_col.value;
-				return FROW.update(t_row, keyvalues);
-			}  else {
-				return undefined;
-			}
-		} else {
-			return undefined;
-		}
+	changeCol: function(col_name, ridx) {
+		var t_row = this.getRow(ridx);
+		var t_col = this.getCol(col_name, ridx);
+		return FROW.colChange(t_row, t_col);
 	},
 	getChangeRows: function() {
 		var nrows = [];
@@ -401,7 +342,7 @@ WLIU.TABLE.prototype = {
 
 		if(callback) {
 			this.callback.before = callback.before && $.isFunction(callback.before)?callback.before:undefined;
-			this.callback.before = callback.before && $.isFunction(callback.before)?callback.after:undefined;
+			this.callback.after = callback.after && $.isFunction(callback.after)?callback.after:undefined;
 		} 
 
 		this.ajaxCall(ntable, this.sc);
@@ -459,7 +400,7 @@ WLIU.TABLE.prototype = {
 		if( this.wait ) $(this.wait).trigger("show");
 		this.navi.loading = 1;
 		if( this.callback.ajaxBefore && $.isFunction(this.callback.ajaxBefore) ) this.callback.ajaxBefore(ntable);
-		if(cbk) if( cbk.before && $.isFunction(cbk.before) ) cbk.before(ntable);
+		if( this.callback.before ) if( this.callback.before && $.isFunction(this.callback.before) ) this.callback.before(ntable);
 		//console.log(ntable);
 		$.ajax({
 			data: {
@@ -478,11 +419,11 @@ WLIU.TABLE.prototype = {
 					case "init": 
 					case "get": 
 						//console.log(req.table);
-						_self.syncRows(req.table, cbk);
+						_self.syncRows(req.table);
 						break;
 					case "save":
 						//console.log(req.table);
-					    _self.updateRows(req.table, cbk);
+					    _self.updateRows(req.table);
 						break;
 				}
 				_self.navi.loading = 0;
@@ -492,7 +433,7 @@ WLIU.TABLE.prototype = {
 			url: _self.url
 		});
 	},
-	syncRows: function(ntable, cbk) {
+	syncRows: function(ntable) {
 		this.tableError(ntable.error);
 		this.rows = [];
 		this.rowno(-1);
@@ -519,7 +460,7 @@ WLIU.TABLE.prototype = {
 			this.addRow(-1, nrow);
 		}
 
-		if(cbk) if( cbk.after && $.isFunction(cbk.after) ) cbk.after(this);
+		if(this.callback) if( this.callback.after && $.isFunction(this.callback.after) ) this.callback.after(this);
 		if( parseInt(this.error.errorCode) == 0 ) {
 			if( this.callback.ajaxSuccess && $.isFunction(this.callback.ajaxSuccess) ) this.callback.ajaxSuccess(this);
 		} else {
@@ -528,12 +469,12 @@ WLIU.TABLE.prototype = {
 		$(this.taberror).trigger("errorshow");
 		if( this.callback.ajaxComplete && $.isFunction(this.callback.ajaxComplete) ) this.callback.ajaxComplete(this);
 	},
-	updateRows: function(ntable, cbk) {
+	updateRows: function(ntable) {
 			this.rowno(-1);
 			this.tableError(ntable.error);
 			for(var ridx in ntable.rows) {
 				var nRow 		= ntable.rows[ridx];
-				var tableRow 	= this.rowByKeys(nRow.keys); 
+				var tableRow 	= this.getRowByKeys(nRow.keys); 
 				if( tableRow ) {
 					if( parseInt(nRow.error.errorCode) > 0 ) {
 						switch(parseInt(nRow.rowstate)) {
@@ -603,7 +544,7 @@ WLIU.TABLE.prototype = {
 				if( this.callback.ajaxError && $.isFunction(this.callback.ajaxError) ) this.callback.ajaxError(this);
 			}
 		
-		if(cbk) if( cbk.after && $.isFunction(cbk.after) ) cbk.after(this);
+		if(this.callback) if( this.callback.after && $.isFunction(this.callback.after) ) this.callback.after(this);
 		$(this.taberror).trigger("errorshow");
 		if( this.callback.ajaxComplete && $.isFunction(this.callback.ajaxComplete) ) this.callback.ajaxComplete(this);
 	},

@@ -1,6 +1,110 @@
 /******* Table & ArraySearch  *******/
 var WLIU = WLIU || {};
 
+WLIU.COM = function() {}
+WLIU.COM.prototype = {
+	/**********************************************************/
+	check2Array: function(jObj) {
+		var nval = [];
+		if( $.isPlainObject(jObj) ) {
+			for(var ckval in jObj) {
+				if( jObj[ckval] == true || jObj[ckval] == "true" ) {
+					nval.push(ckval);
+				}
+			}
+		} 
+		return nval;
+	},
+	array2Check: function(arr) {
+		var nval = {};
+		if( $.isArray(arr) ) {
+			$.each( arr, function(i, n){
+				nval[n] = true;
+			})
+		}
+		return nval;
+	},
+	array2Datetime: function(datetimeObj) {
+		var nval = "";
+		if( datetimeObj && datetimeObj.date ) {
+			nval = (datetimeObj.date?datetimeObj.date:"") + (datetimeObj.date && datetimeObj.time?" ":"") + (datetimeObj.time?datetimeObj.time:"");
+		} else {
+			if(datetimeObj && datetimeObj.time) {
+				nval = datetimeObj.time?datetimeObj.time:"";
+			} 
+		}
+		return nval;
+	},
+	datetime2Array: function( datetimeString ) {
+		var nval = {};
+		nval.date = "";
+		nval.time = "";
+
+		if( datetimeString != "" ) {
+			var dt_part = datetimeString.split(" ");
+			var date_part = (""+dt_part[0]).trim();
+			if( date_part.indexOf("-")>=0 || date_part.indexOf("/")>=0 ) {
+				if(date_part!="0000-00-00" && date_part!="0000/00/00" && date_part!="00/00/0000" )
+					nval.date = date_part;
+				else 
+					nval.date = "";
+			} else if(date_part.indexOf(":")>=0) {
+				if( date_part!="00:00" && date_part!="00:00:00" )
+					nval.time = date_part;
+				else 
+					nval.time = "";
+			}
+
+			var time_part = (""+dt_part[1]).trim();
+			if( time_part.indexOf(":")>=0 ) {
+				if( time_part!="00:00" && time_part!="00:00:00" ) {
+					var tt_tmp = time_part.split(":");
+					nval.time = tt_tmp[0] + ":" + tt_tmp[1];
+				} else {
+					nval.time = "";
+				}
+			}
+		}
+		return nval;
+	},
+	colreplace: function(expression_str, rowCols) {
+		var ret_val = expression_str;
+		var patern  = /{(\w+)(:|.)?(\w+)}/ig;
+		var colArr  = ret_val.match(patern);
+		for(var cidx in colArr) {
+			var colNames_str = colArr[cidx].replaceAll("{", "").replaceAll("}", "");
+			if( colNames_str.indexOf(":")>=0 ) {
+				var colNames 	= colNames_str.split(":");
+				var colName 	= colNames[0] ? colNames[0] : "";
+				var colPrefix 	= colNames[1] ? colNames[1] : "";
+				var colValObj	= FCOLLECT.firstByKV(rowCols, {name: colName});
+				var colVal = colValObj?(colValObj.value?colValObj.value:""):"";
+
+				if (colPrefix != "" && colVal!="")
+					ret_val = ret_val.replaceAll(colArr[cidx], colPrefix + colVal);
+				else
+					ret_val = ret_val.replaceAll(colArr[cidx], colVal);
+			} else if( colNames_str.indexOf(".")>=0 ) {
+				var colNames 	= colNames_str.split(".");
+				var colName 	= colNames[0] ? colNames[0] : "";
+				var colPrefix 	= colNames[1] ? colNames[1] : "";
+				var colValObj	= FCOLLECT.firstByKV(rowCols, {name: colName});
+				var colVal = colValObj?(colValObj.value[colPrefix]?colValObj.value[colPrefix]:""):"";
+				ret_val = ret_val.replaceAll(colArr[cidx], colVal);
+
+			} else {
+				var colNames 	= colNames_str;
+				var colName 	= colNames.trim();
+				var colValObj	= FCOLLECT.firstByKV(rowCols, {name: colName});
+				var colVal = colValObj?(colValObj.value?colValObj.value:""):"";
+				ret_val = ret_val.replaceAll(colArr[cidx], colVal);
+			}
+		}
+		return ret_val;
+	},
+	/**********************************************************/
+}
+
 WLIU.OBJECT = function() {}
 WLIU.OBJECT.prototype = {
 	update: function( col, p_value1, p_value2) {
@@ -201,19 +305,6 @@ WLIU.ROWACTION.prototype = {
 		}
 	},
 
-	update: function(theRow, keyvalues) {
-		if( theRow!=undefined ) {
-			for(var key in keyvalues) {
-				var theCol = FCOLLECT.objectByKV(theRow.cols, {name:key});
-				if( theCol!=undefined ) {
-					return this.colUpdate(theRow, theCol, keyvalues[key]);
-				} 
-			}
-			return theRow;
-		} else {
-			return undefined;
-		}
-	},
 	colUpdate: function(theRow, theCol, val){
 		if( theRow!=undefined ) {
 			if( theCol!=undefined ) {
@@ -279,6 +370,80 @@ WLIU.ROWACTION.prototype = {
 				keyvalues[theCol.name] = angular.copy(theCol.current);
 				this.update(theRow, keyvalues);
 			}
+		}
+	},
+	colChange: function(theRow, theCol) {
+		if( theRow && theCol ) {
+			var keyvalues = {};
+			keyvalues[theCol.name] = theCol.value;
+			return this.update(theRow, keyvalues);
+		} else {
+			return undefined;
+		}
+	},
+	relationCol: function(theRow) {
+		if( theRow ) {
+			return FCOLLECT.firstByKV(theRow.cols,  {coltype: "relation"});
+		} else {
+			return undefined;
+		}
+	},
+	relationHide: function(theRow, theCol) {
+		if( theRow && theCol ) {
+				if( theCol.relation ) {
+					var relCol = this.relationCol(theRow);
+					if(relCol!=undefined) {
+						if(relCol.value) 
+							return false;
+						else 
+							return true;
+					} else {
+						return false;
+					}
+				} else {
+					return false;
+				}
+		} else {
+			return false;
+		}
+	},
+	relationChange: function(theRow) {
+		if( theRow ) {
+			var relCol = this.relationCol(theRow);
+			if( relCol ) {
+				if( relCol.value ) {
+					// true = check 
+					if( relCol.current ) {
+						var rCols = FCOLLECT.collectionByKV(theRow.cols, {relation: relCol.name});
+						for(var cidx in rCols) {
+							this.colRestore(theRow, rCols[cidx]);
+						}
+					}
+				} else {
+					// false = uncheck 
+					var rCols = FCOLLECT.collectionByKV(theRow.cols, {relation: relCol.name});
+					for(var cidx in rCols) {
+						var keyvalues = {};
+						keyvalues[rCols[cidx].name] = this.toColVal(rCols[cidx].coltype, "");
+						this.update(theRow, keyvalues);
+					}
+					
+				}
+			} // end of if(relCol)
+		} // end of if(theRow)
+	},
+
+	update: function(theRow, keyvalues) {
+		if( theRow!=undefined ) {
+			for(var key in keyvalues) {
+				var theCol = FCOLLECT.objectByKV(theRow.cols, {name:key});
+				if( theCol!=undefined ) {
+					return this.colUpdate(theRow, theCol, keyvalues[key]);
+				} 
+			}
+			return theRow;
+		} else {
+			return undefined;
 		}
 	},
 	cancel: function(theRow) {
@@ -594,111 +759,12 @@ WLIU.ROWACTION.prototype = {
 
 }
 
-WLIU.COM = function() {}
-WLIU.COM.prototype = {
-	/**********************************************************/
-	check2Array: function(jObj) {
-		var nval = [];
-		if( $.isPlainObject(jObj) ) {
-			for(var ckval in jObj) {
-				if( jObj[ckval] == true || jObj[ckval] == "true" ) {
-					nval.push(ckval);
-				}
-			}
-		} 
-		return nval;
-	},
-	array2Check: function(arr) {
-		var nval = {};
-		if( $.isArray(arr) ) {
-			$.each( arr, function(i, n){
-				nval[n] = true;
-			})
-		}
-		return nval;
-	},
-	array2Datetime: function(datetimeObj) {
-		var nval = "";
-		if( datetimeObj && datetimeObj.date ) {
-			nval = (datetimeObj.date?datetimeObj.date:"") + (datetimeObj.date && datetimeObj.time?" ":"") + (datetimeObj.time?datetimeObj.time:"");
-		} else {
-			if(datetimeObj && datetimeObj.time) {
-				nval = datetimeObj.time?datetimeObj.time:"";
-			} 
-		}
-		return nval;
-	},
-	datetime2Array: function( datetimeString ) {
-		var nval = {};
-		nval.date = "";
-		nval.time = "";
-
-		if( datetimeString != "" ) {
-			var dt_part = datetimeString.split(" ");
-			var date_part = (""+dt_part[0]).trim();
-			if( date_part.indexOf("-")>=0 || date_part.indexOf("/")>=0 ) {
-				if(date_part!="0000-00-00" && date_part!="0000/00/00" && date_part!="00/00/0000" )
-					nval.date = date_part;
-				else 
-					nval.date = "";
-			} else if(date_part.indexOf(":")>=0) {
-				if( date_part!="00:00" && date_part!="00:00:00" )
-					nval.time = date_part;
-				else 
-					nval.time = "";
-			}
-
-			var time_part = (""+dt_part[1]).trim();
-			if( time_part.indexOf(":")>=0 ) {
-				if( time_part!="00:00" && time_part!="00:00:00" ) {
-					var tt_tmp = time_part.split(":");
-					nval.time = tt_tmp[0] + ":" + tt_tmp[1];
-				} else {
-					nval.time = "";
-				}
-			}
-		}
-		return nval;
-	},
-	colreplace: function(expression_str, rowCols) {
-		var ret_val = expression_str;
-		var patern  = /{(\w+)(:|.)?(\w+)}/ig;
-		var colArr  = ret_val.match(patern);
-		for(var cidx in colArr) {
-			var colNames_str = colArr[cidx].replaceAll("{", "").replaceAll("}", "");
-			if( colNames_str.indexOf(":")>=0 ) {
-				var colNames 	= colNames_str.split(":");
-				var colName 	= colNames[0] ? colNames[0] : "";
-				var colPrefix 	= colNames[1] ? colNames[1] : "";
-				var colValObj	= FCOLLECT.firstByKV(rowCols, {name: colName});
-				var colVal = colValObj?(colValObj.value?colValObj.value:""):"";
-
-				if (colPrefix != "" && colVal!="")
-					ret_val = ret_val.replaceAll(colArr[cidx], colPrefix + colVal);
-				else
-					ret_val = ret_val.replaceAll(colArr[cidx], colVal);
-			} else if( colNames_str.indexOf(".")>=0 ) {
-				var colNames 	= colNames_str.split(".");
-				var colName 	= colNames[0] ? colNames[0] : "";
-				var colPrefix 	= colNames[1] ? colNames[1] : "";
-				var colValObj	= FCOLLECT.firstByKV(rowCols, {name: colName});
-				var colVal = colValObj?(colValObj.value[colPrefix]?colValObj.value[colPrefix]:""):"";
-				ret_val = ret_val.replaceAll(colArr[cidx], colVal);
-
-			} else {
-				var colNames 	= colNames_str;
-				var colName 	= colNames.trim();
-				var colValObj	= FCOLLECT.firstByKV(rowCols, {name: colName});
-				var colVal = colValObj?(colValObj.value?colValObj.value:""):"";
-				ret_val = ret_val.replaceAll(colArr[cidx], colVal);
-			}
-		}
-		return ret_val;
-	},
-	/**********************************************************/
+WLIU.TABLEACTION = function(){}
+WLIU.TABLEACTION.prototype = {
 }
 
 var FCOLLECT = new WLIU.COLLECTION();
 var FOBJECT  = new WLIU.OBJECT();
 var	FROW     = new WLIU.ROWACTION();
 var FCOM 	 = new WLIU.COM();
+var FTABLE   = new WLIU.TABLEACTION();
