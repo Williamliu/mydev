@@ -3341,7 +3341,7 @@ wliu_table.directive("table.wait", function (wliuTableService) {
     }
 });
 
-wliu_table.directive("table.tips", function (wliuTableService) {
+wliu_table.directive("table.autotip", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,

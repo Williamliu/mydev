@@ -65,7 +65,7 @@
 		   	var col7 = new WLIU.COL({key:0, coltype:"radio3", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name",  			relation:"user_id", defval: 77, notnull:1, 	list:"colorCategory"});
 			var col8 = new WLIU.COL({key:0, coltype:"checkbox1", 	name:"country", 	colname:"Homeland", 	coldesc:"Nationality",  		relation:"user_id", sort:"DESC", need:1,  notnull:1, list:"countryCategory"});
 		   	var col9 = new WLIU.COL({key:0, coltype:"datetime", 	name:"memberdate", 	colname:"Enroll Date", 	coldesc:"Date of Enroll",  		relation:"user_id", 	sort:"DESC"});
-		   	var col10 = new WLIU.COL({key:0, coltype:"text", 		name:"stime", 		col:"created_time", 	colname:"Enroll Date", 	coldesc:"Date of Enroll",  		relation:"user_id", 	sort:"DESC"});
+		   	var col10 = new WLIU.COL({key:0, coltype:"text", 		name:"stime", 		col:"created_time", 	colname:"Created Date", 	coldesc:"Date of Enroll",  		relation:"user_id", 	sort:"DESC"});
 
 		   	var cols = [];
 		   	cols.push(col1);
@@ -92,6 +92,8 @@
 				url:   	"ajax/one2one_action.php",
 				wait:   "#mywait",
 				taberror:"#taberror",
+				autotip: "#myauto",
+				tooltip: "#mytips",
 				rights: {detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
 				navi:   {pagesize:20, match: 1, orderby:"stime", sortby:"DESC", paging:1 },
 				filters:filters,
@@ -120,11 +122,6 @@
 					console.log(theRow);
 				}
 		    });
-
-			$(function(){
-				$("#mytips").wliuPopup();
-				$("#mywait").wliuLoad({maskable:false});
-			});
 		</script>
 </head>
 <body ng-app="myApp" ng-controller="myForm" style="padding-top:80px;position:relative;">
@@ -240,12 +237,12 @@
 <!-- container -->
 <table.taberror table="table" targetid="taberror"></table.taberror>
 
-
 <table.checkdiag1 table="table" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></table.checkdiag1>
 <table.radiodiag3 table="table" targetid="colorCategory_diag" name="colorCategory" colnum="3" colnum1="0" bar="1" title="Please Select"></table.radiodiag3>
 
-<div id="mytips"></div>
-<div id="mywait"></div>
+<table.autotip table="table" targetid="myauto"></table.autotip>
+<table.wait table="table" targetid="mywait"></table.wait>
+<table.tooltip table="table" targetid="mytips"></table.tooltip>
 
 <!-- MD Bootstrap 4.0 js -- must place at the end of body -->
 <script type="text/javascript" src="theme/mdb4.0/js/mdb.min.js"></script>

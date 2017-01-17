@@ -11,12 +11,9 @@ WLIU.TABLE = function( opts ) {
 	this.wait		= opts.wait?opts.wait:"";
 	this.rowerror   = opts.rowerror?opts.rowerror:"";
 	this.taberror 	= opts.taberror?opts.taberror:"";
-	this.tooltip 	= opts.tooltip?opts.tooltip:"";
-	this.tips 		= opts.tips?opts.tips:"";
+	this.autotip 	= opts.autotip?opts.autotip:"";
 	
 	this._rowno 	= -1; // private for rowno
-	this.single     = 0;  // private for edit one Row - form input
-	this.singleKeys = undefined;
 	this.action		= "get";
 	this.error		= {errorCode:0, errorMessage:""};  // table level error : action rights 
 	this.rights 	= {view:1, save:0, cancel:1, clear:1, delete:0, add:1, detail:1, output:0, print:1};
@@ -27,10 +24,6 @@ WLIU.TABLE = function( opts ) {
 	this.lists		= {};  // { gender: { loaded: 1, keys: { rowsn: -1, name: "" }, list: [{key:1, value:"Male", desc:""}, {key:2, value:"Female", desc:""}] },  	xxx: {} }
 	this.callback   = {ajaxBefore: null, ajaxAfter: null, ajaxComplete: null, ajaxError: null,  ajaxSuccess: null};
 	
-	this.FCOLLECT = new WLIU.COLLECTION();
-	this.FOBJECT  = new WLIU.OBJECT();
-	this.FROW     = new WLIU.ROWACTION();
-
 	$.extend(this.rights, opts.rights);
 	$.extend(this.cols, opts.cols);
 	$.extend(this.navi, opts.navi);
@@ -46,11 +39,11 @@ WLIU.TABLE.prototype = {
 	},
 
 	rowstate: function(theRow, p_rowstate) {
-		this.FROW.rowstate(theRow, p_rowstate);
+		FROW.rowstate(theRow, p_rowstate);
 	},
 
 	indexByKeys:  function(p_keys) {
-		return this.FCOLLECT.indexByKeys(this.rows, p_keys);
+		return FCOLLECT.indexByKeys(this.rows, p_keys);
 	},
 
 	rowno: function(p_ridx) {
@@ -65,11 +58,11 @@ WLIU.TABLE.prototype = {
 	},
 
 	colMeta: function(col_name) {
-		return this.FCOLLECT.objectByKV(this.cols, {name: col_name});
+		return FCOLLECT.objectByKV(this.cols, {name: col_name});
 	},
 	colDefault: function(col_name, p_value) {
 		var t_col = this.colMeta(col_name);
-		this.FOBJECT.update(t_col, {defval: p_value} );
+		FOBJECT.update(t_col, {defval: p_value} );
 	},
 
 	listByName: function(listName) {
@@ -87,9 +80,9 @@ WLIU.TABLE.prototype = {
 		var theRow = this.rowByIndex(ridx);
 		if( theRow ) {
 			if(col_name) 
-				return this.FCOLLECT.firstByKV(theRow.cols,  {name: col_name});
+				return FCOLLECT.firstByKV(theRow.cols,  {name: col_name});
 			else 
-				return this.FCOLLECT.firstByKV(theRow.cols,  {coltype: "relation"});
+				return FCOLLECT.firstByKV(theRow.cols,  {coltype: "relation"});
 		} else {
 			return undefined;
 		}
@@ -97,7 +90,7 @@ WLIU.TABLE.prototype = {
 	relationHide: function(ridx, col_name) {
 		var theRow = this.rowByIndex(ridx);
 		if( theRow ) {
-				var curCol = this.FCOLLECT.firstByKV(theRow.cols,  {name: col_name});
+				var curCol = FCOLLECT.firstByKV(theRow.cols,  {name: col_name});
 				if( curCol.relation ) {
 					var relCol = this.relationCol(ridx, curCol.relation);
 					if(relCol!=undefined) {
@@ -124,20 +117,18 @@ WLIU.TABLE.prototype = {
 				if( relationObj.value ) {
 					// true - check
 					if( relationObj.current ) {
-						var rCols = this.FCOLLECT.collectionByKV(theRow.cols, {relation: relationObj.name});				
+						var rCols = FCOLLECT.collectionByKV(theRow.cols, {relation: relationObj.name});				
 						for(var cidx in rCols) {
-							var nameVal = {};
-							nameVal[rCols[cidx].name] = angular.copy(rCols[cidx].current);
-							this.restoreByIndex(ridx, nameVal);
+							FROW.colRestore(theRow, rCols[cidx]);
 						}
 					} 
 				} else {
 					// false - uncheck
-					var rCols = this.FCOLLECT.collectionByKV(theRow.cols, {relation: relationObj.name});				
+					var rCols = FCOLLECT.collectionByKV(theRow.cols, {relation: relationObj.name});				
 					for(var cidx in rCols) {
 						var nameVal = {};
-						nameVal[rCols[cidx].name] = "";
-						this.editByIndex(ridx, nameVal);
+						nameVal[rCols[cidx].name] = FROW.toColVal(rCols[cidx].coltype, "");
+						FROW.update(theRow, nameVal);
 					}
 				}
 			} 
@@ -146,23 +137,23 @@ WLIU.TABLE.prototype = {
 	/******************/
 
 	filterMeta: function(col_name) {
-		return this.FCOLLECT.firstByKV(this.filters,  {name: col_name});
+		return FCOLLECT.firstByKV(this.filters,  {name: col_name});
 	},
 	filterClear: function() {
 		for(var fidx in this.filters) {
-			this.FROW.setColVal( this.filters[fidx],"");
+			FROW.setColVal( this.filters[fidx],"");
 		}
 	},
 	filterValue: function( name, val) {
 		if(val!=undefined) {
 			if( this.filterMeta(name) ) {
-				return this.FROW.setColVal( this.filterMeta(name), val );
+				return FROW.setColVal( this.filterMeta(name), val );
 			} else {
 				return undefined;
 			}
 		} else {
 			if( this.filterMeta(name) ) {
-				return this.FROW.getColVal( this.filterMeta(name) );
+				return FROW.getColVal( this.filterMeta(name) );
 			} else {
 				return undefined;
 			}
@@ -189,35 +180,23 @@ WLIU.TABLE.prototype = {
 
 	// get row object
 	rowByIndex: function(ridx) {
-		return this.FCOLLECT.objectByIndex(this.rows, ridx);
+		return FCOLLECT.objectByIndex(this.rows, ridx);
 	},
 	rowByKeys: function(p_keys) {
-		return this.FCOLLECT.objectByKeys(this.rows, p_keys);
+		return FCOLLECT.objectByKeys(this.rows, p_keys);
 	},
 	
 	// return rows[ridx].cols[index of col_name]
 	colByName: function(ridx, col_name) {
-		var t_row = this.FCOLLECT.objectByIndex(this.rows, ridx);
+		var t_row = FCOLLECT.objectByIndex(this.rows, ridx);
 		if( t_row != undefined ) {
-			return this.FCOLLECT.objectByKV(t_row.cols, {name:col_name});
+			return FCOLLECT.objectByKV(t_row.cols, {name:col_name});
 		} else {
 			return undefined;
 		}
 	},
 	/********************************************** */
 
-
-
-	// update  rows[ridx].cols[index of colname].value 
-	restoreByIndex: function(ridx, nameValues) {
-		var t_row = this.rowByIndex(ridx);
-		if( t_row != undefined ) {
-			return this.FROW.update(t_row, nameValues);
-		} else {
-			return undefined;
-		}
-	},
-	/*********************************************/
 
     //  operate the row : table.rows[ridx]
 	tableError: function(p_error) {
@@ -228,10 +207,10 @@ WLIU.TABLE.prototype = {
 		}
 	},
 	rowError: function(theRow, p_error) {
-		return this.FROW.rowerror(theRow, p_error);
+		return FROW.rowerror(theRow, p_error);
 	},
 	colError: function(theRow, col_name, p_error) {
-		return this.FROW.colerror(theRow, col_name, p_error);
+		return FROW.colerror(theRow, col_name, p_error);
 	},
 	/************************************/
 
@@ -243,7 +222,7 @@ WLIU.TABLE.prototype = {
 			if( t_col!=undefined ) {
 				var keyvalues = {};
 				keyvalues[t_col.name] = t_col.value;
-				return this.FROW.update(t_row, keyvalues);
+				return FROW.update(t_row, keyvalues);
 			}  else {
 				return undefined;
 			}
@@ -263,18 +242,19 @@ WLIU.TABLE.prototype = {
 					nrow.rowstate 	= theRow.rowstate;
 					nrow.keys 		= theRow.keys;
 					nrow.error      = { errorCode:0, errorMessage:"" };
-					nrow.cols		= this.FROW.getChangeCols(theRow);
+					nrow.cols		= FROW.getChangeCols(theRow);
 					nrows.push(nrow);
 				} // errorCode > 0
 			} // if rowstate > 0
 		}
 		return nrows;
 	},
+
 	getFilters: function() {
 		var nfilters = [];
 		for(var fidx in this.filters) {
 			var nfilter = angular.copy(this.filters[fidx]);
-			nfilter.value = this.FROW.getColVal(this.filters[fidx]);
+			nfilter.value = FROW.getColVal(this.filters[fidx]);
 			if(nfilter.need) nfilters.push(nfilter);
 			if($.isArray(nfilter.value) && nfilter.value.length>0 && !nfilter.need ) nfilters.push(nfilter);
 			if(!$.isArray(nfilter.value) && nfilter.value && !$.isPlainObject(nfilter.value) && !nfilter.need ) nfilters.push(nfilter);
@@ -372,7 +352,7 @@ WLIU.TABLE.prototype = {
 				break;
 		}
 
-		this.FCOLLECT.insert(this.rows, ridx, t_row );
+		FCOLLECT.insert(this.rows, ridx, t_row );
 		return t_row;
 	},	
 	cancelRow: function( theRow ) {
@@ -381,17 +361,20 @@ WLIU.TABLE.prototype = {
 				case 0: 
 					break;
 				case 1:
-					this.FROW.cancel(theRow);
+					FROW.cancel(theRow);
 				    break;
 				case 2:
-					var ridx = this.indexByKeys(theRow.keys);
-					this.FCOLLECT.delete(this.rows, ridx);
+					this.removeRow(theRow);
 					break;
 				case 3:
-					this.FROW.cancel(theRow);
+					FROW.cancel(theRow);
 					break;
 			}
 		}
+	},
+	removeRow: function(theRow) {
+		var ridx = this.indexByKeys(theRow.keys);
+		FCOLLECT.delete(this.rows, ridx);
 	},
 	cancelRows: function() {
 		for(var i = this.rows.length-1; i>=0; i--) {
@@ -399,7 +382,7 @@ WLIU.TABLE.prototype = {
 		}
 	},
 	deleteRow: function(theRow) {
-		this.FROW.detach(theRow);
+		FROW.detach(theRow);
 	},
 	deleteRows: function() {
 		// none - to danger
@@ -409,13 +392,12 @@ WLIU.TABLE.prototype = {
 		ntable.scope = this.scope;
 		ntable.lang  = this.lang;
 		ntable.action = "save";
-		ntable.single = this.single;
 		ntable.error  = {errorCode: 0, errorMessage:""};
 		ntable.cols = this.cols;    
 		ntable.navi = this.navi;
 		//ntable.filters = this.getFilters();
 		ntable.lists = this.getLists();
-		ntable.rows = this.FROW.getChangeRow(theRow);
+		ntable.rows = FROW.getChangeRow(theRow);
 
 		if(callback) {
 			this.callback.before = callback.before && $.isFunction(callback.before)?callback.before:undefined;
@@ -429,13 +411,12 @@ WLIU.TABLE.prototype = {
 		ntable.scope = this.scope;
 		ntable.lang  = this.lang;
 		ntable.action = "save";
-		ntable.single = this.single;
 		ntable.error  = {errorCode: 0, errorMessage:""};
 		ntable.cols = this.cols;  
 		ntable.navi = this.navi;
 		//ntable.filters = this.getFilters();
 		ntable.lists = this.getLists();
-		ntable.rows = this.FROW.getChangeRows();
+		ntable.rows = this.getChangeRows();
 
 		if(callback) {
 			this.callback.before = callback.before && $.isFunction(callback.before)?callback.before:undefined;
@@ -444,12 +425,10 @@ WLIU.TABLE.prototype = {
 		this.ajaxCall(ntable, this.sc);
 	},
 	getRows: function(callback) {
-		this.single = 0;  //important
 		var ntable = {};
 		ntable.scope = this.scope;
 		ntable.lang  = this.lang;
 		ntable.action = "get";
-		ntable.single = this.single;
 		ntable.error  = {errorCode: 0, errorMessage:""};
 		ntable.cols = this.cols; // must provide cols meta to get data from database;
 		ntable.navi = this.navi;
@@ -471,71 +450,9 @@ WLIU.TABLE.prototype = {
 		this.navi.match = 1;
 		this.getRows(callback);
 	},
-	editRow: function( pkeys ) {
-		if( pkeys ) {
-			for(var colName in pkeys) {
-				this.colDefault(colName, pkeys[colName]);
-			}
-			this.singleKeys = pkeys;
-		}
-		this.single = 1;  // important
-		var ntable = {};
-		ntable.scope = this.scope;
-		ntable.lang  = this.lang;
-		ntable.single = this.single;
-		ntable.error  = {errorCode: 0, errorMessage:""};
-		ntable.cols = this.cols; // must provide cols meta to get data from database;
-		ntable.navi = this.navi;
-		ntable.filters = this.getFilters();
-		ntable.lists = this.getLists();
-		ntable.rows = [];
-
-		if( this.singleKeys ) 
-			ntable.action = "get";
-		else 
-			ntable.action = "init";
-
-		var cbk = {
-			after: function(rtable) {
-				if(rtable.singleKeys) {
-					if(rtable.rows) {
-						if( $.isArray(rtable.rows) )
-							if( rtable.rows.length > 0) {
-								rtable.rowno(0);
-							} 
-					}
-					if( rtable.rowno() < 0 ) {
-						rtable.error.errorCode 		= 1;
-						rtable.error.errorMessage 	= "The record not found";
-						$(rtable.taberror).trigger("errorshow");
-					}
-
-				} else {
-					if(rtable.rows) {
-						if( $.isArray(rtable.rows) )
-							if( rtable.rows.length <= 0) {
-								rtable.addRow(0, rtable.newRow());
-							}
-					}
-					rtable.rowno(0);
-				}
-			}
-		}
-
-		this.ajaxCall(ntable, this.sc, cbk);
-	},
 	// set row col value to empty or defval if it has default value
 	clearRow: function(theRow) {
-		if( theRow ) {
-			for(var cIdx in theRow.cols) {
-				if( theRow.cols[cIdx].key ) continue;
-				var colName	= theRow.cols[cIdx].name;
-				var colVal 	= theRow.cols[cIdx].defval?theRow.cols[cIdx].defval:"";
-				var nameValues = {};
-				nameValues[colName] = colVal;
-				this.updateByRow( theRow, nameValues);
-			}
-		}
+		FROW.clearRow(theRow);
 	},
 	ajaxCall: function(ntable, sc, cbk) {
 		var _self = this;
@@ -596,8 +513,8 @@ WLIU.TABLE.prototype = {
 			nrow.rowstate = 0;
 
 			for(var colName in theRow) {
-				ncol = this.FCOLLECT.firstByKV(nrow.cols, {name: colName});
-				this.FROW.setColVal(ncol, theRow[colName] );
+				ncol = FCOLLECT.firstByKV(nrow.cols, {name: colName});
+				FROW.setColVal(ncol, theRow[colName] );
 			}
 			this.addRow(-1, nrow);
 		}
@@ -612,75 +529,6 @@ WLIU.TABLE.prototype = {
 		if( this.callback.ajaxComplete && $.isFunction(this.callback.ajaxComplete) ) this.callback.ajaxComplete(this);
 	},
 	updateRows: function(ntable, cbk) {
-		if( parseInt(ntable.single) )  {
-			if( ntable.rows && ntable.rows.length > 0 ) {
-				var nRow 		= ntable.rows[0];
-				var tableRow 	= this.rowByKeys(nRow.keys); 
-				if( tableRow ) {
-					if( parseInt(nRow.error.errorCode) > 0 ) {
-						switch(parseInt(nRow.rowstate)) {
-							case 0:
-								break;
-							case 1:
-								this.FROW.rowerror(tableRow, nRow.error);
-								for(var cidx in nRow.cols) {
-									this.colError(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
-								}
-								break;
-							case 2:
-								this.FROW.rowerror(tableRow, nRow.error);
-								for(var cidx in nRow.cols) {
-									this.colError(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
-								}
-								break;
-							case 3:
-								this.FROW.rowerror(tableRow, nRow.error);
-								break;
-						} 
-
-						$(this.rowerror).trigger("errorshow");
-						if( this.callback.ajaxError && $.isFunction(this.callback.ajaxError) ) this.callback.ajaxError(this);
-						if( this.callback.ajaxComplete && $.isFunction(this.callback.ajaxComplete) ) this.callback.ajaxComplete(this);
-					} else {
-						// create new row,  clear ckeditor before new row
-						if(!this.singleKeys) {
-							for(var cidx in this.cols) {
-								if( this.cols[cidx].coltype.toLowerCase() == "ckeditor" )
-									if(CKEDITOR.instances[this.scope + "_" + this.cols[cidx].name]) {
-										CKEDITOR.instances[this.scope + "_" + this.cols[cidx].name].setData("");
-									}
-							}
-						}
-						$(this.tips).trigger("auto", ["Submitted Success.", "success"]);
-						this.editRow(this.singleKeys);
-						if( this.callback.ajaxSuccess && $.isFunction(this.callback.ajaxSuccess) ) this.callback.ajaxSuccess(this);
-						if( this.callback.ajaxComplete && $.isFunction(this.callback.ajaxComplete) ) this.callback.ajaxComplete(this);
-						/*
-						if( this.rows.length > 0 ) {
-							this.rows = [];
-							this.addRow(0, this.newRow());
-						} else {
-							this.addRow(0, this.newRow());
-						}
-						*/
-					} // if no error 
-				} // if(tableRow)			
-			} else { // if( ntable.rows && ntable.rows.length > 0 )
-				// it will not happen ?
-				if( this.rows.length <= 0 ) {
-					for(var cidx in this.cols) {
-						if( this.cols[cidx].coltype.toLowerCase() == "ckeditor" )
-							if(CKEDITOR.instances[this.scope + "_" + this.cols[cidx].name]) {
-								CKEDITOR.instances[this.scope + "_" + this.cols[cidx].name].setData("");
-							}
-					}
-					this.editRow(this.singleKeys);
-					if( this.callback.ajaxComplete && $.isFunction(this.callback.ajaxComplete) ) this.callback.ajaxComplete(this);
-				} 
-			}
-			this.rowno(0);
-		
-	} else {
 			this.rowno(-1);
 			this.tableError(ntable.error);
 			for(var ridx in ntable.rows) {
@@ -692,13 +540,13 @@ WLIU.TABLE.prototype = {
 							case 0:
 								break;
 							case 1:
-								this.FROW.rowerror(tableRow, nRow.error);
+								this.rowError(tableRow, nRow.error);
 								for(var cidx in nRow.cols) {
 									this.colError(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
 								}
 								break;
 							case 2:
-								this.FROW.rowerror(tableRow, nRow.error);
+								this.rowError(tableRow, nRow.error);
 								for(var cidx in nRow.cols) {
 									this.colError(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
 								}
@@ -712,7 +560,7 @@ WLIU.TABLE.prototype = {
 							case 0:
 								break;
 							case 1:
-								this.FROW.rowerror(tableRow, nRow.error);
+								this.rowError(tableRow, nRow.error);
 								tableRow.rowstate = 0;
 								for(var cidx in tableRow.cols) {
 									tableRow.cols[cidx].colstate 	= 0;
@@ -721,14 +569,14 @@ WLIU.TABLE.prototype = {
 								}
 								break;
 							case 2:
-								this.FROW.rowerror(tableRow, nRow.error);
+								this.rowError(tableRow, nRow.error);
 								tableRow.rowstate = 0;
 								for(var cidx in tableRow.cols) {
 									tableRow.cols[cidx].colstate 	= 0;
 									tableRow.cols[cidx].current 	= angular.copy(tableRow.cols[cidx].value);
 									this.colError(tableRow, tableRow.cols[cidx].name, {errorCode:0, errorMessage:""} );
 									if(tableRow.cols[cidx].key) {
-										var keyColObj = this.FCOLLECT.firstByKV( nRow.cols, { name: tableRow.cols[cidx].name } );
+										var keyColObj = FCOLLECT.firstByKV( nRow.cols, { name: tableRow.cols[cidx].name } );
 										if( keyColObj ) {
 											tableRow.cols[cidx].value 	= keyColObj.value?keyColObj.value:"";
 											tableRow.cols[cidx].current = tableRow.cols[cidx].value;  
@@ -741,7 +589,7 @@ WLIU.TABLE.prototype = {
 							case 3:
 								this.rowError(tableRow, nRow.error);
 								tableRow.rowstate = 0;
-								this.deleteByRow(tableRow);
+								this.removeRow(tableRow);
 								table.navi.recordtotal--;
 								break;
 						}
@@ -749,12 +597,11 @@ WLIU.TABLE.prototype = {
 				} // if(tableRow)
 			}  // for
 			if(parseInt(ntable.success)) {
-				$(this.tips).trigger("auto", ["Submitted Success.", "success"]);
+				$(this.autotip).trigger("auto", ["Submitted Success.", "success"]);
 				if( this.callback.ajaxSuccess && $.isFunction(this.callback.ajaxSuccess) ) this.callback.ajaxSuccess(this);
 			} else {
 				if( this.callback.ajaxError && $.isFunction(this.callback.ajaxError) ) this.callback.ajaxError(this);
 			}
-		}
 		
 		if(cbk) if( cbk.after && $.isFunction(cbk.after) ) cbk.after(this);
 		$(this.taberror).trigger("errorshow");

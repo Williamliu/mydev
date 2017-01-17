@@ -140,127 +140,6 @@ WLIU.COLLECTION.prototype = {
 
 WLIU.ROWACTION = function(){}
 WLIU.ROWACTION.prototype = {
-	/**********************************************************/
-	indexByKV: function(collection, keyvalues) {
-		var cidx = -1;
-		$.each(collection, function(i, n) {
-			var not_found = false;
-			for(var key in keyvalues) {
-				if( n[key] != keyvalues[key] ) not_found = true; 
-			}
-			if(!not_found) cidx = i;
-			return not_found;
-		});
-		return cidx;
-	},
-	objectByKV: function(collection, keyvalues) {
-		var cidx = this.indexByKV(collection, keyvalues);
-		if(cidx >=0) {
-			return collection[cidx];
-		} else {
-			return undefined;
-		}
-	},
-	check2Array: function(jObj) {
-		var nval = [];
-		if( $.isPlainObject(jObj) ) {
-			for(var ckval in jObj) {
-				if( jObj[ckval] == true || jObj[ckval] == "true" ) {
-					nval.push(ckval);
-				}
-			}
-		} 
-		return nval;
-	},
-	array2Check: function(arr) {
-		var nval = {};
-		if( $.isArray(arr) ) {
-			$.each( arr, function(i, n){
-				nval[n] = true;
-			})
-		}
-		return nval;
-	},
-	array2Datetime: function(datetimeObj) {
-		var nval = "";
-		if( datetimeObj && datetimeObj.date ) {
-			nval = (datetimeObj.date?datetimeObj.date:"") + (datetimeObj.date && datetimeObj.time?" ":"") + (datetimeObj.time?datetimeObj.time:"");
-		} else {
-			if(datetimeObj && datetimeObj.time) {
-				nval = datetimeObj.time?datetimeObj.time:"";
-			} 
-		}
-		return nval;
-	},
-	datetime2Array: function( datetimeString ) {
-		var nval = {};
-		nval.date = "";
-		nval.time = "";
-
-		if( datetimeString != "" ) {
-			var dt_part = datetimeString.split(" ");
-			var date_part = (""+dt_part[0]).trim();
-			if( date_part.indexOf("-")>=0 || date_part.indexOf("/")>=0 ) {
-				if(date_part!="0000-00-00" && date_part!="0000/00/00" && date_part!="00/00/0000" )
-					nval.date = date_part;
-				else 
-					nval.date = "";
-			} else if(date_part.indexOf(":")>=0) {
-				if( date_part!="00:00" && date_part!="00:00:00" )
-					nval.time = date_part;
-				else 
-					nval.time = "";
-			}
-
-			var time_part = (""+dt_part[1]).trim();
-			if( time_part.indexOf(":")>=0 ) {
-				if( time_part!="00:00" && time_part!="00:00:00" ) {
-					var tt_tmp = time_part.split(":");
-					nval.time = tt_tmp[0] + ":" + tt_tmp[1];
-				} else {
-					nval.time = "";
-				}
-			}
-		}
-		return nval;
-	},
-	colreplace: function(expression_str, rowCols) {
-		var ret_val = expression_str;
-		var patern  = /{(\w+)(:|.)?(\w+)}/ig;
-		var colArr  = ret_val.match(patern);
-		for(var cidx in colArr) {
-			var colNames_str = colArr[cidx].replaceAll("{", "").replaceAll("}", "");
-			if( colNames_str.indexOf(":")>=0 ) {
-				var colNames 	= colNames_str.split(":");
-				var colName 	= colNames[0] ? colNames[0] : "";
-				var colPrefix 	= colNames[1] ? colNames[1] : "";
-				var colValObj	= this.FCOLLECT.firstByKV(rowCols, {name: colName});
-				var colVal = colValObj?(colValObj.value?colValObj.value:""):"";
-
-				if (colPrefix != "" && colVal!="")
-					ret_val = ret_val.replaceAll(colArr[cidx], colPrefix + colVal);
-				else
-					ret_val = ret_val.replaceAll(colArr[cidx], colVal);
-			} else if( colNames_str.indexOf(".")>=0 ) {
-				var colNames 	= colNames_str.split(".");
-				var colName 	= colNames[0] ? colNames[0] : "";
-				var colPrefix 	= colNames[1] ? colNames[1] : "";
-				var colValObj	= this.FCOLLECT.firstByKV(rowCols, {name: colName});
-				var colVal = colValObj?(colValObj.value[colPrefix]?colValObj.value[colPrefix]:""):"";
-				ret_val = ret_val.replaceAll(colArr[cidx], colVal);
-
-			} else {
-				var colNames 	= colNames_str;
-				var colName 	= colNames.trim();
-				var colValObj	= this.FCOLLECT.firstByKV(rowCols, {name: colName});
-				var colVal = colValObj?(colValObj.value?colValObj.value:""):"";
-				ret_val = ret_val.replaceAll(colArr[cidx], colVal);
-			}
-		}
-		return ret_val;
-	},
-	/**********************************************************/
-
 	rowstate: function(theRow, p_rowstate) {
 		if( theRow!=undefined ) {
 			if(p_rowstate!=undefined) theRow.rowstate = p_rowstate;
@@ -279,7 +158,7 @@ WLIU.ROWACTION.prototype = {
 	},
 	colerror: function(theRow, col_name, p_error) {
 		if( theRow != undefined ) {
-			var theCol = this.objectByKV(theRow.cols, {name:col_name});
+			var theCol = FCOLLECT.objectByKV(theRow.cols, {name:col_name});
 			if(theCol!=undefined) {
 				if(p_error!=undefined) {
 					theCol.errorCode 		= p_error.errorCode;
@@ -325,7 +204,7 @@ WLIU.ROWACTION.prototype = {
 	update: function(theRow, keyvalues) {
 		if( theRow!=undefined ) {
 			for(var key in keyvalues) {
-				var theCol = this.objectByKV(theRow.cols, {name:key});
+				var theCol = FCOLLECT.objectByKV(theRow.cols, {name:key});
 				if( theCol!=undefined ) {
 					return this.colUpdate(theRow, theCol, keyvalues[key]);
 				} 
@@ -393,6 +272,15 @@ WLIU.ROWACTION.prototype = {
 			return undefined;
 		}
 	},
+	colRestore: function(theRow, theCol) {
+		if( theRow!=undefined ) {
+			if( theCol!=undefined ) {
+				var keyvalues = {};
+				keyvalues[theCol.name] = angular.copy(theCol.current);
+				this.update(theRow, keyvalues);
+			}
+		}
+	},
 	cancel: function(theRow) {
 		var errorCode 		= 0;
 		var errorMessage 	= "";
@@ -426,7 +314,7 @@ WLIU.ROWACTION.prototype = {
 			case "checkbox1":
 			case "checkbox2":
 			case "checkbox3":
-				ret_val = $.isPlainObject(theCol.value)?this.check2Array(theCol.value):[];
+				ret_val = $.isPlainObject(theCol.value)?FCOM.check2Array(theCol.value):[];
 				break;
 
 			case "date":
@@ -435,7 +323,7 @@ WLIU.ROWACTION.prototype = {
 				break;
 			case "datetime":
 				//var tmp_dt = parseInt(theCol.value)>0?theCol.value:"";
-				ret_val = $.isPlainObject(theCol.value)?this.array2Datetime(theCol.value):"";
+				ret_val = $.isPlainObject(theCol.value)?FCOM.array2Datetime(theCol.value):"";
 				break;
 
 			case "select":
@@ -469,8 +357,8 @@ WLIU.ROWACTION.prototype = {
 				break;
 			case "datetimerange":
 				ret_val = {}
-				ret_val.from = $.isPlainObject(theCol.value.from)?this.array2Datetime(theCol.value.from):"";
-				ret_val.to	 = $.isPlainObject(theCol.value.to)?this.array2Datetime(theCol.value.to):"";
+				ret_val.from = $.isPlainObject(theCol.value.from)?FCOM.array2Datetime(theCol.value.from):"";
+				ret_val.to	 = $.isPlainObject(theCol.value.to)?FCOM.array2Datetime(theCol.value.to):"";
 				break;
 
 			default:
@@ -556,8 +444,19 @@ WLIU.ROWACTION.prototype = {
 		}
 		return nrows;
 	},
-	
-
+	// set row col value to empty or defval if it has default value
+	clearRow: function(theRow) {
+		if( theRow ) {
+			for(var cIdx in theRow.cols) {
+				if( theRow.cols[cIdx].key ) continue;
+				var colName	= theRow.cols[cIdx].name;
+				var colVal 	= theRow.cols[cIdx].defval?theRow.cols[cIdx].defval:"";
+				var nameValues = {};
+				nameValues[colName] = colVal;
+				this.update( theRow, nameValues);
+			}
+		}
+	},
 	setColVal: function(theCol, p_val) {
 		var ret_val = "";
 		switch( theCol.coltype ) {
@@ -567,7 +466,7 @@ WLIU.ROWACTION.prototype = {
 			case "ckeditor":
 			case "password":
 				if( theCol.value	!= undefined ) theCol.value 	= p_val?p_val:"";
-				if( theCol.current!= undefined ) theCol.current = p_val?p_val:"";
+				if( theCol.current	!= undefined ) theCol.current 	= p_val?p_val:"";
 				ret_val = p_val?p_val:"";
 				break;
 			case "checkbox":
@@ -575,9 +474,9 @@ WLIU.ROWACTION.prototype = {
 			case "checkbox2":
 			case "checkbox3":
 				if( !$.isArray(p_val) ) p_val = []; 
-				if( theCol.value	!= undefined ) theCol.value 	= this.array2Check(p_val);
-				if( theCol.current!= undefined ) theCol.current = this.array2Check(p_val);
-				ret_val = this.array2Check(p_val);
+				if( theCol.value	!= undefined ) theCol.value 	= FCOM.array2Check(p_val);
+				if( theCol.current!= undefined ) theCol.current = FCOM.array2Check(p_val);
+				ret_val = FCOM.array2Check(p_val);
 				break;
 
 			case "date":
@@ -588,9 +487,9 @@ WLIU.ROWACTION.prototype = {
 				break;
 			case "datetime":
 				p_val = p_val?p_val:"";
-				if( theCol.value	!= undefined ) theCol.value 	= this.datetime2Array(p_val);
-				if( theCol.current!= undefined ) theCol.current = this.datetime2Array(p_val);
-				ret_val = this.datetime2Array(p_val);
+				if( theCol.value	!= undefined ) theCol.value 	= FCOM.datetime2Array(p_val);
+				if( theCol.current!= undefined ) theCol.current = FCOM.datetime2Array(p_val);
+				ret_val = FCOM.datetime2Array(p_val);
 				break;
 			case "select":
 				if( theCol.value	!= undefined ) theCol.value 	= p_val?p_val:"";
@@ -637,10 +536,169 @@ WLIU.ROWACTION.prototype = {
 				break;
 		}	 
 		return ret_val;
-	}
+	},
+
+	toColVal: function(colType, p_val) {
+		var ret_val = "";
+		switch( colType ) {
+			case "hidden":
+			case "textbox":
+			case "textarea":
+			case "ckeditor":
+			case "password":
+				ret_val = p_val?p_val:"";
+				break;
+			case "checkbox":
+			case "checkbox1":
+			case "checkbox2":
+			case "checkbox3":
+				if( !$.isArray(p_val) ) p_val = []; 
+				ret_val = FCOM.array2Check(p_val);
+				break;
+
+			case "date":
+			case "time":
+				ret_val = p_val?p_val:"";
+				break;
+			case "datetime":
+				p_val = p_val?p_val:"";
+				ret_val = FCOM.datetime2Array(p_val);
+				break;
+			case "select":
+				ret_val = p_val?p_val:"";
+				break;
+			case "radio":
+			case "radio1":
+			case "radio2":
+			case "radio3":
+				ret_val = p_val?p_val:0;
+				break;
+			case "relation":
+			case "bool":
+				ret_val = p_val=="1"?true:false;
+				break;
+			case "passpair":
+				ret_val = {};
+				ret_val.password 	= p_val?p_val:"";
+				ret_val.confirm 	= p_val?p_val:"";
+				break;
+			case "text":
+				ret_val = p_val?p_val:"";
+				break;
+			default:
+				ret_val = p_val?p_val:"";
+				break;
+		}	 
+		return ret_val;
+	}	
 
 }
 
-WLIU.FUNC = function() {}
-WLIU.FUNC.prototype = {
+WLIU.COM = function() {}
+WLIU.COM.prototype = {
+	/**********************************************************/
+	check2Array: function(jObj) {
+		var nval = [];
+		if( $.isPlainObject(jObj) ) {
+			for(var ckval in jObj) {
+				if( jObj[ckval] == true || jObj[ckval] == "true" ) {
+					nval.push(ckval);
+				}
+			}
+		} 
+		return nval;
+	},
+	array2Check: function(arr) {
+		var nval = {};
+		if( $.isArray(arr) ) {
+			$.each( arr, function(i, n){
+				nval[n] = true;
+			})
+		}
+		return nval;
+	},
+	array2Datetime: function(datetimeObj) {
+		var nval = "";
+		if( datetimeObj && datetimeObj.date ) {
+			nval = (datetimeObj.date?datetimeObj.date:"") + (datetimeObj.date && datetimeObj.time?" ":"") + (datetimeObj.time?datetimeObj.time:"");
+		} else {
+			if(datetimeObj && datetimeObj.time) {
+				nval = datetimeObj.time?datetimeObj.time:"";
+			} 
+		}
+		return nval;
+	},
+	datetime2Array: function( datetimeString ) {
+		var nval = {};
+		nval.date = "";
+		nval.time = "";
+
+		if( datetimeString != "" ) {
+			var dt_part = datetimeString.split(" ");
+			var date_part = (""+dt_part[0]).trim();
+			if( date_part.indexOf("-")>=0 || date_part.indexOf("/")>=0 ) {
+				if(date_part!="0000-00-00" && date_part!="0000/00/00" && date_part!="00/00/0000" )
+					nval.date = date_part;
+				else 
+					nval.date = "";
+			} else if(date_part.indexOf(":")>=0) {
+				if( date_part!="00:00" && date_part!="00:00:00" )
+					nval.time = date_part;
+				else 
+					nval.time = "";
+			}
+
+			var time_part = (""+dt_part[1]).trim();
+			if( time_part.indexOf(":")>=0 ) {
+				if( time_part!="00:00" && time_part!="00:00:00" ) {
+					var tt_tmp = time_part.split(":");
+					nval.time = tt_tmp[0] + ":" + tt_tmp[1];
+				} else {
+					nval.time = "";
+				}
+			}
+		}
+		return nval;
+	},
+	colreplace: function(expression_str, rowCols) {
+		var ret_val = expression_str;
+		var patern  = /{(\w+)(:|.)?(\w+)}/ig;
+		var colArr  = ret_val.match(patern);
+		for(var cidx in colArr) {
+			var colNames_str = colArr[cidx].replaceAll("{", "").replaceAll("}", "");
+			if( colNames_str.indexOf(":")>=0 ) {
+				var colNames 	= colNames_str.split(":");
+				var colName 	= colNames[0] ? colNames[0] : "";
+				var colPrefix 	= colNames[1] ? colNames[1] : "";
+				var colValObj	= FCOLLECT.firstByKV(rowCols, {name: colName});
+				var colVal = colValObj?(colValObj.value?colValObj.value:""):"";
+
+				if (colPrefix != "" && colVal!="")
+					ret_val = ret_val.replaceAll(colArr[cidx], colPrefix + colVal);
+				else
+					ret_val = ret_val.replaceAll(colArr[cidx], colVal);
+			} else if( colNames_str.indexOf(".")>=0 ) {
+				var colNames 	= colNames_str.split(".");
+				var colName 	= colNames[0] ? colNames[0] : "";
+				var colPrefix 	= colNames[1] ? colNames[1] : "";
+				var colValObj	= FCOLLECT.firstByKV(rowCols, {name: colName});
+				var colVal = colValObj?(colValObj.value[colPrefix]?colValObj.value[colPrefix]:""):"";
+				ret_val = ret_val.replaceAll(colArr[cidx], colVal);
+
+			} else {
+				var colNames 	= colNames_str;
+				var colName 	= colNames.trim();
+				var colValObj	= FCOLLECT.firstByKV(rowCols, {name: colName});
+				var colVal = colValObj?(colValObj.value?colValObj.value:""):"";
+				ret_val = ret_val.replaceAll(colArr[cidx], colVal);
+			}
+		}
+		return ret_val;
+	},
+	/**********************************************************/
 }
+
+var FCOLLECT = new WLIU.COLLECTION();
+var FOBJECT  = new WLIU.OBJECT();
+var	FROW     = new WLIU.ROWACTION();
+var FCOM 	 = new WLIU.COM();
