@@ -150,19 +150,19 @@ WLIU.TABLE.prototype = {
 	},
 	filterClear: function() {
 		for(var fidx in this.filters) {
-			this.setColVal( this.filters[fidx],"");
+			this.FROW.setColVal( this.filters[fidx],"");
 		}
 	},
 	filterValue: function( name, val) {
 		if(val!=undefined) {
 			if( this.filterMeta(name) ) {
-				return this.setColVal( this.filterMeta(name), val );
+				return this.FROW.setColVal( this.filterMeta(name), val );
 			} else {
 				return undefined;
 			}
 		} else {
 			if( this.filterMeta(name) ) {
-				return this.getColVal( this.filterMeta(name) );
+				return this.FROW.getColVal( this.filterMeta(name) );
 			} else {
 				return undefined;
 			}
@@ -210,83 +210,13 @@ WLIU.TABLE.prototype = {
 
 	// update  rows[ridx].cols[index of colname].value 
 	restoreByIndex: function(ridx, nameValues) {
-		return FUNC.ROWS.updateByIndex(this.rows, ridx, nameValues);
-	},
-
-	updateByIndex: function(ridx, nameValues) {
-		return FUNC.ROWS.updateByIndex(this.rows, ridx, nameValues);
-	},
-	updateByKeys: function(p_keys, nameValues) {
-		return FUNC.ROWS.updateByKeys(this.rows, p_keys, nameValues);
-	},
-	updateByRow: function(p_row, nameValues) {
-		return FUNC.ROWS.updateByRow(p_row, nameValues);
-	},
-
-
-	editByIndex: function(ridx, nameValues) {
-		for(var colName in nameValues) {
-			var vCol = this.colByName(ridx, colName);
-			if( vCol ) {
-				nameValues[colName] = this.updateColVal(vCol, nameValues[colName]);
-			}
+		var t_row = this.rowByIndex(ridx);
+		if( t_row != undefined ) {
+			return this.FROW.update(t_row, nameValues);
+		} else {
+			return undefined;
 		}
-		return this.updateByIndex(ridx, nameValues);
 	},
-	
-	updateColVal: function(vCol, p_val) {
-		var ret_val = "";
-		switch( vCol.coltype ) {
-			case "hidden":
-			case "textbox":
-			case "textarea":
-			case "ckeditor":
-			case "password":
-				ret_val = p_val?p_val:"";
-				break;
-			case "checkbox":
-			case "checkbox1":
-			case "checkbox2":
-			case "checkbox3":
-				if( !$.isArray(p_val) ) p_val = []; 
-				ret_val = FUNC.ARRAY.array2Check(p_val);
-				break;
-
-			case "date":
-			case "time":
-				ret_val = p_val?p_val:"";
-				break;
-			case "datetime":
-				p_val = p_val?p_val:"";
-				ret_val = FUNC.ARRAY.datetime2Array(p_val);
-				break;
-			case "select":
-				ret_val = p_val?p_val:"";
-				break;
-			case "radio":
-			case "radio1":
-			case "radio2":
-			case "radio3":
-				ret_val = p_val?p_val:0;
-				break;
-			case "relation":
-			case "bool":
-				ret_val = p_val=="1"?true:false;
-				break;
-			case "passpair":
-				ret_val = {};
-				ret_val.password 	= p_val?p_val:"";
-				ret_val.confirm 	= p_val?p_val:"";
-				break;
-			case "text":
-				ret_val = p_val?p_val:"";
-				break;
-			default:
-				ret_val = p_val?p_val:"";
-				break;
-		}	 
-		return ret_val;
-	},	
 	/*********************************************/
 
     //  operate the row : table.rows[ridx]
@@ -298,7 +228,7 @@ WLIU.TABLE.prototype = {
 		}
 	},
 	rowError: function(theRow, p_error) {
-		return this.FROW.error(theRow, p_error);
+		return this.FROW.rowerror(theRow, p_error);
 	},
 	colError: function(theRow, col_name, p_error) {
 		return this.FROW.colerror(theRow, col_name, p_error);
@@ -313,7 +243,7 @@ WLIU.TABLE.prototype = {
 			if( t_col!=undefined ) {
 				var keyvalues = {};
 				keyvalues[t_col.name] = t_col.value;
-				return this.FROW.change(t_row, keyvalues);
+				return this.FROW.update(t_row, keyvalues);
 			}  else {
 				return undefined;
 			}
@@ -333,245 +263,18 @@ WLIU.TABLE.prototype = {
 					nrow.rowstate 	= theRow.rowstate;
 					nrow.keys 		= theRow.keys;
 					nrow.error      = { errorCode:0, errorMessage:"" };
-					nrow.cols		= this.getChangeCols(theRow);
+					nrow.cols		= this.FROW.getChangeCols(theRow);
 					nrows.push(nrow);
 				} // errorCode > 0
 			} // if rowstate > 0
 		}
 		return nrows;
 	},
-	getChangeRow: function( theRow ) {
-		var nrows = [];
-		//if( theRow.error.errorCode <= 0 ) { 
-		if( true ) { 
-			var nrow = {};
-			nrow.scope 		= theRow.scope;
-			nrow.rowstate 	= theRow.rowstate;
-			nrow.keys 		= theRow.keys;
-			nrow.error      = { errorCode:0, errorMessage:"" };
-			nrow.cols		= this.getChangeCols(theRow);
-			nrows.push(nrow);
-		}
-		return nrows;
-	},
-	getChangeCols: function(theRow) {
-		var ncols = [];
-		switch(theRow.rowstate) {
-			case 0:
-				break;
-			case 1:
-				for(var cidx in theRow.cols) {
-					if( theRow.cols[cidx].key==1 || theRow.cols[cidx].need==1 || theRow.cols[cidx].coltype=="relation" || theRow.cols[cidx].colstate==1 ) {
-						var ncol = this.getChangeCol( theRow.cols[cidx] );
-						if(ncol) ncols.push(ncol);
-					} //if
-				} // for	
-				break;
-			case 2:
-				for(var cidx in theRow.cols) {
-					var ncol = this.getChangeCol(theRow.cols[cidx] );
-					if(ncol) ncols.push(ncol);
-				} // for	
-				break;
-			case 3:
-				break;
-		}
-		return ncols;
-	},
-	getChangeCol: function(vCol) {
-		var nCol = undefined;
-		switch(vCol.coltype) {
-			case "hidden":
-			case "textbox":
-			case "textarea":
-			case "ckeditor":
-			case "password":
-
-			case "checkbox":
-			case "checkbox1":
-			case "checkbox2":
-			case "checkbox3":
-
-			case "date":
-			case "time":
-			case "datetime":
-
-			case "select":
-			case "radio":
-			case "radio1":
-			case "radio2":
-			case "radio3":
-
-			case "relation":
-			case "bool":
-
-			case "passpair":
-				var nCol 		= angular.copy(vCol);
-				nCol.current 	= "";
-				nCol.value 		= this.getColVal(nCol);
-				break;
-			case "text":
-				break;
-			default:
-				break;
-		}
-		return nCol;
-	},
-
-	getColVal: function(vCol) {
-		var ret_val = "";
-		switch( vCol.coltype ) {
-			case "hidden":
-			case "textbox":
-			case "textarea":
-			case "ckeditor":
-			case "password":
-				ret_val = vCol.value?vCol.value:"";
-				break;
-			case "checkbox":
-			case "checkbox1":
-			case "checkbox2":
-			case "checkbox3":
-				ret_val = $.isPlainObject(vCol.value)?FUNC.ARRAY.check2Array(vCol.value):[];
-				break;
-
-			case "date":
-			case "time":
-				ret_val = vCol.value?vCol.value:"";
-				break;
-			case "datetime":
-				//var tmp_dt = parseInt(vCol.value)>0?vCol.value:"";
-				ret_val = $.isPlainObject(vCol.value)?FUNC.ARRAY.array2Datetime(vCol.value):"";
-				break;
-
-			case "select":
-				ret_val = vCol.value?vCol.value:"";
-				break;
-			case "radio":
-			case "radio1":
-			case "radio2":
-			case "radio3":
-				ret_val = vCol.value?vCol.value:0;
-				break;
-			case "relation":
-			case "bool":
-				ret_val = vCol.value?1:0;
-				break;
-			case "passpair":
-				ret_val = {}
-				ret_val.password = vCol.value.password?vCol.value.password:"";
-				ret_val.confirm  = vCol.value.confirm?vCol.value.confirm:"";
-				break;
-			case "text":
-				ret_val = "";
-
-			/*** below coltype only for filter ***/
-			case "daterange":
-			case "timerange":
-			case "range":
-				ret_val = {}
-				ret_val.from = vCol.value.from?vCol.value.from:"";
-				ret_val.to	 = vCol.value.to?vCol.value.to:"";
-				break;
-			case "datetimerange":
-				ret_val = {}
-				ret_val.from = $.isPlainObject(vCol.value.from)?FUNC.ARRAY.array2Datetime(vCol.value.from):"";
-				ret_val.to	 = $.isPlainObject(vCol.value.to)?FUNC.ARRAY.array2Datetime(vCol.value.to):"";
-				break;
-
-			default:
-				ret_val = "";
-				break;
-		} 
-		return ret_val;
-	},
-	
-	setColVal: function(vCol, p_val) {
-		var ret_val = "";
-		switch( vCol.coltype ) {
-			case "hidden":
-			case "textbox":
-			case "textarea":
-			case "ckeditor":
-			case "password":
-				if( vCol.value	!= undefined ) vCol.value 	= p_val?p_val:"";
-				if( vCol.current!= undefined ) vCol.current = p_val?p_val:"";
-				ret_val = p_val?p_val:"";
-				break;
-			case "checkbox":
-			case "checkbox1":
-			case "checkbox2":
-			case "checkbox3":
-				if( !$.isArray(p_val) ) p_val = []; 
-				if( vCol.value	!= undefined ) vCol.value 	= FUNC.ARRAY.array2Check(p_val);
-				if( vCol.current!= undefined ) vCol.current = FUNC.ARRAY.array2Check(p_val);
-				ret_val = FUNC.ARRAY.array2Check(p_val);
-				break;
-
-			case "date":
-			case "time":
-				if( vCol.value	!= undefined ) vCol.value 	= p_val?p_val:"";
-				if( vCol.current!= undefined ) vCol.current = p_val?p_val:"";
-				ret_val = parseInt(p_val)?p_val:"";
-				break;
-			case "datetime":
-				p_val = p_val?p_val:"";
-				if( vCol.value	!= undefined ) vCol.value 	= FUNC.ARRAY.datetime2Array(p_val);
-				if( vCol.current!= undefined ) vCol.current = FUNC.ARRAY.datetime2Array(p_val);
-				ret_val = FUNC.ARRAY.datetime2Array(p_val);
-				break;
-			case "select":
-				if( vCol.value	!= undefined ) vCol.value 	= p_val?p_val:"";
-				if( vCol.current!= undefined ) vCol.current = p_val?p_val:"";
-				ret_val = p_val?p_val:"";
-				break;
-			case "radio":
-			case "radio1":
-			case "radio2":
-			case "radio3":
-				if( vCol.value	!= undefined ) vCol.value 	= parseInt(p_val)?parseInt(p_val):0;
-				if( vCol.current!= undefined ) vCol.current = parseInt(p_val)?parseInt(p_val):0;
-				ret_val = parseInt(p_val)?parseInt(p_val):0;
-				break;
-			case "relation":
-			case "bool":
-				if( vCol.value	!= undefined ) vCol.value 	= parseInt(p_val)?true:false;
-				if( vCol.current!= undefined ) vCol.current = parseInt(p_val)?true:false;
-				ret_val = p_val=="1"?true:false;
-				break;
-			case "passpair":
-				if( vCol.value	!= undefined ) {
-					vCol.value  = {};
-					vCol.value.password = p_val?p_val:"";
-					vCol.value.confirm 	= p_val?p_val:"";
-				}
-				if( vCol.current != undefined ) {
-					vCol.current  = {};
-					vCol.current.password 	= p_val?p_val:"";
-					vCol.current.confirm 	= p_val?p_val:"";
-				}
-				ret_val = angular.copy(vCol.value);
-				break;
-
-			case "text":
-				if( vCol.value	!= undefined ) vCol.value 	= p_val?p_val:"";
-				if( vCol.current!= undefined ) vCol.current = p_val?p_val:"";
-				ret_val = p_val?p_val:"";
-				break;
-			default:
-				if( vCol.value	!= undefined ) vCol.value 	= p_val?p_val:"";
-				if( vCol.current!= undefined ) vCol.current = p_val?p_val:"";
-				ret_val = p_val?p_val:"";
-				break;
-		}	 
-		return ret_val;
-	},
-
 	getFilters: function() {
 		var nfilters = [];
 		for(var fidx in this.filters) {
 			var nfilter = angular.copy(this.filters[fidx]);
-			nfilter.value = this.getColVal(this.filters[fidx]);
+			nfilter.value = this.FROW.getColVal(this.filters[fidx]);
 			if(nfilter.need) nfilters.push(nfilter);
 			if($.isArray(nfilter.value) && nfilter.value.length>0 && !nfilter.need ) nfilters.push(nfilter);
 			if(!$.isArray(nfilter.value) && nfilter.value && !$.isPlainObject(nfilter.value) && !nfilter.need ) nfilters.push(nfilter);
@@ -579,7 +282,6 @@ WLIU.TABLE.prototype = {
 		}
 		return nfilters;
 	},
-	
 	getLists: function() {
 		var nlists = {};
 		for(var lname in this.lists) {
@@ -713,7 +415,7 @@ WLIU.TABLE.prototype = {
 		ntable.navi = this.navi;
 		//ntable.filters = this.getFilters();
 		ntable.lists = this.getLists();
-		ntable.rows = this.getChangeRow(theRow);
+		ntable.rows = this.FROW.getChangeRow(theRow);
 
 		if(callback) {
 			this.callback.before = callback.before && $.isFunction(callback.before)?callback.before:undefined;
@@ -733,7 +435,7 @@ WLIU.TABLE.prototype = {
 		ntable.navi = this.navi;
 		//ntable.filters = this.getFilters();
 		ntable.lists = this.getLists();
-		ntable.rows = this.getChangeRows();
+		ntable.rows = this.FROW.getChangeRows();
 
 		if(callback) {
 			this.callback.before = callback.before && $.isFunction(callback.before)?callback.before:undefined;
@@ -895,7 +597,7 @@ WLIU.TABLE.prototype = {
 
 			for(var colName in theRow) {
 				ncol = this.FCOLLECT.firstByKV(nrow.cols, {name: colName});
-				this.setColVal(ncol, theRow[colName] );
+				this.FROW.setColVal(ncol, theRow[colName] );
 			}
 			this.addRow(-1, nrow);
 		}
@@ -920,19 +622,19 @@ WLIU.TABLE.prototype = {
 							case 0:
 								break;
 							case 1:
-								this.FROW.error(tableRow, nRow.error);
+								this.FROW.rowerror(tableRow, nRow.error);
 								for(var cidx in nRow.cols) {
 									this.colError(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
 								}
 								break;
 							case 2:
-								this.FROW.error(tableRow, nRow.error);
+								this.FROW.rowerror(tableRow, nRow.error);
 								for(var cidx in nRow.cols) {
 									this.colError(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
 								}
 								break;
 							case 3:
-								this.FROW.error(tableRow, nRow.error);
+								this.FROW.rowerror(tableRow, nRow.error);
 								break;
 						} 
 
@@ -990,13 +692,13 @@ WLIU.TABLE.prototype = {
 							case 0:
 								break;
 							case 1:
-								this.FROW.error(tableRow, nRow.error);
+								this.FROW.rowerror(tableRow, nRow.error);
 								for(var cidx in nRow.cols) {
 									this.colError(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
 								}
 								break;
 							case 2:
-								this.FROW.error(tableRow, nRow.error);
+								this.FROW.rowerror(tableRow, nRow.error);
 								for(var cidx in nRow.cols) {
 									this.colError(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
 								}
@@ -1010,7 +712,7 @@ WLIU.TABLE.prototype = {
 							case 0:
 								break;
 							case 1:
-								this.FROW.error(tableRow, nRow.error);
+								this.FROW.rowerror(tableRow, nRow.error);
 								tableRow.rowstate = 0;
 								for(var cidx in tableRow.cols) {
 									tableRow.cols[cidx].colstate 	= 0;
@@ -1019,7 +721,7 @@ WLIU.TABLE.prototype = {
 								}
 								break;
 							case 2:
-								this.FROW.error(tableRow, nRow.error);
+								this.FROW.rowerror(tableRow, nRow.error);
 								tableRow.rowstate = 0;
 								for(var cidx in tableRow.cols) {
 									tableRow.cols[cidx].colstate 	= 0;
@@ -1192,347 +894,4 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 		this.cols.push(colObj);
 	}
 }
-
-
-/*******************************************************************************/
-
-/*******************************************************************************/
-// ROW Function
-var WLIUROW = function() {
-};
-WLIUROW.prototype = {
-	rowstate: function(row, p_rowstate) {
-		if(p_rowstate!=undefined) {
-			row.rowstate = p_rowstate;
-			return p_rowstate;
-		} else {
-			return row.rowstate;
-		}
-	},
-	
-	keys: function(row, p_keys) {
-		if(p_keys!=undefined) {
-			row.keys = p_keys;
-			// update key col value
-			for(var colName in row.keys) {
-				this.value(row, colName, row.keys[colName]);
-			}
-			return row.keys;
-		} else {
-			return row.keys;
-		}
-	},
-	
-	col: function(row, col_name) {
-		return this.FCOLLECT.firstByKV(row.cols, {name:col_name});
-	},
-
-	
-
-	cancel: function(row) {
-		var errorCode 		= 0;
-		var errorMessage 	= "";
-		row.error.errorCode 	= errorCode;
-		row.error.errorMessage 	= errorMessage;
-		row.rowstate = 0;
-		for(var colName in row.cols) {
-			row.cols[colName].colstate = 0;
-			row.cols[colName].errorCode = 0;
-			row.cols[colName].errorMessage = "";
-			row.cols[colName].value = angular.copy(row.cols[colName].current);
-		}
-		return row;
-	},
-	
-	detach : function(row) {
-		if(row.rowstate<=1) row.rowstate = 3;
-		return row;
-	}
-}
-/********************************************************************************************************/
-
-
-/********************************************************************************************************/
-// ROWS Function
-var WLIUROWS = function() {
-};
-WLIUROWS.prototype = {
-	
-
-	rowByIndex: function(rows, ridx, p_row) {
-		if(ridx >= 0 && ridx < rows.length) {
-			if(p_row!=undefined) {
-				rows[ridx] = p_row;
-				return rows[ridx];
-			}  else {
-				return rows[ridx];
-			}
-		} else {
-			return undefined;
-		}
-	},
-
-	rowByKeys: function(rows, p_keys, p_row) {
-		var ridx = this.indexByKeys(rows, p_keys);
-		return this.rowByIndex(rows, ridx, p_row);
-	},
-	
-	colByName: function(rows, ridx, col_name) {
-		var t_row = this.FCOLLECT.objectByIndex(rows, ridx);
-		if( t_row != undefined ) {
-			return this.FCOLLECT.objectByKV(t_row.cols, {name:col_name});
-			return FUNC.ROW.col(t_row, col_name);
-		} else {
-			return undefined;
-		}
-	},
-
-	colByKeys: function(rows, p_keys, col_name) {
-		var t_row = this.rowByKeys(rows, p_keys);
-		if( t_row != undefined ) {
-			return FUNC.ROW.col(t_row, col_name);
-		} else {
-			return undefined;
-		}
-	},
-
-	colByRow: function(p_row, col_name) {
-		if( p_row != undefined ) {
-			return FUNC.ROW.col(p_row, col_name);
-		} else {
-			return undefined;
-		}
-	},
-
-	updateByKeys: function(rows, p_keys, nameValues) {
-		var t_row = this.rowByKeys(rows, p_keys);
-		if( t_row != undefined ) {
-			return FUNC.ROW.update(t_row, nameValues);
-		} else {
-			return undefined;
-		}
-	},
-
-	updateByIndex: function(rows, ridx, nameValues) {
-		if(ridx >= 0 && ridx < rows.length) {
-			if(rows[ridx]!=undefined) {
-				return FUNC.ROW.update(rows[ridx], nameValues);
-			}  else {
-				return undefined;
-			}
-		} else {
-			return undefined;
-		}
-	},
-
-	updateByRow: function(p_row, nameValues) {
-		if( p_row != undefined ) {
-			return FUNC.ROW.update(p_row, nameValues);
-		} else {
-			return undefined;
-		}
-	},
-	cancelByRow: function(p_row) {
-		if( p_row != undefined ) {
-			return FUNC.ROW.cancel(p_row);
-		} else {
-			return undefined;
-		}
-	},
-	create: function(rows, cols, ridx, nameValues, scope) {
-		var t_row = new  WLIU.ROW(cols, nameValues, scope);
-		if( ridx >= 0 ) {
-			if( ridx <= rows.length ) {
-				rows.splice(ridx, 0, t_row);				
-			} else {
-				rows.push(t_row);
-			}
-		} else if(ridx < 0) {
-			rows.push(t_row);
-		}
-		return t_row;
-	},
-	
-	insert: function(rows, ridx, p_row) {
-		if( ridx >= 0 ) {
-			if( ridx <= rows.length ) {
-				rows.splice(ridx, 0, p_row);				
-			} else {
-				rows.push(p_row);
-			}
-		} else if(ridx < 0) {
-			rows.push(p_row);
-		}
-		return p_row;
-	},
-	
-	deleteByKeys: function(rows, p_keys) {
-		var ridx = this.indexByKeys(rows, p_keys);
-		if( ridx >= 0 ) {
-			return rows.splice(ridx, 1);
-		} else {
-			return undefined;
-		}
-	},
-
-	deleteByIndex: function(rows, ridx) {
-		if( ridx >= 0 ) {
-			return rows.splice(ridx, 1);
-		} else {
-			return undefined;
-		}
-	},
-	
-	deleteByRow: function(rows, p_row) {
-		var ridx = this.indexByKeys(rows, p_row.keys);
-		if( ridx >= 0 ) {
-			return rows.splice(ridx, 1);
-		} else {
-			return undefined;
-		}
-	},
-
-	detachByKeys: function(rows, p_keys) {
-		var ridx = this.indexByKeys(rows, p_keys);
-		if( ridx >= 0  ) {
-		    FUNC.ROW.detach(rows[ridx]);
-			return rows[ridx];
-		} else {
-			return undefined;
-		}
-	},
-
-	detachByIndex: function(rows, ridx) {
-		if( ridx >= 0 && ridx < rows.length ) {
-		    FUNC.ROW.detach(rows[ridx]);
-			return rows[ridx];
-		} else {
-			return undefined;
-		}
-	},
-
-	detachByRow: function(rows, p_row) {
-		var ridx = this.indexByKeys(rows, p_row.keys);
-		if( ridx >= 0  ) {
-		    FUNC.ROW.detach(rows[ridx]);
-			return rows[ridx];
-		} else {
-			return undefined;
-		}
-	}
-	
-}
-/********************************************************************************************************/
-
-
-// Array Function
-var WLIUARRAY = function() {};
-WLIUARRAY.prototype = {
-	check2Array: function(jObj) {
-		var nval = [];
-		if( $.isPlainObject(jObj) ) {
-			for(var ckval in jObj) {
-				if( jObj[ckval] == true || jObj[ckval] == "true" ) {
-					nval.push(ckval);
-				}
-			}
-		} 
-		return nval;
-	},
-	array2Check: function(arr) {
-		var nval = {};
-		if( $.isArray(arr) ) {
-			$.each( arr, function(i, n){
-				nval[n] = true;
-			})
-		}
-		return nval;
-	},
-	array2Datetime: function(datetimeObj) {
-		var nval = "";
-		if( datetimeObj && datetimeObj.date ) {
-			nval = (datetimeObj.date?datetimeObj.date:"") + (datetimeObj.date && datetimeObj.time?" ":"") + (datetimeObj.time?datetimeObj.time:"");
-		} else {
-			if(datetimeObj && datetimeObj.time) {
-				nval = datetimeObj.time?datetimeObj.time:"";
-			} 
-		}
-		return nval;
-	},
-	datetime2Array: function( datetimeString ) {
-		var nval = {};
-		nval.date = "";
-		nval.time = "";
-
-		if( datetimeString != "" ) {
-			var dt_part = datetimeString.split(" ");
-			var date_part = (""+dt_part[0]).trim();
-			if( date_part.indexOf("-")>=0 || date_part.indexOf("/")>=0 ) {
-				if(date_part!="0000-00-00" && date_part!="0000/00/00" && date_part!="00/00/0000" )
-					nval.date = date_part;
-				else 
-					nval.date = "";
-			} else if(date_part.indexOf(":")>=0) {
-				if( date_part!="00:00" && date_part!="00:00:00" )
-					nval.time = date_part;
-				else 
-					nval.time = "";
-			}
-
-			var time_part = (""+dt_part[1]).trim();
-			if( time_part.indexOf(":")>=0 ) {
-				if( time_part!="00:00" && time_part!="00:00:00" ) {
-					var tt_tmp = time_part.split(":");
-					nval.time = tt_tmp[0] + ":" + tt_tmp[1];
-				} else {
-					nval.time = "";
-				}
-			}
-		}
-		return nval;
-	},
-	colreplace: function(expression_str, rowCols) {
-		var ret_val = expression_str;
-		var patern  = /{(\w+)(:|.)?(\w+)}/ig;
-		var colArr  = ret_val.match(patern);
-		for(var cidx in colArr) {
-			var colNames_str = colArr[cidx].replaceAll("{", "").replaceAll("}", "");
-			if( colNames_str.indexOf(":")>=0 ) {
-				var colNames 	= colNames_str.split(":");
-				var colName 	= colNames[0] ? colNames[0] : "";
-				var colPrefix 	= colNames[1] ? colNames[1] : "";
-				var colValObj	= this.FCOLLECT.firstByKV(rowCols, {name: colName});
-				var colVal = colValObj?(colValObj.value?colValObj.value:""):"";
-
-				if (colPrefix != "" && colVal!="")
-					ret_val = ret_val.replaceAll(colArr[cidx], colPrefix + colVal);
-				else
-					ret_val = ret_val.replaceAll(colArr[cidx], colVal);
-			} else if( colNames_str.indexOf(".")>=0 ) {
-				var colNames 	= colNames_str.split(".");
-				var colName 	= colNames[0] ? colNames[0] : "";
-				var colPrefix 	= colNames[1] ? colNames[1] : "";
-				var colValObj	= this.FCOLLECT.firstByKV(rowCols, {name: colName});
-				var colVal = colValObj?(colValObj.value[colPrefix]?colValObj.value[colPrefix]:""):"";
-				ret_val = ret_val.replaceAll(colArr[cidx], colVal);
-
-			} else {
-				var colNames 	= colNames_str;
-				var colName 	= colNames.trim();
-				var colValObj	= this.FCOLLECT.firstByKV(rowCols, {name: colName});
-				var colVal = colValObj?(colValObj.value?colValObj.value:""):"";
-				ret_val = ret_val.replaceAll(colArr[cidx], colVal);
-			}
-		}
-		return ret_val;
-	}
-}
-
-// Create Global Function
-var FUNC = FUNC || {};
-
-FUNC.ROWS	= new WLIUROWS();
-FUNC.ROW	= new WLIUROW();
-FUNC.ARRAY 	= new WLIUARRAY();
-
 
