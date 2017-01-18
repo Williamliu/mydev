@@ -39,51 +39,34 @@ WLIU.TABLE.prototype = {
 	},
 
 	rowstate: function(theRow, p_rowstate) {
-		FROW.rowstate(theRow, p_rowstate);
+		return FROW.rowstate(theRow, p_rowstate);
 	},
 
 	indexByKeys:  function(p_keys) {
-		return FCOLLECT.indexByKeys(this.rows, p_keys);
+		return FTABLE.indexByKeys(this, p_keys);
 	},
 
 	rowno: function(p_ridx) {
-		if(p_ridx!=undefined) {
-			if(p_ridx<0) this._rowno = -1;
-			if(p_ridx >= this.rows.length) this._rowno = this.rows.length - 1;
-			if(p_ridx>=0 && p_ridx < this.rows.length) this._rowno = p_ridx;
-			return this._rowno;
-		} else {
-			return this._rowno;
-		}
+		return FTABLE.rowno(this, p_ridx);
 	},
 
 	colMeta: function(col_name) {
-		return FCOLLECT.objectByKV(this.cols, {name: col_name});
+		return FTABLE.colMeta(this, col_name);
 	},
 	colDefault: function(col_name, p_value) {
-		var t_col = this.colMeta(col_name);
-		FOBJECT.update(t_col, {defval: p_value} );
+		return FTABLE.colDefault(this, col_name, p_value);
 	},
 
-	listByName: function(listName) {
-		if( this.lists ) {
-			if(this.lists[listName]) 
-				return this.lists[listName];
-			else 
-				return undefined;
-		} else {
-			return undefined;
-		}
+	getList: function(list_name) {
+		return FTABLE.getList(this, list_name);
 	},
+
 	/*** relationship */
 	relationHide: function(ridx, col_name) {
-		var theRow = this.getRow(ridx);
-		var theCol = this.getCol(col_name, ridx);
-		return FROW.relationHide(theRow, theCol);
+		return FTABLE.relationHide(this, ridx, col_name);
 	},
 	relationChange: function(ridx) {
-		var theRow = this.getRow(ridx);
-		FROW.relationChange(theRow);
+		return FTABLE.relationChange(this, ridx); 
 	},
 	/******************/
 
@@ -131,31 +114,22 @@ WLIU.TABLE.prototype = {
 
 	// get row object
 	getRow: function(ridx) {
-		return FCOLLECT.objectByIndex(this.rows, ridx);
+		return FTABLE.getRow(this, ridx);
 	},
 	getRowByKeys: function(p_keys) {
-		return FCOLLECT.objectByKeys(this.rows, p_keys);
+		return FTABLE.getRowByKeys(this, p_keys);
 	},
 	
 	// return rows[ridx].cols[index of col_name]
 	getCol: function(col_name, ridx) {
-		var t_row = FCOLLECT.objectByIndex(this.rows, ridx);
-		if( t_row != undefined ) {
-			return FCOLLECT.objectByKV(t_row.cols, {name:col_name});
-		} else {
-			return undefined;
-		}
+		return FTABLE.getCol(this, col_name, ridx);
 	},
 	/********************************************** */
 
 
     //  operate the row : table.rows[ridx]
 	tableError: function(p_error) {
-		if(p_error!=undefined) {
-			this.error = p_error;
-		} else {
-			return this.error; 
-		}
+		return FTABLE.tableError(this, p_error);
 	},
 	rowError: function(theRow, p_error) {
 		return FROW.rowerror(theRow, p_error);
@@ -167,10 +141,9 @@ WLIU.TABLE.prototype = {
 
 	/*** event for external call ***/
 	changeCol: function(col_name, ridx) {
-		var t_row = this.getRow(ridx);
-		var t_col = this.getCol(col_name, ridx);
-		return FROW.colChange(t_row, t_col);
+		return FTABLE.changeCol(this, col_name, ridx);
 	},
+
 	getChangeRows: function() {
 		var nrows = [];
 		for(var ridx in this.rows) {
@@ -190,7 +163,6 @@ WLIU.TABLE.prototype = {
 		}
 		return nrows;
 	},
-
 	getFilters: function() {
 		var nfilters = [];
 		for(var fidx in this.filters) {
@@ -204,15 +176,7 @@ WLIU.TABLE.prototype = {
 		return nfilters;
 	},
 	getLists: function() {
-		var nlists = {};
-		for(var lname in this.lists) {
-			if(this.lists[lname].loaded==0) {
-				nlists[lname] = {};
-				nlists[lname].loaded = 0;
-				nlists[lname].list = [];
-			}
-		}
-		return nlists;
+		return FTABLE.getLists(this);
 	},
 
 	// Navigation
@@ -262,68 +226,25 @@ WLIU.TABLE.prototype = {
 	},
 
 	/****** ajax call ********** */
-	newRow: function(nameValues) {
-		var t_row = new  WLIU.ROW(this.cols, nameValues, this.scope);
-		return t_row;
+	newRow: function(keyvalues) {
+		return FTABLE.newRow(this, keyvalues);
 	},
 
 	// ; ridx;  nrow;  ridx nrow ;  default position=0  add to first
-	addRow: function() {
-		switch(arguments.length) {
-			case 0:
-			    // add empty row to first
-				var ridx 	= 0;
-				var t_row 	= this.newRow();
-			 	break;
-			case 1:
-				if( arguments[0].rowstate!=undefined ) {
-					// add rowObj to first
-					var ridx 	= 0;
-					var t_row 	= arguments[0];
-				} else {
-					// add new empty row to position ridx
-					var ridx 	= arguments[0];
-					var t_row 	= this.newRow();
-				}
-				break;
-			case 2:
-			    // add rowObj to position ridx
-				var ridx 	= arguments[0];
-				var t_row 	= arguments[1];
-				break;
-		}
-
-		FCOLLECT.insert(this.rows, ridx, t_row );
-		return t_row;
+	addRow: function(ridx, t_row) {
+		return FTABLE.addRow(this, ridx, t_row);
 	},	
 	cancelRow: function( theRow ) {
-		if( theRow ) {
-			switch( theRow.rowstate ) {
-				case 0: 
-					break;
-				case 1:
-					FROW.cancel(theRow);
-				    break;
-				case 2:
-					this.removeRow(theRow);
-					break;
-				case 3:
-					FROW.cancel(theRow);
-					break;
-			}
-		}
+		return FTABLE.cancelRow(this, theRow);
 	},
 	removeRow: function(theRow) {
-		var ridx = this.indexByKeys(theRow.keys);
-		FCOLLECT.delete(this.rows, ridx);
+		return FTABLE.removeRow(this, theRow);
 	},
 	cancelRows: function() {
-		for(var i = this.rows.length-1; i>=0; i--) {
-			this.cancelRow(this.rows[i]);
-		}
+		return FTABLE.cancelRows(this);
 	},
 	deleteRow: function(theRow) {
-		FROW.detach(theRow);
+		return FTABLE.detachRow(this, theRow);
 	},
 	deleteRows: function() {
 		// none - to danger
@@ -392,8 +313,8 @@ WLIU.TABLE.prototype = {
 		this.getRows(callback);
 	},
 	// set row col value to empty or defval if it has default value
-	clearRow: function(theRow) {
-		FROW.clearRow(theRow);
+	resetRow: function(theRow) {
+		return FROW.resetRow(theRow);
 	},
 	ajaxCall: function(ntable, sc, cbk) {
 		var _self = this;
@@ -550,7 +471,7 @@ WLIU.TABLE.prototype = {
 	},
 	syncLists: function(nlists) {
 		for(var listName in nlists) {
-			var nlistObj = this.listByName(listName);
+			var nlistObj = this.getList(listName);
 			if(nlistObj) {
 				nlistObj.loaded = nlists[listName].loaded;
 				nlistObj.keys 	= nlists[listName].keys;
@@ -559,127 +480,3 @@ WLIU.TABLE.prototype = {
 		}
 	}
 }
-
-// Table Filter Metadata Object
-WLIU.FILTER = function(opts) {
-	this.col = {
-		scope: 		"",
-		name: 		"",
-		cols:		"", // default same as name, col is database colname
-		colname:	"", // display name
-		coldesc:    "", // display description
-		coltype:	"textbox",  //hidden, textbox, checkbox,checkbox1,checkbox2,checkbox3, radio, select, textarea, datetime, date, time, intdate ....
-		datatype:   "ALL",  // number, email, date, datetime, ....
-		need:		0,     // required  must include this col even if value not change.  other is must change
-		minlength:  0,    
-		maxlength:  0,		 
-		min:		0,    
-		max:		0,
-		list:       "",    // select , checkbox, radio base on list
-		compare:	"",    // default defined in server side php 
-		defval:     "",
-		value:		""     // default value for add case
-	};
-	
-	$.extend(this.col, opts);
-	this.col.cols = this.col.cols?this.col.cols:this.col.name; // important for mapping js to database 
-	this.col.value = this.col.defval?this.col.defval:""; // important for mapping js to database 
-	
-	return this.col;
-}
-
-// Table Col Metadata Object
-WLIU.COL = function(opts) {
-	this.col = {
-		key:		0, // 0, 1
-		scope: 		"",
-		name: 		"",
-		col:		"", // default same as name, col is database colname
-		colname:	"", // display name
-		coldesc:    "", // display description
-		coltype:	"textbox",  //hidden, textbox, checkbox,checkbox1,checkbox2,checkbox3, radio, select, textarea, datetime, date, time, intdate ....
-		datatype:   "ALL",  // number, email, date, datetime, ....
-		need:		0,     // required  must include this col even if value not change.  other is must change
-		notnull:  	0,     // not null - not allowed null, different from need 
-		minlength:  0,    
-		maxlength:  0,		 
-		min:		0,    
-		max:		0,
-		sort:		"",
-		relation:   "",
-		list:       "",    // select , checkbox, radio base on list
-		defval:		""     // default value for add case
-	};
-	
-	$.extend(this.col, opts);
-	this.col.col = this.col.col?this.col.col:this.col.name; // important for mapping js to database 
-	return this.col;
-}
-
-// Table Row Metadata Object
-WLIU.ROW = function( cols, nameValues, scope ) {
-	if( scope == undefined ) scope = "";
-	this.scope			= scope;
-	this.keys 			= {};
-	this.rowstate 		= 2;  //default is new row;   0 - normal; 1 - changed;  2 - added;  3 - deleted
-	this.error			= { errorCode: 0, errorMessage: "" };  
-	this.cols			= [];
-	
-	if( nameValues == undefined ) nameValues = {};
-	// create keys : { id1 : "",  id2: "" }
-	var key_cols =  $.grep(cols, function(n,i) { return  n.key == 1;});
-	for(var kidx in key_cols) {
-		this.keys[key_cols[kidx].name] = nameValues[key_cols[kidx].name]?nameValues[key_cols[kidx].name]:"";
-	}
-	
-	// create cols:  []
-	for(cidx = 0; cidx < cols.length; cidx++) {
-		var colObj = {};
-		colObj.scope 		= scope!=""?scope:cols[cidx].scope;
-		colObj.name  		= cols[cidx].name;
-		colObj.key  		= cols[cidx].key?cols[cidx].key:0;
-		colObj.defval  		= cols[cidx].defval?cols[cidx].defval:"";
-
-		if(colObj.key) {
-			this.keys[colObj.name] = this.keys[colObj.name]?this.keys[colObj.name]:colObj.defval;
-		}
-
-		colObj.colname  	= cols[cidx].colname?cols[cidx].colname:colObj.name.capital();
-		colObj.coldesc  	= cols[cidx].coldesc?cols[cidx].coldesc:"";
-
-		colObj.col			= cols[cidx].col?cols[cidx].col:cols[cidx].name;
-		colObj.coltype  	= cols[cidx].coltype?cols[cidx].coltype.toLowerCase():"textbox";
-		colObj.datatype  	= cols[cidx].datatype?cols[cidx].datatype.toUpperCase():"ALL";
-		colObj.need  		= cols[cidx].need?cols[cidx].need:0;
-		colObj.notnull  	= cols[cidx].notnull?cols[cidx].notnull:0;
-		colObj.minlength  	= cols[cidx].minlength?cols[cidx].minlength:0;
-		colObj.maxlength  	= cols[cidx].maxlength?cols[cidx].maxlength:0;
-		colObj.min  		= cols[cidx].min?cols[cidx].min:0;
-		colObj.max  		= cols[cidx].max?cols[cidx].max:0;
-
-		colObj.relation  	= cols[cidx].relation?cols[cidx].relation:"";
-		colObj.sort  		= cols[cidx].sort?cols[cidx].sort:"";
-		colObj.list  		= cols[cidx].list?cols[cidx].list:"";
-
-		colObj.colstate		= 0;   // only  0 - nochange ;  1 - changed
-		colObj.original 	= "";  // server side 
-		colObj.current 		= "";  // client side
-		switch( colObj.coltype ) {
-			case "checkbox":
-			case "checkbox1":
-			case "checkbox2":
-			case "checkbox3":
-			case "datetime":
-			case "passpair":
-				colObj.value = nameValues[colObj.name]?nameValues[colObj.name]:( $.isPlainObject(colObj.defval)?colObj.defval:{} );  // input updateds
-				break;
-			default:
-				colObj.value = nameValues[colObj.name]?nameValues[colObj.name]:colObj.defval;  // input updateds
-				break;
-		}
-		colObj.errorCode 	= 0;
-		colObj.errorMessage	= "";
-		this.cols.push(colObj);
-	}
-}
-

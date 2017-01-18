@@ -121,15 +121,14 @@ WLIU.OBJECT.prototype = {
 					for(var key in keyvalues) {
 						col[key] = keyvalues[key];
 					}
-				} else {
-					return col;
-				}			
+				}
+				return col			
 			case 3:
 				var col = arguments[0];
 				var key = arguments[1];
 				var val = arguments[2];
 				col[key] = val; 
-				break;
+				return col;
 		}
 	}
 }
@@ -241,6 +240,127 @@ WLIU.COLLECTION.prototype = {
 		}
 	}
 }
+
+// Table Objects
+/******************************/
+WLIU.FILTER = function(opts) {
+	this.col = {
+		scope: 		"",
+		name: 		"",
+		cols:		"", // default same as name, col is database colname
+		colname:	"", // display name
+		coldesc:    "", // display description
+		coltype:	"textbox",  //hidden, textbox, checkbox,checkbox1,checkbox2,checkbox3, radio, select, textarea, datetime, date, time, intdate ....
+		datatype:   "ALL",  // number, email, date, datetime, ....
+		need:		0,     // required  must include this col even if value not change.  other is must change
+		minlength:  0,    
+		maxlength:  0,		 
+		min:		0,    
+		max:		0,
+		list:       "",    // select , checkbox, radio base on list
+		compare:	"",    // default defined in server side php 
+		defval:     "",
+		value:		""     // default value for add case
+	};
+	
+	$.extend(this.col, opts);
+	this.col.cols = this.col.cols?this.col.cols:this.col.name; // important for mapping js to database 
+	this.col.value = this.col.defval?this.col.defval:""; // important for mapping js to database 
+	
+	return this.col;
+}
+WLIU.COL = function(opts) {
+	this.col = {
+		key:		0, // 0, 1
+		scope: 		"",
+		name: 		"",
+		col:		"", // default same as name, col is database colname
+		colname:	"", // display name
+		coldesc:    "", // display description
+		coltype:	"textbox",  //hidden, textbox, checkbox,checkbox1,checkbox2,checkbox3, radio, select, textarea, datetime, date, time, intdate ....
+		datatype:   "ALL",  // number, email, date, datetime, ....
+		need:		0,     // required  must include this col even if value not change.  other is must change
+		notnull:  	0,     // not null - not allowed null, different from need 
+		minlength:  0,    
+		maxlength:  0,		 
+		min:		0,    
+		max:		0,
+		sort:		"",
+		relation:   "",
+		list:       "",    // select , checkbox, radio base on list
+		defval:		""     // default value for add case
+	};
+	
+	$.extend(this.col, opts);
+	this.col.col = this.col.col?this.col.col:this.col.name; // important for mapping js to database 
+	return this.col;
+}
+WLIU.ROW = function( cols, nameValues, scope ) {
+	if( scope == undefined ) scope = "";
+	this.scope			= scope;
+	this.keys 			= {};
+	this.rowstate 		= 2;  //default is new row;   0 - normal; 1 - changed;  2 - added;  3 - deleted
+	this.error			= { errorCode: 0, errorMessage: "" };  
+	this.cols			= [];
+	
+	if( nameValues == undefined ) nameValues = {};
+	// create keys : { id1 : "",  id2: "" }
+	var key_cols =  $.grep(cols, function(n,i) { return  n.key == 1;});
+	for(var kidx in key_cols) {
+		this.keys[key_cols[kidx].name] = nameValues[key_cols[kidx].name]?nameValues[key_cols[kidx].name]:"";
+	}
+	
+	// create cols:  []
+	for(cidx = 0; cidx < cols.length; cidx++) {
+		var colObj = {};
+		colObj.scope 		= scope!=""?scope:cols[cidx].scope;
+		colObj.name  		= cols[cidx].name;
+		colObj.key  		= cols[cidx].key?cols[cidx].key:0;
+		colObj.defval  		= cols[cidx].defval?cols[cidx].defval:"";
+
+		if(colObj.key) {
+			this.keys[colObj.name] = this.keys[colObj.name]?this.keys[colObj.name]:colObj.defval;
+		}
+
+		colObj.colname  	= cols[cidx].colname?cols[cidx].colname:colObj.name.capital();
+		colObj.coldesc  	= cols[cidx].coldesc?cols[cidx].coldesc:"";
+
+		colObj.col			= cols[cidx].col?cols[cidx].col:cols[cidx].name;
+		colObj.coltype  	= cols[cidx].coltype?cols[cidx].coltype.toLowerCase():"textbox";
+		colObj.datatype  	= cols[cidx].datatype?cols[cidx].datatype.toUpperCase():"ALL";
+		colObj.need  		= cols[cidx].need?cols[cidx].need:0;
+		colObj.notnull  	= cols[cidx].notnull?cols[cidx].notnull:0;
+		colObj.minlength  	= cols[cidx].minlength?cols[cidx].minlength:0;
+		colObj.maxlength  	= cols[cidx].maxlength?cols[cidx].maxlength:0;
+		colObj.min  		= cols[cidx].min?cols[cidx].min:0;
+		colObj.max  		= cols[cidx].max?cols[cidx].max:0;
+
+		colObj.relation  	= cols[cidx].relation?cols[cidx].relation:"";
+		colObj.sort  		= cols[cidx].sort?cols[cidx].sort:"";
+		colObj.list  		= cols[cidx].list?cols[cidx].list:"";
+
+		colObj.colstate		= 0;   // only  0 - nochange ;  1 - changed
+		colObj.original 	= "";  // server side 
+		colObj.current 		= "";  // client side
+		switch( colObj.coltype ) {
+			case "checkbox":
+			case "checkbox1":
+			case "checkbox2":
+			case "checkbox3":
+			case "datetime":
+			case "passpair":
+				colObj.value = nameValues[colObj.name]?nameValues[colObj.name]:( $.isPlainObject(colObj.defval)?colObj.defval:{} );  // input updateds
+				break;
+			default:
+				colObj.value = nameValues[colObj.name]?nameValues[colObj.name]:colObj.defval;  // input updateds
+				break;
+		}
+		colObj.errorCode 	= 0;
+		colObj.errorMessage	= "";
+		this.cols.push(colObj);
+	}
+}
+/******************************/
 
 WLIU.ROWACTION = function(){}
 WLIU.ROWACTION.prototype = {
@@ -430,7 +550,10 @@ WLIU.ROWACTION.prototype = {
 					
 				}
 			} // end of if(relCol)
-		} // end of if(theRow)
+			return theRow;
+		} else {
+			return undefined;
+		}// end of if(theRow) 
 	},
 
 	update: function(theRow, keyvalues) {
@@ -610,7 +733,7 @@ WLIU.ROWACTION.prototype = {
 		return nrows;
 	},
 	// set row col value to empty or defval if it has default value
-	clearRow: function(theRow) {
+	resetRow: function(theRow) {
 		if( theRow ) {
 			for(var cIdx in theRow.cols) {
 				if( theRow.cols[cIdx].key ) continue;
@@ -620,6 +743,9 @@ WLIU.ROWACTION.prototype = {
 				nameValues[colName] = colVal;
 				this.update( theRow, nameValues);
 			}
+			return theRow;
+		} else {
+			return undefined;
 		}
 	},
 	setColVal: function(theCol, p_val) {
@@ -761,6 +887,135 @@ WLIU.ROWACTION.prototype = {
 
 WLIU.TABLEACTION = function(){}
 WLIU.TABLEACTION.prototype = {
+	indexByKeys: function(theTable, p_keys) {
+		return FCOLLECT.indexByKeys(theTable.rows, p_keys);
+	},
+	tableError: function(theTable, p_error) {
+		if(p_error!=undefined) {
+			theTable.error = p_error;
+		} 
+		return theTable.error; 
+	},
+	rowno: function(theTable, p_ridx) {
+		if(p_ridx!=undefined) {
+			if(p_ridx<0) theTable._rowno = -1;
+			if(p_ridx >= theTable.rows.length) theTable._rowno = theTable.rows.length - 1;
+			if(p_ridx>=0 && p_ridx < theTable.rows.length) theTable._rowno = p_ridx;
+			return theTable._rowno;
+		} else {
+			return theTable._rowno;
+		}
+	},
+	colMeta: function(theTable, col_name) {
+		return FCOLLECT.objectByKV(theTable.cols, {name: col_name});
+	},
+	colDefault: function(theTable, col_name, p_value) {
+		var theCol = this.colMeta(theTable, col_name);
+		if( theCol ) {
+			FOBJECT.update(theCol, {defval: p_value});
+			return theCol.defval;
+		} else {
+			return undefined;
+		}
+	},
+	relationHide: function(theTable, ridx, col_name) {
+		var theRow = this.getRow(theTable, ridx);
+		var theCol = this.getCol(theTable, col_name, ridx);
+		return FROW.relationHide(theRow, theCol);
+	},
+	relationChange: function(theTable, ridx) {
+		var theRow = this.getRow(theTable, ridx);
+		return FROW.relationChange(theRow);
+	},
+	getList: function(theTable, list_name) {
+		if( theTable.lists ) {
+			if(theTable.lists[list_name]) 
+				return theTable.lists[list_name];
+			else 
+				return undefined;
+		} else {
+			return undefined;
+		}
+	},
+	getLists: function(theTable) {
+		var nlists = {};
+		for(var lname in theTable.lists) {
+			if(theTable.lists[lname].loaded==0) {
+				nlists[lname] = {};
+				nlists[lname].loaded = 0;
+				nlists[lname].list = [];
+			}
+		}
+		return nlists;
+	},
+	getRow: function(theTable, ridx) {
+		return FCOLLECT.objectByIndex(theTable.rows, ridx);
+	},
+	getRowByKeys: function(theTable, p_keys) {
+		return FCOLLECT.objectByKeys(theTable.rows, p_keys);
+	},
+	getCol: function(theTable, col_name, ridx) {
+		var t_row = this.getRow(theTable, ridx);
+		if( t_row != undefined ) {
+			return FCOLLECT.objectByKV(t_row.cols, {name:col_name});
+		} else {
+			return undefined;
+		}
+	},
+	changeCol: function(theTable, col_name, ridx) {
+		var t_row = this.getRow(theTable, ridx);
+		var t_col = this.getCol(theTable, col_name, ridx);
+		return FROW.colChange(t_row, t_col);
+	},
+	newRow: function(theTable, keyvalues) {
+		var t_row = new  WLIU.ROW(theTable.cols, keyvalues, theTable.scope);
+		return t_row;
+	},
+	addRow: function(theTable, ridx, nrow) {
+		if(ridx==undefined) ridx = 0;
+		if(!nrow) {
+			nrow = this.newRow(theTable);
+		}
+		FCOLLECT.insert(theTable.rows, ridx, nrow );
+		return nrow;
+	},
+	removeRow: function(theTable, theRow) {
+		if( theTable && theRow ) {
+			var ridx = FCOLLECT.indexByKeys(theTable.rows, theRow.keys);
+			FCOLLECT.delete(theTable.rows, ridx);
+		}
+		return theRow;
+	},
+	detachRow: function(theTable, theRow) {
+		return FROW.detach(theRow);
+	},
+	cancelRow: function(theTable, theRow) {
+		if( theRow ) {
+			switch( theRow.rowstate ) {
+				case 0: 
+					break;
+				case 1:
+					FROW.cancel(theRow);
+				    break;
+				case 2:
+					this.removeRow(theTable, theRow);
+					break;
+				case 3:
+					FROW.cancel(theRow);
+					break;
+			}
+			return theRow;
+		} else {
+			return undefined;
+		}
+	},
+	cancelRows: function(theTable) {
+		for(var i = theTable.rows.length-1; i>=0; i--) {
+			this.cancelRow(theTable, theTable.rows[i]);
+		}
+		return theTable.rows;
+	}
+	
 }
 
 var FCOLLECT = new WLIU.COLLECTION();

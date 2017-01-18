@@ -2728,7 +2728,7 @@ wliu_table.directive("table.singlebutton", function (wliuTableService) {
                         if( $scope.table.singleKeys ) 
                             $scope.table.cancelRow(theRow);
                          else 
-                            $scope.table.clearRow(theRow);
+                            $scope.table.resetRow(theRow);
 
                         // ckeditor  reset value to old value;  due to single way sync 
                         for(var cidx in $scope.table.cols) {
@@ -2805,7 +2805,7 @@ wliu_table.directive("table.rowbutton", function (wliuTableService) {
                     case "save":
                         ret_val = "secondary";
                         break;
-                    case "clear":
+                    case "reset":
                     case "cancel":
                         ret_val = "warning";
                         break;
@@ -2836,8 +2836,8 @@ wliu_table.directive("table.rowbutton", function (wliuTableService) {
                                 }
                         }
                         break;
-                    case "clear":
-                        $scope.table.clearRow(theRow);
+                    case "reset":
+                        $scope.table.resetRow(theRow);
                         // ckeditor  reset value to old value;  due to single way sync 
                         for(var cidx in $scope.table.cols) {
                             if( $scope.table.cols[cidx].coltype.toLowerCase() == "ckeditor" )
@@ -3371,10 +3371,10 @@ wliu_table.service("wliuTableService", function () {
     var self = this;
     // state control button status
     self.btnActive = {
-        "0": { "detail": 1, "save": 0, "cancel": 0, "clear":0, "add": 1, "delete": 1, "output": 1, "print": 1, "email": 1 },
-        "1": { "detail": 1, "save": 1, "cancel": 1, "clear":1, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 },
-        "2": { "detail": 1, "save": 1, "cancel": 1, "clear":1, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 },
-        "3": { "detail": 1, "save": 1, "cancel": 1, "clear":0, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 }
+        "0": { "detail": 1, "save": 0, "cancel": 0, "reset":0, "add": 1, "delete": 1, "output": 1, "print": 1, "email": 1 },
+        "1": { "detail": 1, "save": 1, "cancel": 1, "reset":1, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 },
+        "2": { "detail": 1, "save": 1, "cancel": 1, "reset":1, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 },
+        "3": { "detail": 1, "save": 1, "cancel": 1, "reset":0, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 }
     };
 
     self.buttonState = function(name, rowstate ) {
