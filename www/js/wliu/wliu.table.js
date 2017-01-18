@@ -116,6 +116,52 @@ WLIU.TABLE.prototype = {
 		return FTABLE.changeCol(this, col_name, ridx);
 	},
 
+
+	// ; ridx;  nrow;  ridx nrow ;  default position=0  add to first
+	newRow: function(keyvalues) {
+		return FTABLE.newRow(this, keyvalues);
+	},
+	addRow: function(ridx, t_row) {
+		return FTABLE.addRow(this, ridx, t_row);
+	},	
+	cancelRow: function( theRow ) {
+		return FTABLE.cancelRow(this, theRow);
+	},
+	cancelRows: function() {
+		return FTABLE.cancelRows(this);
+	},
+
+	// set row col value to empty or defval if it has default value
+	resetRow: function(theRow) {
+		return FROW.resetRow(theRow);
+	},
+	removeRow: function(theRow) {
+		return FTABLE.removeRow(this, theRow);
+	},
+	deleteRow: function(theRow) {
+		return FTABLE.detachRow(this, theRow);
+	},
+	deleteRows: function() {
+		// none - to danger
+	},
+	
+	/*** ajax method ***/
+	saveRow: function(theRow, callback) {
+		FTABLE.saveRow(this, theRow, callback);
+	},
+	saveRows: function(callback) {
+		FTABLE.saveRows(this, callback);
+	},
+	getRows: function(callback) {
+		FTABLE.getRows(this, callback);
+	},
+	allRows: function(callback) {
+		FTABLE.allRows(this, callback);
+	},
+	matchRows: function(callback) {
+		FTABLE.matchRows(this, callback);
+	},
+
 	// Navigation
 	firstPage: function() {
 		FTABLE.firstPage(this);
@@ -135,49 +181,5 @@ WLIU.TABLE.prototype = {
 	previousRecord: function() {
 		FTABLE.previousRecord(this);
 	},
-
-	/****** ajax call ********** */
-	newRow: function(keyvalues) {
-		return FTABLE.newRow(this, keyvalues);
-	},
-
-	// ; ridx;  nrow;  ridx nrow ;  default position=0  add to first
-	addRow: function(ridx, t_row) {
-		return FTABLE.addRow(this, ridx, t_row);
-	},	
-	cancelRow: function( theRow ) {
-		return FTABLE.cancelRow(this, theRow);
-	},
-	cancelRows: function() {
-		return FTABLE.cancelRows(this);
-	},
-	resetRow: function(theRow) {
-		return FROW.resetRow(theRow);
-	},
-	removeRow: function(theRow) {
-		return FTABLE.removeRow(this, theRow);
-	},
-	deleteRow: function(theRow) {
-		return FTABLE.detachRow(this, theRow);
-	},
-	deleteRows: function() {
-		// none - to danger
-	},
 	
-	saveRow: function(theRow, callback) {
-		FTABLE.saveRow(this, theRow, callback);
-	},
-	saveRows: function(callback) {
-		FTABLE.saveRows(this, callback);
-	},
-	getRows: function(callback) {
-		FTABLE.getRows(this, callback);
-	},
-	allRows: function(callback) {
-		FTABLE.allRows(this, callback);
-	},
-	matchRows: function(callback) {
-		FTABLE.matchRows(this, callback);
-	},
-	// set row col value to empty or defval if it has default value
 }
