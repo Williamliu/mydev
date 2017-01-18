@@ -1,20 +1,217 @@
-var wliu_form = angular.module("wliuForm",[]);
+var wliu_table = angular.module("wliuTable",[]);
 
-wliu_form.directive("form.rowstatus", function () {
+wliu_table.directive("table.navi", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "="
+            table:      "=",
+            tooltip:    "@"
         },
         template: [
-                    '<span class="wliu-text" scope="{{ form.scope }}" style="vertical-align:middle;padding:0px;" ',
-                        'ng-disabled="form.row.rowstate==undefined" ',
+                    '<div class="row" style="padding:0px; margin:5px;" ng-show="table.navi.paging==1">',
+                        '<div class="col-md-12" ng-if="table.navi.paging">',
+                        '<div class="pull-left" style="padding:0px; margin:0px; white-space:nowrap;">',
+                            '<span style="vertical-align:middle;">Page: </span>',                           
+                            '<input type="text" class="input-tiny" style="height:1.2em;width:30px;font-size:1.2em;text-align:center;" ng-model="table.navi.pageno" ',
+                                'ng-keypress="keypress($event)" ',
+                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="Page Number" ',
+                                'title="{{tooltip? \'\':\'Page Number\'}}" ',
+                            '/>',
+                            '<span style="vertical-align:middle;font-size:1.2em;font-weight:bold"> / </span>',                           
+                            '<span style="vertical-align:middle;font-size:1.2em;">{{ table.navi.pagetotal }}</span>',                           
+                            '<span style="vertical-align:middle;font-size:1.2em;"> | </span>',                           
+                            '<a class="wliu-btn24 wliu-btn24-first"     ng-class="{\'wliu-btn24-first-disabled\':(!table.navi.pageno || !table.navi.pagetotal || table.navi.pageno<=1 || table.navi.pagetotal<=0)}" ',
+                                'ng-click="table.firstPage()" ',
+                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="First Page" ',
+                                'title="{{tooltip? \'\':\'First Page\'}}" ',
+                            '>',
+                            '</a>',
+                            '<a class="wliu-btn24 wliu-btn24-previous"  ng-class="{\'wliu-btn24-previous-disabled\':(!table.navi.pageno || !table.navi.pagetotal || table.navi.pageno<=1 || table.navi.pagetotal<=0)}" ',
+                                'ng-click="table.previousPage()" ',
+                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="Previous Page" ',
+                                'title="{{tooltip? \'\':\'Previous Page\'}}" ',
+                            '>',
+                            '</a>',
+                            '<a class="wliu-btn24 wliu-btn24-next"      ng-class="{\'wliu-btn24-next-disabled\':(!table.navi.pageno || !table.navi.pagetotal || table.navi.pageno>=table.navi.pagetotal || table.navi.pagetotal<=0)}" ',
+                                'ng-click="table.nextPage()" ',
+                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="Next Page" ',
+                                'title="{{tooltip? \'\':\'Next Page\'}}" ',
+                            '>',
+                            '</a>',
+                            '<a class="wliu-btn24 wliu-btn24-last"      ng-class="{\'wliu-btn24-last-disabled\':(!table.navi.pageno || !table.navi.pagetotal || table.navi.pageno>=table.navi.pagetotal || table.navi.pagetotal<=0)}" ',
+                                'ng-click="table.lastPage()" ',
+                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="Last Page" ',
+                                'title="{{tooltip? \'\':\'Last Page\'}}" ',
+                            '>',
+                            '</a>',
+                            '<span style="vertical-align:middle;font-size:1.2em;"> | </span>',                           
+                            '<a class="wliu-btn24 wliu-btn24-reload" ',
+                                'ng-hide="table.navi.loading==1" ',
+                                'ng-click="table.getRows()" ',
+                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="Reload Data" ',
+                                'title="{{tooltip? \'\':\'Reload Data\'}}" ',
+                            '></a>',
+                            '<i class="fa fa-spinner fa-lg fa-pulse fa-fw" aria-hidden="true" ng-show="table.navi.loading==1"></i>',
+                            '<span style="vertical-align:middle;font-size:1.2em;"> | </span>',                           
+                            '<span style="vertical-align:middle; white-space:nowrap;">Total: ',
+                            '<span style="vertical-align:middle;" ng-bind="table.navi.recordtotal"></span>',
+                            '</span>',
+                        '</div>',
+                        '<div class="pull-right" style="padding:0px; margin:0px;" ng-if="table.navi.pagetotal>0 || table.navi.recordtotal>0">',
+                            '<span style="vertical-align:middle;">Size: </span>',                           
+                            '<input type="text" class="input-tiny" style="height:1.2em;width:30px;font-size:1.2em;text-align:center;" ng-model="table.navi.pagesize" ',
+                                'ng-keypress="keypress($event)" ',                                
+                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="Page Size" ',
+                                'title="{{tooltip? \'\':\'Page Size\'}}" ',
+                            '/>',
+                            '<a class="wliu-btn24 wliu-btn24-reload" ',
+                                'ng-hide="table.navi.loading==1" ',
+                                'ng-click="table.getRows()" ',
+                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="Reload Data" ',
+                                'title="{{tooltip? \'\':\'Reload Data\'}}" ',
+                            '></a>',
+                            '<i class="fa fa-spinner fa-lg fa-pulse fa-fw" aria-hidden="true" ng-show="table.navi.loading==1"></i>',
+                            '<table.order table="table" style="margin-right:10px" xsize="24" ',
+                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="Sort By" ',
+                                'title="{{tooltip? \'\':\'Sort By\'}}" ',
+                            '><table.order>',
+                        '</div>',
+                        '</div>',
+                    '</div>'    
+                ].join(''),
+        controller: function ($scope) {
+            $scope.keypress = function(ev) {
+                if(ev.keyCode==13) {
+                    $scope.table.getRows();
+                } 
+            }
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
+wliu_table.directive("table.navi1", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            tooltip:    "@"
+        },
+        template: [
+                    '<div style="display:block; position:relative; padding:0px; margin:5px;" ng-show="table.navi.paging==1">',
+                        '<div style="padding:0px; margin:0px; white-space:nowrap;">',
+                            '<a class="wliu-btn16 wliu-btn16-reload" ',
+                                'ng-hide="table.navi.loading==1" ',
+                                'ng-click="table.getRows()" ',
+                                'title="Reload Data" ',
+                            '></a>',
+                            '<i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" ng-show="table.navi.loading==1"></i>',
+                            '<span style="vertical-align:middle;font-size:1em;"> | </span>',                           
+                            '<a class="wliu-btn16 wliu-btn16-first"     ng-class="{\'wliu-btn16-first-disabled\':(!table.navi.pageno || !table.navi.pagetotal || table.navi.pageno<=1 || table.navi.pagetotal<=0)}" ',
+                                'ng-click="table.firstPage()" ',
+                                'title="First Page"',
+                            '></a>',
+                            '<a class="wliu-btn16 wliu-btn16-previous"  ng-class="{\'wliu-btn16-previous-disabled\':(!table.navi.pageno || !table.navi.pagetotal || table.navi.pageno<=1 || table.navi.pagetotal<=0)}" ',
+                                'ng-click="table.previousPage()" ',
+                                'title="Previous Page"',
+                            '></a>',
+                            '<a class="wliu-btn16 wliu-btn16-next"      ng-class="{\'wliu-btn16-next-disabled\':(!table.navi.pageno || !table.navi.pagetotal || table.navi.pageno>=table.navi.pagetotal || table.navi.pagetotal<=0)}" ',
+                                'ng-click="table.nextPage()" ',
+                                'title="Next Page"',
+                            '></a>',
+                            '<a class="wliu-btn16 wliu-btn16-last"      ng-class="{\'wliu-btn16-last-disabled\':(!table.navi.pageno || !table.navi.pagetotal || table.navi.pageno>=table.navi.pagetotal || table.navi.pagetotal<=0)}" ',
+                                'ng-click="table.lastPage()" ',
+                                'title="Last Page"',
+                            '></a>',
+                            '<span style="vertical-align:middle;font-size:1em;"> | </span>',                           
+                            '<input type="text" class="input-tiny" style="height:1em;width:40px;font-size:1em;text-align:center;" ng-model="table.navi.pageno" ',
+                                'ng-keypress="keypress($event)" ',
+                                'title="Page Number"',
+                            '/>',
+                            '<span style="vertical-align:middle;font-size:1em;font-weight:bold">/</span>',                           
+                            '<span style="vertical-align:middle;font-size:1em;">{{ table.navi.pagetotal }}</span>',                           
+                            '<span style="vertical-align:middle;font-size:1em;"> | </span>',                           
+                            '<input type="text" class="input-tiny" style="height:1em;width:30px;font-size:1em;text-align:center;" ng-model="table.navi.pagesize" ',
+                                'ng-keypress="keypress($event)" ',                                
+                                'title="Page Size"',
+                            '/>',
+                        '</div>',
+                    '</div>'    
+                ].join(''),
+        controller: function ($scope) {
+            $scope.keypress = function(ev) {
+                if(ev.keyCode==13) {
+                    $scope.table.getRows();
+                } 
+            }
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
+wliu_table.directive("table.order", function(){
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            xsize:      "@"
+        },
+        template: [
+                    '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-order">',
+                        '<div class="wliu-selectlist" style="right:0px;left:auto;">',
+                            '<div class="wliu-selectlist-title info-color text-center">ORDER</div>',
+                            '<ul class="wliu-selectlist-content" ng-repeat="colMeta in table.cols" ng-if="colMeta.sort" style="color:#333333;">',
+                                '<li class="wliu-orderlist" ',
+                                    'ng-class="{\'wliu-orderlist-active\':colMeta.name==table.navi.orderby && table.navi.sortby.toLowerCase()==\'asc\'}" ',
+                                    'ng-click="changeOrder(colMeta.name, \'ASC\')"',
+                                '>',
+                                    '{{ colMeta.colname }} <i class="fa fa-sort-asc" style="vertical-align:bottom;"></i>',
+                                '</li>',
+                                '<li class="wliu-orderlist" ',
+                                    'ng-class="{\'wliu-orderlist-active\':colMeta.name==table.navi.orderby && table.navi.sortby.toLowerCase()==\'desc\'}" ',
+                                    'ng-click="changeOrder(colMeta.name, \'DESC\')"',
+                                '>',
+                                    '{{ colMeta.colname }} <i class="fa fa-sort-desc" style="vertical-align:top;"></i>',
+                                '</li>',
+                            '</ul>',
+                        '</div>',
+                    '</a>'    
+                ].join(''),
+        controller: function ($scope) {
+            $scope.xsize = $scope.xsize?$scope.xsize:24;
+            $scope.changeOrder=function(name, order) {
+                $scope.table.navi.orderby=name;
+                $scope.table.navi.sortby=order;
+                $scope.table.getRows();
+            }
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
+wliu_table.directive("table.rowstatus", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            rowsn:      "@"
+        },
+        template: [
+                    '<span class="wliu-text" scope="{{ table.scope }}" style="vertical-align:middle;padding:0px;" ',
+                        'ng-disabled="table.getRow(rowsn)==undefined" ',
                     '>',
-                        //'{{form.rowByIndex(rowsn).rowstate}}-',
-                        '<a class="wliu-btn16 wliu-btn16-rowstate-save"     ng-if="form.row.error.errorCode==0 && form.row.rowstate==1"   title="Changed"></a>',
-                        '<a class="wliu-btn16 wliu-btn16-rowstate-add"      ng-if="form.row.error.errorCode==0 && form.row.rowstate==2"   title="New"></a>',
-                        '<a class="wliu-btn16 wliu-btn16-rowstate-delete"   ng-if="form.row.error.errorCode==0 && form.row.rowstate==3"   title="Deleted"></a>',
+                        //'{{table.getRow(rowsn).rowstate}}-',
+                        '<a class="wliu-btn16 wliu-btn16-rowstate-save"     ng-if="table.getRow(rowsn).error.errorCode==0 && table.getRow(rowsn).rowstate==1"   title="Changed"></a>',
+                        '<a class="wliu-btn16 wliu-btn16-rowstate-add"      ng-if="table.getRow(rowsn).error.errorCode==0 && table.getRow(rowsn).rowstate==2"   title="New"></a>',
+                        '<a class="wliu-btn16 wliu-btn16-rowstate-delete"   ng-if="table.getRow(rowsn).error.errorCode==0 && table.getRow(rowsn).rowstate==3"   title="Deleted"></a>',
+                        ' <span title="Series Number" style="vertical-align:middle;">{{ (rowsn-0) + 1 }} / {{table.rows.length}}</span>',
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
@@ -24,22 +221,57 @@ wliu_form.directive("form.rowstatus", function () {
     }
 });
 
-wliu_form.directive("form.ckeditor", function () {
+wliu_table.directive("table.rowno", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
+            tooltip:    "@"
+        },
+        template: [
+                    '<span class="wliu-text" scope="{{ table.scope }}" ',
+                        'ng-disabled="table.getRow(rowsn)==undefined" ',
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" ',
+                        'popup-content="{{table.getRow(rowsn).error.errorCode?table.getRow(rowsn).error.errorMessage.nl2br():\'\'}}"',
+                        'title="{{ tooltip?\'\':(table.getRow(rowsn).error.errorCode ? table.getRow(rowsn).error.errorMessage : \'\') }}"',
+                    '>',
+                        //'{{table.getRow(rowsn).rowstate}}-',
+                        '<a class="wliu-btn16 wliu-btn16-rowstate-error"    ng-if="table.getRow(rowsn).error.errorCode" ',
+                            'title="{{ tooltip?\'\':(table.getRow(rowsn).error.errorCode? table.getRow(rowsn).error.errorMessage : \'\') }}"',
+                        '>',
+                        '</a>',
+                        '<span ng-if="table.getRow(rowsn).error.errorCode==0 && table.getRow(rowsn).rowstate==0" title="Series Number">{{ (rowsn-0) + 1 }}</span>',
+                        '<a class="wliu-btn16 wliu-btn16-rowstate-save"     ng-if="table.getRow(rowsn).error.errorCode==0 && table.getRow(rowsn).rowstate==1"   title="Changed"></a>',
+                        '<a class="wliu-btn16 wliu-btn16-rowstate-add"      ng-if="table.getRow(rowsn).error.errorCode==0 && table.getRow(rowsn).rowstate==2"   title="New"></a>',
+                        '<a class="wliu-btn16 wliu-btn16-rowstate-delete"   ng-if="table.getRow(rowsn).error.errorCode==0 && table.getRow(rowsn).rowstate==3"   title="Deleted"></a>',
+                        //' - {{table.getRow(rowsn).keys}}',
+                    '</span>'
+                ].join(''),
+        controller: function ($scope) {
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
+wliu_table.directive("table.ckeditor", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
             rowsn:      "@",
             name:       "@"
         },
         template: [
-                    '<span>',
-                        '<a class="wliu-btn16 wliu-btn16-rowstate-error" ng-if="form.colByName(name).errorCode"></a>',
-                        '<span style="color:red; vertical-align:middle;" ng-if="form.colByName(name).errorCode">Error: {{form.colByName(name).errorCode?form.colByName(name).errorMessage:""}}</span>',
-                        //'<input type="hidden" ng-model="rowsn" ng-change="modelChange()" />',
-                        '<textarea scope="{{ form.scope }}" ng-model="form.colByName(name).value" id="{{form.scope}}_{{name}}"" ',
-                                  'title="{{ form.row.error.errorCode ? form.row.error.errorMessage : \'\' }}"',
+                    '<span ng-hide="table.relationHide(rowsn, name)">',
+                        '<a class="wliu-btn16 wliu-btn16-rowstate-error" ng-if="table.getCol(name, rowsn).errorCode"></a>',
+                        '<span style="color:red; vertical-align:middle;" ng-if="table.getCol(name, rowsn).errorCode">Error: {{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:""}}</span>',
+                        '<input type="hidden" ng-model="rowsn" ng-change="modelChange()" />',
+                        '<textarea scope="{{ table.scope }}" ng-model="table.getCol(name, rowsn).value" id="{{table.scope}}_{{name}}"" ',
+                                  'title="{{ table.getRow(rowsn).error.errorCode ? table.getRow(rowsn).error.errorMessage : \'\' }}"',
                         '>',
                         '</textarea>',
                     '</span>'
@@ -48,25 +280,25 @@ wliu_form.directive("form.ckeditor", function () {
             //  model change ,  it will not sync to ckeditor
             //  only sync to ckeditor when initialize the model.
             $scope.modelChange = function() {
-                if( $scope.form.colByIndex($scope.rowsn, $scope.name) )  {
-                    if(CKEDITOR.instances[$scope.form.scope+"_"+$scope.name])
-                        CKEDITOR.instances[$scope.form.scope+"_"+$scope.name].setData( $scope.form.colByIndex($scope.rowsn, $scope.name).value );
+                if( $scope.table.getCol($scope.name, $scope.rowsn) )  {
+                    if(CKEDITOR.instances[$scope.table.scope+"_"+$scope.name])
+                        CKEDITOR.instances[$scope.table.scope+"_"+$scope.name].setData( $scope.table.getCol($scope.name, $scope.rowsn).value );
                 }  else {
-                    if(CKEDITOR.instances[$scope.form.scope+"_"+$scope.name])
-                        CKEDITOR.instances[$scope.form.scope+"_"+$scope.name].setData("");
+                    if(CKEDITOR.instances[$scope.table.scope+"_"+$scope.name])
+                        CKEDITOR.instances[$scope.table.scope+"_"+$scope.name].setData("");
                 }
             }
             $scope.$watch("rowsn", $scope.modelChange);
         },
         link: function (sc, el, attr) {
             $(function(){
-                htmlObj_cn = CKEDITOR.replace(sc.form.scope + "_" + sc.name,{});
+                htmlObj_cn = CKEDITOR.replace(sc.table.scope + "_" + sc.name,{});
                 // The "change" event is fired whenever a change is made in the editor.
                 htmlObj_cn.on('change', function (evt) {
-                    if( sc.form.colByName(sc.name) ) {
-                        if( sc.form.colByName(sc.name).value != CKEDITOR.instances[sc.form.scope+"_"+sc.name].getData() ) {
-                            sc.form.colByName(sc.name).value = CKEDITOR.instances[sc.form.scope+"_"+sc.name].getData();
-                            sc.form.changeByCol(sc.form.colByName(sc.name));
+                    if( sc.table.getCol( sc.name, sc.rowsn ) ) {
+                        if( sc.table.getCol( sc.name, sc.rowsn ).value != CKEDITOR.instances[sc.table.scope+"_"+sc.name].getData() ) {
+                            sc.table.getCol( sc.name, sc.rowsn ).value = CKEDITOR.instances[sc.table.scope+"_"+sc.name].getData();
+                            sc.table.changeCol(sc.name, sc.rowsn);
                             // to prevent diggest in progress in angular.
                             if( !sc.$root.$$phase) sc.$apply();
                             
@@ -78,22 +310,65 @@ wliu_form.directive("form.ckeditor", function () {
     }
 });
 
-wliu_form.directive("form.label", function () {
+wliu_table.directive("table.head", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<label class="wliuCommon-label" scope="{{ form.scope }}" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname?form.colMeta(name).colname:name}}" ',
-                        'title="{{tooltip? \'\':form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname?form.colMeta(name).colname:name}}" ',
+                    '<label for="navi_{{table.scope}}_{{name}}" class="wliuCommon-label" scope="{{ table.scope }}" ',
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}" ',
+                        'title="{{tooltip? \'\':table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}" ',
                     '>',
-                        '<span style="vertival-align:middle;">{{ form.colMeta(name).colname?form.colMeta(name).colname:name }}</span>',
-                        '<span style="vertival-align:middle;" class="wliuCommon-text-error" ng-if="form.colMeta(name).notnull"> <b>*</b></span>',
+                        '<span style="vertival-align:middle;">{{ table.colMeta(name).colname?table.colMeta(name).colname:name }}</span>',
+                        '<span style="vertival-align:middle;" class="wliuCommon-text-error" ng-if="table.colMeta(name).notnull"> <b>*</b></span> ',
+                        '<a id="navi_{{table.scope}}_{{name}}" ng-click="changeOrder()" class="wliu-btn16 wliu-btn16-sort" ng-if="table.colMeta(name).sort" ',
+                                'ng-class="{\'wliu-btn16-sort-asc\':(name==table.navi.orderby && ( table.navi.sortby.toLowerCase()==\'asc\' || ( table.navi.sortby==\'\' && table.colMeta(name).sort.toLowerCase()==\'asc\'))) ',
+                                ',\'wliu-btn16-sort-desc\':(name==table.navi.orderby && ( table.navi.sortby.toLowerCase()==\'desc\' || (table.navi.sortby==\'\' && table.colMeta(name).sort.toLowerCase()==\'desc\') )) }" title="Sort by {{table.colMeta(name).colname}}"',
+                        '>',
+                        '</a>',
+                    '</label>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.changeOrder=function() {
+                if( $scope.table.navi.orderby.toLowerCase()==$scope.name.toLowerCase() ) {
+                    if($scope.table.navi.sortby.toLowerCase()=="asc") {
+                        $scope.table.navi.sortby = "DESC";
+                    } else {
+                        $scope.table.navi.sortby = "ASC";
+                    }
+                } else {
+                    $scope.table.navi.orderby = $scope.name;
+                    $scope.table.navi.sortby = $scope.table.colMeta($scope.name).sort?$scope.table.colMeta($scope.name).sort.toUpperCase():"ASC";
+                }
+                $scope.table.getRows();
+            }
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
+wliu_table.directive("table.label", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            name:       "@",
+            tooltip:    "@"
+        },
+        template: [
+                    '<label class="wliuCommon-label" scope="{{ table.scope }}" ',
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}" ',
+                        'title="{{tooltip? \'\':table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}" ',
+                    '>',
+                        '<span style="vertival-align:middle;">{{ table.colMeta(name).colname?table.colMeta(name).colname:name }}</span>',
+                        '<span style="vertival-align:middle;" class="wliuCommon-text-error" ng-if="table.colMeta(name).notnull"> <b>*</b></span>',
                     '</label>'
                 ].join(''),
         controller: function ($scope) {
@@ -103,21 +378,22 @@ wliu_form.directive("form.label", function () {
     }
 });
 
-wliu_form.directive("form.html", function ($sce) {
+wliu_table.directive("table.html", function ($sce) {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@"
         },
         template: [
-                    '<span scope="{{ form.scope }}" ng-bind-html="getHTML()"></span>'
+                    '<span scope="{{ table.scope }}" ng-bind-html="getHTML()" ng-hide="table.relationHide(rowsn, name)"></span>'
                 ].join(''),
         controller: function ($scope, $sce) {
             $scope.getHTML = function() {
-                if( $scope.form.colByName($scope.name) )
-                    return $sce.trustAsHtml($scope.form.colByName($scope.name).value);
+                if( $scope.table.getCol($scope.name, $scope.rowsn) )
+                    return $sce.trustAsHtml($scope.table.getCol($scope.name, $scope.rowsn).value);
                 else 
                     return $sce.trustAsHtml("");
             }
@@ -129,22 +405,23 @@ wliu_form.directive("form.html", function ($sce) {
     }
 });
 
-wliu_form.directive("form.text", function () {
+wliu_table.directive("table.text", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<span class="wliu-text" scope="{{ form.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                        'title="{{ tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}"',
+                    '<span class="wliu-text" scope="{{ table.scope }}" ng-hide="table.relationHide(rowsn, name)" ',
+                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        'title="{{ tooltip?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
                     '>',
-                        '{{ form.colByName(name).value }}',
+                        '{{ table.getCol(name, rowsn).value }}',
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
@@ -154,21 +431,21 @@ wliu_form.directive("form.text", function () {
     }
 });
 
-wliu_form.directive("form.hidden", function () {
+wliu_table.directive("table.hidden", function () {
     return {
         restrict: "E",
         replace: true,
         transclude: true,
         scope: {
-            form:      "=",
+            table:      "=",
             rowsn:      "@",
             name:       "@"
         },
         template: [
-                    '<span><input type="hidden" scope="{{ form.scope }}" ',
-                        'ng-model="form.colByName(name).value" ',
-                        'ng-change="form.changeByCol(form.colByName(name))" ',
-                        'ng-disabled="form.colByName(name)==undefined" ',
+                    '<span><input type="hidden" scope="{{ table.scope }}" ',
+                        'ng-model="table.getCol(name, rowsn).value" ',
+                        'ng-change="table.changeCol(name, rowsn)" ',
+                        'ng-disabled="table.getCol(name, rowsn)==undefined" ',
                     '/>',
                     '</span>'
                 ].join(''),
@@ -177,26 +454,27 @@ wliu_form.directive("form.hidden", function () {
     }
 });
 
-
-wliu_form.directive("form.textbox", function () {
+wliu_table.directive("table.textbox", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<input type="textbox" scope="{{form.scope}}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
-                        'ng-model="form.colByName(name).value" ',
-                        'ng-change="form.changeByCol(form.colByName(name))" ',
-                        'ng-disabled="form.colByName(name)==undefined" ',
+                    '<input type="textbox" scope="{{ table.scope }}" ng-hide="table.relationHide(rowsn, name)" ',
+                        //'ng-init="col=table.getCol(name, rowsn)" ',
+                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
+                        'ng-model="table.getCol(name, rowsn).value" ',
+                        'ng-change="table.changeCol(name, rowsn)" ',
+                        'ng-disabled="table.getCol(name, rowsn)==undefined" ',
                         'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ',
 
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                        'title="{{tooltip? \'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        'title="{{tooltip? \'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                     '/>'
                 ].join(''),
         controller: function ($scope) {
@@ -206,26 +484,27 @@ wliu_form.directive("form.textbox", function () {
     }
 });
 
-wliu_form.directive("form.password", function () {
+wliu_table.directive("table.password", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<input type="password" scope="{{ form.scope }}" placeholder="Password" ',
-                        //'ng-init="col=form.colByName(name)" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
-                        'ng-model="form.colByName(name).value" ',
-                        'ng-change="form.changeByCol(form.colByName(name))" ',
-                        'ng-disabled="form.colByName(name)==undefined" ',
+                    '<input type="password" scope="{{ table.scope }}" placeholder="Password" ng-hide="table.relationHide(rowsn, name)" ',
+                        //'ng-init="col=table.getCol(name, rowsn)" ',
+                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
+                        'ng-model="table.getCol(name, rowsn).value" ',
+                        'ng-change="table.changeCol(name, rowsn)" ',
+                        'ng-disabled="table.getCol(name, rowsn)==undefined" ',
                         'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ',
 
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        'title="{{tooltip?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                     '/>'
                 ].join(''),
         controller: function ($scope) {
@@ -235,68 +514,81 @@ wliu_form.directive("form.password", function () {
     }
 });
 
-wliu_form.directive("form.passpair", function () {
+wliu_table.directive("table.passpair", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<span style="display:inline-block;vertical-align:top;">',
-                    '<input type="password" style="box-sizing:border-box;width:100%;" scope="{{ form.scope }}" placeholder="Password" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
-                        'ng-model="form.colByName(name).value.password" ',
+                    '<span style="display:inline-block;vertical-align:top;" ng-hide="table.relationHide(rowsn, name)">',
+                    '<input type="password" style="box-sizing:border-box;width:100%;" scope="{{ table.scope }}" placeholder="Password" ',
+                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
+                        'ng-model="table.getCol(name, rowsn).value.password" ',
                         'ng-change="passChange()" ',
-                        'ng-disabled="form.colByName(name)==undefined" ',
+                        'ng-disabled="table.getCol(name, rowsn)==undefined" ',
                         'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ',
 
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():\'\'}}" ',
-                        'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:\'\'}}" ',
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():\'\'}}" ',
+                        'title="{{tooltip?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:\'\'}}" ',
                     '/>',
-                    '<input type="password" style="box-sizing:border-box;width:100%;" scope="{{ form.scope }}" placeholder="Confirm Password" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).value.password!=form.colByName(name).value.confirm }" ',
-                        'ng-model="form.colByName(name).value.confirm" ',
+                    '<input type="password" style="box-sizing:border-box;width:100%;" scope="{{ table.scope }}" placeholder="Confirm Password" ',
+                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).value.password!=table.getCol(name, rowsn).value.confirm }" ',
+                        'ng-model="table.getCol(name, rowsn).value.confirm" ',
                         //'ng-change="confirmChange()" ',
-                        'ng-disabled="form.colByName(name)==undefined" ',
+                        'ng-disabled="table.getCol(name, rowsn)==undefined" ',
                         'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ',
 
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).value.password!=form.colByName(name).value.confirm ?\'Password not match!\':\'\'}}" ',
-                        'title="{{tooltip?\'\':form.colByName(name).value.password!=form.colByName(name).value.confirm?\'Password not match!\':\'\'}}" ',
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).value.password!=table.getCol(name, rowsn).value.confirm ?\'Password not match!\':\'\'}}" ',
+                        'title="{{tooltip?\'\':table.getCol(name, rowsn).value.password!=table.getCol(name, rowsn).value.confirm?\'Password not match!\':\'\'}}" ',
                     '/>',
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
             $scope.passChange = function() {
-                $scope.form.changeByCol($scope.form.colByName($scope.name));
+                $scope.table.changeCol($scope.name, $scope.rowsn);
+                //$scope.confirmChange();
             }
+            /*
+            $scope.confirmChange = function() {
+                if( $scope.table.getCol($scope.name, $scope.rowsn).value.password == $scope.table.getCol($scope.name, $scope.rowsn).value.confirm ) {
+                    $scope.table.colErrorByIndex($scope.rowsn, $scope.name, {errorCode:0, errorMessage:""});
+                } else {
+                    $scope.table.colErrorByIndex($scope.rowsn, $scope.name, {errorCode:1, errorMessage:"Password not match"});
+                }
+            }
+            */
         },
         link: function (sc, el, attr) {
         }
     }
 });
 
-wliu_form.directive("form.textarea", function () {
+wliu_table.directive("table.textarea", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<textarea scope="{{ form.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
-                        'ng-model="form.colByName(name).value" ',
-                        'ng-change="form.changeByCol(form.colByName(name))" ',
-                        'ng-disabled="form.colByName(name)==undefined" ',
+                    '<textarea scope="{{ table.scope }}" ng-hide="table.relationHide(rowsn, name)" ',
+                        //'ng-init="col=table.getCol(name, rowsn)" ',
+                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
+                        'ng-model="table.getCol(name, rowsn).value" ',
+                        'ng-change="table.changeCol(name, rowsn)" ',
+                        'ng-disabled="table.getCol(name, rowsn)==undefined" ',
                         'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ',
 
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        'title="{{tooltip?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                     '>',
                     '</textarea>'
                 ].join(''),
@@ -307,24 +599,25 @@ wliu_form.directive("form.textarea", function () {
     }
 });
 
-wliu_form.directive("form.select", function () {
+wliu_table.directive("table.select", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-			    '<select scope="{{ form.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
-                        'ng-model="form.colByName(name).value" ',
-                        'ng-change="form.changeByCol(form.colByName(name))" ',
-                        'ng-disabled="form.colByName(name)==undefined" ',
-                        'ng-options="sObj.key as sObj.value for sObj in form.lists[form.colMeta(name).list].list" ',                        
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}"',
+			    '<select scope="{{ table.scope }}" ng-hide="table.relationHide(rowsn, name)" ',
+                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
+                        'ng-model="table.getCol(name, rowsn).value" ',
+                        'ng-change="table.changeCol(name, rowsn)" ',
+                        'ng-disabled="table.getCol(name, rowsn)==undefined" ',
+                        'ng-options="sObj.key as sObj.value for sObj in table.lists[table.colMeta(name).list].list" ',                        
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        'title="{{tooltip?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
                  '>',
                  '<option value=""></option>',
                  '</select>'
@@ -336,33 +629,32 @@ wliu_form.directive("form.select", function () {
     }
 });
 
-
-wliu_form.directive("form.bool", function () {
+wliu_table.directive("table.relation", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             label:      "@",
             tooltip:    "@"
         },
         template: [
-                    '<span class="checkbox" scope="{{ form.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                        'title="{{tooltip==\'1\'?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                    '<span class="checkbox" scope="{{ table.scope }}" ',
+                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        'title="{{tooltip==\'1\'?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                     '>',
-
-                            '<input type="checkbox" scope="{{ form.scope }}" id="{{form.scope}}_{{name}}_{{rowsn}}" ',
-                                'ng-model="form.colByName(name).value" ng-value="1"  ',
-                                'ng-change="form.changeByCol(form.colByName(name))" ',
-                                'ng-disabled="form.colByName(name)==undefined" ',
+                            '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{rowsn}}" ',
+                                'ng-model="table.getCol(name, rowsn).value" ng-value="1"  ',
+                                'ng-change="table.relationChange(rowsn); table.changeCol(name, rowsn);" ',
+                                'ng-disabled="table.getCol(name, rowsn)==undefined" ',
                             '/>',
 
-                            '<label for="{{form.scope}}_{{name}}_{{rowsn}}" title="{{form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname?form.colMeta(name).colname:name}}">',
+                            '<label for="{{table.scope}}_{{name}}_{{rowsn}}" title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}">',
                                 //'<abbr title="{{rdObj.desc}}" ng-if="rdObj.desc!=\'\'">{{ rdObj.value }}</abbr>',
-                                '{{ label.toLowerCase()=="default"?form.colMeta(name).colname:label?label:"" }}',
+                                '{{ label.toLowerCase()=="default"?table.colMeta(name).colname:label?label:"" }}',
                             '</label>',
 
                     '</span>',
@@ -374,33 +666,72 @@ wliu_form.directive("form.bool", function () {
     }
 });
 
-wliu_form.directive("form.datetime", function () {
+wliu_table.directive("table.bool", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
+            name:       "@",
+            label:      "@",
+            tooltip:    "@"
+        },
+        template: [
+                    '<span class="checkbox" scope="{{ table.scope }}" ng-hide="table.relationHide(rowsn, name)" ',
+                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        'title="{{tooltip==\'1\'?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                    '>',
+
+                            '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{rowsn}}" ',
+                                'ng-model="table.getCol(name, rowsn).value" ng-value="1"  ',
+                                'ng-change="table.changeCol(name, rowsn)" ',
+                                'ng-disabled="table.getCol(name, rowsn)==undefined" ',
+                            '/>',
+
+                            '<label for="{{table.scope}}_{{name}}_{{rowsn}}" title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}">',
+                                //'<abbr title="{{rdObj.desc}}" ng-if="rdObj.desc!=\'\'">{{ rdObj.value }}</abbr>',
+                                '{{ label.toLowerCase()=="default"?table.colMeta(name).colname:label?label:"" }}',
+                            '</label>',
+
+                    '</span>',
+                ].join(''),
+        controller: function ($scope) {
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
+wliu_table.directive("table.datetime", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<span ',
-                        //'ng-init="form.colByName(name).value=$.isPlainObject(form.colByName(name).value)?form.colByName(name).value:{}" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}"',                    
+                    '<span  ng-hide="table.relationHide(rowsn, name)" ',
+                        //'ng-init="table.getCol(name, rowsn).value=$.isPlainObject(table.getCol(name, rowsn).value)?table.getCol(name, rowsn).value:{}" ',
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        'title="{{tooltip?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',                    
                     '>',
-                        '<input type="textbox" class="wliuCommon-datepicker" scope="{{ form.scope }}" placeholder="yyyy-mm-dd" ',
-                            'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
-                            'ng-model="form.colByName(name).value.date" ',
-                            'ng-change="form.changeByCol(form.colByName(name))" ',
-                            'ng-disabled="form.colByName(name)==undefined" ',
+                        '<input type="textbox" class="wliuCommon-datepicker" scope="{{ table.scope }}" placeholder="yyyy-mm-dd" ',
+                            'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
+                            'ng-model="table.getCol(name, rowsn).value.date" ',
+                            'ng-change="table.changeCol(name, rowsn)" ',
+                            'ng-disabled="table.getCol(name, rowsn)==undefined" ',
                         '/>',
-                        '<input type="textbox" class="wliuCommon-timepicker" scope="{{ form.scope }}" placeholder="hh:mm" ',
-                            //'ng-init="col=form.colByName(name)" ',
-                            'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
-                            'ng-model="form.colByName(name).value.time" ',
-                            'ng-change="form.changeByCol(form.colByName(name))" ',
-                            'ng-disabled="form.colByName(name)==undefined" ',
+                        '<input type="textbox" class="wliuCommon-timepicker" scope="{{ table.scope }}" placeholder="hh:mm" ',
+                            //'ng-init="col=table.getCol(name, rowsn)" ',
+                            'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
+                            'ng-model="table.getCol(name, rowsn).value.time" ',
+                            'ng-change="table.changeCol(name, rowsn)" ',
+                            'ng-disabled="table.getCol(name, rowsn)==undefined" ',
                         '/>',
                     '</span>'
                 ].join(''),
@@ -430,24 +761,25 @@ wliu_form.directive("form.datetime", function () {
     }
 });
 
-wliu_form.directive("form.date", function () {
+wliu_table.directive("table.date", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<input type="textbox" class="wliuCommon-datepicker" scope="{{ form.scope }}" placeholder="yyyy-mm-dd" ',
-                        //'ng-init="col=form.colByName(name)" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
-                        'ng-model="form.colByName(name).value" ',
-                        'ng-change="form.changeByCol(form.colByName(name))" ',
-                        'ng-disabled="form.colByName(name)==undefined" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                    '<input type="textbox" class="wliuCommon-datepicker" scope="{{ table.scope }}" placeholder="yyyy-mm-dd" ng-hide="table.relationHide(rowsn, name)" ',
+                        //'ng-init="col=table.getCol(name, rowsn)" ',
+                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
+                        'ng-model="table.getCol(name, rowsn).value" ',
+                        'ng-change="table.changeCol(name, rowsn)" ',
+                        'ng-disabled="table.getCol(name, rowsn)==undefined" ',
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        'title="{{tooltip?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                     '/>'
                 ].join(''),
         controller: function ($scope) {
@@ -471,24 +803,25 @@ wliu_form.directive("form.date", function () {
     }
 });
 
-wliu_form.directive("form.time", function () {
+wliu_table.directive("table.time", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<input type="textbox" class="wliuCommon-timepicker" scope="{{ form.scope }}" placeholder="hh:mm" ',
-                        //'ng-init="col=form.colByName(name)" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
-                        'ng-model="form.colByName(name).value" ',
-                        'ng-change="form.changeByCol(form.colByName(name))" ',
-                        'ng-disabled="form.colByName(name)==undefined" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                    '<input type="textbox" class="wliuCommon-timepicker" scope="{{ table.scope }}" placeholder="hh:mm" ng-hide="table.relationHide(rowsn, name)" ',
+                        //'ng-init="col=table.getCol(name, rowsn)" ',
+                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
+                        'ng-model="table.getCol(name, rowsn).value" ',
+                        'ng-change="table.changeCol(name, rowsn)" ',
+                        'ng-disabled="table.getCol(name, rowsn)==undefined" ',
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        'title="{{tooltip?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                     '/>'
                 ].join(''),
         controller: function ($scope) {
@@ -503,51 +836,55 @@ wliu_form.directive("form.time", function () {
     }
 });
 
-wliu_form.directive("form.intdate", function () {
+wliu_table.directive("table.intdate", function () {
     return {
         restrict: "E",
         replace: true,
         transclude: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             format:     "@"
         },
         template: [
-                    '<span>{{ form.colByName(name).value?(form.colByName(name).value>0?(form.colByName(name).value * 1000 | date : (format?format:"yyyy-MM-dd hh:mm") ):"") :"" }}</span>'
+                    '<span ng-hide="table.relationHide(rowsn, name)">{{ table.getCol(name, rowsn).value?(table.getCol(name, rowsn).value>0?(table.getCol(name, rowsn).value * 1000 | date : (format?format:"yyyy-MM-dd hh:mm") ):"") :"" }}</span>'
 				  ].join(''),
         controller: function ($scope) {
         }
     }
 });
 
-wliu_form.directive("form.checkbox", function () {
+wliu_table.directive("table.checkbox", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
+            rowsn:      "@",
             colnum:     "@",
             tooltip:    "@"
         },
         template: [
-                    '<div  scope="{{ form.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                    '<div  scope="{{ table.scope }}" ng-hide="table.relationHide(rowsn, name)" ',
+                        //'ng-init="table.getCol(name, rowsn).value=$.isPlainObject(table.getCol(name, rowsn).value)?table.getCol(name, rowsn).value:{}" ',
+                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        'title="{{tooltip?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                     '>',
                         '<span ',
-                            'ng-repeat="rdObj in form.lists[form.colMeta(name).list].list">',
+                            //'ng-init="table.getCol(name, rowsn).value=table.getCol(name, rowsn).value?table.getCol(name, rowsn).value:{};" ',                          
+                            'ng-repeat="rdObj in table.lists[table.colMeta(name).list].list">',
                                 '<span class="checkbox">',
 
-                                        '<input type="checkbox" scope="{{ form.scope }}" id="{{form.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" ',
-                                            'ng-model="form.colByName(name).value[rdObj.key]" ng-value="rdObj.key"  ',
-                                            'ng-change="form.changeByCol(form.colByName(name))" ',
-                                            'ng-disabled="form.colByName(name)==undefined" ',
+                                        '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" ',
+                                            'ng-model="table.getCol(name, rowsn).value[rdObj.key]" ng-value="rdObj.key"  ',
+                                            'ng-change="table.changeCol(name, rowsn)" ',
+                                            'ng-disabled="table.getCol(name, rowsn)==undefined" ',
                                         '/>',
 
-                                        '<label for="{{form.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
+                                        '<label for="{{table.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
                                             //'<abbr title="{{rdObj.desc}}" ng-if="rdObj.desc!=\'\'">{{ rdObj.value }}</abbr>',
                                             '{{ rdObj.value }}',
                                         '</label>',
@@ -564,34 +901,36 @@ wliu_form.directive("form.checkbox", function () {
     }
 });
 
-wliu_form.directive("form.checkbox1", function () {
+wliu_table.directive("table.checkbox1", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                    '<input type="text" readonly scope="{{ form.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ',
-                            'ng-click="change(name)" ',
-                            'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
+                    '<input type="text" readonly scope="{{ table.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ng-hide="table.relationHide(rowsn, name)" ',
+                            'ng-click="change(rowsn, name)" ',
+                            'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
                             'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
-                            'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                            'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                            'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                            'title="{{tooltip?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                     '/>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys = $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys || {};
-            $scope.change = function(name) {
-                $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.name = name;
+            $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys || {};
+            $scope.change = function(rowsn, name) {
+                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.rowsn = rowsn;
+                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.name = name;
             }
             $scope.valueText = function() {
-                    var text = $.map( $scope.form.lists[$scope.form.colMeta($scope.name).list].list , function(n) {
-                    if( $scope.form.colByName( $scope.name )!= undefined ) {
-                        if($scope.form.colByName( $scope.name ).value[n.key]) 
+                    var text = $.map( $scope.table.lists[$scope.table.colMeta($scope.name).list].list , function(n) {
+                    if( $scope.table.getCol($scope.name, $scope.rowsn)!= undefined ) {
+                        if($scope.table.getCol($scope.name, $scope.rowsn).value[n.key]) 
                             return n.value;
                         else
                             return null;
@@ -608,12 +947,12 @@ wliu_form.directive("form.checkbox1", function () {
     }
 });
 
-wliu_form.directive("form.checkdiag1", function () {
+wliu_table.directive("table.checkdiag1", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
             targetid:   "@",
             colnum:     "@",
@@ -621,12 +960,15 @@ wliu_form.directive("form.checkdiag1", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag" scope="{{ form.scope }}">',
+                    '<div id="{{targetid}}" class="wliu-diag" scope="{{ table.scope }}" ',
+                        //'ng-init="table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn ).value=$.isPlainObject(table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn ).value)?table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn ).value:{}" ',
+                    '>',
+
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '<li ng-repeat="vObj in valueArr(form.lists[name].keys.name)">',
+                                    '<li ng-repeat="vObj in valueArr(table.lists[name].keys.rowsn, table.lists[name].keys.name)">',
                                     '{{ vObj.value }}',
                                     '</li>',
                                 '</ul>',
@@ -634,21 +976,21 @@ wliu_form.directive("form.checkdiag1", function () {
                         '</a>',
 
                         '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
-                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(form.lists[name].keys.name)" title="check all"  ng-show="bar==1"></a>',
-                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(form.lists[name].keys.name)" title="remove all"  ng-show="bar==1"></a>',
+                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(table.lists[name].keys.rowsn, table.lists[name].keys.name)" title="check all"  ng-show="bar==1"></a>',
+                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(table.lists[name].keys.rowsn, table.lists[name].keys.name)" title="remove all"  ng-show="bar==1"></a>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="font-size:14px;">',
                         '<span ',
-                            'ng-repeat="rdObj in form.lists[name].list|filter:search">',
+                            'ng-repeat="rdObj in table.lists[name].list|filter:search">',
                                 '<span class="checkbox">',
 
-                                        '<input type="checkbox" scope="{{ form.scope }}" id="{{form.scope}}_{{name}}_{{rdObj.key}}" ',
-                                            'ng-model="form.colByName( form.lists[name].keys.name ).value[rdObj.key]" ng-value="rdObj.key"  ',
-                                            'ng-change="form.changeByCol( form.colByName(form.lists[name].keys.name) )" ',
-                                            'ng-disabled="form.colByName( form.lists[name].keys.name )==undefined" ',
+                                        '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{rdObj.key}}" ',
+                                            'ng-model="table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn ).value[rdObj.key]" ng-value="rdObj.key"  ',
+                                            'ng-change="table.changeCol(table.lists[name].keys.name, table.lists[name].keys.rowsn)" ',
+                                            'ng-disabled="table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn )==undefined" ',
                                         '/>',
 
-                                        '<label for="{{form.scope}}_{{name}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
+                                        '<label for="{{table.scope}}_{{name}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
                                             '{{ rdObj.value }}',
                                         '</label>',
 
@@ -660,27 +1002,32 @@ wliu_form.directive("form.checkdiag1", function () {
             
                 ].join(''),
         controller: function ($scope) {
-            $scope.form.lists[$scope.name].keys = $scope.form.lists[$scope.name].keys || {};
-
-            $scope.checkall = function( name) {
-                $scope.form.colByName( name ).value = $scope.form.colByName( name ).value || {};
-                for( var key in $scope.form.lists[$scope.name].list  ) {
-                    $scope.form.colByName( name ).value[ $scope.form.lists[$scope.name].list[key].key ] = true;
-                }
-                $scope.form.changeByCol( $scope.form.colByName( name ));
+            $scope.table.lists[$scope.name].keys = $scope.table.lists[$scope.name].keys || {};
+            $scope.change = function(rowsn, name) {
+                // $scope.name is  lists[name],   name is colname
+                $scope.table.lists[$scope.name].keys.rowsn = rowsn;
+                $scope.table.lists[$scope.name].keys.name = name;
             }
 
-            $scope.removeall = function(name) {
-                for( var key in $scope.form.lists[$scope.name].list  ) {
-                    $scope.form.colByName( name ).value = {};
+            $scope.checkall = function(rowsn, name) {
+                $scope.table.getCol( name, rowsn ).value = $scope.table.getCol( name, rowsn ).value || {};
+                for( var key in $scope.table.lists[$scope.name].list  ) {
+                    $scope.table.getCol( name, rowsn ).value[ $scope.table.lists[$scope.name].list[key].key ] = true;
                 }
-                $scope.form.changeByCol($scope.form.colByName( name ));
+                $scope.table.changeCol(name, rowsn);
             }
 
-            $scope.valueArr = function(name) {
-               var valueArr = $.map( $scope.form.lists[$scope.name].list , function(n) {
-                   if( $scope.form.colByName(name)!= undefined  ) {
-                        if( $scope.form.colByName( name  ).value[n.key] ) 
+            $scope.removeall = function(rowsn, name) {
+                for( var key in $scope.table.lists[$scope.name].list  ) {
+                    $scope.table.getCol( name, rowsn ).value = {};
+                }
+                $scope.table.changeCol(name, rowsn);
+            }
+
+            $scope.valueArr = function(rowsn, name) {
+               var valueArr = $.map( $scope.table.lists[$scope.name].list , function(n) {
+                   if( $scope.table.getCol( name, rowsn )!= undefined  ) {
+                        if( $scope.table.getCol( name, rowsn ).value[n.key] ) 
                                 return n;
                         else
                                 return null;
@@ -701,19 +1048,22 @@ wliu_form.directive("form.checkdiag1", function () {
     }
 });
 
-wliu_form.directive("form.checklist1", function () {
+wliu_table.directive("table.checklist1", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
+            rowsn:      "@",
             colnum:     "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px; padding:2px; overflow-y:auto;text-align:left; min-width:240px;" scope="{{ form.scope }}">',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px; padding:2px; overflow-y:auto;text-align:left; min-width:240px;" scope="{{ table.scope }}" ng-hide="table.relationHide(rowsn, name)" ',
+                        //'ng-init="table.getCol( name, rowsn ).value=$.isPlainObject(table.getCol( name, rowsn ).value)?table.getCol( name, rowsn ).value:{}"',
+                    '>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
@@ -731,16 +1081,16 @@ wliu_form.directive("form.checklist1", function () {
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="font-size:14px;">',
                         '<span ',
-                            'ng-repeat="rdObj in form.lists[form.colMeta(name).list].list|filter:search">',
+                            'ng-repeat="rdObj in table.lists[table.colMeta(name).list].list|filter:search">',
                                 '<span class="checkbox">',
 
-                                        '<input type="checkbox" scope="{{ form.scope }}" id="{{form.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" ',
-                                            'ng-model="form.colByName( name ).value[rdObj.key]" ng-value="rdObj.key"  ',
-                                            'ng-change="form.changeByCol( form.colByName(name) )" ',
-                                            'ng-disabled="form.colByName( name )==undefined" ',
+                                        '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" ',
+                                            'ng-model="table.getCol( name, rowsn ).value[rdObj.key]" ng-value="rdObj.key"  ',
+                                            'ng-change="table.changeCol(name, rowsn)" ',
+                                            'ng-disabled="table.getCol( name, rowsn )==undefined" ',
                                         '/>',
 
-                                        '<label for="{{form.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
+                                        '<label for="{{table.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
                                             '{{ rdObj.value }}',
                                         '</label>',
 
@@ -752,28 +1102,28 @@ wliu_form.directive("form.checklist1", function () {
             
                 ].join(''),
         controller: function ($scope) {
-            $scope.form.lists[$scope.form.colMeta($scope.name).list].keys = $scope.form.lists[$scope.form.colMeta($scope.name).list].keys || {};
+            $scope.table.lists[$scope.table.colMeta($scope.name).list].keys = $scope.table.lists[$scope.table.colMeta($scope.name).list].keys || {};
 
             $scope.checkall = function() {
-                $scope.form.colByName( $scope.name ).value = $scope.form.colByName( $scope.name ).value || {};
-                for( var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list  ) {
-                    $scope.form.colByName( $scope.name ).value[ $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key].key ] = true;
+                $scope.table.getCol($scope.name, $scope.rowsn).value = $scope.table.getCol($scope.name, $scope.rowsn).value || {};
+                for( var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list  ) {
+                    $scope.table.getCol($scope.name, $scope.rowsn).value[ $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key].key ] = true;
                 }
 
-                $scope.form.changeByCol( $scope.form.colByName( $scope.name ));
+                $scope.table.changeCol($scope.name, $scope.rowsn);
             }
 
             $scope.removeall = function() {
-                for( var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list  ) {
-                    $scope.form.colByName( $scope.name ).value = {};
+                for( var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list  ) {
+                    $scope.table.getCol($scope.name, $scope.rowsn).value = {};
                 }
-                $scope.form.changeByCol( $scope.form.colByName( $scope.name ));
+                $scope.table.changeCol($scope.name, $scope.rowsn);
             }
 
             $scope.valueArr = function() {
-               var valueArr = $.map( $scope.form.lists[$scope.form.colMeta($scope.name).list].list , function(n) {
-                   if( $scope.form.colByName( $scope.name  )!= undefined  ) {
-                        if( $scope.form.colByName( $scope.name ).value[n.key] ) 
+               var valueArr = $.map( $scope.table.lists[$scope.table.colMeta($scope.name).list].list , function(n) {
+                   if( $scope.table.getCol( $scope.name, $scope.rowsn  )!= undefined  ) {
+                        if( $scope.table.getCol( $scope.name, $scope.rowsn  ).value[n.key] ) 
                                 return n;
                         else
                                 return null;
@@ -791,38 +1141,40 @@ wliu_form.directive("form.checklist1", function () {
     }
 });
 
-wliu_form.directive("form.checkbox2", function () {
+wliu_table.directive("table.checkbox2", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                        '<input type="text" readonly scope="{{ form.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ',
-                                'ng-click="change(name)" ',
-                                'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
+                        '<input type="text" readonly scope="{{ table.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ng-hide="table.relationHide(rowsn, name)" ',
+                                'ng-click="change(rowsn, name)" ',
+                                'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
 
                                 'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
-                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                                'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                                'title="{{tooltip?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                         '/>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys = $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys || {};
-            $scope.change = function(name) {
-                $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.name = name;
+            $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys || {};
+            $scope.change = function(rowsn, name) {
+                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.rowsn = rowsn;
+                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.name = name;
             }
             $scope.valueText = function() {
                 var ret_text = "";
-                for(var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list) {
-                    var dList = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key].list;
+                for(var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list) {
+                    var dList = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key].list;
                     var text = $.map( dList , function(n) {
-                        if( $scope.form.colByName( $scope.name )!=undefined ) {
-                            if($scope.form.colByName( $scope.name ).value[n.key]) 
+                        if( $scope.table.getCol($scope.name, $scope.rowsn)!=undefined ) {
+                            if($scope.table.getCol($scope.name, $scope.rowsn).value[n.key]) 
                                     return n.value;
                             else
                                     return null;
@@ -841,12 +1193,12 @@ wliu_form.directive("form.checkbox2", function () {
     }
 });
 
-wliu_form.directive("form.checkdiag2", function () {
+wliu_table.directive("table.checkdiag2", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
             targetid:   "@",
             colnum:     "@",
@@ -855,23 +1207,25 @@ wliu_form.directive("form.checkdiag2", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ form.scope }}">',
+                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ table.scope }}" ',
+                        //'ng-init="table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn ).value=$.isPlainObject(table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn ).value)?table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn ).value:{}"',
+                    '>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '<li ng-repeat="vObj in valueArr(form.lists[name].keys.name)">',
+                                    '<li ng-repeat="vObj in valueArr(table.lists[name].keys.rowsn, table.lists[name].keys.name)">',
                                     '{{ vObj.value }}',
                                     '</li>',
                                 '</ul>',
                             '</div>',
                         '</a>',
                         '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
-                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(form.lists[name].keys.name)" title="check all" ng-show="bar==1"></a>',
-                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(form.lists[name].keys.name)" title="remove all" ng-show="bar==1"></a>',
+                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(table.lists[name].keys.rowsn, table.lists[name].keys.name)" title="check all" ng-show="bar==1"></a>',
+                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(table.lists[name].keys.rowsn, table.lists[name].keys.name)" title="remove all" ng-show="bar==1"></a>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="font-size:14px;">',
-                            '<span style="display:none;" ng-repeat-start="rdObj in form.lists[name].list|filter:search"></span>',
+                            '<span style="display:none;" ng-repeat-start="rdObj in table.lists[name].list|filter:search"></span>',
                                     '<div class="col-md-{{colnum}} col-sm-{{colnum}} col-xs-12" ng-if="rdObj.list && rdObj.list.length>0">',
                                         '<ul>',
                                             '<li title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
@@ -879,13 +1233,13 @@ wliu_form.directive("form.checkdiag2", function () {
                                                 '<ul style="border-top:1px solid #cccccc;">',
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="checkbox">',
-                                                                    '<input type="checkbox" scope="{{ form.scope }}" id="{{form.scope}}_{{name}}_{{tdObj.key}}" ',
-                                                                        'ng-model="form.colByName( form.lists[name].keys.name ).value[tdObj.key]" ng-value="tdObj.key"  ',
-                                                                        'ng-change="form.changeByCol( form.colByName(form.lists[name].keys.name) )" ',
-                                                                        'ng-disabled="form.colByName( form.lists[name].keys.name )==undefined" ',
+                                                                    '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{tdObj.key}}" ',
+                                                                        'ng-model="table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn ).value[tdObj.key]" ng-value="tdObj.key"  ',
+                                                                        'ng-change="table.changeCol(table.lists[name].keys.name, table.lists[name].keys.rowsn)" ',
+                                                                        'ng-disabled="table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn )==undefined" ',
                                                                     '/>',
 
-                                                                    '<label for="{{form.scope}}_{{name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
+                                                                    '<label for="{{table.scope}}_{{name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
 
@@ -902,38 +1256,39 @@ wliu_form.directive("form.checkdiag2", function () {
             
                 ].join(''),
         controller: function ($scope) {
-            $scope.form.lists[$scope.name].keys = $scope.form.lists[$scope.name].keys || {};
-            $scope.change = function(name) {
+            $scope.table.lists[$scope.name].keys = $scope.table.lists[$scope.name].keys || {};
+            $scope.change = function(rowsn, name) {
                 // $scope.name is  lists[name],   name is colname
-                $scope.form.lists[$scope.name].keys.name = name;
+                $scope.table.lists[$scope.name].keys.rowsn = rowsn;
+                $scope.table.lists[$scope.name].keys.name = name;
             }
 
-            $scope.checkall = function(name) {
-                $scope.form.colByName( name ).value = $scope.form.colByName( name ).value || {};
-                for( var key in $scope.form.lists[$scope.name].list  ) {
-                    var dList = $scope.form.lists[$scope.name].list[key].list;
+            $scope.checkall = function(rowsn, name) {
+                $scope.table.getCol( name, rowsn ).value = $scope.table.getCol( name, rowsn ).value || {};
+                for( var key in $scope.table.lists[$scope.name].list  ) {
+                    var dList = $scope.table.lists[$scope.name].list[key].list;
                     for( var dkey in dList) {
-                        $scope.form.colByName( name ).value[ dList[dkey].key ] = true;
+                        $scope.table.getCol( name, rowsn ).value[ dList[dkey].key ] = true;
                     }
                 }
 
-                $scope.form.changeByCol($scope.form.colByName( name ));
+                $scope.table.changeCol(name, rowsn);
             }
 
-            $scope.removeall = function(name) {
-                for( var key in $scope.form.lists[$scope.name].list  ) {
-                    $scope.form.colByName( name ).value = {};
+            $scope.removeall = function(rowsn, name) {
+                for( var key in $scope.table.lists[$scope.name].list  ) {
+                    $scope.table.getCol( name, rowsn ).value = {};
                 }
-                $scope.form.changeByCol($scope.form.colByName( name ));
+                $scope.table.changeCol(name, rowsn);
             }
 
-            $scope.valueArr = function(name) {
+            $scope.valueArr = function(rowsn, name) {
                 var ret_arr = [];
-                for(var key in $scope.form.lists[$scope.name].list) {
-                    var dList = $scope.form.lists[$scope.name].list[key].list;
+                for(var key in $scope.table.lists[$scope.name].list) {
+                    var dList = $scope.table.lists[$scope.name].list[key].list;
                     var valueArr = $.map( dList , function(n) {
-                        if( $scope.form.colByName( name  )!= undefined  ) {
-                                if( $scope.form.colByName( name  ).value[n.key] ) 
+                        if( $scope.table.getCol( name, rowsn )!= undefined  ) {
+                                if( $scope.table.getCol( name, rowsn ).value[n.key] ) 
                                         return n;
                                 else
                                         return null;
@@ -955,20 +1310,23 @@ wliu_form.directive("form.checkdiag2", function () {
     }
 });
 
-wliu_form.directive("form.checklist2", function () {
+wliu_table.directive("table.checklist2", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
+            rowsn:      "@",
             colnum:     "@",
             colnum1:    "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ form.scope }}">',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ table.scope }}" ng-hide="table.relationHide(rowsn, name)" ',
+                        //'ng-init="table.getCol( name, rowsn ).value=$.isPlainObject(table.getCol( name, rowsn ).value)?table.getCol( name, rowsn ).value:{}"',
+                    '>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
@@ -984,7 +1342,7 @@ wliu_form.directive("form.checklist2", function () {
                         '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall()" title="remove all" ng-show="bar==1"></a>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="min-height:250px;min-width:350px;font-size:14px;">',
-                            '<span style="display:none;" ng-repeat-start="rdObj in form.lists[form.colMeta(name).list].list|filter:search"></span>',
+                            '<span style="display:none;" ng-repeat-start="rdObj in table.lists[table.colMeta(name).list].list|filter:search"></span>',
                                     '<div class="col-sm-{{colnum}}" ng-if="rdObj.list && rdObj.list.length>0">',
                                         '<ul>',
                                             '<li title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
@@ -992,13 +1350,13 @@ wliu_form.directive("form.checklist2", function () {
                                                 '<ul style="border-top:1px solid #cccccc;">',
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="checkbox">',
-                                                                    '<input type="checkbox" scope="{{ form.scope }}" id="{{form.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" ',
-                                                                        'ng-model="form.colByName( name ).value[tdObj.key]" ng-value="tdObj.key"  ',
-                                                                        'ng-change="form.changeByCol( form.colByName(name) )" ',
-                                                                        'ng-disabled="form.colByName( name )==undefined" ',
+                                                                    '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" ',
+                                                                        'ng-model="table.getCol( name, rowsn ).value[tdObj.key]" ng-value="tdObj.key"  ',
+                                                                        'ng-change="table.changeCol(name, rowsn)" ',
+                                                                        'ng-disabled="table.getCol( name, rowsn )==undefined" ',
                                                                     '/>',
 
-                                                                    '<label for="{{form.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
+                                                                    '<label for="{{table.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
 
@@ -1015,33 +1373,33 @@ wliu_form.directive("form.checklist2", function () {
             
                 ].join(''),
         controller: function ($scope) {
-            $scope.form.lists[$scope.form.colMeta($scope.name).list].keys = $scope.form.lists[$scope.form.colMeta($scope.name).list].keys || {};
+            $scope.table.lists[$scope.table.colMeta($scope.name).list].keys = $scope.table.lists[$scope.table.colMeta($scope.name).list].keys || {};
 
             $scope.checkall = function() {
-                $scope.form.colByName( $scope.name ).value = $scope.form.colByName( $scope.name ).value || {};
-                for( var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list  ) {
-                    var dList = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key].list;
+                $scope.table.getCol($scope.name, $scope.rowsn).value = $scope.table.getCol($scope.name, $scope.rowsn).value || {};
+                for( var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list  ) {
+                    var dList = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key].list;
                     for( var dkey in dList) {
-                        $scope.form.colByName( $scope.name ).value[ dList[dkey].key ] = true;
+                        $scope.table.getCol($scope.name, $scope.rowsn).value[ dList[dkey].key ] = true;
                     }
                 }
-                $scope.form.changeByName($scope.form.colByName( $scope.name ));
+                $scope.table.changeCol($scope.name, $scope.rowsn);
             }
 
             $scope.removeall = function() {
-                for( var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list  ) {
-                    $scope.form.colByName( $scope.name ).value = {};
+                for( var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list  ) {
+                    $scope.table.getCol($scope.name, $scope.rowsn).value = {};
                 }
-                $scope.form.changeByCol($scope.form.colByName( $scope.name ));
+                $scope.table.changeCol($scope.name, $scope.rowsn);
             }
 
             $scope.valueArr = function() {
                 var ret_arr = [];
-                for(var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list) {
-                    var dList = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key].list;
+                for(var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list) {
+                    var dList = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key].list;
                     var valueArr = $.map( dList , function(n) {
-                        if( $scope.form.colByName( $scope.name  )!= undefined  ) {
-                                if( $scope.form.colByName( $scope.name  ).value[n.key] ) 
+                        if( $scope.table.getCol( $scope.name, $scope.rowsn  )!= undefined  ) {
+                                if( $scope.table.getCol( $scope.name, $scope.rowsn  ).value[n.key] ) 
                                         return n;
                                 else
                                         return null;
@@ -1060,40 +1418,42 @@ wliu_form.directive("form.checklist2", function () {
     }
 });
 
-wliu_form.directive("form.checkbox3", function () {
+wliu_table.directive("table.checkbox3", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                    '<input type="text" readonly scope="{{ form.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ',
-                            'ng-click="change(name)" ',
-                            'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
+                    '<input type="text" readonly scope="{{ table.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ng-hide="table.relationHide(rowsn, name)" ',
+                            'ng-click="change(rowsn, name)" ',
+                            'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
 
                             'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
-                            'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                            'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                            'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                            'title="{{tooltip?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                     '/>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys = $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys || {};
-            $scope.change = function(name) {
-                $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.name = name;
+            $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys || {};
+            $scope.change = function(rowsn, name) {
+                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.rowsn = rowsn;
+                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.name = name;
             }
             $scope.valueText = function() {
                 var ret_text = "";
-                for(var key1 in $scope.form.lists[$scope.form.colMeta($scope.name).list].list) {
-                    var list2 = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key1].list;
+                for(var key1 in $scope.table.lists[$scope.table.colMeta($scope.name).list].list) {
+                    var list2 = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key1].list;
                     for(var key2 in list2) {
                         var list3 = list2[key2].list;
                         var text = $.map( list3 , function(n) {
-                            if( $scope.form.colByName( $scope.name )!= undefined ) {
-                                if($scope.form.colByName( $scope.name ).value[n.key]) 
+                            if( $scope.table.getCol($scope.name, $scope.rowsn)!= undefined ) {
+                                if($scope.table.getCol($scope.name, $scope.rowsn).value[n.key]) 
                                         return n.value;
                                 else
                                         return null;
@@ -1113,12 +1473,12 @@ wliu_form.directive("form.checkbox3", function () {
     }
 });
 
-wliu_form.directive("form.checkdiag3", function () {
+wliu_table.directive("table.checkdiag3", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
             targetid:   "@",
             colnum:     "@",
@@ -1127,30 +1487,32 @@ wliu_form.directive("form.checkdiag3", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ form.scope }}">',
+                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ table.scope }}" ',
+                        //'ng-init="table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn ).value=$.isPlainObject(table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn ).value)?table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn ).value:{}"',
+                    '>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '<li ng-repeat="vObj in valueArr(form.lists[name].keys.name)">',
+                                    '<li ng-repeat="vObj in valueArr(table.lists[name].keys.rowsn, table.lists[name].keys.name)">',
                                     '{{ vObj.value }}',
                                     '</li>',
                                 '</ul>',
                             '</div>',
                         '</a>',
                         '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
-                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(form.lists[name].keys.name)" title="check all" ng-show="bar==1"></a>',
-                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(form.lists[name].keys.name)" title="remove all" ng-show="bar==1"></a>',
+                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(table.lists[name].keys.rowsn, table.lists[name].keys.name)" title="check all" ng-show="bar==1"></a>',
+                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(table.lists[name].keys.rowsn, table.lists[name].keys.name)" title="remove all" ng-show="bar==1"></a>',
                         
                         '<select class="wliuCommon-filter" ',
                                 'ng-model="listFilter.key" ',
-                                'ng-options="sObj.key as sObj.value for sObj in form.lists[name].list" ',                        
+                                'ng-options="sObj.key as sObj.value for sObj in table.lists[name].list" ',                        
                         ' ng-show="bar==1">',
                         '<option value=""></option>',
                         '</select>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="font-size:14px;">',
-                            '<span style="display:none;" ng-repeat-start="bbObj in form.lists[name].list|filter:getListFilter()"></span>',
+                            '<span style="display:none;" ng-repeat-start="bbObj in table.lists[name].list|filter:getListFilter()"></span>',
                             '<span style="display:none;" ng-repeat-start="rdObj in bbObj.list|filter:search"></span>',
                                     '<div class="col-md-{{colnum}} col-sm-{{colnum}} col-xs-12" ng-if="rdObj.list && rdObj.list.length>0">',
                                         '<ul>',
@@ -1159,13 +1521,13 @@ wliu_form.directive("form.checkdiag3", function () {
                                                 '<ul style="border-top:1px solid #cccccc;">',
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="checkbox">',
-                                                                    '<input type="checkbox" scope="{{ form.scope }}" id="{{form.scope}}_{{name}}_{{tdObj.key}}" ',
-                                                                        'ng-model="form.colByName( form.lists[name].keys.name ).value[tdObj.key]" ng-value="tdObj.key"  ',
-                                                                        'ng-change="form.changeByCol( form.colByName(form.lists[name].keys.name) )" ',
-                                                                        'ng-disabled="form.colByName( form.lists[name].keys.name )==undefined" ',
+                                                                    '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{tdObj.key}}" ',
+                                                                        'ng-model="table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn ).value[tdObj.key]" ng-value="tdObj.key"  ',
+                                                                        'ng-change="table.changeCol(table.lists[name].keys.name, table.lists[name].keys.rowsn)" ',
+                                                                        'ng-disabled="table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn )==undefined" ',
                                                                     '/>',
 
-                                                                    '<label for="{{form.scope}}_{{name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
+                                                                    '<label for="{{table.scope}}_{{name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
 
@@ -1183,32 +1545,33 @@ wliu_form.directive("form.checkdiag3", function () {
             
                 ].join(''),
         controller: function ($scope) {
-            $scope.form.lists[$scope.name].keys = $scope.form.lists[$scope.name].keys || {};
+            $scope.table.lists[$scope.name].keys = $scope.table.lists[$scope.name].keys || {};
             $scope.listFilter = $scope.listFilter || {};
-            $scope.change = function(name) {
+            $scope.change = function(rowsn, name) {
                 // $scope.name is  lists[name],   name is colname
-                $scope.form.lists[$scope.name].keys.name = name;
+                $scope.table.lists[$scope.name].keys.rowsn = rowsn;
+                $scope.table.lists[$scope.name].keys.name = name;
             }
 
-            $scope.checkall = function(name) {
-                $scope.form.colByName( name ).value = $scope.form.colByName( name ).value || {};
-                for( var key1 in $scope.form.lists[$scope.name].list  ) {
-                    var list2 = $scope.form.lists[$scope.name].list[key1].list;
+            $scope.checkall = function(rowsn, name) {
+                $scope.table.getCol( name, rowsn ).value = $scope.table.getCol( name, rowsn ).value || {};
+                for( var key1 in $scope.table.lists[$scope.name].list  ) {
+                    var list2 = $scope.table.lists[$scope.name].list[key1].list;
                     for( var key2 in list2) {
                         var list3 = list2[key2].list;
                         for(var key3 in list3) {
-                            $scope.form.colByName( name ).value[ list3[key3].key ] = true;
+                            $scope.table.getCol( name, rowsn ).value[ list3[key3].key ] = true;
                         }
                      }
                 }
-                $scope.form.changeByCol( $scope.form.colByName( name ));
+                $scope.table.changeCol(name, rowsn);
             }
 
-            $scope.removeall = function(name) {
-                for( var key in $scope.form.lists[$scope.name].list  ) {
-                    $scope.form.colByName( name ).value = {};
+            $scope.removeall = function(rowsn, name) {
+                for( var key in $scope.table.lists[$scope.name].list  ) {
+                    $scope.table.getCol( name, rowsn ).value = {};
                 }
-                $scope.form.changeByCol( $scope.form.colByName( name ));
+                $scope.table.changeCol(name, rowsn);
             }
 
             $scope.getListFilter = function() {
@@ -1216,15 +1579,15 @@ wliu_form.directive("form.checkdiag3", function () {
                 return $scope.listFilter;
             }
 
-            $scope.valueArr = function(name) {
+            $scope.valueArr = function(rowsn, name) {
                 var ret_arr = [];
-                for(var key1 in $scope.form.lists[$scope.name].list) {
-                    var list2 = $scope.form.lists[$scope.name].list[key1].list;
+                for(var key1 in $scope.table.lists[$scope.name].list) {
+                    var list2 = $scope.table.lists[$scope.name].list[key1].list;
                     for(var key2 in list2) {
                         var list3 = list2[key2].list;
                         var valueArr = $.map( list3 , function(n) {
-                            if( $scope.form.colByName( name  )!= undefined  ) {
-                                    if( $scope.form.colByName( name  ).value[n.key] ) 
+                            if( $scope.table.getCol( name, rowsn )!= undefined  ) {
+                                    if( $scope.table.getCol( name, rowsn ).value[n.key] ) 
                                             return n;
                                     else
                                             return null;
@@ -1247,20 +1610,23 @@ wliu_form.directive("form.checkdiag3", function () {
     }
 });
 
-wliu_form.directive("form.checklist3", function () {
+wliu_table.directive("table.checklist3", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
+            rowsn:      "@",
             colnum:     "@",
             colnum1:    "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ form.scope }}">',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ table.scope }}" ng-hide="table.relationHide(rowsn, name)" ',
+                        //'ng-init="table.getCol( name, rowsn ).value=$.isPlainObject(table.getCol( name, rowsn ).value)?table.getCol( name, rowsn ).value:{}"',
+                    '>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
@@ -1277,13 +1643,13 @@ wliu_form.directive("form.checklist3", function () {
                         
                         '<select class="wliuCommon-filter" ',
                                 'ng-model="listFilter.key" ',
-                                'ng-options="sObj.key as sObj.value for sObj in form.lists[form.colMeta(name).list].list" ',                        
+                                'ng-options="sObj.key as sObj.value for sObj in table.lists[table.colMeta(name).list].list" ',                        
                         ' ng-show="bar==1">',
                         '<option value=""></option>',
                         '</select>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="min-height:250px;min-width:350px;font-size:14px;">',
-                            '<span style="display:none;" ng-repeat-start="bbObj in form.lists[form.colMeta(name).list].list|filter:getListFilter()"></span>',
+                            '<span style="display:none;" ng-repeat-start="bbObj in table.lists[table.colMeta(name).list].list|filter:getListFilter()"></span>',
                             '<span style="display:none;" ng-repeat-start="rdObj in bbObj.list|filter:search"></span>',
                                     '<div class="col-md-{{colnum}} col-sm-{{colnum}} col-xs-12" ng-if="rdObj.list && rdObj.list.length>0">',
                                         '<ul>',
@@ -1292,13 +1658,13 @@ wliu_form.directive("form.checklist3", function () {
                                                 '<ul style="border-top:1px solid #cccccc;">',
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="checkbox">',
-                                                                    '<input type="checkbox" scope="{{ form.scope }}" id="{{form.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" ',
-                                                                        'ng-model="form.colByIndex( rowsn, name ).value[tdObj.key]" ng-value="tdObj.key"  ',
-                                                                        'ng-change="form.changeByIndex( form.colByName(name) )" ',
-                                                                        'ng-disabled="form.colByIndex( name )==undefined" ',
+                                                                    '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" ',
+                                                                        'ng-model="table.getCol( name, rowsn ).value[tdObj.key]" ng-value="tdObj.key"  ',
+                                                                        'ng-change="table.changeCol(name, rowsn)" ',
+                                                                        'ng-disabled="table.getCol( name, rowsn )==undefined" ',
                                                                     '/>',
 
-                                                                    '<label for="{{form.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
+                                                                    '<label for="{{table.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
 
@@ -1316,28 +1682,28 @@ wliu_form.directive("form.checklist3", function () {
             
                 ].join(''),
         controller: function ($scope) {
-            $scope.form.lists[$scope.form.colMeta($scope.name).list].keys = $scope.form.lists[$scope.form.colMeta($scope.name).list].keys || {};
+            $scope.table.lists[$scope.table.colMeta($scope.name).list].keys = $scope.table.lists[$scope.table.colMeta($scope.name).list].keys || {};
             $scope.listFilter = $scope.listFilter || {};
 
             $scope.checkall = function() {
-                $scope.form.colByName( $scope.name ).value = $scope.form.colByName( $scope.name ).value || {};
-                for( var key1 in $scope.form.lists[$scope.form.colMeta($scope.name).list].list ) {
-                    var list2 = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key1].list;
+                $scope.table.getCol($scope.name, $scope.rowsn).value = $scope.table.getCol($scope.name, $scope.rowsn).value || {};
+                for( var key1 in $scope.table.lists[$scope.table.colMeta($scope.name).list].list ) {
+                    var list2 = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key1].list;
                     for( var key2 in list2) {
                         var list3 = list2[key2].list;
                         for(var key3 in list3) {
-                            $scope.form.colByName( $scope.name ).value[ list3[key3].key ] = true;
+                            $scope.table.getCol($scope.name, $scope.rowsn).value[ list3[key3].key ] = true;
                         }
                      }
                 }
-                $scope.form.changeByCol($scope.form.colByName( $scope.name ));
+                $scope.table.changeCol($scope.name, $scope.rowsn);
             }
 
             $scope.removeall = function() {
-                for( var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list  ) {
-                    $scope.form.colByName( $scope.name ).value = {};
+                for( var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list  ) {
+                    $scope.table.getCol($scope.name, $scope.rowsn).value = {};
                 }
-                $scope.form.changeByCol($scope.form.colByName( $scope.name ));
+                $scope.table.changeCol($scope.name, $scope.rowsn);
             }
 
             $scope.getListFilter = function() {
@@ -1347,13 +1713,13 @@ wliu_form.directive("form.checklist3", function () {
 
             $scope.valueArr = function() {
                 var ret_arr = [];
-                for(var key1 in $scope.form.lists[$scope.form.colMeta($scope.name).list].list) {
-                    var list2 = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key1].list;
+                for(var key1 in $scope.table.lists[$scope.table.colMeta($scope.name).list].list) {
+                    var list2 = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key1].list;
                     for(var key2 in list2) {
                         var list3 = list2[key2].list;
                         var valueArr = $.map( list3 , function(n) {
-                            if( $scope.form.colByName( $scope.name )!= undefined  ) {
-                                    if( $scope.form.colByName( $scope.name ).value[n.key] ) 
+                            if( $scope.table.getCol($scope.name, $scope.rowsn)!= undefined  ) {
+                                    if( $scope.table.getCol($scope.name, $scope.rowsn).value[n.key] ) 
                                             return n;
                                     else
                                             return null;
@@ -1373,33 +1739,36 @@ wliu_form.directive("form.checklist3", function () {
     }
 });
 
-wliu_form.directive("form.radio", function () {
+wliu_table.directive("table.radio", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             colnum:     "@",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<div scope="{{ form.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                    '<div scope="{{ table.scope }}" ng-hide="table.relationHide(rowsn, name)" ',
+                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
+                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        'title="{{tooltip?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                     '>',
                         '<span ',
-                            'ng-repeat="rdObj in form.lists[form.colMeta(name).list].list">',
+                            //'ng-init="table.getCol(name, rowsn).value=table.getCol(name, rowsn).value?table.getCol(name, rowsn).value:{};" ',                          
+                            'ng-repeat="rdObj in table.lists[table.colMeta(name).list].list">',
                                 '<span class="radio">',
 
-                                        '<input type="radio"  scope="{{ form.scope }}" id="{{form.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" ',
-                                            'ng-model="form.colByName(name).value" ng-value="rdObj.key"  ',
-                                            'ng-change="form.changeByCol(form.colByName(name))" ',
-                                            'ng-disabled="form.colByName(name)==undefined" ',
+                                        '<input type="radio"  scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" ',
+                                            'ng-model="table.getCol(name, rowsn).value" ng-value="rdObj.key"  ',
+                                            'ng-change="table.changeCol(name, rowsn)" ',
+                                            'ng-disabled="table.getCol(name, rowsn)==undefined" ',
                                         '/>',
 
-                                        '<label scope="{{ form.scope }}" for="{{form.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
+                                        '<label scope="{{ table.scope }}" for="{{table.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
+                                            //'<abbr title="{{rdObj.desc}}" ng-if="rdObj.desc!=\'\'">{{ rdObj.value }}</abbr>',
                                             '{{ rdObj.value }}',
                                         '</label>',
 
@@ -1415,34 +1784,36 @@ wliu_form.directive("form.radio", function () {
     }
 });
 
-wliu_form.directive("form.radio1", function () {
+wliu_table.directive("table.radio1", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                        '<input  type="text" readonly scope="{{ form.scope }}" class="wliuCommon-radiolist" value="{{ valueText() }}" ',
-                                'ng-click="change(name)" ',
-                                'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
+                        '<input  type="text" readonly scope="{{ table.scope }}" class="wliuCommon-radiolist" value="{{ valueText() }}" ng-hide="table.relationHide(rowsn, name)" ',
+                                'ng-click="change(rowsn, name)" ',
+                                'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
 
                                 'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
-                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                                'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                                'title="{{tooltip?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                         '/>',
                 ].join(''),
         controller: function ($scope) {
-            $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys = $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys || {};
-            $scope.change = function(name) {
-                $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.name = name;
+            $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys || {};
+            $scope.change = function(rowsn, name) {
+                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.rowsn = rowsn;
+                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.name = name;
             }
             $scope.valueText = function() {
-                var val =  $scope.form.colByName( $scope.name )?$scope.form.colByName( $scope.name ).value:"";
-                var valueText = FUNC.ARRAY.Single( $scope.form.lists[$scope.form.colMeta($scope.name).list].list, {key:val} )?FUNC.ARRAY.Single( $scope.form.lists[$scope.form.colMeta($scope.name).list].list, {key:val} ).value:"";
+                var val =  $scope.table.getCol( $scope.name, $scope.rowsn  )?$scope.table.getCol($scope.name, $scope.rowsn).value:"";
+                var valueText = $scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.table.colMeta($scope.name).list].list, {key:val} )?$scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.table.colMeta($scope.name).list].list, {key:val} ).value:"";
                 return valueText;
             }
         },
@@ -1451,12 +1822,12 @@ wliu_form.directive("form.radio1", function () {
     }
 });
 
-wliu_form.directive("form.radiodiag1", function () {
+wliu_table.directive("table.radiodiag1", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
             targetid:   "@",
             colnum:     "@",
@@ -1464,12 +1835,12 @@ wliu_form.directive("form.radiodiag1", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag" scope="{{ form.scope }}">',
+                    '<div id="{{targetid}}" class="wliu-diag" scope="{{ table.scope }}">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '{{ valueText(form.lists[name].keys.name) }}',
+                                    '{{ valueText(table.lists[name].keys.rowsn, table.lists[name].keys.name) }}',
                                 '</ul>',
                             '</div>',
                         '</a>',
@@ -1477,16 +1848,16 @@ wliu_form.directive("form.radiodiag1", function () {
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="font-size:14px;">',
                         '<span ',
-                            'ng-repeat="rdObj in form.lists[name].list|filter:search">',
+                            'ng-repeat="rdObj in table.lists[name].list|filter:search">',
                                 '<span class="radio">',
 
-                                        '<input type="radio" scope="{{ form.scope }}" name="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}" id="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}_{{rdObj.key}}" ',
-                                            'ng-model="form.colByName( form.lists[name].keys.name ).value" ng-value="rdObj.key"  ',
-                                            'ng-change="form.changeByCol( form.colByName(form.lists[name].keys.name) )" ',
-                                            'ng-disabled="form.colByName( form.lists[name].keys.name )==undefined" ',
+                                        '<input type="radio" scope="{{ table.scope }}" name="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}" id="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{rdObj.key}}" ',
+                                            'ng-model="table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn ).value" ng-value="rdObj.key"  ',
+                                            'ng-change="table.changeCol(table.lists[name].keys.name, table.lists[name].keys.rowsn)" ',
+                                            'ng-disabled="table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn )==undefined" ',
                                         '/>',
 
-                                        '<label for="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
+                                        '<label for="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
                                             '{{ rdObj.value }}',
                                         '</label>',
 
@@ -1498,11 +1869,11 @@ wliu_form.directive("form.radiodiag1", function () {
             
                 ].join(''),
         controller: function ($scope) {
-            $scope.form.lists[$scope.name].keys = $scope.form.lists[$scope.name].keys || {};
+            $scope.table.lists[$scope.name].keys = $scope.table.lists[$scope.name].keys || {};
 
-            $scope.valueText = function(name) {
-                var val =  $scope.form.colByName( name  )?$scope.form.colByName( name  ).value:"";
-                var valueText = FUNC.ARRAY.Single( $scope.form.lists[$scope.name].list, {key:val} )?FUNC.ARRAY.Single( $scope.form.lists[$scope.name].list, {key:val} ).value:"";
+            $scope.valueText = function(rowsn, name) {
+                var val =  $scope.table.getCol( name, rowsn )?$scope.table.getCol( name, rowsn ).value:"";
+                var valueText = $scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.name].list, {key:val} )?$scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.name].list, {key:val} ).value:"";
                 return valueText;
             }
             
@@ -1515,19 +1886,20 @@ wliu_form.directive("form.radiodiag1", function () {
     }
 });
 
-wliu_form.directive("form.radiolist1", function () {
+wliu_table.directive("table.radiolist1", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
+            rowsn:      "@",
             colnum:     "@",
             bar:        "@", 
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px; padding:2px; overflow-y:auto;text-align:left; min-width:240px;" scope="{{ form.scope }}">',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px; padding:2px; overflow-y:auto;text-align:left; min-width:240px;" scope="{{ table.scope }}" ng-hide="table.relationHide(rowsn, name)">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
@@ -1540,16 +1912,16 @@ wliu_form.directive("form.radiolist1", function () {
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="font-size:14px;">',
                         '<span ',
-                            'ng-repeat="rdObj in form.lists[form.colMeta(name).list].list|filter:search">',
+                            'ng-repeat="rdObj in table.lists[table.colMeta(name).list].list|filter:search">',
                                 '<span class="radio">',
 
-                                        '<input type="radio" scope="{{ form.scope }}" name="{{form.scope}}_{{name}}_{{rowsn}}" id="{{form.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" ',
-                                            'ng-model="form.colByName( name ).value" ng-value="rdObj.key"  ',
-                                            'ng-change="form.changeByCol( form.colByName(name) )" ',
-                                            'ng-disabled="form.colByName( name )==undefined" ',
+                                        '<input type="radio" scope="{{ table.scope }}" name="{{table.scope}}_{{name}}_{{rowsn}}" id="{{table.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" ',
+                                            'ng-model="table.getCol( name, rowsn ).value" ng-value="rdObj.key"  ',
+                                            'ng-change="table.changeCol(name,rowsn)" ',
+                                            'ng-disabled="table.getCol( name, rowsn )==undefined" ',
                                         '/>',
 
-                                        '<label for="{{form.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
+                                        '<label for="{{table.scope}}_{{name}}_{{rowsn}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
                                             '{{ rdObj.value }}',
                                         '</label>',
 
@@ -1562,8 +1934,8 @@ wliu_form.directive("form.radiolist1", function () {
                 ].join(''),
         controller: function ($scope) {
             $scope.valueText = function() {
-                var val =  $scope.form.colByName( $scope.name  )?$scope.form.colByName( $scope.name  ).value:"";
-                var valueText = FUNC.ARRAY.Single( $scope.form.lists[$scope.form.colMeta($scope.name).list].list, {key:val} )?FUNC.ARRAY.Single( $scope.form.lists[$scope.form.colMeta($scope.name).list].list, {key:val} ).value:"";
+                var val =  $scope.table.getCol( $scope.name, $scope.rowsn  )?$scope.table.getCol( $scope.name, $scope.rowsn  ).value:"";
+                var valueText = $scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.table.colMeta($scope.name).list].list, {key:val} )?$scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.table.colMeta($scope.name).list].list, {key:val} ).value:"";
                 return valueText;
             }
             
@@ -1573,38 +1945,40 @@ wliu_form.directive("form.radiolist1", function () {
     }
 });
 
-wliu_form.directive("form.radio2", function () {
+wliu_table.directive("table.radio2", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                        '<input type="text" readonly scope="{{ form.scope }}" class="wliuCommon-radiolist" value="{{ valueText() }}" ',
-                                'ng-click="change(name)" ',
-                                'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
+                        '<input type="text" readonly scope="{{ table.scope }}" class="wliuCommon-radiolist" value="{{ valueText() }}" ng-hide="table.relationHide(rowsn, name)" ',
+                                'ng-click="change(rowsn, name)" ',
+                                'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
 
                                 'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
-                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                                'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                                'title="{{tooltip?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                         '/>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys = $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys || {};
-            $scope.change = function(name) {
-                $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.name = name;
+            $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys || {};
+            $scope.change = function(rowsn, name) {
+                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.rowsn = rowsn;
+                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.name = name;
             }
             $scope.valueText = function() {
                 var ret_text = "";
-                for(var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list) {
-                    var dList = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key].list;
+                for(var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list) {
+                    var dList = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key].list;
                     var text = $.map( dList , function(n) {
-                        if($scope.form.colByName( $scope.name )!=undefined) {
-                            if($scope.form.colByName( $scope.name ).value == n.key) 
+                        if($scope.table.getCol($scope.name, $scope.rowsn)!=undefined) {
+                            if($scope.table.getCol($scope.name, $scope.rowsn).value == n.key) 
                                     return n.value;
                             else
                                     return null;
@@ -1623,12 +1997,12 @@ wliu_form.directive("form.radio2", function () {
     }
 });
 
-wliu_form.directive("form.radiodiag2", function () {
+wliu_table.directive("table.radiodiag2", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
             targetid:   "@",
             colnum:     "@",
@@ -1637,12 +2011,12 @@ wliu_form.directive("form.radiodiag2", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ form.scope }}">',
+                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ table.scope }}">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '<li ng-repeat="vObj in valueArr(form.lists[name].keys.name)">',
+                                    '<li ng-repeat="vObj in valueArr(table.lists[name].keys.rowsn, table.lists[name].keys.name)">',
                                     '{{ vObj.value }}',
                                     '</li>',
                                 '</ul>',
@@ -1651,7 +2025,7 @@ wliu_form.directive("form.radiodiag2", function () {
                         '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="font-size:14px;">',
-                            '<span style="display:none;" ng-repeat-start="rdObj in form.lists[name].list|filter:search"></span>',
+                            '<span style="display:none;" ng-repeat-start="rdObj in table.lists[name].list|filter:search"></span>',
                                     '<div class="col-md-{{colnum}} col-sm-{{colnum}} col-xs-12" ng-if="rdObj.list && rdObj.list.length>0">',
                                         '<ul>',
                                             '<li title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
@@ -1659,13 +2033,13 @@ wliu_form.directive("form.radiodiag2", function () {
                                                 '<ul style="border-top:1px solid #cccccc;">',
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="radio">',
-                                                                    '<input type="radio" scope="{{ form.scope }}" name="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}" id="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}_{{tdObj.key}}" ',
-                                                                        'ng-model="form.colByName( form.lists[name].keys.name ).value" ng-value="tdObj.key"  ',
-                                                                        'ng-change="form.changeByCol( form.colByName(form.lists[name].keys.name) )" ',
-                                                                        'ng-disabled="form.colByName( form.lists[name].keys.name )==undefined" ',
+                                                                    '<input type="radio" scope="{{ table.scope }}" name="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}" id="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{tdObj.key}}" ',
+                                                                        'ng-model="table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn ).value" ng-value="tdObj.key"  ',
+                                                                        'ng-change="table.changeCol(table.lists[name].keys.name, table.lists[name].keys.rowsn)" ',
+                                                                        'ng-disabled="table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn )==undefined" ',
                                                                     '/>',
 
-                                                                    '<label for="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
+                                                                    '<label for="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
 
@@ -1682,15 +2056,15 @@ wliu_form.directive("form.radiodiag2", function () {
             
                 ].join(''),
         controller: function ($scope) {
-            $scope.form.lists[$scope.name].keys = $scope.form.lists[$scope.name].keys || {};
+            $scope.table.lists[$scope.name].keys = $scope.table.lists[$scope.name].keys || {};
 
-            $scope.valueArr = function(name) {
+            $scope.valueArr = function(rowsn, name) {
                 var ret_arr = [];
-                for(var key in $scope.form.lists[$scope.name].list) {
-                    var dList = $scope.form.lists[$scope.name].list[key].list;
+                for(var key in $scope.table.lists[$scope.name].list) {
+                    var dList = $scope.table.lists[$scope.name].list[key].list;
                     var valueArr = $.map( dList , function(n) {
-                        if( $scope.form.colByName( name  )!= undefined  ) {
-                                if( $scope.form.colByName( name  ).value == n.key ) 
+                        if( $scope.table.getCol( name, rowsn )!= undefined  ) {
+                                if( $scope.table.getCol( name, rowsn ).value == n.key ) 
                                         return n;
                                 else
                                         return null;
@@ -1712,20 +2086,21 @@ wliu_form.directive("form.radiodiag2", function () {
     }
 });
 
-wliu_form.directive("form.radiolist2", function () {
+wliu_table.directive("table.radiolist2", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
+            rowsn:      "@",
             colnum:     "@",
             colnum1:    "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ form.scope }}">',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ table.scope }}" ng-hide="table.relationHide(rowsn, name)">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
@@ -1739,7 +2114,7 @@ wliu_form.directive("form.radiolist2", function () {
                         '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="font-size:14px;">',
-                            '<span style="display:none;" ng-repeat-start="rdObj in form.lists[form.colMeta(name).list].list|filter:search"></span>',
+                            '<span style="display:none;" ng-repeat-start="rdObj in table.lists[table.colMeta(name).list].list|filter:search"></span>',
                                     '<div class="col-md-{{colnum}} col-sm-{{colnum}} col-xs-12" ng-if="rdObj.list && rdObj.list.length>0">',
                                         '<ul>',
                                             '<li title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
@@ -1747,13 +2122,13 @@ wliu_form.directive("form.radiolist2", function () {
                                                 '<ul style="border-top:1px solid #cccccc;">',
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="radio">',
-                                                                    '<input type="radio" scope="{{ form.scope }}" name="{{form.scope}}_{{name}}_{{rowsn}}" id="{{form.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" ',
-                                                                        'ng-model="form.colByName( name ).value" ng-value="tdObj.key"  ',
-                                                                        'ng-change="form.changeByCol( form.colByName(name) )" ',
-                                                                        'ng-disabled="form.colByName( name )==undefined" ',
+                                                                    '<input type="radio" scope="{{ table.scope }}" name="{{table.scope}}_{{name}}_{{rowsn}}" id="{{table.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" ',
+                                                                        'ng-model="table.getCol( name, rowsn ).value" ng-value="tdObj.key"  ',
+                                                                        'ng-change="table.changeCol(name, rowsn)" ',
+                                                                        'ng-disabled="table.getCol( name, rowsn )==undefined" ',
                                                                     '/>',
 
-                                                                    '<label for="{{form.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
+                                                                    '<label for="{{table.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
 
@@ -1772,11 +2147,11 @@ wliu_form.directive("form.radiolist2", function () {
         controller: function ($scope) {
             $scope.valueArr = function() {
                 var ret_arr = [];
-                for(var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list) {
-                    var dList = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key].list;
+                for(var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list) {
+                    var dList = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key].list;
                     var valueArr = $.map( dList , function(n) {
-                        if( $scope.form.colByName( $scope.name  )!= undefined  ) {
-                                if( $scope.form.colByName( $scope.name  ).value == n.key ) 
+                        if( $scope.table.getCol( $scope.name, $scope.rowsn  )!= undefined  ) {
+                                if( $scope.table.getCol( $scope.name, $scope.rowsn  ).value == n.key ) 
                                         return n;
                                 else
                                         return null;
@@ -1795,40 +2170,42 @@ wliu_form.directive("form.radiolist2", function () {
     }
 });
 
-wliu_form.directive("form.radio3", function () {
+wliu_table.directive("table.radio3", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            rowsn:      "@",
             name:       "@",
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                    '<input type="text" readonly scope="{{ form.scope }}" class="wliuCommon-radiolist" value="{{ valueText() }}" ',
-                            'ng-click="change(name)" ',
-                            'ng-class="{ \'wliuCommon-input-invalid\': form.colByName(name).errorCode }" ',
+                    '<input type="text" readonly scope="{{ table.scope }}" class="wliuCommon-radiolist" value="{{ valueText() }}" ng-hide="table.relationHide(rowsn, name)" ',
+                            'ng-click="change(rowsn, name)" ',
+                            'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(name, rowsn).errorCode }" ',
 
                             'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
-                            'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colByName(name).errorCode?form.colByName(name).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
-                            'title="{{tooltip?\'\':form.colByName(name).errorCode?form.colByName(name).errorMessage:valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                            'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                            'title="{{tooltip?\'\':table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                     '/>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys = $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys || {};
-            $scope.change = function(name) {
-                $scope.form.lists[ $scope.form.colMeta($scope.name).list ].keys.name = name;
+            $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys || {};
+            $scope.change = function(rowsn, name) {
+                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.rowsn = rowsn;
+                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.name = name;
             }
             $scope.valueText = function() {
                 var ret_text = "";
-                for(var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list) {
-                    var dList = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key].list;
+                for(var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list) {
+                    var dList = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key].list;
                     for(var pkey in dList) {
                         var pList = dList[pkey].list;
                         var text = $.map( pList , function(n) {
-                            if( $scope.form.colByName( $scope.name )!=undefined ) {
-                                if($scope.form.colByName( $scope.name ).value==n.key) 
+                            if( $scope.table.getCol($scope.name, $scope.rowsn)!=undefined ) {
+                                if($scope.table.getCol($scope.name, $scope.rowsn).value==n.key) 
                                         return n.value;
                                 else
                                         return null;
@@ -1848,12 +2225,12 @@ wliu_form.directive("form.radio3", function () {
     }
 });
 
-wliu_form.directive("form.radiodiag3", function () {
+wliu_table.directive("table.radiodiag3", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
             targetid:   "@",
             colnum:     "@",
@@ -1862,12 +2239,12 @@ wliu_form.directive("form.radiodiag3", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ form.scope }}">',
+                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ table.scope }}">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '<li ng-repeat="vObj in valueArr(form.lists[name].keys.name)">',
+                                    '<li ng-repeat="vObj in valueArr(table.lists[name].keys.rowsn, table.lists[name].keys.name)">',
                                     '{{ vObj.value }}',
                                     '</li>',
                                 '</ul>',
@@ -1876,13 +2253,13 @@ wliu_form.directive("form.radiodiag3", function () {
                         '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
                         '<select class="wliuCommon-filter" ',
                                 'ng-model="listFilter.key" ',
-                                'ng-options="sObj.key as sObj.value for sObj in form.lists[name].list" ',                        
+                                'ng-options="sObj.key as sObj.value for sObj in table.lists[name].list" ',                        
                         ' ng-show="bar==1">',
                         '<option value=""></option>',
                         '</select>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="font-size:14px;">',
-                            '<span style="display:none;" ng-repeat-start="bbObj in form.lists[name].list|filter:getListFilter()"></span>',
+                            '<span style="display:none;" ng-repeat-start="bbObj in table.lists[name].list|filter:getListFilter()"></span>',
                             '<span style="display:none;" ng-repeat-start="rdObj in bbObj.list|filter:search"></span>',
                                     '<div class="col-md-{{colnum}} col-sm-{{colnum}} col-xs-12" ng-if="rdObj.list && rdObj.list.length>0">',
                                         '<ul>',
@@ -1891,13 +2268,13 @@ wliu_form.directive("form.radiodiag3", function () {
                                                 '<ul style="border-top:1px solid #cccccc;">',
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="radio">',
-                                                                    '<input type="radio" scope="{{ form.scope }}" name="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}" id="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}_{{tdObj.key}}" ',
-                                                                        'ng-model="form.colByName( form.lists[name].keys.name ).value" ng-value="tdObj.key"  ',
-                                                                        'ng-change="form.changeByCol( form.colByName(form.lists[name].keys.name) )" ',
-                                                                        'ng-disabled="form.colByName( form.lists[name].keys.name )==undefined" ',
+                                                                    '<input type="radio" scope="{{ table.scope }}" name="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}" id="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{tdObj.key}}" ',
+                                                                        'ng-model="table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn ).value" ng-value="tdObj.key"  ',
+                                                                        'ng-change="table.changeCol(table.lists[name].keys.name, table.lists[name].keys.rowsn)" ',
+                                                                        'ng-disabled="table.getCol( table.lists[name].keys.name, table.lists[name].keys.rowsn )==undefined" ',
                                                                     '/>',
 
-                                                                    '<label for="{{form.scope}}_{{name}}_{{form.lists[name].keys.name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
+                                                                    '<label for="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
 
@@ -1921,13 +2298,13 @@ wliu_form.directive("form.radiodiag3", function () {
                 return $scope.listFilter;
             }
 
-            $scope.valueArr = function(name) {
+            $scope.valueArr = function(rowsn, name) {
                 var ret_arr = [];
-                for(var key in $scope.form.lists[$scope.name].list) {
-                    var dList = $scope.form.lists[$scope.name].list[key].list;
+                for(var key in $scope.table.lists[$scope.name].list) {
+                    var dList = $scope.table.lists[$scope.name].list[key].list;
                     var valueArr = $.map( dList , function(n) {
-                        if( $scope.form.colByName( name  )!= undefined  ) {
-                                if( $scope.form.colByName( name  ).value == n.key ) 
+                        if( $scope.table.getCol( name, rowsn )!= undefined  ) {
+                                if( $scope.table.getCol( name, rowsn ).value == n.key ) 
                                         return n;
                                 else
                                         return null;
@@ -1949,20 +2326,21 @@ wliu_form.directive("form.radiodiag3", function () {
     }
 });
 
-wliu_form.directive("form.radiolist3", function () {
+wliu_table.directive("table.radiolist3", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
+            rowsn:      "@",
             colnum:     "@",
             colnum1:    "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ form.scope }}">',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ table.scope }}" ng-hide="table.relationHide(rowsn, name)">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
@@ -1976,13 +2354,13 @@ wliu_form.directive("form.radiolist3", function () {
                         '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }"  ng-show="bar==1" />',
                         '<select class="wliuCommon-filter" ',
                                 'ng-model="listFilter.key" ',
-                                'ng-options="sObj.key as sObj.value for sObj in form.lists[form.colMeta(name).list].list" ',                        
+                                'ng-options="sObj.key as sObj.value for sObj in table.lists[table.colMeta(name).list].list" ',                        
                         ' ng-show="bar==1">',
                         '<option value=""></option>',
                         '</select>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="font-size:14px;">',
-                            '<span style="display:none;" ng-repeat-start="bbObj in form.lists[form.colMeta(name).list].list|filter:getListFilter()"></span>',
+                            '<span style="display:none;" ng-repeat-start="bbObj in table.lists[table.colMeta(name).list].list|filter:getListFilter()"></span>',
                             '<span style="display:none;" ng-repeat-start="rdObj in bbObj.list|filter:search"></span>',
                                     '<div class="col-md-{{colnum}} col-sm-{{colnum}} col-xs-12" ng-if="rdObj.list && rdObj.list.length>0">',
                                         '<ul>',
@@ -1991,13 +2369,13 @@ wliu_form.directive("form.radiolist3", function () {
                                                 '<ul style="border-top:1px solid #cccccc;">',
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="radio">',
-                                                                    '<input type="radio" scope="{{ form.scope }}" name="{{form.scope}}_{{name}}_{{rowsn}}" id="{{form.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" ',
-                                                                        'ng-model="form.colByName( name ).value" ng-value="tdObj.key"  ',
-                                                                        'ng-change="form.changeByCol( form.colByName(name) )" ',
-                                                                        'ng-disabled="form.colByName( name )==undefined" ',
+                                                                    '<input type="radio" scope="{{ table.scope }}" name="{{table.scope}}_{{name}}_{{rowsn}}" id="{{table.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" ',
+                                                                        'ng-model="table.getCol( name, rowsn ).value" ng-value="tdObj.key"  ',
+                                                                        'ng-change="table.changeCol(name, rowsn)" ',
+                                                                        'ng-disabled="table.getCol( name, rowsn )==undefined" ',
                                                                     '/>',
 
-                                                                    '<label for="{{form.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
+                                                                    '<label for="{{table.scope}}_{{name}}_{{rowsn}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
 
@@ -2015,7 +2393,7 @@ wliu_form.directive("form.radiolist3", function () {
             
                 ].join(''),
         controller: function ($scope) {
-            $scope.form.lists[$scope.form.colMeta($scope.name).list].keys = $scope.form.lists[$scope.form.colMeta($scope.name).list].keys || {};
+            $scope.table.lists[$scope.table.colMeta($scope.name).list].keys = $scope.table.lists[$scope.table.colMeta($scope.name).list].keys || {};
             $scope.listFilter = $scope.listFilter || {};
 
             $scope.getListFilter = function() {
@@ -2025,11 +2403,11 @@ wliu_form.directive("form.radiolist3", function () {
 
             $scope.valueArr = function() {
                 var ret_arr = [];
-                for(var key in $scope.form.lists[$scope.form.colMeta($scope.name).list].list) {
-                    var dList = $scope.form.lists[$scope.form.colMeta($scope.name).list].list[key].list;
+                for(var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list) {
+                    var dList = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key].list;
                     var valueArr = $.map( dList , function(n) {
-                        if( $scope.form.colByName( $scope.name  )!= undefined  ) {
-                                if( $scope.form.colByName( $scope.name  ).value == n.key ) 
+                        if( $scope.table.getCol( $scope.name, $scope.rowsn  )!= undefined  ) {
+                                if( $scope.table.getCol( $scope.name, $scope.rowsn  ).value == n.key ) 
                                         return n;
                                 else
                                         return null;
@@ -2048,21 +2426,21 @@ wliu_form.directive("form.radiolist3", function () {
     }
 });
 
-wliu_form.directive("form.bgroup", function () {
+wliu_table.directive("table.bgroup", function () {
     return {
         restrict:   "E",
         replace:    true,
         transclude: true,           
         scope: {
-            form:      "=",
+            table:      "=",
             rowsn:      "@",
             actname:    "@"
         },
         template: [
                     '<div class="dropdown" style="white-space:nowrap;">',
-                        '<button scope="{{ form.scope }} class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" ',
+                        '<button scope="{{ table.scope }} class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" ',
                          'style="font-size:0.8em;" ',
-                         'ng-class="{\'btn-info\': form.rowByIndex(rowsn).rowstate==0, \'btn-warning\': form.rowByIndex(rowsn).rowstate!=0}"',
+                         'ng-class="{\'btn-info\': table.getRow(rowsn).rowstate==0, \'btn-warning\': table.getRow(rowsn).rowstate!=0}"',
                          '>',
                             '{{actname}} ',
                             '<i class="fa fa-1 fa-caret-down"></i>',
@@ -2078,24 +2456,88 @@ wliu_form.directive("form.bgroup", function () {
     }
 });
 
-
-
-wliu_form.directive("form.blink", function (wliuFormService) {
+wliu_table.directive("table.next", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
+            name:       "@",
+            actname:    "@",
+            action:     "&"
+        },
+        template: [
+                    '<span>',
+                        '<button class="btn btn-outline-primary waves-effect" ',
+                            'ng-click="naviRecord()" ',
+                            'ng-if="table.rowno()<table.rows.length-1 && table.rows.length>0 && table.rowno()>=0"',
+                        '>',
+                            '{{actname?actname:name}}',
+                        '</button>',
+                    '</span>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.naviRecord = function() {
+                // add you code here 
+                $scope.table.nextRecord();
+                // end of code
+                $scope.action(); // trigger outside event
+            }
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
+wliu_table.directive("table.previous", function (wliuTableService) {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            name:       "@",
+            actname:    "@",
+            action:     "&"
+        },
+        template: [
+                    '<span>',
+                        '<button class="btn btn-outline-primary waves-effect" ',
+                            'ng-click="naviRecord()" ',
+                            'ng-if="table.rows.length>0 && table.rowno()>0"',
+                        '>',
+                            '{{actname?actname:name}}',
+                        '</button>',
+                    '</span>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.naviRecord = function() {
+                // add you code here 
+                $scope.table.previousRecord();
+                // end of code
+                $scope.action(); // trigger outside event
+            }
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
+wliu_table.directive("table.blink", function (wliuTableService) {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
             rowsn:      "@",
             name:       "@",
             actname:    "@",
             action:     "&"
         },
         template: [
-                    '<span><a href="javascript:void(0);" class="wliuCommon-table-btn16" scope="{{ form.scope }}" ',
-                        'title="{{form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}"',
-                        'ng-click="action1(form.rowByIndex(rowsn))" ',
-                         'ng-if="buttonState(name, form.rowByIndex(rowsn).rowstate)"',
+                    '<span><a href="javascript:void(0);" class="wliuCommon-table-btn16" scope="{{ table.scope }}" ',
+                        'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
+                        'ng-click="action1(table.getRow(rowsn))" ',
+                         'ng-if="buttonState(name, table.getRow(rowsn).rowstate)"',
                     '>',
                     '<i class="wliu-btn16 wliu-btn16-{{name}}"></i> ',
                     '<span style="vertical-align:middle;">{{actname}}</span>',
@@ -2106,19 +2548,20 @@ wliu_form.directive("form.blink", function (wliuFormService) {
                 // add you code here 
                 switch( $scope.name.toLowerCase() ) {
                     case "detail":
-                        $scope.form.rownoByRow(theRow);
+                        var ridx = $scope.table.indexByKeys(theRow.keys);
+                        $scope.table.rowno(ridx);
                         break;
                     case "save":
-                        $scope.form.saveRow(theRow);
+                        $scope.table.saveRow(theRow);
                         break;
                     case "cancel":
-                        $scope.form.cancelRow(theRow);
+                        $scope.table.cancelRow(theRow);
 
                         // ckeditor  reset value to old value;  due to single way sync 
-                        for(var cidx in $scope.form.cols) {
-                            if( $scope.form.cols[cidx].coltype.toLowerCase() == "ckeditor" )
-                                if(CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name]) {
-                                    CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name].setData( $scope.form.colByIndex($scope.rowsn, $scope.form.cols[cidx].name).value?$scope.form.colByIndex($scope.rowsn, $scope.form.cols[cidx].name).value:"" );
+                        for(var cidx in $scope.table.cols) {
+                            if( $scope.table.cols[cidx].coltype.toLowerCase() == "ckeditor" )
+                                if(CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name]) {
+                                    CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name].setData( $scope.table.getCol($scope.table.cols[cidx].name, $scope.rowsn).value?$scope.table.getCol($scope.table.cols[cidx].name, $scope.rowsn).value:"" );
                                 }
                         }
                         break;
@@ -2126,7 +2569,7 @@ wliu_form.directive("form.blink", function (wliuFormService) {
                         // none 
                         break;
                     case "delete":
-                        $scope.form.deleteRow(theRow);
+                        $scope.table.deleteRow(theRow);
                         break;
                 }                
                 // end of code
@@ -2134,8 +2577,8 @@ wliu_form.directive("form.blink", function (wliuFormService) {
             };
 
             $scope.buttonState = function(name, rowstate) {
-                var right = $scope.form.rights?(parseInt($scope.form.rights[name])?true:false):false;
-                 return  wliuFormService.buttonState(name, rowstate) && right;
+                var right = $scope.table.rights?(parseInt($scope.table.rights[name])?true:false):false;
+                 return  wliuTableService.buttonState(name, rowstate) && right;
             };
             
         },
@@ -2144,12 +2587,12 @@ wliu_form.directive("form.blink", function (wliuFormService) {
     }
 });
 
-wliu_form.directive("form.tablebutton", function (wliuFormService) {
+wliu_table.directive("table.tablebutton", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
             actname:    "@",
             outline:    "@",
@@ -2159,9 +2602,9 @@ wliu_form.directive("form.tablebutton", function (wliuFormService) {
         },
         template: [
                     '<span>',
-                        '<button class="btn btn{{ outline==1?\'-outline\':\'\'}}-{{ buttonStyle() }} waves-effect" scope="{{ form.scope }}" ',
+                        '<button class="btn btn{{ outline==1?\'-outline\':\'\'}}-{{ buttonStyle() }} waves-effect" scope="{{ table.scope }}" ',
                             'style="min-width:60px;" ',
-                            'title="{{form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}"',
+                            'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
                             'ng-click="action1()" ',
                         '>',
                         '{{actname}}',
@@ -2196,21 +2639,21 @@ wliu_form.directive("form.tablebutton", function (wliuFormService) {
                 // add you code here 
                 switch( $scope.name.toLowerCase() ) {
                     case "search":
-                        $scope.form.allRows();
+                        $scope.table.allRows();
                         break;
                     case "match":
-                        $scope.form.matchRows();
+                        $scope.table.matchRows();
                         break;
                     case "save":
-                        $scope.form.saveRows();
+                        $scope.table.saveRows();
                         break;
                     case "cancel":
-                        $scope.form.cancelRows();
+                        $scope.table.cancelRows();
                         // ckeditor  reset value to old value;  due to single way sync 
-                        for(var cidx in $scope.form.cols) {
-                            if( $scope.form.cols[cidx].coltype.toLowerCase() == "ckeditor" )
-                                if(CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name]) {
-                                    CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name].setData( $scope.form.colByIndex($scope.rowsn, $scope.form.cols[cidx].name).value?$scope.form.colByIndex($scope.rowsn, $scope.form.cols[cidx].name).value:"" );
+                        for(var cidx in $scope.table.cols) {
+                            if( $scope.table.cols[cidx].coltype.toLowerCase() == "ckeditor" )
+                                if(CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name]) {
+                                    CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name].setData( $scope.table.getCol($scope.table.cols[cidx].name, $scope.rowsn).value?$scope.table.getCol($scope.table.cols[cidx].name, $scope.rowsn).value:"" );
                                 }
                         }
                         break;
@@ -2231,12 +2674,12 @@ wliu_form.directive("form.tablebutton", function (wliuFormService) {
     }
 });
 
-wliu_form.directive("form.singlebutton", function (wliuFormService) {
+wliu_table.directive("table.singlebutton", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             rowsn:      "@",
             name:       "@",
             actname:    "@",
@@ -2248,12 +2691,12 @@ wliu_form.directive("form.singlebutton", function (wliuFormService) {
         },
         template: [
                     '<span>',
-                        '<button class="btn btn{{ outline==1?\'-outline\':\'\'}}-{{ buttonStyle() }} waves-effect" scope="{{ form.scope }}" ',
+                        '<button class="btn btn{{ outline==1?\'-outline\':\'\'}}-{{ buttonStyle() }} waves-effect" scope="{{ table.scope }}" ',
                             'style="min-width:60px;" ',
-                            'title="{{form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}"',
-                            'ng-disabled="!buttonState(name, form.rowByIndex(rowsn).rowstate)" ',
-                            'ng-click="action1(form.rowByIndex(rowsn))" ',
-                            'title="{{ form.rowByIndex(rowsn).error.errorCode ? form.rowByIndex(rowsn).error.errorMessage : \'\' }}"',
+                            'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
+                            'ng-disabled="!buttonState(name, table.getRow(rowsn).rowstate)" ',
+                            'ng-click="action1(table.getRow(rowsn))" ',
+                            'title="{{ table.getRow(rowsn).error.errorCode ? table.getRow(rowsn).error.errorMessage : \'\' }}"',
                         '>',
                         '<span style="vertical-align:middle;">',
                             '{{actname}}',
@@ -2279,19 +2722,19 @@ wliu_form.directive("form.singlebutton", function (wliuFormService) {
                 // add you code here 
                 switch( $scope.name.toLowerCase() ) {
                     case "save":
-                        $scope.form.saveRow(theRow);
+                        $scope.table.saveRow(theRow);
                         break;
                     case "cancel":
-                        if( $scope.form.singleKeys ) 
-                            $scope.form.cancelRow(theRow);
+                        if( $scope.table.singleKeys ) 
+                            $scope.table.cancelRow(theRow);
                          else 
-                            $scope.form.clearRow(theRow);
+                            $scope.table.resetRow(theRow);
 
                         // ckeditor  reset value to old value;  due to single way sync 
-                        for(var cidx in $scope.form.cols) {
-                            if( $scope.form.cols[cidx].coltype.toLowerCase() == "ckeditor" )
-                               if(CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name]) {
-                                    CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name].setData( $scope.form.colByIndex($scope.rowsn, $scope.form.cols[cidx].name).value?$scope.form.colByIndex($scope.rowsn, $scope.form.cols[cidx].name).value:"" );
+                        for(var cidx in $scope.table.cols) {
+                            if( $scope.table.cols[cidx].coltype.toLowerCase() == "ckeditor" )
+                               if(CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name]) {
+                                    CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name].setData( $scope.table.getCol($scope.table.cols[cidx].name, $scope.rowsn).value?$scope.table.getCol($scope.table.cols[cidx].name, $scope.rowsn).value:"" );
                                 }
                         }
                         break;
@@ -2302,7 +2745,7 @@ wliu_form.directive("form.singlebutton", function (wliuFormService) {
             };
 
             $scope.buttonState = function(name, rowsn) {
-                var right = $scope.form.rights?(parseInt($scope.form.rights[name])?true:false):false;
+                var right = $scope.table.rights?(parseInt($scope.table.rights[name])?true:false):false;
                 return  rowsn>=0 && right;
             };
         },
@@ -2311,12 +2754,12 @@ wliu_form.directive("form.singlebutton", function (wliuFormService) {
     }
 });
 
-wliu_form.directive("form.rowbutton", function (wliuFormService) {
+wliu_table.directive("table.rowbutton", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             rowsn:      "@",
             name:       "@",
             actname:    "@",
@@ -2328,20 +2771,20 @@ wliu_form.directive("form.rowbutton", function (wliuFormService) {
         },
         template: [
                     '<span>',
-                        '<button class="btn btn{{ outline==1?\'-outline\':\'\'}}-{{ buttonStyle() }} waves-effect" scope="{{ form.scope }}" ',
+                        '<button class="btn btn{{ outline==1?\'-outline\':\'\'}}-{{ buttonStyle() }} waves-effect" scope="{{ table.scope }}" ',
                             'style="min-width:60px;" ',
-                            'title="{{form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}"',
-                            'ng-click="action1(form.rowByIndex(rowsn))" ',
-                            'ng-if="buttonState(name, form.rowByIndex(rowsn).rowstate)" ',
-                            'title="{{ form.rowByIndex(rowsn).error.errorCode ? form.rowByIndex(rowsn).error.errorMessage : \'\' }}"',
+                            'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
+                            'ng-click="action1(table.getRow(rowsn))" ',
+                            'ng-if="buttonState(name, table.getRow(rowsn).rowstate)" ',
+                            'title="{{ table.getRow(rowsn).error.errorCode ? table.getRow(rowsn).error.errorMessage : \'\' }}"',
                         '>',
                         '<span ng-if="icon==1" style="vertical-align:middle;">',
-                            '<i class="wliu-btn16 wliu-btn16-rowstate-error"    ng-if="form.rowByIndex(rowsn).error.errorCode" ',
-                                'title="{{ form.rowByIndex(rowsn).error.errorCode ? form.rowByIndex(rowsn).error.errorMessage : \'\' }}"',
+                            '<i class="wliu-btn16 wliu-btn16-rowstate-error"    ng-if="table.getRow(rowsn).error.errorCode" ',
+                                'title="{{ table.getRow(rowsn).error.errorCode ? table.getRow(rowsn).error.errorMessage : \'\' }}"',
                             '></i> ',
-                            '<i class="wliu-btn16 wliu-btn16-rowstate-save"     ng-if="form.rowByIndex(rowsn).error.errorCode==0 && form.rowByIndex(rowsn).rowstate==1" title="Changed"></i> ',
-                            '<i class="wliu-btn16 wliu-btn16-rowstate-add"      ng-if="form.rowByIndex(rowsn).error.errorCode==0 && form.rowByIndex(rowsn).rowstate==2" title="New"></i> ',
-                            '<i class="wliu-btn16 wliu-btn16-rowstate-delete"   ng-if="form.rowByIndex(rowsn).error.errorCode==0 && form.rowByIndex(rowsn).rowstate==3" tilte="Deleted"></i> ',
+                            '<i class="wliu-btn16 wliu-btn16-rowstate-save"     ng-if="table.getRow(rowsn).error.errorCode==0 && table.getRow(rowsn).rowstate==1" title="Changed"></i> ',
+                            '<i class="wliu-btn16 wliu-btn16-rowstate-add"      ng-if="table.getRow(rowsn).error.errorCode==0 && table.getRow(rowsn).rowstate==2" title="New"></i> ',
+                            '<i class="wliu-btn16 wliu-btn16-rowstate-delete"   ng-if="table.getRow(rowsn).error.errorCode==0 && table.getRow(rowsn).rowstate==3" tilte="Deleted"></i> ',
                         '</span>',
                         '<span style="vertical-align:middle;">',
                             '{{actname}}',
@@ -2362,7 +2805,7 @@ wliu_form.directive("form.rowbutton", function (wliuFormService) {
                     case "save":
                         ret_val = "secondary";
                         break;
-                    case "clear":
+                    case "reset":
                     case "cancel":
                         ret_val = "warning";
                         break;
@@ -2377,37 +2820,38 @@ wliu_form.directive("form.rowbutton", function (wliuFormService) {
                 // add you code here 
                 switch( $scope.name.toLowerCase() ) {
                     case "detail":
-                        $scope.form.rownoByRow(theRow);
+                        var ridx = $scope.table.indexByKeys(theRow.keys);
+                        $scope.table.rowno(ridx);
                         break;
                     case "save":
-                        $scope.form.saveRow(theRow);
+                        $scope.table.saveRow(theRow);
                         break;
                     case "cancel":
-                        $scope.form.cancelRow(theRow);
+                        $scope.table.cancelRow(theRow);
                         // ckeditor  reset value to old value;  due to single way sync 
-                        for(var cidx in $scope.form.cols) {
-                            if( $scope.form.cols[cidx].coltype.toLowerCase() == "ckeditor" )
-                                if(CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name]) {
-                                    CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name].setData( $scope.form.colByIndex($scope.rowsn, $scope.form.cols[cidx].name).value?$scope.form.colByIndex($scope.rowsn, $scope.form.cols[cidx].name).value:"" );
+                        for(var cidx in $scope.table.cols) {
+                            if( $scope.table.cols[cidx].coltype.toLowerCase() == "ckeditor" )
+                                if(CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name]) {
+                                    CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name].setData( $scope.table.getCol($scope.table.cols[cidx].name, $scope.rowsn).value?$scope.table.getCol($scope.table.cols[cidx].name, $scope.rowsn).value:"" );
                                 }
                         }
                         break;
-                    case "clear":
-                        $scope.form.clearRow(theRow);
+                    case "reset":
+                        $scope.table.resetRow(theRow);
                         // ckeditor  reset value to old value;  due to single way sync 
-                        for(var cidx in $scope.form.cols) {
-                            if( $scope.form.cols[cidx].coltype.toLowerCase() == "ckeditor" )
-                                if(CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name]) {
-                                    CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name].setData( $scope.form.colByIndex($scope.rowsn, $scope.form.cols[cidx].name).value?$scope.form.colByIndex($scope.rowsn, $scope.form.cols[cidx].name).value:"" );
+                        for(var cidx in $scope.table.cols) {
+                            if( $scope.table.cols[cidx].coltype.toLowerCase() == "ckeditor" )
+                                if(CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name]) {
+                                    CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name].setData( $scope.table.getCol($scope.table.cols[cidx].name, $scope.rowsn).value?$scope.table.getCol($scope.table.cols[cidx].name, $scope.rowsn).value:"" );
                                 }
                         }
                         break;
                     case "add":
-                        $scope.form.addRow(0, $scope.form.newRow());
-                        $scope.form.rowno(0);
+                        $scope.table.addRow(0, $scope.table.newRow());
+                        $scope.table.rowno(0);
                         break;
                     case "delete":
-                        $scope.form.deleteRow(theRow);
+                        $scope.table.deleteRow(theRow);
                         break;
                 }                
                 //
@@ -2416,9 +2860,9 @@ wliu_form.directive("form.rowbutton", function (wliuFormService) {
             };
 
             $scope.buttonState = function(name, rowstate) {
-                var right = $scope.form.rights?(parseInt($scope.form.rights[name])?true:false):false;
+                var right = $scope.table.rights?(parseInt($scope.table.rights[name])?true:false):false;
                 if( name=="add" && rowstate==undefined ) return true;
-                return  wliuFormService.buttonState(name, rowstate) && right;
+                return  wliuTableService.buttonState(name, rowstate) && right;
             };
         },
         link: function (sc, el, attr) {
@@ -2426,12 +2870,12 @@ wliu_form.directive("form.rowbutton", function (wliuFormService) {
     }
 });
 
-wliu_form.directive("form.bicon", function (wliuFormService) {
+wliu_table.directive("table.bicon", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             rowsn:      "@",
             xsize:      "@",
             name:       "@",
@@ -2440,10 +2884,10 @@ wliu_form.directive("form.bicon", function (wliuFormService) {
         },
         template: [
                     '<span>',
-                    '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" scope="{{ form.scope }}" ',
+                    '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" scope="{{ table.scope }}" ',
                         'title="{{actname?actname:name}}"',
-                        'ng-click="action1(form.rowByIndex(rowsn))" ',
-                        'ng-if="buttonState(name, form.rowByIndex(rowsn).rowstate)"',
+                        'ng-click="action1(table.getRow(rowsn))" ',
+                        'ng-if="buttonState(name, table.getRow(rowsn).rowstate)"',
                     '>',
                     '</a>',
                     '</span>'
@@ -2455,19 +2899,20 @@ wliu_form.directive("form.bicon", function (wliuFormService) {
                 // add you code here 
                  switch( $scope.name.toLowerCase() ) {
                     case "detail":
-                        $scope.form.rownoByRow(theRow);
+                        var ridx = $scope.table.indexByKeys(theRow.keys);
+                        $scope.table.rowno(ridx);
                         break;
                     case "save":
-                        $scope.form.saveRow(theRow);
+                        $scope.table.saveRow(theRow);
                         break;
                     case "cancel":
-                        $scope.form.cancelRow(theRow);
+                        $scope.table.cancelRow(theRow);
 
                         // ckeditor  reset value to old value;  due to single way sync 
-                        for(var cidx in $scope.form.cols) {
-                            if( $scope.form.cols[cidx].coltype.toLowerCase() == "ckeditor" )
-                                if(CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name]) {
-                                    CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name].setData( $scope.form.colByIndex($scope.rowsn, $scope.form.cols[cidx].name).value?$scope.form.colByIndex($scope.rowsn, $scope.form.cols[cidx].name).value:"" );
+                        for(var cidx in $scope.table.cols) {
+                            if( $scope.table.cols[cidx].coltype.toLowerCase() == "ckeditor" )
+                                if(CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name]) {
+                                    CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name].setData( $scope.table.getCol($scope.table.cols[cidx].name, $scope.rowsn).value?$scope.table.getCol($scope.table.cols[cidx].name, $scope.rowsn).value:"" );
                                 }
                         }
                         break;
@@ -2475,7 +2920,7 @@ wliu_form.directive("form.bicon", function (wliuFormService) {
                         // none 
                         break;
                     case "delete":
-                        $scope.form.deleteRow(theRow);
+                        $scope.table.deleteRow(theRow);
                         break;
                 }                
                //
@@ -2483,8 +2928,8 @@ wliu_form.directive("form.bicon", function (wliuFormService) {
             };
 
             $scope.buttonState = function(name, rowstate) {
-                var right = $scope.form.rights?(parseInt($scope.form.rights[name])?true:false):false;
-                return  wliuFormService.buttonState(name, rowstate) && right;
+                var right = $scope.table.rights?(parseInt($scope.table.rights[name])?true:false):false;
+                return  wliuTableService.buttonState(name, rowstate) && right;
             };
        },
         link: function (sc, el, attr) {
@@ -2492,12 +2937,12 @@ wliu_form.directive("form.bicon", function (wliuFormService) {
     }
 });
 
-wliu_form.directive("form.btext", function (wliuFormService) {
+wliu_table.directive("table.btext", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             rowsn:      "@",
             name:       "@",
             actname:    "@",
@@ -2505,10 +2950,10 @@ wliu_form.directive("form.btext", function (wliuFormService) {
         },
         template: [
                     '<span>',
-                    '<a href="javascript:void(0)" class="wliu-table-button" scope="{{ form.scope }}" ',
+                    '<a href="javascript:void(0)" class="wliu-table-button" scope="{{ table.scope }}" ',
                         'title="{{actname?actname:name}}" ',
-                        'ng-click="action1(form.rowByIndex(rowsn))" ',
-                        'ng-if="buttonState(name, form.rowByIndex(rowsn).rowstate)" ',    
+                        'ng-click="action1(table.getRow(rowsn))" ',
+                        'ng-if="buttonState(name, table.getRow(rowsn).rowstate)" ',    
                     '>',
                     '{{actname?actname:name.capital()}}',
                     '</a>',
@@ -2519,19 +2964,20 @@ wliu_form.directive("form.btext", function (wliuFormService) {
                 // add you code here 
                  switch( $scope.name.toLowerCase() ) {
                     case "detail":
-                        $scope.form.rownoByRow(theRow);
+                        var ridx = $scope.table.indexByKeys(theRow.keys);
+                        $scope.table.rowno(ridx);
                         break;
                     case "save":
-                        $scope.form.saveRow(theRow);
+                        $scope.table.saveRow(theRow);
                         break;
                     case "cancel":
-                        $scope.form.cancelRow(theRow);
+                        $scope.table.cancelRow(theRow);
 
                         // ckeditor  reset value to old value;  due to single way sync 
-                        for(var cidx in $scope.form.cols) {
-                            if( $scope.form.cols[cidx].coltype.toLowerCase() == "ckeditor" )
-                                if(CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name]) {
-                                    CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name].setData( $scope.form.colByIndex($scope.rowsn, $scope.form.cols[cidx].name).value?$scope.form.colByIndex($scope.rowsn, $scope.form.cols[cidx].name).value:"" );
+                        for(var cidx in $scope.table.cols) {
+                            if( $scope.table.cols[cidx].coltype.toLowerCase() == "ckeditor" )
+                                if(CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name]) {
+                                    CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name].setData( $scope.table.getCol($scope.table.cols[cidx].name, $scope.rowsn).value?$scope.table.getCol($scope.table.cols[cidx].name, $scope.rowsn).value:"" );
                                 }
                         }
                         break;
@@ -2539,7 +2985,7 @@ wliu_form.directive("form.btext", function (wliuFormService) {
                         // none 
                         break;
                     case "delete":
-                        $scope.form.deleteRow(theRow);
+                        $scope.table.deleteRow(theRow);
                         break;
                 }                
                //
@@ -2547,8 +2993,8 @@ wliu_form.directive("form.btext", function (wliuFormService) {
             };
 
             $scope.buttonState = function(name, rowstate) {
-                var right = $scope.form.rights?(parseInt($scope.form.rights[name])?true:false):false;
-                return  wliuFormService.buttonState(name, rowstate) && right;
+                var right = $scope.table.rights?(parseInt($scope.table.rights[name])?true:false):false;
+                return  wliuTableService.buttonState(name, rowstate) && right;
             };
        },
         link: function (sc, el, attr) {
@@ -2556,20 +3002,55 @@ wliu_form.directive("form.btext", function (wliuFormService) {
     }
 });
 
+wliu_table.directive("table.hgroup", function () {
+    return {
+        restrict:   "E",
+        replace:    true,
+        transclude: true,           
+        scope: {
+            table:      "=",
+            actname:    "@"
+        },
+        template: [
+                    '<div class="dropdown" style="white-space:nowrap;">',
+                        '<button scope="{{ table.scope }} class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ',
+                             'style="font-size:0.8em;" ',
+                             'ng-class="{\'btn-info\':  rowstate()==0, \'btn-warning\':  rowstate()!=0}"',
+                         '>',
+                            '{{actname}} ',
+                            '<i class="fa fa-1 fa-caret-down"></i>',
+                        '</button>',
+                        '<ul class="dropdown-menu" style="white-space:nowrap;" ng-transclude>',
+                        '</ul>',
+                    '</div>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.rowstate = function() {
+                var _state = 0;
+                for(var ridx in $scope.table.rows) {
+                    _state = Math.max( _state, $scope.table.rows[ridx].rowstate );
+                }
+                return _state;
+            }
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
 
-wliu_form.directive("form.hlink", function (wliuFormService) {
+wliu_table.directive("table.hlink", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
             actname:    "@",
             action:     "&"
         },
         template: [
-                    '<span><a href="javascript:void(0);" class="wliuCommon-table-btn16" scope="{{ form.scope }}" ',
-                        'title="{{form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}"',
+                    '<span><a href="javascript:void(0);" class="wliuCommon-table-btn16" scope="{{ table.scope }}" ',
+                        'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
                         'ng-click="action1()" ',
                         'ng-if="buttonState(name, rowstate())"',
                     '>',
@@ -2582,13 +3063,13 @@ wliu_form.directive("form.hlink", function (wliuFormService) {
                 // add you code here 
                 switch( $scope.name.toLowerCase() ) {
                     case "save":
-                        $scope.form.saveRows();
+                        $scope.table.saveRows();
                         break;
                     case "cancel":
-                        $scope.form.cancelRows();
+                        $scope.table.cancelRows();
                         break;
                     case "add":
-                        $scope.form.addRow(0, $scope.form.newRow());
+                        $scope.table.addRow(0, $scope.table.newRow());
                         break;
                     case "delete":
                         // No
@@ -2600,15 +3081,15 @@ wliu_form.directive("form.hlink", function (wliuFormService) {
 
             $scope.rowstate = function() {
                 var _state = 0;
-                for(var ridx in $scope.form.rows) {
-                    _state = Math.max( _state, $scope.form.rows[ridx].rowstate );
+                for(var ridx in $scope.table.rows) {
+                    _state = Math.max( _state, $scope.table.rows[ridx].rowstate );
                 }
                 return _state;
             };
 
             $scope.buttonState = function(name, rowstate) {
-                var right = $scope.form.rights?(parseInt($scope.form.rights[name])?true:false):false;
-                return  wliuFormService.buttonState(name, rowstate) && right;
+                var right = $scope.table.rights?(parseInt($scope.table.rights[name])?true:false):false;
+                return  wliuTableService.buttonState(name, rowstate) && right;
             };
             
         },
@@ -2617,12 +3098,12 @@ wliu_form.directive("form.hlink", function (wliuFormService) {
     }
 });
 
-wliu_form.directive("form.hicon", function (wliuFormService) {
+wliu_table.directive("table.hicon", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             xsize:      "@",
             name:       "@",
             actname:    "@",
@@ -2630,7 +3111,7 @@ wliu_form.directive("form.hicon", function (wliuFormService) {
         },
         template: [
                     '<span>',
-                    '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" scope="{{ form.scope }}" ',
+                    '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" scope="{{ table.scope }}" ',
                         'title="{{actname?actname:name}}"',
                         'ng-click="action1()" ',
                         'ng-if="buttonState(name, rowstate())"',
@@ -2645,13 +3126,13 @@ wliu_form.directive("form.hicon", function (wliuFormService) {
                 // add you code here 
                 switch( $scope.name.toLowerCase() ) {
                     case "save":
-                        $scope.form.saveRows();
+                        $scope.table.saveRows();
                         break;
                     case "cancel":
-                        $scope.form.cancelRows();
+                        $scope.table.cancelRows();
                         break;
                     case "add":
-                        $scope.form.addRow();
+                        $scope.table.addRow();
                         break;
                     case "delete":
                         // No
@@ -2663,15 +3144,15 @@ wliu_form.directive("form.hicon", function (wliuFormService) {
 
             $scope.rowstate = function() {
                 var _state = 0;
-                for(var ridx in $scope.form.rows) {
-                    _state = Math.max( _state, $scope.form.rows[ridx].rowstate );
+                for(var ridx in $scope.table.rows) {
+                    _state = Math.max( _state, $scope.table.rows[ridx].rowstate );
                 }
                 return _state;
             };
 
             $scope.buttonState = function(name, rowstate) {
-                var right = $scope.form.rights?(parseInt($scope.form.rights[name])?true:false):false;
-                return  wliuFormService.buttonState(name, rowstate) && right;
+                var right = $scope.table.rights?(parseInt($scope.table.rights[name])?true:false):false;
+                return  wliuTableService.buttonState(name, rowstate) && right;
             };
        },
         link: function (sc, el, attr) {
@@ -2679,19 +3160,19 @@ wliu_form.directive("form.hicon", function (wliuFormService) {
     }
 });
 
-wliu_form.directive("form.htext", function (wliuFormService) {
+wliu_table.directive("table.htext", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             name:       "@",
             actname:    "@",
             action:     "&"
         },
         template: [
                     '<span>',
-                    '<a href="javascript:void(0)" class="wliu-table-hbutton" scope="{{ form.scope }}" ',
+                    '<a href="javascript:void(0)" class="wliu-table-hbutton" scope="{{ table.scope }}" ',
                             'title="{{ actname?actname:name }}" ',
                             'ng-click="action1()"',
                             'ng-if="buttonState(name, rowstate())"',                     
@@ -2705,13 +3186,13 @@ wliu_form.directive("form.htext", function (wliuFormService) {
                 // add you code here 
                 switch( $scope.name.toLowerCase() ) {
                     case "save":
-                        $scope.form.saveRows();
+                        $scope.table.saveRows();
                         break;
                     case "cancel":
-                        $scope.form.cancelRows();
+                        $scope.table.cancelRows();
                         break;
                     case "add":
-                        $scope.form.addRow();
+                        $scope.table.addRow();
                         break;
                     case "delete":
                         // No
@@ -2723,15 +3204,15 @@ wliu_form.directive("form.htext", function (wliuFormService) {
 
             $scope.rowstate = function() {
                 var _state = 0;
-                for(var ridx in $scope.form.rows) {
-                    _state = Math.max( _state, $scope.form.rows[ridx].rowstate );
+                for(var ridx in $scope.table.rows) {
+                    _state = Math.max( _state, $scope.table.rows[ridx].rowstate );
                 }
                 return _state;
             };
 
             $scope.buttonState = function(name, rowstate) {
-                var right = $scope.form.rights?(parseInt($scope.form.rights[name])?true:false):false;
-                return  wliuFormService.buttonState(name, rowstate) && right;
+                var right = $scope.table.rights?(parseInt($scope.table.rights[name])?true:false):false;
+                return  wliuTableService.buttonState(name, rowstate) && right;
             };
        },
         link: function (sc, el, attr) {
@@ -2739,12 +3220,12 @@ wliu_form.directive("form.htext", function (wliuFormService) {
     }
 });
 
-wliu_form.directive("form.rowerror", function (wliuFormService) {
+wliu_table.directive("table.rowerror", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             targetid:   "@",
             rowsn:      "@"
         },
@@ -2758,9 +3239,9 @@ wliu_form.directive("form.rowerror", function (wliuFormService) {
                 ].join(''),
         controller: function ($scope, $sce) {
             $scope.getHTML = function() {
-                if( $scope.form.rowByIndex($scope.rowsn) )
-                    if( $scope.form.rowByIndex($scope.rowsn).error.errorCode )
-                        return $sce.trustAsHtml($scope.form.rowByIndex($scope.rowsn).error.errorMessage.nl2br());
+                if( $scope.table.getRow($scope.rowsn) )
+                    if( $scope.table.getRow($scope.rowsn).error.errorCode )
+                        return $sce.trustAsHtml($scope.table.getRow($scope.rowsn).error.errorMessage.nl2br());
                     else 
                         return $sce.trustAsHtml("");
             }
@@ -2769,8 +3250,8 @@ wliu_form.directive("form.rowerror", function (wliuFormService) {
             $(function(){
                 $(el).wliuDiag({ fade:false, movable: true, title: "Message"});
                 $(el).unbind("errorshow").bind("errorshow", function(evt){
-                    if( sc.form.rowByIndex(sc.rowsn) ) {
-                        if( parseInt(sc.form.rowByIndex(sc.rowsn).error.errorCode) ) {
+                    if( sc.table.getRow(sc.rowsn) ) {
+                        if( parseInt(sc.table.getRow(sc.rowsn).error.errorCode) ) {
                             $(el).trigger("show");
                         }
                     }
@@ -2780,12 +3261,12 @@ wliu_form.directive("form.rowerror", function (wliuFormService) {
     }
 });
 
-wliu_form.directive("form.taberror", function (wliuFormService) {
+wliu_table.directive("table.taberror", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             targetid:   "@"
         },
         template: [
@@ -2798,8 +3279,8 @@ wliu_form.directive("form.taberror", function (wliuFormService) {
                 ].join(''),
         controller: function ($scope, $sce) {
             $scope.getHTML = function() {
-                if( $scope.form.error.errorCode )
-                    return $sce.trustAsHtml($scope.form.error.errorMessage.nl2br());
+                if( $scope.table.error.errorCode )
+                    return $sce.trustAsHtml($scope.table.error.errorMessage.nl2br());
                 else 
                     return $sce.trustAsHtml("");
             }
@@ -2808,7 +3289,7 @@ wliu_form.directive("form.taberror", function (wliuFormService) {
             $(function(){
                 $(el).wliuDiag({ fade:false, movable: true, title: "Message"});
                 $(el).unbind("errorshow").bind("errorshow", function(evt){
-                    if( parseInt(sc.form.error.errorCode) ) {
+                    if( parseInt(sc.table.error.errorCode) ) {
                         $(el).trigger("show");
                     }
                 });
@@ -2817,12 +3298,12 @@ wliu_form.directive("form.taberror", function (wliuFormService) {
     }
 });
 
-wliu_form.directive("form.tooltip", function (wliuFormService) {
+wliu_table.directive("table.tooltip", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             targetid:   "@"
         },
         template: [
@@ -2838,12 +3319,12 @@ wliu_form.directive("form.tooltip", function (wliuFormService) {
     }
 });
 
-wliu_form.directive("form.wait", function (wliuFormService) {
+wliu_table.directive("table.wait", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             targetid:   "@",
             maskable:   "@"
         },
@@ -2860,12 +3341,12 @@ wliu_form.directive("form.wait", function (wliuFormService) {
     }
 });
 
-wliu_form.directive("form.tips", function (wliuFormService) {
+wliu_table.directive("table.autotip", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            form:      "=",
+            table:      "=",
             targetid:   "@",
             halign:     "@",
             valign:     "@",
@@ -2886,14 +3367,14 @@ wliu_form.directive("form.tips", function (wliuFormService) {
 });
 
 /****** Form Service *********/
-wliu_form.service("wliuFormService", function () {
+wliu_table.service("wliuTableService", function () {
     var self = this;
     // state control button status
     self.btnActive = {
-        "0": { "detail": 1, "save": 0, "cancel": 0, "clear":0, "add": 1, "delete": 1, "output": 1, "print": 1, "email": 1 },
-        "1": { "detail": 1, "save": 1, "cancel": 1, "clear":1, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 },
-        "2": { "detail": 1, "save": 1, "cancel": 1, "clear":1, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 },
-        "3": { "detail": 1, "save": 1, "cancel": 1, "clear":0, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 }
+        "0": { "detail": 1, "save": 0, "cancel": 0, "reset":0, "add": 1, "delete": 1, "output": 1, "print": 1, "email": 1 },
+        "1": { "detail": 1, "save": 1, "cancel": 1, "reset":1, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 },
+        "2": { "detail": 1, "save": 1, "cancel": 1, "reset":1, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 },
+        "3": { "detail": 1, "save": 1, "cancel": 1, "reset":0, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 }
     };
 
     self.buttonState = function(name, rowstate ) {

@@ -1,7 +1,7 @@
 /******* Table & ArraySearch  *******/
 var WLIU = WLIU || {};
 // Table Object
-WLIU.TABLE = function( opts ) {
+WLIU.FORM = function( opts ) {
 	this.sc			= null;
 
 	this.lang       = opts.lang?opts.lan:"cn";
@@ -32,7 +32,7 @@ WLIU.TABLE = function( opts ) {
 	$.extend(this.callback, opts.callback);
 }
 
-WLIU.TABLE.prototype = {
+WLIU.FORM.prototype = {
 	setScope: function(p_scope) {
 		p_scope.table = this;
 		this.sc = p_scope;
