@@ -71,44 +71,16 @@ WLIU.TABLE.prototype = {
 	/******************/
 
 	filterMeta: function(col_name) {
-		return FCOLLECT.firstByKV(this.filters,  {name: col_name});
+		return FTABLE.filterMeta(this, col_name);
 	},
 	filterClear: function() {
-		for(var fidx in this.filters) {
-			FROW.setColVal( this.filters[fidx],"");
-		}
+		return FTABLE.filterClear(this);
 	},
 	filterValue: function( name, val) {
-		if(val!=undefined) {
-			if( this.filterMeta(name) ) {
-				return FROW.setColVal( this.filterMeta(name), val );
-			} else {
-				return undefined;
-			}
-		} else {
-			if( this.filterMeta(name) ) {
-				return FROW.getColVal( this.filterMeta(name) );
-			} else {
-				return undefined;
-			}
-		}
+		return FTABLE.filterValue(this, name, val);
 	},
 	filterDefault: function( name, val) {
-		if(val!=undefined) {
-			if( this.filterMeta(name) ) {
-				this.filterMeta(name).defval = val;
-				this.filterMeta(name).value = val;
-				return val;
-			} else {
-				return undefined;
-			}
-		} else {
-			if( this.filterMeta(name) ) {
-				return this.filterMeta(name).defval?this.filterMeta(name).defval:undefined;
-			} else {
-				return undefined;
-			}
-		}
+		return FTABLE.filterDefault(this, name, val);
 	},
     
 
@@ -144,85 +116,24 @@ WLIU.TABLE.prototype = {
 		return FTABLE.changeCol(this, col_name, ridx);
 	},
 
-	getChangeRows: function() {
-		var nrows = [];
-		for(var ridx in this.rows) {
-			if( this.rows[ridx].rowstate > 0  ) {
-				var theRow = this.rows[ridx];
-				//if( theRow.error.errorCode <= 0 ) {
-				if( true ) {
-					var nrow = {};
-					nrow.scope 		= theRow.scope;
-					nrow.rowstate 	= theRow.rowstate;
-					nrow.keys 		= theRow.keys;
-					nrow.error      = { errorCode:0, errorMessage:"" };
-					nrow.cols		= FROW.getChangeCols(theRow);
-					nrows.push(nrow);
-				} // errorCode > 0
-			} // if rowstate > 0
-		}
-		return nrows;
-	},
-	getFilters: function() {
-		var nfilters = [];
-		for(var fidx in this.filters) {
-			var nfilter = angular.copy(this.filters[fidx]);
-			nfilter.value = FROW.getColVal(this.filters[fidx]);
-			if(nfilter.need) nfilters.push(nfilter);
-			if($.isArray(nfilter.value) && nfilter.value.length>0 && !nfilter.need ) nfilters.push(nfilter);
-			if(!$.isArray(nfilter.value) && nfilter.value && !$.isPlainObject(nfilter.value) && !nfilter.need ) nfilters.push(nfilter);
-			if($.isPlainObject(nfilter.value) && (nfilter.value.from!="" || nfilter.value.to!="") && !nfilter.need) nfilters.push(nfilter);
-		}
-		return nfilters;
-	},
-	getLists: function() {
-		return FTABLE.getLists(this);
-	},
-
 	// Navigation
 	firstPage: function() {
-		if(this.navi.pageno<=0){
-			this.navi.pageno=1;
-		}
-		if(this.navi.pagetotal<=0) this.navi.pageno=0;
-		if(this.navi.pageno>1 && this.navi.pagetotal>0) {
-			this.navi.pageno=1;
-			this.getRows();
-		}
+		FTABLE.firstPage(this);
 	},
 	previousPage: function() {
-		if(this.navi.pageno<=0){
-			this.navi.pageno=1;
-		}
-		if(this.navi.pagetotal<=0) this.navi.pageno=0;
-		if(this.navi.pageno>1){
-			this.navi.pageno--;
-			this.getRows();
-		}
+		FTABLE.previousPage(this);
 	},
 	nextPage: function() {
-		if(this.navi.pagetotal<=0) this.navi.pageno=0;
-		if(this.navi.pageno>this.navi.pagetotal){
-			this.navi.pageno = this.navi.pagetotal;
-			this.getRows();
-		}
-		if(this.navi.pageno<this.navi.pagetotal){
-			this.navi.pageno++;
-			this.getRows();
-		}
+		FTABLE.nextPage(this);
 	},
 	lastPage: function() {
-		if(this.navi.pagetotal<=0) this.navi.pageno=0;
-		if(this.navi.pageno!=this.navi.pagetotal){
-			this.navi.pageno = this.navi.pagetotal;
-			this.getRows();
-		}
+		FTABLE.lastPage(this);
 	},	
 	nextRecord: function() {
-		this.rowno( this.rowno() + 1 );
+		FTABLE.nextRecord(this);
 	},
 	previousRecord: function() {
-		this.rowno( this.rowno() - 1 );
+		FTABLE.previousRecord(this);
 	},
 
 	/****** ajax call ********** */
@@ -237,11 +148,14 @@ WLIU.TABLE.prototype = {
 	cancelRow: function( theRow ) {
 		return FTABLE.cancelRow(this, theRow);
 	},
-	removeRow: function(theRow) {
-		return FTABLE.removeRow(this, theRow);
-	},
 	cancelRows: function() {
 		return FTABLE.cancelRows(this);
+	},
+	resetRow: function(theRow) {
+		return FROW.resetRow(theRow);
+	},
+	removeRow: function(theRow) {
+		return FTABLE.removeRow(this, theRow);
 	},
 	deleteRow: function(theRow) {
 		return FTABLE.detachRow(this, theRow);
@@ -249,234 +163,21 @@ WLIU.TABLE.prototype = {
 	deleteRows: function() {
 		// none - to danger
 	},
+	
 	saveRow: function(theRow, callback) {
-		var ntable = {};
-		ntable.scope = this.scope;
-		ntable.lang  = this.lang;
-		ntable.action = "save";
-		ntable.error  = {errorCode: 0, errorMessage:""};
-		ntable.cols = this.cols;    
-		ntable.navi = this.navi;
-		//ntable.filters = this.getFilters();
-		ntable.lists = this.getLists();
-		ntable.rows = FROW.getChangeRow(theRow);
-
-		if(callback) {
-			this.callback.before = callback.before && $.isFunction(callback.before)?callback.before:undefined;
-			this.callback.after = callback.after && $.isFunction(callback.after)?callback.after:undefined;
-		} 
-
-		this.ajaxCall(ntable, this.sc);
+		FTABLE.saveRow(this, theRow, callback);
 	},
 	saveRows: function(callback) {
-		var ntable = {};
-		ntable.scope = this.scope;
-		ntable.lang  = this.lang;
-		ntable.action = "save";
-		ntable.error  = {errorCode: 0, errorMessage:""};
-		ntable.cols = this.cols;  
-		ntable.navi = this.navi;
-		//ntable.filters = this.getFilters();
-		ntable.lists = this.getLists();
-		ntable.rows = this.getChangeRows();
-
-		if(callback) {
-			this.callback.before = callback.before && $.isFunction(callback.before)?callback.before:undefined;
-			this.callback.after = callback.after && $.isFunction(callback.after)?callback.after:undefined;
-		} 
-		this.ajaxCall(ntable, this.sc);
+		FTABLE.saveRows(this, callback);
 	},
 	getRows: function(callback) {
-		var ntable = {};
-		ntable.scope = this.scope;
-		ntable.lang  = this.lang;
-		ntable.action = "get";
-		ntable.error  = {errorCode: 0, errorMessage:""};
-		ntable.cols = this.cols; // must provide cols meta to get data from database;
-		ntable.navi = this.navi;
-		ntable.filters = this.getFilters();
-		ntable.lists = this.getLists();
-		ntable.rows = [];
-
-		if(callback) {
-			this.callback.before = callback.before && $.isFunction(callback.before)?callback.before:undefined;
-			this.callback.after = callback.after && $.isFunction(callback.after)?callback.after:undefined;
-		} 
-		this.ajaxCall(ntable, this.sc);
+		FTABLE.getRows(this, callback);
 	},
 	allRows: function(callback) {
-		this.navi.match = 0;
-		this.getRows(callback);
+		FTABLE.allRows(this, callback);
 	},
 	matchRows: function(callback) {
-		this.navi.match = 1;
-		this.getRows(callback);
+		FTABLE.matchRows(this, callback);
 	},
 	// set row col value to empty or defval if it has default value
-	resetRow: function(theRow) {
-		return FROW.resetRow(theRow);
-	},
-	ajaxCall: function(ntable, sc, cbk) {
-		var _self = this;
-		if( this.wait ) $(this.wait).trigger("show");
-		this.navi.loading = 1;
-		if( this.callback.ajaxBefore && $.isFunction(this.callback.ajaxBefore) ) this.callback.ajaxBefore(ntable);
-		if( this.callback.before ) if( this.callback.before && $.isFunction(this.callback.before) ) this.callback.before(ntable);
-		//console.log(ntable);
-		$.ajax({
-			data: {
-				table:	ntable
-			},
-			dataType: "JSON",  
-			error: function(xhr, tStatus, errorTh ) {
-				if( _self.wait ) $(_self.wait).trigger("hide");
-			},
-			success: function(req, tStatus) {
-				if( _self.wait ) $(_self.wait).trigger("hide");
-
-				if( _self.callback.ajaxAfter && $.isFunction(_self.callback.ajaxAfter) ) _self.callback.ajaxAfter(req.table);
-				_self.syncLists(req.table.lists);
-				switch(req.table.action) {
-					case "init": 
-					case "get": 
-						//console.log(req.table);
-						_self.syncRows(req.table);
-						break;
-					case "save":
-						//console.log(req.table);
-					    _self.updateRows(req.table);
-						break;
-				}
-				_self.navi.loading = 0;
-				sc.$apply();
-			},
-			type: "post",
-			url: _self.url
-		});
-	},
-	syncRows: function(ntable) {
-		this.tableError(ntable.error);
-		this.rows = [];
-		this.rowno(-1);
-		this.navi = angular.copy(ntable.navi);
-		if( ntable.primary && $.isArray(ntable.primary) ) {
-			if( ntable.primary.length>0 ) {
-				for(var pidx in ntable.primary) {
-					var colObj = ntable.primary[pidx];
-					for(var colName in colObj) {
-						this.colDefault(colName, colObj[colName]);
-					}
-				}
-			}
-		}
-		for(var ridx in ntable.rows) {
-			var theRow = ntable.rows[ridx];
-			var nrow = this.newRow( theRow );
-			nrow.rowstate = 0;
-
-			for(var colName in theRow) {
-				ncol = FCOLLECT.firstByKV(nrow.cols, {name: colName});
-				FROW.setColVal(ncol, theRow[colName] );
-			}
-			this.addRow(-1, nrow);
-		}
-
-		if(this.callback) if( this.callback.after && $.isFunction(this.callback.after) ) this.callback.after(this);
-		if( parseInt(this.error.errorCode) == 0 ) {
-			if( this.callback.ajaxSuccess && $.isFunction(this.callback.ajaxSuccess) ) this.callback.ajaxSuccess(this);
-		} else {
-			if( this.callback.ajaxError && $.isFunction(this.callback.ajaxError) ) this.callback.ajaxError(this);
-		}
-		$(this.taberror).trigger("errorshow");
-		if( this.callback.ajaxComplete && $.isFunction(this.callback.ajaxComplete) ) this.callback.ajaxComplete(this);
-	},
-	updateRows: function(ntable) {
-			this.rowno(-1);
-			this.tableError(ntable.error);
-			for(var ridx in ntable.rows) {
-				var nRow 		= ntable.rows[ridx];
-				var tableRow 	= this.getRowByKeys(nRow.keys); 
-				if( tableRow ) {
-					if( parseInt(nRow.error.errorCode) > 0 ) {
-						switch(parseInt(nRow.rowstate)) {
-							case 0:
-								break;
-							case 1:
-								this.rowError(tableRow, nRow.error);
-								for(var cidx in nRow.cols) {
-									this.colError(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
-								}
-								break;
-							case 2:
-								this.rowError(tableRow, nRow.error);
-								for(var cidx in nRow.cols) {
-									this.colError(tableRow, nRow.cols[cidx].name, {errorCode: nRow.cols[cidx].errorCode, errorMessage: nRow.cols[cidx].errorMessage});
-								}
-								break;
-							case 3:
-								this.rowError(tableRow, nRow.error);
-								break;
-						} 
-					} else {
-						switch(parseInt(nRow.rowstate)) {
-							case 0:
-								break;
-							case 1:
-								this.rowError(tableRow, nRow.error);
-								tableRow.rowstate = 0;
-								for(var cidx in tableRow.cols) {
-									tableRow.cols[cidx].colstate 	= 0;
-									tableRow.cols[cidx].current 	= angular.copy(tableRow.cols[cidx].value);
-									this.colError(tableRow, tableRow.cols[cidx].name, {errorCode:0, errorMessage:""} );
-								}
-								break;
-							case 2:
-								this.rowError(tableRow, nRow.error);
-								tableRow.rowstate = 0;
-								for(var cidx in tableRow.cols) {
-									tableRow.cols[cidx].colstate 	= 0;
-									tableRow.cols[cidx].current 	= angular.copy(tableRow.cols[cidx].value);
-									this.colError(tableRow, tableRow.cols[cidx].name, {errorCode:0, errorMessage:""} );
-									if(tableRow.cols[cidx].key) {
-										var keyColObj = FCOLLECT.firstByKV( nRow.cols, { name: tableRow.cols[cidx].name } );
-										if( keyColObj ) {
-											tableRow.cols[cidx].value 	= keyColObj.value?keyColObj.value:"";
-											tableRow.cols[cidx].current = tableRow.cols[cidx].value;  
-											tableRow.keys[tableRow.cols[cidx].name] = tableRow.cols[cidx].value;
-										}
-									}
-								}
-								table.navi.recordtotal++;
-								break;
-							case 3:
-								this.rowError(tableRow, nRow.error);
-								tableRow.rowstate = 0;
-								this.removeRow(tableRow);
-								table.navi.recordtotal--;
-								break;
-						}
-					}
-				} // if(tableRow)
-			}  // for
-			if(parseInt(ntable.success)) {
-				$(this.autotip).trigger("auto", ["Submitted Success.", "success"]);
-				if( this.callback.ajaxSuccess && $.isFunction(this.callback.ajaxSuccess) ) this.callback.ajaxSuccess(this);
-			} else {
-				if( this.callback.ajaxError && $.isFunction(this.callback.ajaxError) ) this.callback.ajaxError(this);
-			}
-		
-		if(this.callback) if( this.callback.after && $.isFunction(this.callback.after) ) this.callback.after(this);
-		$(this.taberror).trigger("errorshow");
-		if( this.callback.ajaxComplete && $.isFunction(this.callback.ajaxComplete) ) this.callback.ajaxComplete(this);
-	},
-	syncLists: function(nlists) {
-		for(var listName in nlists) {
-			var nlistObj = this.getList(listName);
-			if(nlistObj) {
-				nlistObj.loaded = nlists[listName].loaded;
-				nlistObj.keys 	= nlists[listName].keys;
-				nlistObj.list 	= nlists[listName].list;
-			}
-		}
-	}
 }
