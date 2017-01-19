@@ -927,6 +927,7 @@ class cMYSQL implements iSQL {
 		$sname  = $stable["name"];
 	
 		$pkeys  = $ptable["keys"];
+		$skeys  = $stable["keys"];
 		$sfkeys = $stable["fkeys"];
 	
 		$joinOn 		= "";

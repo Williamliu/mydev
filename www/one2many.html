@@ -118,8 +118,7 @@
             var app = angular.module("myApp", ["wliuTable"]);
             app.controller("myForm", function ($scope) {
 				table.setScope( $scope );
-				table.colDefault("id", 1);
-				table.allRows();
+				table.getRecords({id:1, uid:6});
 				$scope.searchAjax = function(table) {
 				}
 

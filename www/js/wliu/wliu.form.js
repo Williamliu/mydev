@@ -135,9 +135,6 @@ WLIU.FORM.prototype = {
 	deleteRow: function(theRow) {
 		return FTABLE.detachRow(this, theRow);
 	},
-	deleteRows: function() {
-		// none - to danger
-	},
 	
 	/*** ajax method ***/
 	addRecord: function(ridx, theRow) {

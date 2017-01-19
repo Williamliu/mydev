@@ -159,12 +159,25 @@ WLIU.TABLE.prototype = {
 	getRows: function(callback) {
 		FTABLE.getRows(this, callback);
 	},
+
+	// for one2many & many2many 
 	allRows: function(callback) {
 		FTABLE.allRows(this, callback);
 	},
 	matchRows: function(callback) {
 		FTABLE.matchRows(this, callback);
 	},
+	getRecords: function(IDKeyValues, callback) {
+		FTABLE.getRecords(this, IDKeyValues, callback);
+	},
+	getAgetAllRecords: function(IDKeyValues, callback) {
+		FTABLE.getAllRecords(this, IDKeyValues, callback);
+	},
+	getMatchRecords: function(IDKeyValues, callback) {
+		FTABLE.getMatchRecords(this, IDKeyValues, callback);
+	},
+	// end of one2many & many2many
+
 
 	// Navigation
 	firstPage: function() {

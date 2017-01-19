@@ -1051,6 +1051,8 @@ WLIU.TABLEACTION.prototype = {
 		FCOLLECT.insert(theTable.rows, ridx, nrow );
 		return nrow;
 	},
+
+
 	// for form use
 	addRecord: function(theTable, ridx, nrow) {
 		this.clearKeysDefault(theTable);
@@ -1066,7 +1068,42 @@ WLIU.TABLEACTION.prototype = {
 		theTable.sc.$apply();
 		return nrow;
 	},
+	getRecord: function(theTable, IDKeyValues, callback) {
+		if( $.isPlainObject(IDKeyValues) ) {
+			for(var key in IDKeyValues) {
+				this.colDefault(theTable, key, IDKeyValues[key] );
+			}
+		}
+		this.getRows(theTable, callback);
+	},
 	// end of form use
+    
+	// for one2many & many2many
+	getRecords: function(theTable, IDKeyValues, callback) {
+		if( $.isPlainObject(IDKeyValues) ) {
+			for(var key in IDKeyValues) {
+				this.colDefault(theTable, key, IDKeyValues[key] );
+			}
+		}
+		this.getRows(theTable, callback);
+	},
+	getAllRecords: function(theTable, IDKeyValues, callback) {
+		if( $.isPlainObject(IDKeyValues) ) {
+			for(var key in IDKeyValues) {
+				this.colDefault(theTable, key, IDKeyValues[key] );
+			}
+		}
+		this.allRows(theTable, callback);
+	},
+	getMatchRecords: function(theTable, IDKeyValues, callback) {
+		if( $.isPlainObject(IDKeyValues) ) {
+			for(var key in IDKeyValues) {
+				this.colDefault(theTable, key, IDKeyValues[key] );
+			}
+		}
+		this.matchRows(theTable, callback);
+	},
+	// end of one2many & many2many
 
 	removeRow: function(theTable, theRow) {
 		if( theTable && theRow ) {
@@ -1142,14 +1179,6 @@ WLIU.TABLEACTION.prototype = {
 			theTable.callback.after = callback.after && $.isFunction(callback.after)?callback.after:undefined;
 		} 
 		this.ajaxCall(theTable, ntable);
-	},
-	getRecord: function(theTable, IDKeyValues, callback) {
-		if( $.isPlainObject(IDKeyValues) ) {
-			for(var key in IDKeyValues) {
-				this.colDefault(theTable, key, IDKeyValues[key] );
-			}
-		}
-		this.getRows(theTable, callback);
 	},
 	allRows: function(theTable, callback) {
 		theTable.navi.match = 0;
@@ -1259,7 +1288,7 @@ WLIU.TABLEACTION.prototype = {
 				ncol = FCOLLECT.firstByKV(nrow.cols, {name: colName});
 				FROW.setColVal(ncol, theRow[colName] );
 			}
-			theTable.addRow(-1, nrow);
+			FTABLE.addRow(theTable, -1, nrow);
 		}
 
 		if(theTable.callback) if( theTable.callback.after && $.isFunction(theTable.callback.after) ) theTable.callback.after(theTable);

@@ -95,7 +95,7 @@
 				autotip: "#myauto",
 				tooltip: "#mytips",
 				rights: {detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
-				navi:   {pagesize:20, match: 1, orderby:"stime", sortby:"DESC", paging:1 },
+				navi:   {pagesize:20, match: 0, orderby:"stime", sortby:"DESC", paging:1 },
 				filters:filters,
 				cols: 	cols,
 				lists: 	{
@@ -116,7 +116,7 @@
             var app = angular.module("myApp", ["wliuTable"]);
             app.controller("myForm", function ($scope) {
 				table.setScope( $scope );
-				table.allRows();
+				table.getRecords({id:6});
 
 				$scope.detail = function(theRow) {
 					console.log(theRow);
