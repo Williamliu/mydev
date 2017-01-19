@@ -890,6 +890,12 @@ WLIU.TABLEACTION.prototype = {
 	indexByKeys: function(theTable, p_keys) {
 		return FCOLLECT.indexByKeys(theTable.rows, p_keys);
 	},
+	clearKeysDefault: function(theTable) {
+		var keyCols = FCOLLECT.collectionByKV(theTable.cols, {key: 1});
+		for(var cidx in keyCols) {
+			this.colDefault(theTable, keyCols[cidx].name, "");
+		}
+	},
 	tableError: function(theTable, p_error) {
 		if(p_error!=undefined) {
 			theTable.error = p_error;
@@ -1045,6 +1051,23 @@ WLIU.TABLEACTION.prototype = {
 		FCOLLECT.insert(theTable.rows, ridx, nrow );
 		return nrow;
 	},
+	// for form use
+	addRecord: function(theTable, ridx, nrow) {
+		this.clearKeysDefault(theTable);
+		theTable.rows = [];
+		var theRow = this.addRow(theTable, ridx, nrow);
+		theTable.sc.$apply();
+		return theRow;
+	},
+	setRecord: function(theTable, nrow) {
+		this.clearKeysDefault(theTable);
+		theTable.rows = [];
+		theTable.rows.push(nrow);
+		theTable.sc.$apply();
+		return nrow;
+	},
+	// end of form use
+
 	removeRow: function(theTable, theRow) {
 		if( theTable && theRow ) {
 			var ridx = FCOLLECT.indexByKeys(theTable.rows, theRow.keys);
@@ -1120,6 +1143,14 @@ WLIU.TABLEACTION.prototype = {
 		} 
 		this.ajaxCall(theTable, ntable);
 	},
+	getRecord: function(theTable, IDKeyValues, callback) {
+		if( $.isPlainObject(IDKeyValues) ) {
+			for(var key in IDKeyValues) {
+				this.colDefault(theTable, key, IDKeyValues[key] );
+			}
+		}
+		this.getRows(theTable, callback);
+	},
 	allRows: function(theTable, callback) {
 		theTable.navi.match = 0;
 		this.getRows(theTable, callback);
@@ -1173,7 +1204,6 @@ WLIU.TABLEACTION.prototype = {
 		_self.navi.loading = 1;
 		if( _self.callback.ajaxBefore && $.isFunction(_self.callback.ajaxBefore) ) _self.callback.ajaxBefore(ntable);
 		if( _self.callback.before ) if( _self.callback.before && $.isFunction(_self.callback.before) ) _self.callback.before(ntable);
-		//console.log(ntable);
 		$.ajax({
 			data: {
 				table:	ntable

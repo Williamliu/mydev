@@ -1916,6 +1916,37 @@ class cACTION {
 		cTYPE::join($table["criteria"], " AND ", "$tableCol = '" . cTYPE::quote($val) . "'");
 	}
 
+	static public function formFilter(&$table) {
+		$metaArr = array();
+		foreach($table["cols"] as $theCol) {
+			$metaArr[$theCol["name"]]=$theCol;
+		}
+		$colMeta = $metaArr;
+
+		$mapArr = array();
+		foreach($table["cols"] as $theCol) {
+			$mapArr[$theCol["name"]]=$theCol["col"];
+		}
+		$colMap  = $mapArr;
+		// join tables 
+		$ptable = $table["metadata"]["primary"];
+		$pname  = $ptable["name"];
+		$pkeys  = $ptable["keys"];
+
+		//$primary_criteria = "1=1";
+		foreach($pkeys as $idx=>$pkey) {
+			$pk = $colMap[$pkey];
+			$pv = trim($colMeta[$pkey]["defval"]);
+			if( $pv ) {
+				cTYPE::join($table["criteria"], " AND ", "a.$pk='" . cTYPE::quote($pv) . "'");				
+			} else {
+				// load data for form.
+				cTYPE::join($table["criteria"], " AND ", "1=0");				
+			}
+		}
+	}
+	
+
 	static public function getFilters(&$table) {
 		$criteria = "";
 
@@ -1958,6 +1989,7 @@ class cACTION {
 				cTYPE::join($criteria, " AND ", $temp_ccc);
 			}
 		}
+		//echo "criteria:  $criteria";
 		cTYPE::join($table["criteria"], " AND ",  $criteria);
 	}
 

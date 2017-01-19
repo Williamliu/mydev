@@ -17,10 +17,14 @@ WLIU.FORM = function( opts ) {
 	this.action		= "get";
 	this.error		= {errorCode:0, errorMessage:""};  // table level error : action rights 
 	this.rights 	= {view:1, save:0, cancel:1, clear:1, delete:0, add:1, detail:1, output:0, print:1};
-	this.cols 		= [];
-	this.rows 		= [];
+	
+	// not use , but need to keep for common ajax
 	this.navi		= { paging:1, pageno: 0, pagesize:20, pagetotal:0, recordtotal:0, match: 1, loading:0, orderby: "", sortby:"" };
 	this.filters 	= [];
+	// end of not use 
+
+	this.cols 		= [];
+	this.rows 		= [];
 	this.lists		= {};  // { gender: { loaded: 1, keys: { rowsn: -1, name: "" }, list: [{key:1, value:"Male", desc:""}, {key:2, value:"Female", desc:""}] },  	xxx: {} }
 	this.callback   = {ajaxBefore: null, ajaxAfter: null, ajaxComplete: null, ajaxError: null,  ajaxSuccess: null};
 	
@@ -33,8 +37,12 @@ WLIU.FORM = function( opts ) {
 }
 
 WLIU.FORM.prototype = {
-	setScope: function(p_scope) {
-		p_scope.table = this;
+	setScope: function(p_scope, formName) {
+		if( formName ) {
+			p_scope[formName] = this;
+		} else {
+			p_scope.form = this;
+		}
 		this.sc = p_scope;
 	},
 
@@ -69,20 +77,6 @@ WLIU.FORM.prototype = {
 		return FTABLE.relationChange(this, ridx); 
 	},
 	/******************/
-
-	filterMeta: function(col_name) {
-		return FTABLE.filterMeta(this, col_name);
-	},
-	filterClear: function() {
-		return FTABLE.filterClear(this);
-	},
-	filterValue: function( name, val) {
-		return FTABLE.filterValue(this, name, val);
-	},
-	filterDefault: function( name, val) {
-		return FTABLE.filterDefault(this, name, val);
-	},
-    
 
 	// get row object
 	getRow: function(ridx) {
@@ -146,40 +140,17 @@ WLIU.FORM.prototype = {
 	},
 	
 	/*** ajax method ***/
-	saveRow: function(theRow, callback) {
+	addRecord: function(ridx, theRow) {
+		return FTABLE.addRecord(this, ridx, theRow);
+	},	
+	setRecord: function(theRow) {
+		return FTABLE.setRecord(theRow);
+	},
+	saveRecord: function(theRow, callback) {
 		FTABLE.saveRow(this, theRow, callback);
 	},
-	saveRows: function(callback) {
-		FTABLE.saveRows(this, callback);
-	},
-	getRows: function(callback) {
-		FTABLE.getRows(this, callback);
-	},
-	allRows: function(callback) {
-		FTABLE.allRows(this, callback);
-	},
-	matchRows: function(callback) {
-		FTABLE.matchRows(this, callback);
-	},
 
-	// Navigation
-	firstPage: function() {
-		FTABLE.firstPage(this);
+	getRecord: function( IDKeyValues, callback ) {
+		FTABLE.getRecord(this, IDKeyValues, callback);
 	},
-	previousPage: function() {
-		FTABLE.previousPage(this);
-	},
-	nextPage: function() {
-		FTABLE.nextPage(this);
-	},
-	lastPage: function() {
-		FTABLE.lastPage(this);
-	},	
-	nextRecord: function() {
-		FTABLE.nextRecord(this);
-	},
-	previousRecord: function() {
-		FTABLE.previousRecord(this);
-	},
-	
 }

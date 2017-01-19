@@ -61,7 +61,7 @@
 		   	var col1 = new WLIU.COL({key:1, coltype:"hidden", 		name:"id", 			colname:"Admin ID",  	coldesc:"Administrator ID", defval:0 });
 		   	var col2 = new WLIU.COL({key:0, coltype:"textbox", 		name:"uuu",			col:"user_name", 		colname:"User Name", 	coldesc:"Login User", 	sort:"ASC", need:1, notnull: 1});
 		   	var col3 = new WLIU.COL({key:0, coltype:"textbox", 		name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
-		   	var col4 = new WLIU.COL({key:0, coltype:"datetime", 	name:"bbb",  keys:{id:1, id1:110},		col:"birth_date", 		colname:"Brith Date", 	coldesc:"Date of Birth",  sort:"DESC", notnull:1});
+		   	var col4 = new WLIU.COL({key:0, coltype:"datetime", 	name:"bbb",  		col:"birth_date", 		colname:"Brith Date", 	coldesc:"Date of Birth",  sort:"DESC", notnull:1});
 		   	var col5 = new WLIU.COL({key:0, coltype:"textbox", 		name:"email", 		colname:"Email",   		coldesc:"Email Address", sort:"ASC", need:1, datatype:"email", notnull:1});
 		   	var col6 = new WLIU.COL({key:0, coltype:"text", 		name:"created_time",colname:"Created", 		coldesc:"Password for Login"});
 			var col7 = new WLIU.COL({key:0, coltype:"select", 		name:"lang", 		colname:"LangISO", 		coldesc:"Language ISO Code", 	defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory"});
@@ -69,8 +69,6 @@
 		   	var col9 = new WLIU.COL({key:0, coltype:"checkbox1", 	name:"country_id",	colname:"Country ISO",  coldesc:"Country ID", list:"countryCategory"});
 		   	var col10 = new WLIU.COL({key:0, coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status"});
 			
-			colact.update(col1, {coltype:"good", colname:"test"});
-			console.log(col1);
             var cols = [];
             cols.push(col1);
 		   	cols.push(col2);
@@ -82,12 +80,10 @@
 		   	cols.push(col8);
 		   	cols.push(col9);
 		   	cols.push(col10);
-			lstact.delete(cols, 7);
-			console.log( lstact.delete(cols, 2 ) );
 
 		    var form = new WLIU.FORM({
 				scope: 	"mytab",
-				url:   	"ajax/one_action.php",
+				url:   	"ajax/formone_action.php",
 				wait:   "#tabwait",
 				taberror:"#taberror",
 				tooltip:"#tabtip",
@@ -111,10 +107,18 @@
 
             var app = angular.module("myApp", ["wliuForm"]);
             app.controller("myForm", function ($scope) {
-				form.setScope( $scope );
-				//form.getRows();
+				form.setScope( $scope, "wform" );
+				form.getRecord({id:1}, {after: good});
 		    });
 
+			function good(theTable) {
+				console.log(theTable);
+			}
+			
+			function newRow() {
+				form.addRecord();
+				console.log(form.rows);
+			}
 			$(function(){
 			});
 		</script>
@@ -122,52 +126,54 @@
 <body ng-app="myApp" ng-controller="myForm" style="padding-top:80px;position:relative;">
 <!-- container -->
 <div class="container">
-		<form.rowstatus form="form"></form.rowstatus>
+		<input type="button" onclick="newRow()" value="NEW" /><BR>
+		<form.rowstatus form="wform"></form.rowstatus>
 		<div class="row">
 			<div class="col-md-1">
-				<form.label form="form" name="uuu"></form.label>
+				<form.label form="wform" name="uuu"></form.label>
 			</div>		
 			<div class="col-md-3">
-				<form.textbox form="form" name="uuu" tooltip="#mytips"></form.textbox>
+				<form.textbox form="wform" rowsn="0" name="uuu" tooltip="#mytips"></form.textbox>
 			</div>
 			<div class="col-md-1">
-				<form.label form="form" name="full_name"></form.label>
+				<form.label form="wform" name="full_name"></form.label>
 			</div>		
 			<div class="col-md-3">
-				<form.textbox form="form" name="full_name" tooltip="#mytips"></form.textbox>
+				<form.textbox form="wform" rowsn="0" name="full_name" tooltip="#mytips"></form.textbox>
 			</div>
 			<div class="col-md-1">
-				<form.label form="form" name="bbb"></form.label>
+				<form.label form="wform" name="bbb"></form.label>
 			</div>		
 			<div class="col-md-3">
-				<form.datetime form="form" name="bbb"></form.datetime>
+				<form.datetime form="wform" rowsn="0" name="bbb"></form.datetime>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-1">
-				<form.label form="form" name="status"></form.label>
+				<form.label form="wform" name="status"></form.label>
 			</div>		
 			<div class="col-md-3">
-				<form.bool form="form" name="status"></form.bool>
+				<form.bool form="wform" rowsn="0" name="status"></form.bool>
 			</div>
 			<div class="col-md-1">
-				<form.label form="form" name="lang"></form.label>
+				<form.label form="wform" name="lang"></form.label>
 			</div>		
 			<div class="col-md-3">
-				<form.select form="form" name="lang"></form.select>
+				<form.select form="wform" rowsn="0" name="lang"></form.select>
 			</div>
 			<div class="col-md-1">
-				<form.label form="form" name="bbb"></form.label>
+				<form.label form="wform" name="bbb"></form.label>
 			</div>		
 			<div class="col-md-3">
-				<form.datetime form="form" name="bbb"></form.datetime>
+				<form.checkbox1 form="wform" rowsn="0" name="country_id"  targetid="#countryCategory_diag"></form.checkbox1>
 			</div>
 		</div>
-
 </div>
 <!-- container -->
+<form.checkdiag1 form="wform" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></form.checkdiag1>
 
-<form.tooltip form="form" targetid="mytips"></form.tooltip>
+<form.tooltip form="wform" targetid="mytips"></form.tooltip>
+<form.wait form="wform" targetid="tabwait"></form.wait>
 
 <!-- MD Bootstrap 4.0 js -- must place at the end of body -->
 <script type="text/javascript" src="theme/mdb4.0/js/mdb.min.js"></script>

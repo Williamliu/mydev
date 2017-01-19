@@ -33,8 +33,12 @@ WLIU.TABLE = function( opts ) {
 }
 
 WLIU.TABLE.prototype = {
-	setScope: function(p_scope) {
-		p_scope.table = this;
+	setScope: function(p_scope, tableName) {
+		if( tableName ) {
+			p_scope[tableName] = this;
+		} else {
+			p_scope.table = this;
+		}
 		this.sc = p_scope;
 	},
 
