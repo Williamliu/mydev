@@ -1424,7 +1424,6 @@ class cMYSQL implements iSQL {
 								//print_r($mmCols["keys"]);
 								//print_r( $row["cols"][$cidx] );
 								if( $row["cols"][$cidx]["value"] ) {  // if check relation true
-									echo "3333";
 									if(	count($mmCols["fields"]) >0 ) {
 										$mmCols["fields"] = cARRAY::arrayMerge($mmCols["fields"], $mtable["update"]);
 										$mmCols["fields"] = cARRAY::arrayMerge($mmCols["fields"], array("last_updated"=>time(), "deleted"=>0));
