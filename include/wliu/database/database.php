@@ -1367,9 +1367,6 @@ class cMYSQL implements iSQL {
 							$row["cols"][$cidx]["value"] = $mmKeys[ $colMap[$row["cols"][$cidx]["name"]] ];
 
 						}
-						
-
-
 					} else {
 						$errMsg["save"] 				= "You don't have right to change data.";
 						$table["success"] 				= 0;
@@ -1395,7 +1392,6 @@ class cMYSQL implements iSQL {
 							}
 						}
 
-						
 						if( !$row["error"]["errorCode"] ) {
 							$mmCols = cACTION::getSaveCols($table, "medium", $row);
 							$ssCols = cACTION::getSaveCols($table, "second", $row);
@@ -1422,13 +1418,13 @@ class cMYSQL implements iSQL {
 							foreach( $mskeys as $fidx=>$fkey ) {
 								$mmCols["keys"][ $colMap[$fkey] ] = $ssCols["keys"][$colMap[$skeys[$fidx]]];
 							}
-
 							$cidx = cARRAY::arrayIndex($row["cols"], array("coltype"=>"relation"));	
 							if($cidx >= 0) {
 								//print_r($mmCols["fields"]);
 								//print_r($mmCols["keys"]);
 								//print_r( $row["cols"][$cidx] );
 								if( $row["cols"][$cidx]["value"] ) {  // if check relation true
+									echo "3333";
 									if(	count($mmCols["fields"]) >0 ) {
 										$mmCols["fields"] = cARRAY::arrayMerge($mmCols["fields"], $mtable["update"]);
 										$mmCols["fields"] = cARRAY::arrayMerge($mmCols["fields"], array("last_updated"=>time(), "deleted"=>0));
@@ -1436,7 +1432,8 @@ class cMYSQL implements iSQL {
 										$this->modify($mname, $mmCols["keys"], $mmCols["fields"]);
 									} 
 								} else {
-									$this->detach($mname, $mmKeys);
+									// insert case:  uncheck relationship,  just create primary one record , second record not created, so medium table do nothing
+									//$this->detach($mname, $mmKeys);
 								}
 
 								$row["cols"][$cidx]["value"] =  $mmCols["keys"][ $colMap[$row["cols"][$cidx]["name"]] ];
@@ -2250,6 +2247,7 @@ class cVALIDATE {
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "' is invalid ". ucwords($dataType) . " format.";  
+										//print_r($theCol);
 									}
 								}
 

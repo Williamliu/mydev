@@ -164,6 +164,7 @@ WLIU.TABLE.prototype = {
 
 	// Navigation
 	firstPage: function() {
+		console.log(this.rows);
 		FTABLE.firstPage(this);
 	},
 	previousPage: function() {

@@ -43,14 +43,6 @@ try {
 
 	$tableMeta = array(
 		"type"=>"many2many",   
-		"second"=>array(	
-							"name"=>"public_user", 
-							"keys"=>array("id"),  
-							"fkeys"=>array(), 
-							"cols"=>array("id", "uname", "full_name"), 
-							"insert"=>array("created_time"=>time(), deleted=>0), 
-							"update"=>array("last_updated"=>time() ) 
-					),
 		"primary"=>array( 
 							"name"=>"public_depart", 
 							"keys"=>array("did"),  
@@ -59,6 +51,14 @@ try {
 							"insert"=>array("created_time"=>time(), "deleted"=>0), 
 							"update"=>array("last_updated"=>time()) 
 		),
+		"second"=>array(	
+							"name"=>"public_user", 
+							"keys"=>array("id"),  
+							"fkeys"=>array(), 
+							"cols"=>array("id", "uname", "full_name"), 
+							"insert"=>array("created_time"=>time(), deleted=>0), 
+							"update"=>array("last_updated"=>time() ) 
+					),
 		"medium"=>array( 
 							"name"=>"public_user_depart", 
 							"keys"=>array("depart_id"),  
@@ -75,10 +75,10 @@ try {
 	$table["metadata"] = $tableMeta; 	
 
 	// 4) action 
-	cACTION::clearRows($table);
 	cACTION::action($db, $table);
 
 	// 5) return 
+	cACTION::clearRows($table);
 	$response["table"] = $table;
 	echo json_encode($response);
 	
