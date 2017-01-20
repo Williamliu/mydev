@@ -1201,6 +1201,8 @@ class cMYSQL implements iSQL {
 		$result_primary 	= $this->query($query_primary);
 		$table["primary"] 	= $this->rows($result_primary);
 
+		//important for m2m:  if primary record not found,  return 0 rows
+		if( $this->row_nums($result_primary) <= 0 )  cTYPE::join($pk_criteria, " AND ", "1=0");
 
 		foreach($mcols as $ff) {
 			$dbName = $colMap[$ff]?$colMap[$ff]:$ff;

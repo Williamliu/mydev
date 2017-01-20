@@ -126,8 +126,7 @@
 <body ng-app="myApp" ng-controller="myForm" style="padding-top:80px;position:relative;">
 <!-- container -->
 <div class="container">
-		<input type="button" onclick="newRow()" value="NEW" /><BR>
-		<form.rowstatus form="wform"></form.rowstatus>
+		<form.rowstatus form="wform" rowsn="0" tooltip="#mytips"></form.rowstatus>
 		<div class="row">
 			<div class="col-md-1">
 				<form.label form="wform" name="uuu"></form.label>
@@ -162,16 +161,37 @@
 				<form.select form="wform" rowsn="0" name="lang"></form.select>
 			</div>
 			<div class="col-md-1">
-				<form.label form="wform" name="bbb"></form.label>
+				<form.label form="wform" name="country_id"></form.label>
 			</div>		
 			<div class="col-md-3">
 				<form.checkbox1 form="wform" rowsn="0" name="country_id"  targetid="#countryCategory_diag"></form.checkbox1>
 			</div>
 		</div>
+		<div class="row">
+			<div class="col-md-1">
+				<form.label form="wform" name="email"></form.label>
+			</div>		
+			<div class="col-md-3">
+				<form.textbox form="wform" rowsn="0" name="email"></form.textbox>
+			</div>
+			<div class="col-md-1">
+			</div>		
+			<div class="col-md-3">
+			</div>
+			<div class="col-md-1">
+			</div>		
+			<div class="col-md-3">
+			</div>
+		</div>
+		<div class="row">
+			<form.button form="wform" rowsn="0" name="add" outline="1" actname="NEW"></form.button>
+			<form.button form="wform" rowsn="0" name="save" outline="1" actname="SAVE"></form.button>
+			<form.button form="wform" rowsn="0" name="cancel" outline="1" actname="CANCEL"></form.button>
+			<form.button form="wform" rowsn="0" name="delete" outline="1" actname="DELETE"></form.button>
+		</div>
 </div>
 <!-- container -->
 <form.checkdiag1 form="wform" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></form.checkdiag1>
-
 <form.tooltip form="wform" targetid="mytips"></form.tooltip>
 <form.wait form="wform" targetid="tabwait"></form.wait>
 

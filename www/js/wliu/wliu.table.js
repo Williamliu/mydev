@@ -122,6 +122,9 @@ WLIU.TABLE.prototype = {
 
 
 	// ; ridx;  nrow;  ridx nrow ;  default position=0  add to first
+	init: function() {
+		FTABLE.init(this);
+	},
 	newRow: function(keyvalues) {
 		return FTABLE.newRow(this, keyvalues);
 	},

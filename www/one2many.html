@@ -118,7 +118,7 @@
             var app = angular.module("myApp", ["wliuTable"]);
             app.controller("myForm", function ($scope) {
 				table.setScope( $scope );
-				table.getRecords({id:1, uid:6});
+				table.getRecords({id:1});
 				$scope.searchAjax = function(table) {
 				}
 
@@ -126,6 +126,10 @@
 					console.log(theRow);
 				}
 		    });
+
+			function init() {
+				table.init();
+			}
 
 			$(function(){
 				$("#mytips").wliuPopup();
@@ -148,6 +152,7 @@
 			</feildset>
 			<div style="margin-top:20px;">
 			<table.tablebutton table="table" name="search" actname="Search" outline=1 before="searchAjax(table)"></table.tablebutton>
+			<button onclick="init()">Init</button>
 			</div>
 			<br>
 			<table.navi table="table" tooltip=""></table.navi>

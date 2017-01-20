@@ -1105,6 +1105,12 @@ WLIU.TABLEACTION.prototype = {
 	},
 	// end of one2many & many2many
 
+	// init rows and keys
+	init: function(theTable) {
+		this.clearKeysDefault(theTable);
+		theTable.rows = [];
+		theTable.sc.$apply();
+	},
 	removeRow: function(theTable, theRow) {
 		if( theTable && theRow ) {
 			var ridx = FCOLLECT.indexByKeys(theTable.rows, theRow.keys);
@@ -1356,13 +1362,13 @@ WLIU.TABLEACTION.prototype = {
 										}
 									}
 								}
-								table.navi.recordtotal++;
+								theTable.navi.recordtotal++;
 								break;
 							case 3:
 								theTable.rowError(tableRow, nRow.error);
 								tableRow.rowstate = 0;
 								theTable.removeRow(tableRow);
-								table.navi.recordtotal--;
+								theTable.navi.recordtotal--;
 								break;
 						}
 					}

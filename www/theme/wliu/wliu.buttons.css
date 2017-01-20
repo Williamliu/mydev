@@ -353,6 +353,11 @@ a.wliu-btn16 {
     background-position:        -40px -460px;
 }
 
+/*** 24 mix button : help *****/
+.wliu-btn16-error-help {
+    background-position:        0px -480px;
+}
+
 
 /****************************************************************/
 i.wliu-btn24, 
@@ -684,7 +689,7 @@ a.wliu-btn24 {
 }
 
 
-/*** 22 Navi Go *****/
+/*** 23 Navi Go *****/
 .wliu-btn24-go {
     background-position:        0px -690px;
 }
@@ -697,6 +702,12 @@ a.wliu-btn24 {
 .wliu-btn24-go-disabled:hover {
     background-position:        -60px -690px;
 }
+
+/*** 24 Mix button : help *****/
+.wliu-btn24-error-help {
+    background-position:        0px -720px;
+}
+
 
 .wliu-button-na {
     display:                    none;

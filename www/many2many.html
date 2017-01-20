@@ -131,6 +131,9 @@
 				}
 		    });
 
+			function init() {
+				table.init();
+			}
 			$(function(){
 				$("#mytips").wliuPopup();
 				$("#mywait").wliuLoad({maskable:0});
@@ -153,6 +156,7 @@
 			<div style="margin-top:20px;">
 			<table.tablebutton table="table" name="search" actname="Search" outline=1 before="searchAjax(table)"></table.tablebutton>
 			<table.tablebutton table="table" name="match" actname="Match" outline=1 before="searchAjax(table)"></table.tablebutton>
+			<button onclick="init()">Init</button>
 			</div>
 			<br>
 			<table.navi table="table" tooltip=""></table.navi>
