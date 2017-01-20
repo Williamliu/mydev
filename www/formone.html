@@ -108,7 +108,7 @@
             var app = angular.module("myApp", ["wliuForm"]);
             app.controller("myForm", function ($scope) {
 				form.setScope( $scope, "wform" );
-				form.getRecord({id:1}, {after: good});
+				//form.getRecord({id:1}, {after: good});
 		    });
 
 			function good(theTable) {
@@ -126,6 +126,7 @@
 <body ng-app="myApp" ng-controller="myForm" style="padding-top:80px;position:relative;">
 <!-- container -->
 <div class="container">
+	<input type="button" onclick="newRow()" value="New" />
 		<form.rowstatus form="wform" rowsn="0" tooltip="#mytips"></form.rowstatus>
 		<div class="row">
 			<div class="col-md-1">

@@ -1058,14 +1058,18 @@ WLIU.TABLEACTION.prototype = {
 		this.clearKeysDefault(theTable);
 		theTable.rows = [];
 		var theRow = this.addRow(theTable, ridx, nrow);
-		theTable.sc.$apply();
+		if(!theTable.sc.$$phase) {
+			theTable.sc.$apply();
+ 		}
 		return theRow;
 	},
 	setRecord: function(theTable, nrow) {
 		this.clearKeysDefault(theTable);
 		theTable.rows = [];
 		theTable.rows.push(nrow);
-		theTable.sc.$apply();
+		if(!theTable.sc.$$phase) {
+			theTable.sc.$apply();
+ 		}
 		return nrow;
 	},
 	getRecord: function(theTable, IDKeyValues, callback) {
@@ -1109,7 +1113,9 @@ WLIU.TABLEACTION.prototype = {
 	init: function(theTable) {
 		this.clearKeysDefault(theTable);
 		theTable.rows = [];
-		theTable.sc.$apply();
+		if(!theTable.sc.$$phase) {
+			theTable.sc.$apply();
+ 		}
 	},
 	removeRow: function(theTable, theRow) {
 		if( theTable && theRow ) {
@@ -1264,7 +1270,10 @@ WLIU.TABLEACTION.prototype = {
 						break;
 				}
 				_self.navi.loading = 0;
-				_self.sc.$apply();
+				if(!_self.sc.$$phase) {
+					_self.sc.$apply();
+		 		}
+
 			},
 			type: "post",
 			url: _self.url
