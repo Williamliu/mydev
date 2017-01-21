@@ -1968,17 +1968,37 @@ class cACTION {
 					$valKV  = array( $uCol["col"]=>$theCol["value"] );
 					
 					$keyKV 	= array();
-					// create keys array() for database where clause
-					$rKeys 	=$tableMeta["keys"];
-					if( $tableLevel=="medium" ) {
-						$rKeys = array_merge($tableMeta["keys"],$tableMeta["fkeys"]);
+					switch($tableLevel) {
+						case "primary":
+						case "second":
+							$rKeys 	=$tableMeta["keys"];
+							foreach( $rKeys as $rkey) {
+								$key_col = $colMap[$rkey];
+								$temp_cidx = cARRAY::arrayIndex( $theRow["cols"], array("name"=>$rkey)  );
+								$rCol = $theRow["cols"][$temp_cidx];
+								$keyKV[$key_col] = $rCol["value"];
+							}
+							break;
+						case "medium":
+							// create keys array() for database where clause
+							if( $tableLevel=="medium" ) {
+								foreach($tableMeta["keys"] as $fidx=>$rkey) {
+									$pkey_name = $colMap[$table["metadata"]["primary"]["keys"][$fidx]];
+									$temp_cidx = cARRAY::arrayIndex( $theRow["cols"], array("name"=>$pkey_name)  );
+									$rCol = $theRow["cols"][$temp_cidx];
+									$keyKV[$colMap[$rkey]] =  $rCol["value"];
+								}
+
+								foreach($tableMeta["fkeys"] as $fidx=>$rkey) {
+									$pkey_name = $colMap[$table["metadata"]["second"]["keys"][$fidx]];
+									$temp_cidx = cARRAY::arrayIndex( $theRow["cols"], array("name"=>$pkey_name)  );
+									$rCol = $theRow["cols"][$temp_cidx];
+									$keyKV[$colMap[$rkey]] =  $rCol["value"];
+								}
+							}
+							break;
 					}
-					foreach( $rKeys as $rkey) {
-						$key_col = $colMap[$rkey];
-						$temp_cidx = cARRAY::arrayIndex( $theRow["cols"], array("name"=>$rkey)  );
-						$rCol = $theRow["cols"][$temp_cidx];
-						$keyKV[$key_col] = $rCol["value"];
-					}
+
 	
 					/*
 					print_r($keyKV);
