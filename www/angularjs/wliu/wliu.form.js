@@ -19,6 +19,7 @@ wliu_form.directive("form.rowstatus", function () {
                             'title="{{ tooltip?\'\':(form.getRow(rowsn).error.errorCode? form.getRow(rowsn).error.errorMessage : \'\') }}"',
                         '>',
                         */
+                        '<span style="color:red;" ng-if="form.getRow(rowsn).error.errorCode">Error : </span>',
                         '<a class="wliu-btn24 wliu-btn24-error-help"    ng-if="form.getRow(rowsn).error.errorCode" ',
                             'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" ',
                             'popup-content="{{form.getRow(rowsn).error.errorCode?form.getRow(rowsn).error.errorMessage.nl2br():\'\'}}"',
@@ -2190,13 +2191,14 @@ wliu_form.directive("form.button", function (wliuFormService) {
         template: [
                     '<span>',
                         '<button class="btn btn{{ outline==1?\'-outline\':\'\'}}-{{ buttonStyle() }} waves-effect" scope="{{ form.scope }}" ',
-                            'style="min-width:60px;" ',
+                            //'ng-class="{\'grey\': !buttonState(name, form.getRow(rowsn).rowstate) }" ',
+                            'style="min-width:60px;{{!buttonState(name, form.getRow(rowsn).rowstate)?\'border-color:grey;\':\'\'}}" ',
                             'title="{{form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}"',
                             'ng-disabled="!buttonState(name, form.getRow(rowsn).rowstate)" ',
                             'ng-click="action1(form.getRow(rowsn))" ',
                             'title="{{ form.getRow(rowsn).error.errorCode ? form.getRow(rowsn).error.errorMessage : \'\' }}"',
                         '>',
-                        '<span style="vertical-align:middle;">',
+                        '<span style="vertical-align:middle;{{!buttonState(name, form.getRow(rowsn).rowstate)?\'color:#666666;\':\'\'}}">',
                             '{{actname}}',
                         '</span>',
                         '</button>',
@@ -2278,7 +2280,7 @@ wliu_form.directive("form.button", function (wliuFormService) {
 });
 
 
-wliu_form.directive("form.btext", function (wliuFormService) {
+wliu_form.directive("form.linkbutton", function (wliuFormService) {
     return {
         restrict: "E",
         replace: true,
@@ -2287,55 +2289,91 @@ wliu_form.directive("form.btext", function (wliuFormService) {
             rowsn:      "@",
             name:       "@",
             actname:    "@",
-            action:     "&"
+            action:     "&",
+            icon:       "@",
+            before:     "&",
+            after:      "&"
         },
         template: [
                     '<span>',
-                    '<a href="javascript:void(0)" class="wliu-table-button" scope="{{ form.scope }}" ',
-                        'title="{{actname?actname:name}}" ',
+                    '<a href="javascript:void(0)" scope="{{ form.scope }}" ',
+                        'class="btn btn-{{ buttonStyle() }} waves-effect {{!buttonState(name, form.getRow(rowsn).rowstate)?\'grey\':\'\'}} {{!buttonState(name, form.getRow(rowsn).rowstate)?\'disabled\':\'\'}}" ',
+                        'style="min-width:60px;" ',
                         'ng-click="action1(form.getRow(rowsn))" ',
-                        'ng-if="buttonState(name, form.getRow(rowsn).rowstate)" ',    
+                        'title="{{ form.getRow(rowsn).error.errorCode ? form.getRow(rowsn).error.errorMessage : \'\' }}"',
                     '>',
                     '{{actname?actname:name.capital()}}',
                     '</a>',
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
+            $scope.buttonStyle = function() {
+                var ret_val = "primary";
+                switch( $scope.name ) {
+                    case "add":
+                        ret_val = "default";
+                        break;
+                    case "save":
+                        ret_val = "secondary";
+                        break;
+                    case "cancel":
+                        ret_val = "warning";
+                        break;
+                    case "delete":
+                        ret_val = "danger";
+                        break;
+                }
+                return ret_val;
+            }
             $scope.action1 = function(theRow) {
+                $scope.before();
                 // add you code here 
-                 switch( $scope.name.toLowerCase() ) {
-                    case "detail":
-                        var ridx = $scope.form.indexByKeys(theRow.keys);
-                        $scope.form.rowno(ridx);
+                switch( $scope.name.toLowerCase() ) {
+                    case "add":
+                        $scope.form.addRecord();
                         break;
                     case "save":
                         $scope.form.saveRecord(theRow);
                         break;
                     case "cancel":
-                        $scope.form.cancelRow(theRow);
-
+                        switch(theRow.rowstate) {
+                            case 0:
+                                break;
+                            case 1:
+                                $scope.form.cancelRow(theRow);
+                                break;
+                            case 2:
+                                $scope.form.resetRow(theRow);
+                                break;
+                            case 3:
+                                $scope.form.cancelRow(theRow);
+                                break;
+                        } 
+    
                         // ckeditor  reset value to old value;  due to single way sync 
                         for(var cidx in $scope.form.cols) {
                             if( $scope.form.cols[cidx].coltype.toLowerCase() == "ckeditor" )
-                                if(CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name]) {
+                               if(CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name]) {
                                     CKEDITOR.instances[$scope.form.scope + "_" + $scope.form.cols[cidx].name].setData( $scope.form.getCol($scope.form.cols[cidx].name, $scope.rowsn).value?$scope.form.getCol($scope.form.cols[cidx].name, $scope.rowsn).value:"" );
                                 }
                         }
                         break;
-                    case "add":
-                        // none 
-                        break;
                     case "delete":
-                        $scope.form.deleteRow(theRow);
+                        $scope.form.deleteRow(theRow); 
                         break;
                 }                
-               //
+                //
                 $scope.action();
+                $scope.after();
             };
 
             $scope.buttonState = function(name, rowstate) {
                 var right = $scope.form.rights?(parseInt($scope.form.rights[name])?true:false):false;
-                return  wliuFormService.buttonState(name, rowstate) && right;
+                if( name=="add") {
+                    rowstate = rowstate?rowstate:0;
+                    if(rowstate<1) return true;
+                } 
+                return  wliuFormService.buttonState(name,rowstate) && right;
             };
        },
         link: function (sc, el, attr) {

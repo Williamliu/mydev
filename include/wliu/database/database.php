@@ -264,6 +264,41 @@ class cMYSQL implements iSQL {
 		return $row[$col];
 	}
 
+	public function checkUnique() {
+		$pnum 	= func_num_args();
+		$params	= func_get_args();
+		
+		$table = $params[0];
+		
+		// criteria 
+		$criteria = "deleted=0";
+		// col[col_name] = value;
+		$colVal = $params[1];
+		if( is_array($colVal) ) {
+			foreach($colVal as $key=>$val) {
+				if(trim($val)!="") {
+					cTYPE::join($criteria, " AND ", $key . " = '" . trim( cTYPE::quote($val) ) . "'" );
+				} else {
+					return true;
+				}
+			}
+        } else {
+			return true;
+        }
+
+		if(is_array($params[2])) {
+			foreach($params[2] as $key=>$val) {
+				cTYPE::join($criteria, " AND ", $key . " <> '" . trim( cTYPE::quote($val) ) . "'" );
+			}
+		} else {
+			if($params[2]!="") cTYPE::join($criteria, " AND ", $params[2]);
+		}
+
+		$query = "SELECT 1 FROM $table WHERE $criteria";	
+		//echo "query: $query";
+		return !$this->exists($query);
+	}
+
 	// (tableName, colsArray, criteriaArray, navi(paging, orderby..) )	
 	public function select() {
 		$pnum 	= func_num_args();
@@ -1516,8 +1551,8 @@ class cMYSQL implements iSQL {
 /***********************************************************************************************/
 class cACTION {
 	static public function action($db, &$table ) {
-		cACTION::colMap($table);
-		cACTION::colMeta($table);
+		$table["colmap"] 	= cACTION::colMap($table);
+		$table["colmeta"] 	= cACTION::colMeta($table);
 		$table["success"] = 1;
 		switch( $table["action"] ) {
 			case "init":
@@ -1546,6 +1581,7 @@ class cACTION {
 			case "save":
 				cLIST::getList($db, $table);
 				cVALIDATE::validate($table);
+				cACTION::checkUniques($db, $table);
 				cACTION::saveRows($db, $table);
 				break;
 			case "init":
@@ -1610,7 +1646,7 @@ class cACTION {
 		foreach($table["cols"] as $colMeta) {
 			$arr[$colMeta["name"]]=$colMeta;
 		}
-		$table["colmeta"] = $arr;
+		return $arr;
 	}
 
 	static public function colMap(&$table) {
@@ -1618,7 +1654,7 @@ class cACTION {
 		foreach($table["cols"] as $colMeta) {
 			$arr[$colMeta["name"]]=$colMeta["col"];
 		}
-		$table["colmap"] = $arr;
+		return $arr;
 	}
 
 	static public function clearRows(&$table) {
@@ -1643,6 +1679,7 @@ class cACTION {
 							unset($theCol["datatype"]);
 							unset($theCol["need"]);
 							unset($theCol["notnull"]);
+							unset($theCol["unique"]);
 							unset($theCol["minlength"]);
 							unset($theCol["maxlength"]);
 							unset($theCol["min"]);
@@ -1913,24 +1950,102 @@ class cACTION {
 			// end of update case  +  insert case without error
 		}
 	}
+    static public function checkUnique($db, &$table, $tableLevel) {
+		$is_unique = true;
+		$colMap 		= cACTION::colMap($table);
+		$colMeta 		= cACTION::colMeta($table);
+		$tableMeta 		= $table["metadata"][$tableLevel];
+		$tableName 		= $tableMeta["name"];
+		$tableColNames  = cACTION::getCols($table, $tableLevel, "get");
+		$uCols = cARRAY::arrayFilter($table["cols"], array("unique"=>1));
 
+		foreach( $uCols as $uCol ) {
+			$uCol_name = $uCol["name"];
+			if( in_array( $uCol_name, $tableColNames ) ) {
+				foreach( $table["rows"] as &$theRow ) {
+					$cidx = cARRAY::arrayIndex( $theRow["cols"], array("name"=>$uCol_name) );
+					$theCol = $theRow["cols"][$cidx];
+					$valKV  = array( $uCol["col"]=>$theCol["value"] );
+					
+					$keyKV 	= array();
+					// create keys array() for database where clause
+					$rKeys 	=$tableMeta["keys"];
+					if( $tableLevel=="medium" ) {
+						$rKeys = array_merge($tableMeta["keys"],$tableMeta["fkeys"]);
+					}
+					foreach( $rKeys as $rkey) {
+						$key_col = $colMap[$rkey];
+						$temp_cidx = cARRAY::arrayIndex( $theRow["cols"], array("name"=>$rkey)  );
+						$rCol = $theRow["cols"][$temp_cidx];
+						$keyKV[$key_col] = $rCol["value"];
+					}
+	
+					/*
+					print_r($keyKV);
+					echo "-------\n";
+					print_r($valKV);
+					echo "-------\n";
+					echo "-------\n";
+					*/
+					switch($theRow["rowstate"]) {
+						case 0:
+							break;
+						case 1:
+							$is_unique = $db->checkUnique($tableName, $valKV, $keyKV);
+							if(!$is_unique) {
+								$table["success"] 				= 0;
+								$theRow["error"]["errorCode"] 	= 1;
+								$theRow["cols"][$cidx]["errorCode"] 		= 1;  
+								$theRow["cols"][$cidx]["errorMessage"] 		= "'" . $uCol["colname"] . "' already used in our database.";  
+							}
+							break;
+						case 2:
+							$is_unique = $db->checkUnique($tableName, $valKV);
+							if(!$is_unique) {
+								$table["success"] 				= 0;
+								$theRow["error"]["errorCode"] 	= 1;
+								$theRow["cols"][$cidx]["errorCode"] 		= 1;  
+								$theRow["cols"][$cidx]["errorMessage"] 		= "'" . $uCol["colname"] . "' already used in our database.";  
+							}
+							break;
+						case 3:
+							break;
+					}
+
+				}
+			}
+		}
+		return $is_unique;
+	}
+	static public function checkUniques($db, &$table) {
+		switch( $table["metadata"]["type"] ) {
+			case "one":
+				cACTION::checkUnique($db, $table, "primary");
+				break;
+			case "one2one":
+				cACTION::checkUnique($db, $table, "primary");
+				cACTION::checkUnique($db, $table, "second");
+				break;
+			case "one2many":
+				cACTION::checkUnique($db, $table, "primary");
+				cACTION::checkUnique($db, $table, "second");
+				break;
+			case "many2many":
+				cACTION::checkUnique($db, $table, "primary");
+				cACTION::checkUnique($db, $table, "second");
+				cACTION::checkUnique($db, $table, "medium");
+				break;
+		}
+	}
 
 	static public function filter(&$table, $tableCol, $val) {
 		cTYPE::join($table["criteria"], " AND ", "$tableCol = '" . cTYPE::quote($val) . "'");
 	}
 
 	static public function formFilter(&$table) {
-		$metaArr = array();
-		foreach($table["cols"] as $theCol) {
-			$metaArr[$theCol["name"]]=$theCol;
-		}
-		$colMeta = $metaArr;
+		$colMap 	= cACTION::colMap($table);
+		$colMeta 	= cACTION::colMeta($table);
 
-		$mapArr = array();
-		foreach($table["cols"] as $theCol) {
-			$mapArr[$theCol["name"]]=$theCol["col"];
-		}
-		$colMap  = $mapArr;
 		// join tables 
 		$ptable = $table["metadata"]["primary"];
 		$pname  = $ptable["name"];
@@ -1949,7 +2064,6 @@ class cACTION {
 		}
 	}
 	
-
 	static public function getFilters(&$table) {
 		$criteria = "";
 
@@ -2655,6 +2769,24 @@ class cLIST {
 /*																							   */
 /***********************************************************************************************/
 class cARRAY {
+	static public function arrayFilter($arr, $kv) {
+        $ret = array();
+        foreach($arr as $ar ) {
+                $match = true;
+                if(is_array($kv) ) {
+                    foreach($kv as $key=>$val) {
+                        if( $ar[$key]!=$val ) {
+                            $match=false;
+                            break;
+                        }
+                    }
+                } else {
+                    $match = false;
+                }
+                if($match) $ret[] = $ar;
+        }
+        return $ret;
+	}
 	static public function arrayIndex($arr, $kv ) {
 		$ret_idx = -1;
 		$match = true;

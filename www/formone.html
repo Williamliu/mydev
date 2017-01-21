@@ -58,11 +58,11 @@
 		 	var colact = new WLIU.OBJECT();
 			var lstact = new WLIU.COLLECTION();
 
-		   	var col1 = new WLIU.COL({key:1, coltype:"hidden", 		name:"id", 			colname:"Admin ID",  	coldesc:"Administrator ID", defval:0 });
-		   	var col2 = new WLIU.COL({key:0, coltype:"textbox", 		name:"uuu",			col:"user_name", 		colname:"User Name", 	coldesc:"Login User", 	sort:"ASC", need:1, notnull: 1});
+		   	var col1 = new WLIU.COL({key:1, coltype:"hidden", 		name:"id", 			colname:"Admin ID",  	unique: 1, coldesc:"Administrator ID", defval:0 });
+		   	var col2 = new WLIU.COL({key:0, coltype:"textbox", 		name:"uuu",			col:"user_name", 		unique: 1, colname:"User Name", 	coldesc:"Login User", 	sort:"ASC", need:1, notnull: 1});
 		   	var col3 = new WLIU.COL({key:0, coltype:"textbox", 		name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
 		   	var col4 = new WLIU.COL({key:0, coltype:"datetime", 	name:"bbb",  		col:"birth_date", 		colname:"Brith Date", 	coldesc:"Date of Birth",  sort:"DESC", notnull:1});
-		   	var col5 = new WLIU.COL({key:0, coltype:"textbox", 		name:"email", 		colname:"Email",   		coldesc:"Email Address", sort:"ASC", need:1, datatype:"email", notnull:1});
+		   	var col5 = new WLIU.COL({key:0, coltype:"textbox", 		name:"email", 		colname:"Email",   		unique: 1, coldesc:"Email Address", sort:"ASC", need:1, datatype:"email", notnull:1});
 		   	var col6 = new WLIU.COL({key:0, coltype:"text", 		name:"created_time",colname:"Created", 		coldesc:"Password for Login"});
 			var col7 = new WLIU.COL({key:0, coltype:"select", 		name:"lang", 		colname:"LangISO", 		coldesc:"Language ISO Code", 	defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory"});
 		   	var col8 = new WLIU.COL({key:0, coltype:"radio", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name", 			defval: 77, notnull:1, 			list:"colorCategory"});
@@ -88,6 +88,7 @@
 				taberror:"#taberror",
 				tooltip:"#tabtip",
 				tips: 	"#tabtips",
+				autotip: "#myauto",
 				rights: {detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
 				cols: 	cols,
 				lists: 	{
@@ -108,7 +109,7 @@
             var app = angular.module("myApp", ["wliuForm"]);
             app.controller("myForm", function ($scope) {
 				form.setScope( $scope, "wform" );
-				//form.getRecord({id:1}, {after: good});
+				form.getRecord({id:2}, {after: good});
 		    });
 
 			function good(theTable) {
@@ -185,17 +186,17 @@
 			</div>
 		</div>
 		<div class="row">
-			<form.button form="wform" rowsn="0" name="add" outline="1" actname="NEW"></form.button>
-			<form.button form="wform" rowsn="0" name="save" outline="1" actname="SAVE"></form.button>
-			<form.button form="wform" rowsn="0" name="cancel" outline="1" actname="CANCEL"></form.button>
-			<form.button form="wform" rowsn="0" name="delete" outline="1" actname="DELETE"></form.button>
+			<form.linkbutton form="wform" rowsn="0" name="add" outline="1" actname="NEW"></form.linkbutton>
+			<form.linkbutton form="wform" rowsn="0" name="save" outline="1" actname="SAVE"></form.linkbutton>
+			<form.linkbutton form="wform" rowsn="0" name="cancel" outline="1" actname="CANCEL"></form.linkbutton>
+			<form.linkbutton form="wform" rowsn="0" name="delete" outline="1" actname="DELETE"></form.linkbutton>
 		</div>
 </div>
 <!-- container -->
 <form.checkdiag1 form="wform" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></form.checkdiag1>
 <form.tooltip form="wform" targetid="mytips"></form.tooltip>
 <form.wait form="wform" targetid="tabwait"></form.wait>
-
+<form.autotip table="table" targetid="myauto"></form.autotip>
 <!-- MD Bootstrap 4.0 js -- must place at the end of body -->
 <script type="text/javascript" src="theme/mdb4.0/js/mdb.min.js"></script>
 <!-- <script type="text/javascript" src="theme/mdb_pro/js/woocommerce.min.js"></script> -->

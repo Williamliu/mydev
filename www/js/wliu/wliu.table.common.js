@@ -281,6 +281,7 @@ WLIU.COL = function(opts) {
 		datatype:   "ALL",  // number, email, date, datetime, ....
 		need:		0,     // required  must include this col even if value not change.  other is must change
 		notnull:  	0,     // not null - not allowed null, different from need 
+		unique:		0,
 		minlength:  0,    
 		maxlength:  0,		 
 		min:		0,    
@@ -330,6 +331,7 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 		colObj.datatype  	= cols[cidx].datatype?cols[cidx].datatype.toUpperCase():"ALL";
 		colObj.need  		= cols[cidx].need?cols[cidx].need:0;
 		colObj.notnull  	= cols[cidx].notnull?cols[cidx].notnull:0;
+		colObj.unique  		= cols[cidx].unique?cols[cidx].unique:0;
 		colObj.minlength  	= cols[cidx].minlength?cols[cidx].minlength:0;
 		colObj.maxlength  	= cols[cidx].maxlength?cols[cidx].maxlength:0;
 		colObj.min  		= cols[cidx].min?cols[cidx].min:0;

@@ -66,7 +66,7 @@
 		   	var col7 = new WLIU.COL({key:0, coltype:"relation", 	name:"rid",			col:"user_id", 			colname:"AddressID",  	coldesc:"AddressID"});
 		   	var col8 = new WLIU.COL({key:0, coltype:"hidden", 		name:"depart_id",				 			colname:"Depart",  		coldesc:"AddressID"});
 			
-		   	var col9 = new WLIU.COL({key:0, coltype:"textbox", 		name:"title", 		colname:"Title",   		coldesc:"Address", 		relation:"rid",	    sort:"ASC", need:1, notnull:1});
+		   	var col9 = new WLIU.COL({key:0, coltype:"textbox", 		name:"title", 		colname:"Title",   		coldesc:"Address", 		relation:"rid",	 unique:1,   sort:"ASC", need:1, notnull:1});
 			var col10 = new WLIU.COL({key:0, coltype:"select", 		name:"mlang", 		col:"lang", 			colname:"LangISO", 		relation:"rid", 		coldesc:"Language ISO Code",defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory"});
 		   	var col11 = new WLIU.COL({key:0, coltype:"radio3", 		name:"mcolor", 	 	col:"color",			colname:"Color", 		relation:"rid", 		coldesc:"Color Name",  		defval: 77, notnull:1, 	list:"colorCategory"});
 			var col12 = new WLIU.COL({key:0, coltype:"checkbox1", 	name:"country", 	colname:"Homeland", 	coldesc:"Nationality", 	relation:"rid",  	sort:"DESC", need:1,  notnull:1, list:"countryCategory"});
