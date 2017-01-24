@@ -16,10 +16,12 @@ $CFG["upload_path"] 	= "D:\Software\WilliamLiu\Tech_Books\mydev\uploads";
 
 
 // Theme and   use the theme folder name for Array key.
+$CFG["lang_default"] 	= "cn";
+
 $CFG["lang"]["cn"] 		= "cn";
 $CFG["lang"]["tw"] 		= "tw";
 $CFG["lang"]["en"] 		= "en";
-$CFG["lang_default"] 	= "cn";
+
 
 $CFG["theme_default"] 	= "blue";
 $CFG["theme"]["blue"] 	= "Blue";
@@ -63,27 +65,17 @@ define("BETA", "beta");
 define("ENVIR", PRODUCTION);
 switch(ENVIR) {
 	case BETA:
-			$CFG["mysql"]["host"] 			= "";
-			$CFG["mysql"]["database"]  		= "puti_testdb";
-			$CFG["mysql"]["user"] 			= "puti_dbuser";
-			$CFG["mysql"]["pwd"] 			= "putivan258*db";
-
-			$CFG["myfiles"]["host"] 		= "";
-			$CFG["myfiles"]["database"]  	= "puti_testdb";
-			$CFG["myfiles"]["user"] 		= "puti_dbuser";
-			$CFG["myfiles"]["pwd"] 			= "putivan258*db";
+			$CFG["mysql"]["host"] 		= "";
+			$CFG["mysql"]["database"]  	= "puti_testdb";
+			$CFG["mysql"]["user"] 		= "puti_dbuser";
+			$CFG["mysql"]["pwd"] 		= "putivan258*db";
 			break;
 
 	case PRODUCTION:
-			$CFG["mysql"]["host"] 			= "localhost";
-			$CFG["mysql"]["database"]  		= "wliu_maindb";
-			$CFG["mysql"]["user"] 			= "root";
-			$CFG["mysql"]["pwd"] 			= "Liu011225";
-
-			$CFG["myfiles"]["host"] 		= "";
-			$CFG["myfiles"]["database"]  	= "wliu_files";
-			$CFG["myfiles"]["user"] 		= "puti_dbuser";
-			$CFG["myfiles"]["pwd"] 			= "putivan258*db";
+			$CFG["mysql"]["host"] 		= "localhost";
+			$CFG["mysql"]["database"]  	= "wliu_maindb";
+			$CFG["mysql"]["user"] 		= "root";
+			$CFG["mysql"]["pwd"] 		= "Liu011225";
 			break;
 }
 ?>
