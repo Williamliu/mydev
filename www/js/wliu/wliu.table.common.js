@@ -362,6 +362,74 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 		this.cols.push(colObj);
 	}
 }
+WLIU.FILE = function( opts ) {
+	this.file 		= {
+		errorCode:		0, 
+		errorMessage:	"",
+		scope: 			"",
+		key1:			0,
+		key2:			0,
+		key3:			0,
+
+		
+		title_en:   	"",
+		title_cn:   	"",
+		detail_en:  	"",
+		detail_cn:  	"",
+		
+		full_name:  	"",
+		short_name:	 	"",
+		ext_name:   	"",
+		mime_type:  	"",
+		size:			0,
+
+		access:     	0,
+		main:       	0,
+		orderno:    	0,
+		status:     	0,
+		data:       	""
+	};
+	$.extend(this.file, opts);
+	return this.file;
+}
+WLIU.IMAGE = function( opts ) {
+	this.image 		= {
+		errorCode:		0, 
+		errorMessage:	"",
+		scope: 			"",
+		key1:			0,
+		key2:			0,
+		key3:			0,
+
+		
+		title_en:   	"",
+		title_cn:   	"",
+		detail_en:  	"",
+		detail_cn:  	"",
+		
+		full_name:  	"",
+		short_name: 	"",
+		ext_name:   	"",
+		mime_type:  	"",
+		size:			0,
+
+		access:     	0,
+		main:       	0,
+		orderno:    	0,
+		status:     	0,
+
+		resize:     {
+			 origin:	{ ww: 1200, 	hh:1200, 	width:0, height:0,  name:"", size: 0, data:"" },
+			 thumb: 	{ ww: 60, 		hh:60, 		width:0, height:0,  name:"", size: 0, data:"" },
+			 tiny: 		{ ww: 120, 		hh:120, 	width:0, height:0,  name:"", size: 0, data:"" },
+			 small: 	{ ww: 200, 		hh:200, 	width:0, height:0,  name:"", size: 0, data:"" },
+			 medium: 	{ ww: 400, 		hh:400, 	width:0, height:0,  name:"", size: 0, data:"" },
+			 large:		{ ww: 800, 		hh:800, 	width:0, height:0,  name:"", size: 0, data:"" }
+		}
+	};
+	$.extend(this.image, opts);
+	return this.image;
+}
 /******************************/
 
 WLIU.ROWACTION = function(){}
@@ -1445,8 +1513,303 @@ WLIU.TABLEACTION.prototype = {
 	
 }
 
+WLIU.FILEACTION = function(opts) {
+	this.allowSize = 0.1 * 1024 * 1024,	
+	this.allowType = ["PDF", "XLS", "XLSX", "DOC", "DOCX", "TXT", "*"];
+	if(opts) {
+		if(opts.allowSize) this.allowSize = opts.allowSize;
+		if(opts.allowType) this.allowType = opts.allowType;
+	}
+}
+WLIU.FILEACTION.prototype = {
+	fromFile: function(theFile, file, callback) {
+		theFile.full_name 	= file.name.fileName();
+		theFile.short_name 	= file.name.shortName();
+		theFile.ext_name 	= file.name.extName();
+		theFile.mime_type	= file.type;
+		theFile.size  		= file.size;
+
+		if( this.allowType.indexOf(theFile.ext_name.toUpperCase()) >= 0 || this.allowType.indexOf("*") >= 0 ) {
+			if( theFile.size <= this.allowSize ) {
+				this._fromBlob(theFile, file);
+			} else {
+				theFile.errorCode 		= 1;
+				theFile.errorMessage 	= "File size {" + theFile.size.toSize() + "} over maximum size {" + this.allowSize.toSize() + "}."; 
+				if(callback) if( $.isFunction(callback) ) callback(theFile);
+			}
+		} else {
+			theFile.errorCode 		= 1;
+			theFile.errorMessage 	= "Only file type: [" + this.allowType.join(", ") + "] allow to upload."; 
+			if(callback) if( $.isFunction(callback) ) callback(theFile);
+		}
+	},
+    exportFile: function(theFile) {
+		window.open(theFile.data);
+	},
+	exportBlob: function(blob) {
+		this._readBlob(blob, function(dataURL){
+			window.open(dataURL);
+		});
+	},
+	exportDataURL: function(dataURL) {
+		window.open(dataURL);
+	},
+	//data:MimeType;base64, + base64_str
+	exportBase64: function( base64_str, mimeType) {
+		if( mimeType )
+			window.open(this.toBase64(base64_str, mimeType));
+		else 
+			window.open(base64_str);
+	},
+	exportHTML: function(html) {
+		this.exportDataURL( this._string2DataURL(html, "text/html") );
+	},
+
+	/*** private methods ***/
+	// file = blob
+	// DataURL format: data:mimeType;base64,base64_string 
+	_fromBlob: function(theFile, file, callback) {
+		var fs = new FileReader();
+		fs.onload = function(ev1) {
+			theFile.data = ev1.target.result;
+			if(callback) if( $.isFunction(callback) ) callback(theFile);
+		}                
+		fs.readAsDataURL(file);
+	},
+	_readBlob: function(file, callback) {
+		var fs = new FileReader();
+		fs.onload = function(ev1) {
+			var data = ev1.target.result;
+			if(callback) if( $.isFunction(callback) ) callback(data);
+		}                
+		fs.readAsDataURL(file);
+	},
+	// dataURL is base64 encode url:  data:mimeType;base64,base64_string
+	_mimeType: function(dataURL) {
+		try {
+			var arr = dataURL.split(','); 
+			var mime = arr[0].match(/:(.*?);/)[1];
+			return mime;
+		} catch(err) {
+			return "";
+		}
+	},
+	_dataURL2Blob : function( dataURL ) {
+		try {
+			var arr = dataURL.split(','); 
+			var mime = arr[0].match(/:(.*?);/)[1];
+			var bstr = atob(arr[1]);
+			var n = bstr.length;
+			var u8arr = new Uint8Array(n);
+			
+			while(n--){
+				u8arr[n] = bstr.charCodeAt(n);
+			}
+			return new Blob([u8arr], {type:mime});
+		}
+		catch(err) {
+		}
+	},
+	_string2DataURL: function(str, mimeType ) {
+		// convert string to base64,  then plus mime type = DataURL
+		var base64_str = btoa(str);
+		return "data:" + mimeType + ";base64," + base64_str;
+	},
+	_base64DataURL: function(base64_str , mimeType) {
+		return "data:" + mimeType + ";base64," + base64_str;
+	}
+}
+
+WLIU.IMAGEACTION = function(opts) {
+	this.allowSize 	= 1 * 1024 * 1024,	
+	this.allowType 	= ["PDF", "XLS", "XLSX", "DOC", "DOCX", "TXT", "*"];
+	this.view 		= "medium";
+	if(opts) {
+		if(opts.allowSize) this.allowSize = opts.allowSize;
+		if(opts.allowType) this.allowType = opts.allowType;
+	}
+}
+WLIU.IMAGEACTION.prototype = {
+	fromFile: function(theImage, file, callback) {
+		theImage.full_name 	= file.name.fileName();
+		theImage.short_name = file.name.shortName();
+		theImage.ext_name 	= file.name.extName();
+		theImage.mime_type 	= file.type;
+		theImage.size  		= file.size;
+
+		if( this.allowType.indexOf(theImage.ext_name.toUpperCase()) >= 0 || this.allowType.indexOf("*") >= 0 ) {
+			if( theImage.size <= this.allowSize ) {
+				this._fromBlob(theImage, file, callback);
+			} else {
+				theImage.errorCode 		= 1;
+				theImage.errorMessage 	= "File size " + theImage.size.toSize() + " over maximum size " + this.allowSize.toSize() + "."; 
+				if(callback) if( $.isFunction(callback) ) callback(theImage);
+			}
+		} else {
+			theImage.errorCode 		= 1;
+			theImage.errorMessage 	= "Only file type: [" + this.allowType.join(", ") + "] allow to upload."; 
+			if(callback) if( $.isFunction(callback) ) callback(theImage);
+		}
+	},
+
+	rotate: function(theImage, callback) {
+		this._rotateAll(theImage, callback);
+	},
+
+
+	/*** private methods ***/
+	// file = blob
+	// DataURL format: data:mimeType;base64,base64_string 
+	_fromBlob: function(theImage, file, callback) {
+		var _self = this;
+		var fs = new FileReader();
+		fs.onload = function(ev1) {
+			var data = ev1.target.result;
+			_self._imageDataURL(theImage, data, callback);
+		}                
+		fs.readAsDataURL(file);
+	},
+	_readBlob: function(file, callback) {
+		var fs = new FileReader();
+		fs.onload = function(ev1) {
+			var data = ev1.target.result;
+			if(callback) if( $.isFunction(callback) ) callback(data);
+		}                
+		fs.readAsDataURL(file);
+	},
+
+	/*** private methods ***/
+	_imageDataURL: function(theImage, dataURL, callback) {
+		var _self = this;
+		var t_img = new Image();
+		t_img.onload = function() {
+			_self._initImage(theImage, t_img, callback);
+		}
+		t_img.src = dataURL;
+	},
+
+	_initImage:  function(theImage, t_img, callback) {
+		var _self = this;
+
+		var originImg = theImage.resize.origin;
+		var canvas 	= document.createElement("canvas");
+		var ctx 	= canvas.getContext("2d");
+		var ratio_ww = 1;
+		var ratio_hh = 1;
+		if( _self.scale ) {
+			if(originImg.ww > 0 ) ratio_ww = originImg.ww / t_img.width;
+			if(originImg.hh > 0 ) ratio_hh = originImg.hh / t_img.height;
+		} else {
+			if(originImg.ww > 0 && t_img.width > originImg.ww) ratio_ww = originImg.ww / t_img.width;
+			if(originImg.hh > 0 && t_img.height > originImg.hh) ratio_hh = originImg.hh / t_img.height;
+		}
+		var ratio = Math.min(ratio_ww, ratio_hh);
+		canvas.width 	= t_img.width * ratio;
+		canvas.height 	= t_img.height * ratio;
+		ctx.drawImage(t_img,0,0, t_img.width, t_img.height, 0, 0, canvas.width, canvas.height); 
+		
+		var imgDataURL = canvas.toDataURL( theImage.mime_type );
+		
+		originImg.width 	= canvas.width;
+		originImg.height 	= canvas.height;
+		originImg.data 		= imgDataURL;
+		originImg.size 		= imgDataURL.length;
+		originImg.name	    = "origin";
+		canvas = null;
+		_self._resizeAll(theImage, callback);
+		if( callback && _self.view=="origin") if( $.isFunction(callback) ) callback(originImg);
+	},
+	// resize base on origin image which alreay resize to 1200 * 1200 from selected image 
+	_resizeAll: function(theImage, callback) {
+		var _self = this;
+		for(var rname in theImage.resize) {
+			if(rname!="origin") {
+				this._resizeImage(theImage, rname, callback);
+			} 
+		}
+	},
+	_resizeImage: function(theImage, rname, callback) {
+		var _self = this;
+		var originImg = theImage.resize.origin;
+		var resizeImg = theImage.resize[rname];
+
+		var t_img = new Image();
+		t_img.onload = function() {
+			var canvas 	= document.createElement("canvas");
+			var ctx 	= canvas.getContext("2d");
+			var ratio_ww = 1;
+			var ratio_hh = 1;
+			if( _self.scale ) {
+				if(resizeImg.ww > 0 ) ratio_ww = resizeImg.ww / t_img.width;
+				if(resizeImg.hh > 0 ) ratio_hh = resizeImg.hh / t_img.height;
+			} else {
+				if(resizeImg.ww > 0 && t_img.width > resizeImg.ww) ratio_ww = resizeImg.ww / t_img.width;
+				if(resizeImg.hh > 0 && t_img.height > resizeImg.hh) ratio_hh = resizeImg.hh / t_img.height;
+			}
+			var ratio = Math.min(ratio_ww, ratio_hh);
+			canvas.width 	= t_img.width * ratio;
+			canvas.height 	= t_img.height * ratio;
+			ctx.drawImage(t_img,0,0, t_img.width, t_img.height, 0, 0, canvas.width, canvas.height); 
+			
+			var imgDataURL = canvas.toDataURL( theImage.mime_type );
+			
+			resizeImg.width 	= canvas.width;
+			resizeImg.height 	= canvas.height;
+			resizeImg.data 		= imgDataURL;
+			resizeImg.size 		= imgDataURL.length;
+			resizeImg.name	    = rname;
+			
+			 if( callback && _self.view==rname ) if( $.isFunction(callback) ) callback(resizeImg);
+ 			canvas = null;
+		}
+		t_img.src = originImg.data;
+	},
+
+	_rotateAll: function(theImage, callback) {
+		for(var rname in theImage.resize) {
+			if( rname !="origin" )	this._rotateImage(theImage, rname, callback );
+		}
+	},
+	_rotateImage : function(theImage, rname, callback) {
+		var _self 	= this;
+		var degree 	= 90;
+		var resizeImg = theImage.resize[rname];
+
+		var t_img 	= new Image();
+		t_img.onload = function() {
+			var canvas 	= document.createElement("canvas");
+			var ctx 	= canvas.getContext("2d");
+			// important: different 180 and 90
+			if( degree % 180 == 0 ) {
+				canvas.width    = t_img.width;
+				canvas.height   = t_img.height;
+			} else {
+				canvas.width    = t_img.height;
+				canvas.height   = t_img.width;
+			}
+			ctx.translate( canvas.width/2, canvas.height/2 );
+			ctx.rotate(degree*Math.PI/180);
+			ctx.drawImage(t_img, - t_img.width/2, -t_img.height/2);
+			var imgDataURL 		= canvas.toDataURL( theImage.mime_type );
+			resizeImg.data 		= imgDataURL;
+			resizeImg.width 	= canvas.width;
+			resizeImg.height 	= canvas.height;
+			resizeImg.size 		= imgDataURL.length;
+			canvas = null;
+
+			// important :  img is old img,  imgDataURL is transform image
+			if( callback && $.isFunction(callback) && _self.view==rname ) callback(resizeImg);
+		}
+		t_img.src = resizeImg.data;
+	},
+
+	
+}
+
 var FCOLLECT = new WLIU.COLLECTION();
 var FOBJECT  = new WLIU.OBJECT();
 var	FROW     = new WLIU.ROWACTION();
 var FCOM 	 = new WLIU.COM();
 var FTABLE   = new WLIU.TABLEACTION();
+var FFILE    = new WLIU.FILEACTION();
+var FIMAGE   = new WLIU.IMAGEACTION();

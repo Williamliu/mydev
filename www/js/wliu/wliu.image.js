@@ -31,6 +31,11 @@ WLIU.FILE = function( opts ) {
 }
 
 WLIU.FILEACTION = function( opts ) {
+	this.restrict = {
+		allowSize: "",	
+		allowType: ["PDF", "XLS", "XLSX", "DOC", "DOCX", "TXT"]
+	};
+
 	this.allowType 	= ["PDF", "XLS", "XLSX", "DOC", "DOCX", "TXT"];
 	this.file       = new WLIU.FILE({
 		key: opts.key,
