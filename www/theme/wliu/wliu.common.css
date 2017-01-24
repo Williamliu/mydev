@@ -260,7 +260,6 @@ abbr {
 	font-size: 		0.9em;
 	font-weight: 	400;
 	margin: 		5px;
-	white-space:    nowrap;
 	vertical-align: middle;
 }
 
@@ -274,7 +273,6 @@ abbr {
 	font-size: 		0.9em;
 	font-style:     italic;
 	font-weight: 	400;
-	white-space:    nowrap;
 	vertical-align: middle;
 }
 
