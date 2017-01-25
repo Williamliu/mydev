@@ -16,12 +16,16 @@ table td, table th,
 
 .btn {
 	margin: 		0px;
-	padding: 		3px 12px;
+	padding: 		6px 12px;
 	line-height: 	20px;
 	box-sizing:     content-box;
 	border-radius:  5px;
+	text-shadow:		1px 1px #000000; 
 }
 
+.btn-row {
+	padding: 		3px 12px;
+}
 .checkbox label, .radio label {
     cursor: 		pointer;
     font-weight: 	400;
