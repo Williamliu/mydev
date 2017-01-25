@@ -3303,7 +3303,6 @@ wliu_table.directive("table.tooltip", function (wliuTableService) {
         restrict: "E",
         replace: true,
         scope: {
-            table:      "=",
             targetid:   "@"
         },
         template: [
@@ -3324,7 +3323,6 @@ wliu_table.directive("table.wait", function (wliuTableService) {
         restrict: "E",
         replace: true,
         scope: {
-            table:      "=",
             targetid:   "@",
             maskable:   "@"
         },
@@ -3346,7 +3344,6 @@ wliu_table.directive("table.autotip", function (wliuTableService) {
         restrict: "E",
         replace: true,
         scope: {
-            table:      "=",
             targetid:   "@",
             halign:     "@",
             valign:     "@",
