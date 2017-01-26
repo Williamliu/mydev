@@ -20,7 +20,7 @@ String.prototype.br2nl = function() {
 	return str;
 }
 String.prototype.trim = function() {
-	return this.replace(/^\s+(.*)\s+$/gi,"$1");
+	return this.replace(/^\s+|\s+$/g, '');
 }
 String.prototype.replaceAll = function(s1, s2) {
 	return this.replace(new RegExp(s1, "gm"), s2);
@@ -89,6 +89,57 @@ Number.prototype.toSize = function() {
 		}
 }
 /*****************************/
+
+$.fn.extend({
+    hasAttr: function(attrs) {
+		if(!attrs || attrs.trim()=="") return false; 
+        var flag = true; 
+        this.each(function(idx, el){
+			var attrArr  = [];
+			attrArr.push(attrs);
+            var seperate = "";
+
+            if( attrs.indexOf(" ")>=0 ) {
+                attrArr = attrs.split(" ");
+                seperate = "";
+            }
+            if( attrs.indexOf(",")>=0 ) {
+                attrArr = attrs.split(",");
+                seperate = ",";
+            }
+
+            var attrStr = "";
+            for(var idx in attrArr) {
+                if( attrArr[idx].trim()!="" ) {
+                    var temp1 = attrArr[idx].trim();
+                    var attrName = "";
+                    if( temp1.indexOf(" ")>=0 ) {
+                        temp2 = temp1.split(" ");
+                        for(var idx2 in temp2) {
+                            var temp3 = temp2[idx2].trim();
+                            attrName += "[" + temp3 + "]";
+                        }
+                    } else {
+                        attrName = "[" + attrArr[idx].trim() + "]";
+                    }
+                    attrStr += (attrStr?seperate:"") + attrName;
+                }
+            }
+            if(attrStr=="") attrStr="*";
+            if( $(el).filter(attrStr).length<=0 ) flag = false;
+        });
+        return flag;
+    },
+	addAttr: function(attrName, attrVal) {
+        this.each(function(idx, el){
+			if( attrVal ) 
+				$(el).attr(attrName, attrVal)
+			else 
+				$(el).attr(attrName, "")
+        });
+	}
+})
+
 
 /*
 Array.prototype.first = function() {

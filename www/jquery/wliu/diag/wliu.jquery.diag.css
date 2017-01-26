@@ -1,5 +1,5 @@
 @media all {
-div.wliu-diag {
+div[wliu-diag] {
     display: 		none;
     border-radius:  8px;
     border: 		1px solid #cccccc;
@@ -12,20 +12,20 @@ div.wliu-diag {
 }
 
 @media (max-width: 1100px) {
-    div.wliu-diag {
+    div[wliu-diag] {
         position: 	absolute;
         max-width: 	90%;
     }
 }
 
 @media (min-width: 1100px) {
-    div.wliu-diag {
+    div[wliu-diag] {
         position: 	absolute;
         max-width: 	80%;
     }
 }
 
-div.wliu-diag > div.wliu-diag-title {
+div[wliu-diag] > div[wliu-diag-head] {
     display: 		    block;
     position: 		    relative;
     color:              #ffffff;
@@ -52,7 +52,7 @@ div.wliu-diag > div.wliu-diag-title {
     overflow:       hidden;
 }
 
-div.wliu-diag > div.wliu-diag-content {
+div[wliu-diag] > div[wliu-diag-body] {
     display: 		block;
     position: 		relative;
     border: 		0px solid #cccccc;
@@ -66,7 +66,7 @@ div.wliu-diag > div.wliu-diag-content {
     min-height:     160px;
 }
 
-div.wliu-diag > a.wliu-btn16-close {
+div[wliu-diag] > a.wliu-btn16-close {
     position:       absolute;
     right:          0px;
     top:            0px;
@@ -75,13 +75,13 @@ div.wliu-diag > a.wliu-btn16-close {
     z-index:        99;
 }
 
-div.wliu-diag > a.wliu-diag-title-close {
+div[wliu-diag] > a.wliu-diag-title-close {
     margin-top:     13px;
     margin-right:   9px;
 }
 
 /* mask iframe and div */
-.wliuDiag-mask-ifrm {
+iframe[wliu-diag-mask] {
 	display:	none;
 	position:   fixed;
 	border:		1px solid #eeeeee; 
@@ -95,7 +95,7 @@ div.wliu-diag > a.wliu-diag-title-close {
 	background-color:	#000000;
 }
 
-div.wliuDiag-mask-div {
+div[wliu-diag-mask] {
 	display:	none;
 	position:	fixed;
 	border:     1px solid #eeeeee; 

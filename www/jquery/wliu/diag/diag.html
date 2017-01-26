@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf8" />
+    <!-- JQuery3.1.1 -->
+    <script type="text/javascript" src="/jquery/min/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <link href='/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
+    <!-- //JQuery -->
+	<script src="/js/wliu/wliu.common.js" type="text/javascript"></script>
+
+	<script src="wliu.jquery.diag.js" type="text/javascript"></script>
+	<link 	href="wliu.jquery.diag.css" type='text/css' rel='stylesheet' />
+
+	<link href='/theme/wliu/wliu.common.css' type='text/css' rel='stylesheet' />
+	<link href='/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
+
+    <script>
+    $(function(){
+  		$("#contactus").wliuDiag({
+							title:		"联系我们",
+							maskable: 	true,
+							movable: 	true
+		});
+    })
+    function show() {
+        $("#contactus").addAttr("wliu-wi");
+        $("#contactus").removeAttr("wliu-wi");
+        
+
+        if( $("#contactus").hasAttr("wliu-wi") ) 
+            alert("Has Attr: " + $("#contactus").attr("wliu-wi") );
+        else 
+            alert("no attr");
+    }
+    </script>
+</head>
+<body>
+<button onclick="show()">Attr</button>
+<button wliu-role="wliu-diag" wliu-toggle="click" wliu-target="#contactus">Show</button>
+<br>
+    
+
+<div id="contactus" wliu-diag style="width:480px;"  >
+    <div wliu-diag-head>
+        HELLO WORLD
+    </div>
+	<div wliu-diag-body>
+        good mor
+    </div>
+</div>    
+
+
+<div id="lwh" wliu-diag>
+    <div wliu-diag-head></div>
+    <div wliu-diag-body>
+
+    </div>
+</div>
+
+</body>
+</html>

@@ -11,9 +11,38 @@
             display: table;
             box-sizing: border-box;
         } 
+
+        div[wliu-a1] {
+            background-color:aqua;
+        }
+
+        div[wliu-a1][wliu-a2] {
+            display:block;
+            width: 200px;
+            height:200px;
+            border:1px solid orange;
+        }
+        div[wliu-a3][wliu-a1][wliu-a2] {
+            background-color:green;
+        }
+        div[wliu-a3][wliu-a1] {
+            background-color:yellow;
+        }
+        div[wliu-a3][wliu-a2] {
+            background-color:red;
+        }
+        
+        div[wliu-a2] {
+            background-color: grey;
+        }
+        div[wliu-a3] {
+            background-color:brown;
+        }
+
     </style>
 </head>
 <body>
+    <div wliu-a2 wliu-a1 wliu-a3></div>
     <br>
     <div style="display:block; position:static;border:1px solid green;">
 
