@@ -8,14 +8,14 @@ $.fn.extend({
             left:       0,
             height:     0,
             width:      0,
-            border:     false,
             title:      "",
             titleAlign: "center",
             titleColor: "#33b5e5",
 
-            maskable: 	true,
+            maskable: 	false,
             movable:    false,
-            fade:       true,
+            border:     false,
+            fade:       false,
             
             zIndex: 	8000,
 			before:		null,
@@ -57,14 +57,21 @@ $.fn.extend({
             if( !$(el).hasAttr("wliu-diag") ) $(el).addAttr("wliu-diag");
             $(el).data("default_settings", def_settings);
             $(el).data("order", midx);
-            $(el).data("maskable", def_settings.maskable?1:0);
-            $(el).data("movable", def_settings.movable?1:0);
-            $(el).data("park", 0);
+            if(def_settings.maskable) $(el).addAttr("maskable",1);
+            if(def_settings.movable) $(el).addAttr("movable",1);
+            if(def_settings.border) $(el).addAttr("border",1);
+            if(def_settings.fade) $(el).addAttr("fade",1);
+            
+            //$(el).data("maskable", def_settings.maskable?1:0);
+            //$(el).data("movable", def_settings.movable?1:0);
+            //$(el).data("maskable", def_settings.maskable?1:0);
+            //$(el).data("movable", def_settings.movable?1:0);
+            $(el).removeAttr("park");
             $(el).data("parkTop", 0);
             $(el).data("parkLeft", 0);
             
             // css style title, content border ,close icon
-            if(def_settings.border) $("div[wliu-diag-body]", el).css("border-width", "1px");
+            if( $(el).hasAttr("border") ) $("div[wliu-diag-body]", el).css("border-width", "1px");
             if(def_settings.width > 0) $("div[wliu-diag-body]", el).css("width", def_settings.width);
             if(def_settings.height > 0) $("div[wliu-diag-body]", el).css("height", def_settings.height);
             if(def_settings.top > 0) $(el).css("top", def_settings.top);
@@ -95,7 +102,7 @@ $.fn.extend({
 
 
             // deal with movable
-            if (def_settings.movable) {
+            if ( $(el).hasAttr("movable") ) {
                 if( $(el).has("div[wliu-diag-head]").length<=0 ) {
                     $(el).prepend('<div wliu-diag-head"></div>');
                     $("a.wliu-btn16-close", el).addClass("wliu-diag-title-close");
@@ -107,7 +114,7 @@ $.fn.extend({
                     start: function () {
                     },
                     stop: function () {
-                        $(el).data("park", 1);  
+                        $(el).addAttr("park", 1);  
 
                         // update first, then recaculate 
                         $(el).data("parkTop", $(el).offset().top);
@@ -156,7 +163,7 @@ $.fn.extend({
                 var def_settings = $(el).data("default_settings");
                 $(this).css("z-index", $(this).data("order")).fadeOut(0, function() {  // don't fade out,  hide immediately to prevent show again
 
-                    if( $("*[wliu-diag][maskable=1]:visible").length<=0 ) {
+                    if( $("*[wliu-diag]:visible").hasAttr("maskable") ) {
                         $(mask_ifrm).hide();
                         $(mask_div).hide();
                     }
@@ -174,8 +181,8 @@ $.fn.extend({
                    
                     $(maxObj).css("z-index", midx + 1000);
                     
-                    $(maxObj).fadeIn((def_settings.fade?"slow":0), function(){
-                        if( $(maxObj).data("maskable") == "1" ) {
+                    $(maxObj).fadeIn(($(el).hasAttr("fade")?"slow":0), function(){
+                        if( $(maxObj).hasAttr("maskable") ) {
                             $(mask_ifrm).show();
                             $(mask_div).show();
                         } else {
@@ -204,7 +211,7 @@ $.fn.extend({
                 $(el).css("z-index", midx + 1000);
                 // offset().top available for visible element , otherwise 0 
                 // re-position the dialog
-                if( $(el).data("park")==1 ) {
+                if( $(el).hasAttr("park") ) {
                     
                     //if out of range ,  still need to relocation
                     if( 
@@ -257,8 +264,8 @@ $.fn.extend({
                 }
                // end of re-position
 
-                $(this).fadeIn((def_settings.fade?"slow":0), function(){
-                   if( $(this).data("maskable") == 1 ) {
+                $(this).fadeIn(( $(el).hasAttr("fade")?"slow":0), function(){
+                   if( $(this).hasAttr("maskable") ) {
                         $(mask_ifrm).show();
                         $(mask_div).show();
             			if( def_settings.after ) if( $.isFunction(def_settings.after) ) def_settings.after(el);
@@ -278,6 +285,8 @@ $.fn.extend({
 
 
 $(function(){
+    $("div[wliu-diag]").wliuDiag({});
+
     $(document).off("click", "*[wliu-role='wliu-diag'][wliu-toggle='click']").on("click", "*[wliu-role='wliu-diag'][wliu-toggle='click']", function(evt){
         //if( $( $(this).attr("wliu-target") ).is(":hidden")  ) {
             $( $(this).attr("wliu-target") ).trigger("show");
@@ -290,9 +299,9 @@ $(function(){
     });
 
     $(window).unbind("resize.wliuDiag").bind("resize.wliuDiag", function () {
-        $(".wliu-diag:visible").each( function(idx, el) {
+        $("div[wliu-diag]:visible").each( function(idx, el) {
                 var def_settings = $(this).data("default_settings");
-                if($(this).data("park")=="1") {
+                if( $(this).hasAttr("park") ) {
                     //if out of range ,  still need to relocation
                     if( 
                         $(this).data("parkTop") + $(this).outerHeight() >= $(window).scrollTop() + $(window).height() || 
