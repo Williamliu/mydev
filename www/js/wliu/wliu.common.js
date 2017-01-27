@@ -131,7 +131,7 @@ $.fn.extend({
         return flag;
     },
 	addAttr: function(attrName, attrVal) {
-        this.each(function(idx, el){
+       	return this.each(function(idx, el){
 			if( attrVal ) 
 				$(el).attr(attrName, attrVal)
 			else 

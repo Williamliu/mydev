@@ -4,7 +4,7 @@
 /*  Date: 	2012-3-30      															*/
 /*  Files: 	jquery.lwh.loading.js ;  jquery.lwh.loading.css							*/
 /************************************************************************************/
-div.wliu-loading {
+div[wliu-loading] {
 	display:				none;
 	width:					160px;
 	height:					80px;
@@ -27,7 +27,7 @@ div.wliu-loading {
 }
 
 /* mask iframe and div */
-.wliu-loading-mask-ifrm {
+iframe[wliu-loading-mask] {
 	display:	        none;
 	position:	        fixed;
 	border:		        0px solid #eeeeee; 
@@ -44,7 +44,7 @@ div.wliu-loading {
 	z-index:  	        999000;
 }
 
-.wliu-loading-mask-div {
+div[wliu-loading-mask] {
 	display:	        none;
 	position:	        fixed;
 	border:             0px solid #eeeeee; 
@@ -63,7 +63,7 @@ div.wliu-loading {
 
 
 
-div.wliu-loading-text {
+div[wliu-loading-text] {
 	display: 			block;
 	position:			relative;
 	margin-top:			10px;
@@ -76,11 +76,11 @@ div.wliu-loading-text {
 }
 
 /***********************************************/
-div.wliu-tips {
+div[wliu-tips] {
 		display:			none;
 		position:			fixed;
 
-        min-width:			200px; 
+        min-width:			120px; 
 		padding:			16px;
 
 		border:				1px solid #999999;
@@ -96,14 +96,14 @@ div.wliu-tips {
 
 }
 
-div.wliu-tips-success {
+div[wliu-tips][success] {
 	background-color:	#00C851;
 }
 
-div.wliu-tips-warning {
+div[wliu-tips][warning] {
 	background-color:	#ffbb33;
 }
 
-div.wliu-tips-danger {
+div[wliu-tips][danger] {
 	background-color:	#ff4444;
 }
