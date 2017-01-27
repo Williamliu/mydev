@@ -23,8 +23,8 @@
 
 	<script src="/js/wliu/wliu.common.js" type="text/javascript"></script>
 
-	<script src="wliu.jquery.loading.js" type="text/javascript"></script>
-	<link 	href="wliu.jquery.loading.css" type='text/css' rel='stylesheet' />
+	<script src="wliu.jquery.popup.js" type="text/javascript"></script>
+	<link 	href="wliu.jquery.popup.css" type='text/css' rel='stylesheet' />
 
 	<link href='/theme/wliu/wliu.common.css' type='text/css' rel='stylesheet' />
 	<link href='/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
@@ -50,30 +50,30 @@
     </script>
 
 </head>
-<body>
-<button onclick="showload()">Show Loading</button>
-<button onclick="hideload()">Hide Loading</button>
-<br>
-<button onclick="showtip1()">Show Tip1</button>
-<button onclick="showtip2()">Show Tip2</button>
-<button onclick="showtip3()">Show Tip3</button>
-<button onclick="showtip4()">Show Tip4</button>
+<body style="padding:30px">
+<button wliu-role="wliu-popup" wliu-toggle="click" wliu-target="#tip1" placement="up" wliu-head="Hello" wliu-body="this is good day">Show Loading</button>
+<button  wliu-role="wliu-popup" wliu-toggle="hover" wliu-target="#tip1" placement="up" wliu-head="this is not hell0" wliu-body="this is good day">Show Loading</button>
+
+<button  wliu-role="wliu-popup" wliu-toggle="hover" wliu-target="#tip1" placement="right" wliu-body="this is good day">Show Loading</button>
+
+<input type="textbox" wliu-role="wliu-popup" wliu-toggle="focus" wliu-target="#tip1" wliu-body="this is good day" value="Show Loading" />
+
     
 
 <div wliu-loading>
 </div>
 
-<div id="tip1" wliu-tips left top>
+<div id="tip1" wliu-popup>
 </div>
 
-<div id="tip2" wliu-tips danger>
+<div id="tip2" wliu-popup>
 </div>
 
-<div id="tip3" wliu-tips top right>
+<div id="tip3" wliu-popup>
 Great Ideas.
 </div>
 
-<div id="tip4" wliu-tips bottom left>
+<div id="tip4" wliu-popup>
 </div>
 </body>
 </html>
