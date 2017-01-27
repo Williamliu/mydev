@@ -49,7 +49,7 @@ ul[wliu-tab] > li.selected:hover {
     background-color:   #ffffff;
 }
 
-ul[wliu-tab] + div[wliu-tab-content] {
+ul[wliu-tab] + div[wliu-tab-body] {
     display: 			block;
     width:  			100%;
     border:             1px solid #cccccc;
@@ -60,10 +60,10 @@ ul[wliu-tab] + div[wliu-tab-content] {
     font-size: 			14px;
 }
 
-ul[wliu-tab] + div[wliu-tab-content] > div {
+ul[wliu-tab] + div[wliu-tab-body] > div {
     display: 			none;
 }
 
-ul[wliu-tab] + div[wliu-tab-content] > div.selected {
+ul[wliu-tab] + div[wliu-tab-body] > div.selected {
     display: 			block;
 }

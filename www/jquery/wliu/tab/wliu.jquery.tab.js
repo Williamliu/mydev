@@ -2,7 +2,7 @@ $.fn.extend({
     ixTab: function() {
         return this.each(function(idx, el) { 
                 var sn = parseInt($(el).attr("tabsn"))?parseInt($(el).attr("tabsn")):0;
-                var content_area = $("+div[wliu-tab-content]", el).get(0);
+                var content_area = $("+div[wliu-tab-body]", el).get(0);
 
                 $(">li", el).each(function(idx1, el1) {
                     $(el1).attr("tabsn", idx1);
