@@ -23,17 +23,17 @@
 
 	<script src="/js/wliu/wliu.common.js" type="text/javascript"></script>
 
-	<script src="wliu.jquery.loading.js" type="text/javascript"></script>
-	<link 	href="wliu.jquery.loading.css" type='text/css' rel='stylesheet' />
+	<script src="wliu.jquery.load.js" type="text/javascript"></script>
+	<link 	href="wliu.jquery.load.css" type='text/css' rel='stylesheet' />
 
 	<link href='/theme/wliu/wliu.common.css' type='text/css' rel='stylesheet' />
 	<link href='/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
     <script>
-        function show() {
-            $("div[wliu-loading]").trigger("show");
+        function showload() {
+            $("div[wliu-load]").trigger("show");
         }
-        function hide() {
-             $("div[wliu-loading]").trigger("hide");
+        function hideload() {
+             $("div[wliu-load]").trigger("hide");
         }
         function showtip1() {
             $("#tip1").trigger("auto", ["good day", "warning"]);
@@ -51,8 +51,8 @@
 
 </head>
 <body>
-<button onclick="showload()">Show Loading</button>
-<button onclick="hideload()">Hide Loading</button>
+<button onclick="showload()">Show load</button>
+<button onclick="hideload()">Hide load</button>
 <br>
 <button onclick="showtip1()">Show Tip1</button>
 <button onclick="showtip2()">Show Tip2</button>
@@ -60,7 +60,7 @@
 <button onclick="showtip4()">Show Tip4</button>
     
 
-<div wliu-loading>
+<div wliu-load>
 </div>
 
 <div id="tip1" wliu-tips left top>

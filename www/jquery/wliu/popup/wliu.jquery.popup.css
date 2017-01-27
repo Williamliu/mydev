@@ -20,7 +20,7 @@ div[wliu-popup] div[wliu-popup-head] {
     background-color: #0099CC;
     text-align:         center;
     font-weight:        bold;
-    font-size:          0.8em;
+    font-size:          1em;
 } 
 
 div[wliu-popup] div[wliu-popup-body] {
@@ -98,6 +98,16 @@ div[wliu-popup] s[arrow][down] {
     margin-left:        -12px;
     background-position: -50px 0px;
 }
+
+
+div[wliu-popup] div[wliu-popup-head] ~ s[arrow][left] {
+    margin-top: 2px;
+}
+div[wliu-popup] div[wliu-popup-head] ~ s[arrow][right] {
+    margin-top: 2px;
+}
+
+
 
 div[wliu-popup] s[arrow][active] {
 	display: 			inline-block;

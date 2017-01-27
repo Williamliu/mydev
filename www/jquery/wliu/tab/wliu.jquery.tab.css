@@ -27,7 +27,7 @@ ul[wliu-tab] > li {
     white-space: 		nowrap;
     overflow: 			hidden;
     text-overflow:      ellipsis;
-    float: 				left;
+    /* float: 				left; */
     box-sizing:         content-box;
 
     font-size:          16px;

@@ -1,10 +1,10 @@
 /************************************************************************************/
-/*  JQuery Plugin:  LOADING                                                       	*/
+/*  JQuery Plugin:  load                                                       	*/
 /*  Author:	William Liu                                                            	*/
 /*  Date: 	2012-3-30      															*/
-/*  Files: 	jquery.lwh.loading.js ;  jquery.lwh.loading.css							*/
+/*  Files: 	jquery.lwh.load.js ;  jquery.lwh.load.css							*/
 /************************************************************************************/
-div[wliu-loading] {
+div[wliu-load] {
 	display:				none;
 	width:					160px;
 	height:					80px;
@@ -27,7 +27,7 @@ div[wliu-loading] {
 }
 
 /* mask iframe and div */
-iframe[wliu-loading-mask] {
+iframe[wliu-load-mask] {
 	display:	        none;
 	position:	        fixed;
 	border:		        0px solid #eeeeee; 
@@ -44,7 +44,7 @@ iframe[wliu-loading-mask] {
 	z-index:  	        999000;
 }
 
-div[wliu-loading-mask] {
+div[wliu-load-mask] {
 	display:	        none;
 	position:	        fixed;
 	border:             0px solid #eeeeee; 
@@ -63,7 +63,7 @@ div[wliu-loading-mask] {
 
 
 
-div[wliu-loading-text] {
+div[wliu-load-text] {
 	display: 			block;
 	position:			relative;
 	margin-top:			10px;

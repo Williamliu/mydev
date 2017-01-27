@@ -47,8 +47,8 @@
 		<link 	href='jquery/wliu/diag/wliu.jquery.diag.css' type='text/css' rel='stylesheet' />
 		<script src="jquery/wliu/popup/wliu.jquery.popup.js" type="text/javascript"></script>
 		<link 	href='jquery/wliu/popup/wliu.jquery.popup.css' type='text/css' rel='stylesheet' />
-		<script src="jquery/wliu/loading/wliu.jquery.loading.js" type="text/javascript"></script>
-		<link 	href="jquery/wliu/loading/wliu.jquery.loading.css" type='text/css' rel='stylesheet' />
+		<script src="jquery/wliu/load/wliu.jquery.load.js" type="text/javascript"></script>
+		<link 	href="jquery/wliu/load/wliu.jquery.load.css" type='text/css' rel='stylesheet' />
 
 		<link href='theme/wliu/wliu.common.css' type='text/css' rel='stylesheet' />
 		<link href='theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
@@ -240,9 +240,10 @@
 <table.checkdiag1 table="table" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></table.checkdiag1>
 <table.radiodiag3 table="table" targetid="colorCategory_diag" name="colorCategory" colnum="3" colnum1="0" bar="1" title="Please Select"></table.radiodiag3>
 
-<table.autotip table="table" targetid="myauto"></table.autotip>
-<table.wait table="table" targetid="mywait"></table.wait>
-<table.tooltip table="table" targetid="mytips"></table.tooltip>
+<div id="myauto" wliu-tips></div>
+<div id="mywait" wliu-load></div>
+<div id="mytips" wliu-popup></div>
+
 
 <!-- MD Bootstrap 4.0 js -- must place at the end of body -->
 <script type="text/javascript" src="theme/mdb4.0/js/mdb.min.js"></script>

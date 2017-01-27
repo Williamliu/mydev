@@ -47,8 +47,8 @@
 		<link 	href='jquery/wliu/diag/wliu.jquery.diag.css' type='text/css' rel='stylesheet' />
 		<script src="jquery/wliu/popup/wliu.jquery.popup.js" type="text/javascript"></script>
 		<link 	href='jquery/wliu/popup/wliu.jquery.popup.css' type='text/css' rel='stylesheet' />
-		<script src="jquery/wliu/loading/wliu.jquery.loading.js" type="text/javascript"></script>
-		<link 	href="jquery/wliu/loading/wliu.jquery.loading.css" type='text/css' rel='stylesheet' />
+		<script src="jquery/wliu/load/wliu.jquery.load.js" type="text/javascript"></script>
+		<link 	href="jquery/wliu/load/wliu.jquery.load.css" type='text/css' rel='stylesheet' />
 
 
 		<link href='theme/wliu/wliu.common.css' type='text/css' rel='stylesheet' />
@@ -105,10 +105,10 @@
 		    var table = new WLIU.TABLE({
 				scope: 	"mytab",
 				url:   	"ajax/one_action.php",
-				wait:   "#tabwait",
+				wait:   "#mywait",
 				taberror:"#taberror",
-				tooltip:"#tabtip",
-				tips: 	"#tabtips",
+				tooltip:"#mytips",
+				tips: 	"#myauto",
 				rights: {detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
 				navi:   {pagesize:20, match: 1, orderby:"created_time", sortby:"DESC"},
 				filters: filters,
@@ -260,10 +260,10 @@
 </div>
 <!-- container -->
 
-<table.taberror table="table" targetid="taberror"></table.taberror>
-<table.tooltip table="table" targetid="tabtip"></table.tooltip>
-<table.wait table="table" targetid="tabwait"></table.wait>
-<table.tips table="table" targetid="tabtips" halign="right" valign="bottom"></table.tips>
+<div id="taberror" wliu-diag movable maskable></div>
+<div id="myauto" wliu-tips></div>
+<div id="mywait" wliu-load></div>
+<div id="mytips" wliu-popup></div>
 
 <table.checkdiag1 table="table" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></table.checkdiag1>
 <table.radiodiag3 table="table" targetid="colorCategory_diag" name="colorCategory" colnum="3" colnum1="0" bar="1" title="Please Select"></table.radiodiag3>

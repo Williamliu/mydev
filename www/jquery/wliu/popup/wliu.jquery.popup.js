@@ -25,15 +25,15 @@ $.fn.extend({
 $(function(){
     $("div[wliu-popup]").wliuPopup({});
 
-    $(document).off("click", "*[wliu-role='wliu-popup'][wliu-toggle='click']").on("click", "*[wliu-role='wliu-popup'][wliu-toggle='click']", function(evt){
-        var target_el = $(this).attr("wliu-target");
-        var target_content  = $(this).attr("wliu-body");
+    $(document).off("click", "*[popup-toggle='click']").on("click", "*[popup-toggle='click']", function(evt){
+        var target_el = $(this).attr("popup-target");
+        var target_content  = $(this).attr("popup-body");
 
         if( $( target_el ).is(":hidden")  ) {
             /********************************************************************************** */
             if(target_content) {
-                    var target_pl       = $(this).attr("placement");
-                    var target_tt       = $(this).attr("wliu-head");
+                    var target_pl       = $(this).attr("popup-placement");
+                    var target_tt       = $(this).attr("popup-head");
 
                     if( target_tt ) {
                         if( $(target_el).has("div[wliu-popup-head]").length<=0 )
@@ -139,15 +139,15 @@ $(function(){
     });
 
 
-    $(document).off("focus", "*[wliu-role='wliu-popup'][wliu-toggle='focus']").on("focus", "*[wliu-role='wliu-popup'][wliu-toggle='focus']", function(evt){
-        var target_el = $(this).attr("wliu-target");
-        var target_content  = $(this).attr("wliu-body");
+    $(document).off("focus", "*[popup-toggle='focus']").on("focus", "*[popup-toggle='focus']", function(evt){
+        var target_el = $(this).attr("popup-target");
+        var target_content  = $(this).attr("popup-body");
 
         if( $( target_el ).is(":hidden")  ) {
             /********************************************************************************** */
             if(target_content) {
-                    var target_pl       = $(this).attr("placement");
-                    var target_tt       = $(this).attr("wliu-head");
+                    var target_pl       = $(this).attr("popup-placement");
+                    var target_tt       = $(this).attr("popup-head");
 
                     if( target_tt ) {
                         if( $(target_el).has("div[wliu-popup-head]").length<=0 )
@@ -253,14 +253,14 @@ $(function(){
     });
 
 
-    $(document).off("mouseover", "*[wliu-role='wliu-popup'][wliu-toggle='hover']").on("mouseover", "*[wliu-role='wliu-popup'][wliu-toggle='hover']", function(evt){
-        var target_el       = $(this).attr("wliu-target");
-        var target_content  = $(this).attr("wliu-body");
+    $(document).off("mouseover", "*[popup-toggle='hover']").on("mouseover", "*[popup-toggle='hover']", function(evt){
+        var target_el       = $(this).attr("popup-target");
+        var target_content  = $(this).attr("popup-body");
 
         /*** content not empty ***/
         if(target_content) {
-                var target_pl       = $(this).attr("placement");
-                var target_tt       = $(this).attr("wliu-head");
+                var target_pl       = $(this).attr("popup-placement");
+                var target_tt       = $(this).attr("popup-head");
                 
                 if( target_tt ) {
                     if( $(target_el).has("div[wliu-popup-head]").length<=0 )
@@ -359,8 +359,8 @@ $(function(){
         }
         /*** --content not empty ***/
     });
-    $(document).off("mouseout", "*[wliu-role='wliu-popup'][wliu-toggle='hover']").on("mouseout", "*[wliu-role='wliu-popup'][wliu-toggle='hover']", function(evt){
-        var target_el  = $(this).attr("wliu-target");
+    $(document).off("mouseout", "*[popup-toggle='hover']").on("mouseout", "*[popup-toggle='hover']", function(evt){
+        var target_el  = $(this).attr("popup-target");
         $(target_el).removeAttr("active");
         $( "div[wliu-popup-head]", $(target_el) ).remove();
         $( "div[wliu-popup-body]", $(target_el) ).empty();

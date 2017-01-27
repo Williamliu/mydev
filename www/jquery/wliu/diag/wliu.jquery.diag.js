@@ -162,8 +162,8 @@ $.fn.extend({
             $(el).unbind("hide").bind("hide", function (evt) {
                 var def_settings = $(el).data("default_settings");
                 $(this).css("z-index", $(this).data("order")).fadeOut(0, function() {  // don't fade out,  hide immediately to prevent show again
-
-                    if( $("*[wliu-diag]:visible").hasAttr("maskable") ) {
+                    // if no maskable diag , mask should be close
+                    if( $("*[wliu-diag][maskable]:visible").length<=0 ) {
                         $(mask_ifrm).hide();
                         $(mask_div).hide();
                     }
@@ -287,15 +287,15 @@ $.fn.extend({
 $(function(){
     $("div[wliu-diag]").wliuDiag({});
 
-    $(document).off("click", "*[wliu-role='wliu-diag'][wliu-toggle='click']").on("click", "*[wliu-role='wliu-diag'][wliu-toggle='click']", function(evt){
+    $(document).off("click", "*[diag-toggle='click']").on("click", "*[diag-toggle='click']", function(evt){
         //if( $( $(this).attr("wliu-target") ).is(":hidden")  ) {
-            $( $(this).attr("wliu-target") ).trigger("show");
+            $( $(this).attr("diag-target") ).trigger("show");
         //} else {
         //    $( $(this).attr("wliu-target") ).trigger("hide");
         //}
     });
-    $(document).off("mouseover", "*[wliu-role='wliu-diag'][wliu-toggle='hover']").on("mouseover", "*[wliu-role='wliu-diag'][wliu-toggle='hover']", function(evt){
-        $( $(this).attr("wliu-target") ).trigger("show");
+    $(document).off("mouseover", "*[diag-toggle='hover']").on("mouseover", "*[diag-toggle='hover']", function(evt){
+        $( $(this).attr("diag-target") ).trigger("show");
     });
 
     $(window).unbind("resize.wliuDiag").bind("resize.wliuDiag", function () {

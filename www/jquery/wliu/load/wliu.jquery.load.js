@@ -1,8 +1,8 @@
 /************************************************************************************/
-/*  JQuery Plugin:  LOADING                                                       	*/
+/*  JQuery Plugin:  load                                                       	*/
 /*  Author:	William Liu                                                            	*/
 /*  Date: 	2012-3-30      															*/
-/*  Files: 	jquery.lwh.loading.js ;  jquery.lwh.loading.css							*/
+/*  Files: 	jquery.lwh.load.js ;  jquery.lwh.load.css							*/
 /************************************************************************************/
 $.fn.extend({
 	wliuLoad:function( opts ){
@@ -12,20 +12,20 @@ $.fn.extend({
 						   };
 		$.extend(def_settings, opts);
 		
-		var mask_ifrm	= "iframe[wliu-loading-mask]";
-		var mask_div	= "div[wliu-loading-mask]";
+		var mask_ifrm	= "iframe[wliu-load-mask]";
+		var mask_div	= "div[wliu-load-mask]";
 
 		if($(mask_ifrm).length <= 0 )	{
-			$(document.body).append('<iframe wliu-loading-mask></iframe>');
+			$(document.body).append('<iframe wliu-load-mask></iframe>');
 		} 
 		if($(mask_div).length <= 0 ) 	{
-			$(document.body).append('<div wliu-loading-mask></div>');
+			$(document.body).append('<div wliu-load-mask></div>');
 		}
 
 		return this.each( function(idx, el) { 
-			if( !$(el).hasAttr("wliu-loading") ) $(el).addAttr("wliu-loading");
+			if( !$(el).hasAttr("wliu-load") ) $(el).addAttr("wliu-load");
 			if( $(el).has("i.fa").length<=0 ) $(el).prepend('<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>');
-			if( $(el).has("div[wliu-loading-text]").length<=0 ) $(el).append('<div wliu-loading-text>' + def_settings.title + '</div>');
+			if( $(el).has("div[wliu-load-text]").length<=0 ) $(el).append('<div wliu-load-text>' + def_settings.title + '</div>');
 			if( def_settings.maskable || $(el).hasAttr("maskable") ) $(el).addAttr("maskable");
 			 $(el).unbind("show").bind("show", function (evt, msg) {
 				 if( $(el).hasAttr("maskable") ) {
@@ -114,6 +114,6 @@ $.fn.extend({
 });
 
 $(function(){
-    $("div[wliu-loading]").wliuLoad({});
+    $("div[wliu-load]").wliuLoad({});
     $("div[wliu-tips]").wliuTips({});
 });

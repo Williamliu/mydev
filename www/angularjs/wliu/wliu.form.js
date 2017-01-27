@@ -21,8 +21,8 @@ wliu_form.directive("form.rowstatus", function () {
                         */
                         '<span style="color:red;" ng-if="form.getRow(rowsn).error.errorCode">Error : </span>',
                         '<a class="wliu-btn24 wliu-btn24-error-help"    ng-if="form.getRow(rowsn).error.errorCode" ',
-                            'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" ',
-                            'popup-content="{{form.getRow(rowsn).error.errorCode?form.getRow(rowsn).error.errorMessage.nl2br():\'\'}}"',
+                            'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" ',
+                            'popup-body="{{form.getRow(rowsn).error.errorCode?form.getRow(rowsn).error.errorMessage.nl2br():\'\'}}"',
                             'title="{{ tooltip?\'\':(form.getRow(rowsn).error.errorCode? form.getRow(rowsn).error.errorMessage : \'\') }}"',
                         '>',
                         '</a>',
@@ -111,7 +111,7 @@ wliu_form.directive("form.label", function () {
         },
         template: [
                     '<label class="wliuCommon-label" scope="{{ form.scope }}" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname?form.colMeta(name).colname:name}}" ',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname?form.colMeta(name).colname:name}}" ',
                         'title="{{tooltip? \'\':form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname?form.colMeta(name).colname:name}}" ',
                     '>',
                         '<span style="vertival-align:middle;">{{ form.colMeta(name).colname?form.colMeta(name).colname:name }}</span>',
@@ -165,7 +165,7 @@ wliu_form.directive("form.text", function () {
         template: [
                     '<span class="wliu-text" scope="{{ form.scope }}" ng-hide="form.relationHide(rowsn, name)" ',
                         'ng-class="{ \'wliuCommon-input-invalid\': form.getCol(name, rowsn).errorCode }" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         'title="{{ tooltip?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}"',
                     '>',
                         '{{ form.getCol(name, rowsn).value }}',
@@ -220,7 +220,7 @@ wliu_form.directive("form.textbox", function () {
                         'ng-disabled="form.getCol(name, rowsn)==undefined" ',
                         'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ',
 
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         'title="{{tooltip? \'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                     '/>'
                 ].join(''),
@@ -250,7 +250,7 @@ wliu_form.directive("form.password", function () {
                         'ng-disabled="form.getCol(name, rowsn)==undefined" ',
                         'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ',
 
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         'title="{{tooltip?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                     '/>'
                 ].join(''),
@@ -280,7 +280,7 @@ wliu_form.directive("form.passpair", function () {
                         'ng-disabled="form.getCol(name, rowsn)==undefined" ',
                         'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ',
 
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():\'\'}}" ',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():\'\'}}" ',
                         'title="{{tooltip?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:\'\'}}" ',
                     '/>',
                     '<input type="password" style="box-sizing:border-box;width:100%;" scope="{{ form.scope }}" placeholder="Confirm Password" ',
@@ -290,7 +290,7 @@ wliu_form.directive("form.passpair", function () {
                         'ng-disabled="form.getCol(name, rowsn)==undefined" ',
                         'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ',
 
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).value.password!=form.getCol(name, rowsn).value.confirm ?\'Password not match!\':\'\'}}" ',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).value.password!=form.getCol(name, rowsn).value.confirm ?\'Password not match!\':\'\'}}" ',
                         'title="{{tooltip?\'\':form.getCol(name, rowsn).value.password!=form.getCol(name, rowsn).value.confirm?\'Password not match!\':\'\'}}" ',
                     '/>',
                     '</span>'
@@ -334,7 +334,7 @@ wliu_form.directive("form.textarea", function () {
                         'ng-disabled="form.getCol(name, rowsn)==undefined" ',
                         'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ',
 
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         'title="{{tooltip?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                     '>',
                     '</textarea>'
@@ -363,7 +363,7 @@ wliu_form.directive("form.select", function () {
                         'ng-change="form.changeCol(name, rowsn)" ',
                         'ng-disabled="form.getCol(name, rowsn)==undefined" ',
                         'ng-options="sObj.key as sObj.value for sObj in form.lists[form.colMeta(name).list].list" ',                        
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         'title="{{tooltip?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}"',
                  '>',
                  '<option value=""></option>',
@@ -390,7 +390,7 @@ wliu_form.directive("form.relation", function () {
         template: [
                     '<span class="checkbox" scope="{{ form.scope }}" ',
                         'ng-class="{ \'wliuCommon-input-invalid\': form.getCol(name, rowsn).errorCode }" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         'title="{{tooltip==\'1\'?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                     '>',
                             '<input type="checkbox" scope="{{ form.scope }}" id="{{form.scope}}_{{name}}_{{rowsn}}" ',
@@ -427,7 +427,7 @@ wliu_form.directive("form.bool", function () {
         template: [
                     '<span class="checkbox" scope="{{ form.scope }}" ng-hide="form.relationHide(rowsn, name)" ',
                         'ng-class="{ \'wliuCommon-input-invalid\': form.getCol(name, rowsn).errorCode }" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         'title="{{tooltip==\'1\'?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                     '>',
 
@@ -464,7 +464,7 @@ wliu_form.directive("form.datetime", function () {
         template: [
                     '<span  ng-hide="form.relationHide(rowsn, name)" ',
                         //'ng-init="form.getCol(name, rowsn).value=$.isPlainObject(form.getCol(name, rowsn).value)?form.getCol(name, rowsn).value:{}" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         'title="{{tooltip?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}"',                    
                     '>',
                         '<input type="textbox" class="wliuCommon-datepicker" scope="{{ form.scope }}" placeholder="yyyy-mm-dd" ',
@@ -525,7 +525,7 @@ wliu_form.directive("form.date", function () {
                         'ng-model="form.getCol(name, rowsn).value" ',
                         'ng-change="form.changeCol(name, rowsn)" ',
                         'ng-disabled="form.getCol(name, rowsn)==undefined" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         'title="{{tooltip?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                     '/>'
                 ].join(''),
@@ -567,7 +567,7 @@ wliu_form.directive("form.time", function () {
                         'ng-model="form.getCol(name, rowsn).value" ',
                         'ng-change="form.changeCol(name, rowsn)" ',
                         'ng-disabled="form.getCol(name, rowsn)==undefined" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         'title="{{tooltip?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                     '/>'
                 ].join(''),
@@ -617,7 +617,7 @@ wliu_form.directive("form.checkbox", function () {
                     '<div  scope="{{ form.scope }}" ng-hide="form.relationHide(rowsn, name)" ',
                         //'ng-init="form.getCol(name, rowsn).value=$.isPlainObject(form.getCol(name, rowsn).value)?form.getCol(name, rowsn).value:{}" ',
                         'ng-class="{ \'wliuCommon-input-invalid\': form.getCol(name, rowsn).errorCode }" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         'title="{{tooltip?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                     '>',
                         '<span ',
@@ -663,8 +663,8 @@ wliu_form.directive("form.checkbox1", function () {
                     '<input type="text" readonly scope="{{ form.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ng-hide="form.relationHide(rowsn, name)" ',
                             'ng-click="change(rowsn, name)" ',
                             'ng-class="{ \'wliuCommon-input-invalid\': form.getCol(name, rowsn).errorCode }" ',
-                            'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
-                            'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                            'diag-target="{{targetid}}" diag-toggle="click" ',
+                            'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                             'title="{{tooltip?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                     '/>'
                 ].join(''),
@@ -707,10 +707,10 @@ wliu_form.directive("form.checkdiag1", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag" scope="{{ form.scope }}" ',
+                    '<div id="{{targetid}}" wliu-diag movable maskable scope="{{ form.scope }}" ',
                         //'ng-init="form.getCol( form.lists[name].keys.name, form.lists[name].keys.rowsn ).value=$.isPlainObject(form.getCol( form.lists[name].keys.name, form.lists[name].keys.rowsn ).value)?form.getCol( form.lists[name].keys.name, form.lists[name].keys.rowsn ).value:{}" ',
                     '>',
-
+                        '<div wliu-diag-head>{{ title }}</div>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
@@ -726,7 +726,7 @@ wliu_form.directive("form.checkdiag1", function () {
                         '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(form.lists[name].keys.rowsn, form.lists[name].keys.name)" title="check all"  ng-show="bar==1"></a>',
                         '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(form.lists[name].keys.rowsn, form.lists[name].keys.name)" title="remove all"  ng-show="bar==1"></a>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
-                        '<div class="wliu-diag-content" style="font-size:14px;">',
+                        '<div class="wliu-diag-body" style="font-size:14px;">',
                         '<span ',
                             'ng-repeat="rdObj in form.lists[name].list|filter:search">',
                                 '<span class="checkbox">',
@@ -789,7 +789,7 @@ wliu_form.directive("form.checkdiag1", function () {
         },
         link: function (sc, el, attr) {
             $(function(){
-                $(el).wliuDiag({ fade:false, movable: true, title: sc.title});
+                $(el).wliuDiag();
             });
         }
     }
@@ -904,8 +904,8 @@ wliu_form.directive("form.checkbox2", function () {
                                 'ng-click="change(rowsn, name)" ',
                                 'ng-class="{ \'wliuCommon-input-invalid\': form.getCol(name, rowsn).errorCode }" ',
 
-                                'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
-                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                                'diag-target="{{targetid}}" diag-toggle="click" ',
+                                'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                                 'title="{{tooltip?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         '/>'
                 ].join(''),
@@ -954,9 +954,10 @@ wliu_form.directive("form.checkdiag2", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ form.scope }}" ',
+                    '<div id="{{targetid}}" wliu-diag movable maskable class="container" scope="{{ form.scope }}" ',
                         //'ng-init="form.getCol( form.lists[name].keys.name, form.lists[name].keys.rowsn ).value=$.isPlainObject(form.getCol( form.lists[name].keys.name, form.lists[name].keys.rowsn ).value)?form.getCol( form.lists[name].keys.name, form.lists[name].keys.rowsn ).value:{}"',
                     '>',
+                        '<div wliu-diag-head>{{ title }}</div>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
@@ -971,7 +972,7 @@ wliu_form.directive("form.checkdiag2", function () {
                         '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(form.lists[name].keys.rowsn, form.lists[name].keys.name)" title="check all" ng-show="bar==1"></a>',
                         '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(form.lists[name].keys.rowsn, form.lists[name].keys.name)" title="remove all" ng-show="bar==1"></a>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
-                        '<div class="wliu-diag-content" style="font-size:14px;">',
+                        '<div class="wliu-diag-body" style="font-size:14px;">',
                             '<span style="display:none;" ng-repeat-start="rdObj in form.lists[name].list|filter:search"></span>',
                                     '<div class="col-md-{{colnum}} col-sm-{{colnum}} col-xs-12" ng-if="rdObj.list && rdObj.list.length>0">',
                                         '<ul>',
@@ -1051,7 +1052,7 @@ wliu_form.directive("form.checkdiag2", function () {
         },
         link: function (sc, el, attr) {
             $(function(){
-                $(el).wliuDiag({ fade:false, movable: true, title: sc.title});
+                $(el).wliuDiag();
             });
         }
     }
@@ -1181,8 +1182,8 @@ wliu_form.directive("form.checkbox3", function () {
                             'ng-click="change(rowsn, name)" ',
                             'ng-class="{ \'wliuCommon-input-invalid\': form.getCol(name, rowsn).errorCode }" ',
 
-                            'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
-                            'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                            'diag-target="{{targetid}}" diag-toggle="click" ',
+                            'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                             'title="{{tooltip?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                     '/>'
                 ].join(''),
@@ -1234,9 +1235,10 @@ wliu_form.directive("form.checkdiag3", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ form.scope }}" ',
+                    '<div id="{{targetid}}" wliu-diag movable maskable class="container" scope="{{ form.scope }}" ',
                         //'ng-init="form.getCol( form.lists[name].keys.name, form.lists[name].keys.rowsn ).value=$.isPlainObject(form.getCol( form.lists[name].keys.name, form.lists[name].keys.rowsn ).value)?form.getCol( form.lists[name].keys.name, form.lists[name].keys.rowsn ).value:{}"',
                     '>',
+                        '<div wliu-diag-head>{{ title }}</div>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
@@ -1258,7 +1260,7 @@ wliu_form.directive("form.checkdiag3", function () {
                         '<option value=""></option>',
                         '</select>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
-                        '<div class="wliu-diag-content" style="font-size:14px;">',
+                        '<div class="wliu-diag-body" style="font-size:14px;">',
                             '<span style="display:none;" ng-repeat-start="bbObj in form.lists[name].list|filter:getListFilter()"></span>',
                             '<span style="display:none;" ng-repeat-start="rdObj in bbObj.list|filter:search"></span>',
                                     '<div class="col-md-{{colnum}} col-sm-{{colnum}} col-xs-12" ng-if="rdObj.list && rdObj.list.length>0">',
@@ -1351,7 +1353,7 @@ wliu_form.directive("form.checkdiag3", function () {
         },
         link: function (sc, el, attr) {
             $(function(){
-                $(el).wliuDiag({ fade:false, movable: true, title: sc.title});
+                $(el).wliuDiag();
             });
         }
     }
@@ -1500,7 +1502,7 @@ wliu_form.directive("form.radio", function () {
         template: [
                     '<div scope="{{ form.scope }}" ng-hide="form.relationHide(rowsn, name)" ',
                         'ng-class="{ \'wliuCommon-input-invalid\': form.getCol(name, rowsn).errorCode }" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         'title="{{tooltip?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                     '>',
                         '<span ',
@@ -1547,8 +1549,8 @@ wliu_form.directive("form.radio1", function () {
                                 'ng-click="change(rowsn, name)" ',
                                 'ng-class="{ \'wliuCommon-input-invalid\': form.getCol(name, rowsn).errorCode }" ',
 
-                                'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
-                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                                'diag-target="{{targetid}}" diag-toggle="click" ',
+                                'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                                 'title="{{tooltip?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         '/>',
                 ].join(''),
@@ -1582,7 +1584,8 @@ wliu_form.directive("form.radiodiag1", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag" scope="{{ form.scope }}">',
+                    '<div id="{{targetid}}" wliu-diag movable maskable scope="{{ form.scope }}">',
+                        '<div wliu-diag-head>{{ title }}</div>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
@@ -1593,7 +1596,7 @@ wliu_form.directive("form.radiodiag1", function () {
                         '</a>',
                         '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
-                        '<div class="wliu-diag-content" style="font-size:14px;">',
+                        '<div class="wliu-diag-body" style="font-size:14px;">',
                         '<span ',
                             'ng-repeat="rdObj in form.lists[name].list|filter:search">',
                                 '<span class="radio">',
@@ -1627,7 +1630,7 @@ wliu_form.directive("form.radiodiag1", function () {
         },
         link: function (sc, el, attr) {
             $(function(){
-                $(el).wliuDiag({ fade:false, movable: true, title: sc.title});
+                $(el).wliuDiag();
             });
         }
     }
@@ -1708,8 +1711,8 @@ wliu_form.directive("form.radio2", function () {
                                 'ng-click="change(rowsn, name)" ',
                                 'ng-class="{ \'wliuCommon-input-invalid\': form.getCol(name, rowsn).errorCode }" ',
 
-                                'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
-                                'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                                'diag-target="{{targetid}}" diag-toggle="click" ',
+                                'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                                 'title="{{tooltip?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                         '/>'
                 ].join(''),
@@ -1758,7 +1761,8 @@ wliu_form.directive("form.radiodiag2", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ form.scope }}">',
+                    '<div id="{{targetid}}" wliu-diag movable maskable class="container" scope="{{ form.scope }}">',
+                        '<div wliu-diag-head>{{ title }}</div>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
@@ -1771,7 +1775,7 @@ wliu_form.directive("form.radiodiag2", function () {
                         '</a>',
                         '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
-                        '<div class="wliu-diag-content" style="font-size:14px;">',
+                        '<div class="wliu-diag-body" style="font-size:14px;">',
                             '<span style="display:none;" ng-repeat-start="rdObj in form.lists[name].list|filter:search"></span>',
                                     '<div class="col-md-{{colnum}} col-sm-{{colnum}} col-xs-12" ng-if="rdObj.list && rdObj.list.length>0">',
                                         '<ul>',
@@ -1827,7 +1831,7 @@ wliu_form.directive("form.radiodiag2", function () {
         },
         link: function (sc, el, attr) {
             $(function(){
-                $(el).wliuDiag({ fade:false, movable: true, title: sc.title});
+                $(el).wliuDiag();
             });
         }
     }
@@ -1933,8 +1937,8 @@ wliu_form.directive("form.radio3", function () {
                             'ng-click="change(rowsn, name)" ',
                             'ng-class="{ \'wliuCommon-input-invalid\': form.getCol(name, rowsn).errorCode }" ',
 
-                            'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
-                            'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-content="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
+                            'diag-target="{{targetid}}" diag-toggle="click" ',
+                            'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage.nl2br():valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                             'title="{{tooltip?\'\':form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:valueText()?valueText():form.colMeta(name).coldesc?form.colMeta(name).coldesc:form.colMeta(name).colname}}" ',
                     '/>'
                 ].join(''),
@@ -1986,7 +1990,8 @@ wliu_form.directive("form.radiodiag3", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ form.scope }}">',
+                    '<div id="{{targetid}}" wliu-diag movable maskable class="container" scope="{{ form.scope }}">',
+                        '<div wliu-diag-head>{{ title }}</div>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
@@ -2005,7 +2010,7 @@ wliu_form.directive("form.radiodiag3", function () {
                         '<option value=""></option>',
                         '</select>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
-                        '<div class="wliu-diag-content" style="font-size:14px;">',
+                        '<div class="wliu-diag-body" style="font-size:14px;">',
                             '<span style="display:none;" ng-repeat-start="bbObj in form.lists[name].list|filter:getListFilter()"></span>',
                             '<span style="display:none;" ng-repeat-start="rdObj in bbObj.list|filter:search"></span>',
                                     '<div class="col-md-{{colnum}} col-sm-{{colnum}} col-xs-12" ng-if="rdObj.list && rdObj.list.length>0">',
@@ -2067,7 +2072,7 @@ wliu_form.directive("form.radiodiag3", function () {
         },
         link: function (sc, el, attr) {
             $(function(){
-                $(el).wliuDiag({ fade:false, movable: true, title: sc.title});
+                $(el).wliuDiag();
             });
         }
     }
@@ -2198,8 +2203,8 @@ wliu_form.directive("form.button", function (wliuFormService) {
                             'ng-disabled="!buttonState(name, form.getRow(rowsn).rowstate)" ',
                             'ng-click="action1(form.getRow(rowsn))" ',
 
-                            'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" ',
-                            'popup-content="{{form.getRow(rowsn).error.errorCode?form.getRow(rowsn).error.errorMessage.nl2br():\'\'}}"',
+                            'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" ',
+                            'popup-body="{{form.getRow(rowsn).error.errorCode?form.getRow(rowsn).error.errorMessage.nl2br():\'\'}}"',
                             'title="{{ tooltip?\'\':(form.getRow(rowsn).error.errorCode? form.getRow(rowsn).error.errorMessage : \'\') }}"',
                         '>',
                         '<span style="vertical-align:middle;{{!buttonState(name, form.getRow(rowsn).rowstate)?\'color:#666666;\':\'\'}}">',
@@ -2305,8 +2310,8 @@ wliu_form.directive("form.linkbutton", function (wliuFormService) {
                         'class="btn btn-{{ buttonStyle() }} waves-effect {{!buttonState(name, form.getRow(rowsn).rowstate)?\'grey\':\'\'}} {{!buttonState(name, form.getRow(rowsn).rowstate)?\'disabled\':\'\'}}" ',
                         'style="min-width:60px;" ',
                         'ng-click="action1(form.getRow(rowsn))" ',
-                        'wliu-popup popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" ',
-                        'popup-content="{{form.getRow(rowsn).error.errorCode?form.getRow(rowsn).error.errorMessage.nl2br():\'\'}}"',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" ',
+                        'popup-body="{{form.getRow(rowsn).error.errorCode?form.getRow(rowsn).error.errorMessage.nl2br():\'\'}}"',
                         'title="{{ tooltip?\'\':(form.getRow(rowsn).error.errorCode? form.getRow(rowsn).error.errorMessage : \'\') }}"',
                     '>',
                     '{{actname?actname:name.capital()}}',
@@ -2399,8 +2404,9 @@ wliu_form.directive("form.rowerror", function (wliuFormService) {
             rowsn:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag">',
-                        '<div class="wliu-diag-content" style="font-size:16px;">',
+                    '<div id="{{targetid}}" wliu-diag movable maskable>',
+                        '<div wliu-diag-head>Message</div>',
+                        '<div wliu-diag-body style="font-size:16px;">',
                         '<i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true" style="color:red;"></i> <span style="font-size:16px;">We can\'t process submitted data:</span>',
                         '<div style="margin-top:12px;" ng-bind-html="getHTML()"></div>',
                         '</div>',    
@@ -2417,7 +2423,7 @@ wliu_form.directive("form.rowerror", function (wliuFormService) {
         },
         link: function (sc, el, attr) {
             $(function(){
-                $(el).wliuDiag({ fade:false, movable: true, title: "Message"});
+                $(el).wliuDiag();
                 $(el).unbind("errorshow").bind("errorshow", function(evt){
                     if( sc.form.getRow(sc.rowsn) ) {
                         if( parseInt(sc.form.getRow(sc.rowsn).error.errorCode) ) {
@@ -2439,8 +2445,9 @@ wliu_form.directive("form.taberror", function (wliuFormService) {
             targetid:   "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag">',
-                        '<div class="wliu-diag-content" style="font-size:16px;">',
+                    '<div id="{{targetid}}" wliu-diag movable maskable>',
+                        '<div wliu-diag-head>Message</div>',
+                        '<div wliu-diag-body style="font-size:16px;">',
                         '<i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true" style="color:red;"></i> <span style="font-size:16px;">We can\'t process submitted data:</span>',
                         '<div style="margin-top:12px;" ng-bind-html="getHTML()"></div>',
                         '</div>',    
@@ -2456,7 +2463,7 @@ wliu_form.directive("form.taberror", function (wliuFormService) {
         },
         link: function (sc, el, attr) {
             $(function(){
-                $(el).wliuDiag({ fade:false, movable: true, title: "Message"});
+                $(el).wliuDiag();
                 $(el).unbind("errorshow").bind("errorshow", function(evt){
                     if( parseInt(sc.form.error.errorCode) ) {
                         $(el).trigger("show");
@@ -2467,73 +2474,6 @@ wliu_form.directive("form.taberror", function (wliuFormService) {
     }
 });
 
-wliu_form.directive("form.tooltip", function (wliuFormService) {
-    return {
-        restrict: "E",
-        replace: true,
-        scope: {
-            form:      "=",
-            targetid:   "@"
-        },
-        template: [
-                    '<div id="{{targetid}}"></div>'
-                ].join(''),
-        controller: function ($scope, $sce) {
-        },
-        link: function (sc, el, attr) {
-            $(function(){
-                $(el).wliuPopup();
-            });
-        }
-    }
-});
-
-wliu_form.directive("form.wait", function (wliuFormService) {
-    return {
-        restrict: "E",
-        replace: true,
-        scope: {
-            form:      "=",
-            targetid:   "@",
-            maskable:   "@"
-        },
-        template: [
-                    '<div id="{{targetid}}"></div>'
-                ].join(''),
-        controller: function ($scope, $sce) {
-        },
-        link: function (sc, el, attr) {
-            $(function(){
-                $(el).wliuLoad({maskable:parseInt(sc.maskable)});
-            });
-        }
-    }
-});
-
-wliu_form.directive("form.autotip", function (wliuFormService) {
-    return {
-        restrict: "E",
-        replace: true,
-        scope: {
-            form:      "=",
-            targetid:   "@",
-            halign:     "@",
-            valign:     "@",
-            type:       "@"
-        },
-        template: [
-                    '<div id="{{targetid}}"></div>'
-                ].join(''),
-        controller: function ($scope, $sce) {
-        },
-        link: function (sc, el, attr) {
-            $(function(){
-   				$(el).wliuTips({hAlign:sc.halign, vAlign:sc.valign, type:sc.type});
-
-            });
-        }
-    }
-});
 
 /****** Form Service *********/
 wliu_form.service("wliuFormService", function () {
