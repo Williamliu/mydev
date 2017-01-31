@@ -78,6 +78,12 @@ $.fn.extend({
                 var tabWW = tabWidth / parseInt( $(">li", el).length );
                 var ttww = 0;
                 $(">li", el).each(function(idx1, el1) {
+                    if( $(el1).has("span").length<=0 ) {
+                       var el_text = $(el1).text();
+                       $(el1).empty();
+                       $(el1).append("<span>" + el_text + "</span><s></s>");
+                    }
+
                     ttww += $(el1).outerWidth();
                     if(fluid) {
                         $(el1).css("width", tabWW + "px");
