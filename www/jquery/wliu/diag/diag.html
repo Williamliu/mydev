@@ -14,6 +14,27 @@
 
 	<link href='/theme/wliu/wliu.common.css' type='text/css' rel='stylesheet' />
 	<link href='/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
+
+    <script>
+    function open1() {
+        console.log("open 111");
+    }
+    function close1() {
+        console.log("close 111");
+    }
+    function open2() {
+        console.log("open 222");
+    }
+    function close2() {
+        console.log("close 222");
+    }
+    function open3() {
+        console.log("open 333");
+    }
+    function close3() {
+        console.log("close 333");
+    }
+    </script>
 </head>
 <body>
 <button diag-toggle="click" diag-target="#contactus">Show ContactUS</button>
@@ -22,7 +43,7 @@
 <br>
     
 
-<div id="contactus" wliu-diag fade maskable movable style="width:480px;"  >
+<div id="contactus" wliu-diag fade maskable movable style="width:480px;"  before="open3()" after="close3()">
     <div wliu-diag-head>
         HELLO WORLD
     </div>
@@ -33,7 +54,7 @@
 </div>    
 
 
-<div id="lwh1" wliu-diag movable fade>
+<div id="lwh1" wliu-diag movable fade before="open1()" after="close1()">
     <div wliu-diag-head>Good Morning</div>
     <div wliu-diag-body>
         111111 111111111 111111
@@ -43,7 +64,7 @@
     </div>
 </div>
 
-<div id="lwh2" wliu-diag movable fade>
+<div id="lwh2" wliu-diag movable fade border before="open2()" after="close2()">
     <div wliu-diag-head>Good Afternoon</div>
     <div wliu-diag-body>
         2222222222222222222222222222

@@ -17,10 +17,7 @@ $.fn.extend({
             border:     false,
             fade:       false,
             
-            zIndex: 	8000,
-			before:		null,
-			after:		null,
-            close:      null
+            zIndex: 	8000
         };
         $.extend(def_settings, opts);
 
@@ -190,8 +187,8 @@ $.fn.extend({
                             $(mask_div).hide();
                         }
                     });
-                    
-                    if( def_settings.close ) if( $.isFunction(def_settings.close) ) def_settings.close(el);
+
+                    eval( $(el).attr("after") );
                 });
             });
 
@@ -263,12 +260,13 @@ $.fn.extend({
                     // end of position
                 }
                // end of re-position
-
-                $(this).fadeIn(( $(el).hasAttr("fade")?"slow":0), function(){
+               
+               if( !$(el).is(":visible") ) eval( $(el).attr("before") );
+               
+               $(el).fadeIn(( $(el).hasAttr("fade")?"slow":0), function(){
                    if( $(this).hasAttr("maskable") ) {
                         $(mask_ifrm).show();
                         $(mask_div).show();
-            			if( def_settings.after ) if( $.isFunction(def_settings.after) ) def_settings.after(el);
                    }
                 });
             });

@@ -29,47 +29,94 @@
 	<link href='/theme/wliu/wliu.common.css' type='text/css' rel='stylesheet' />
 	<link href='/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
     <script>
-        function showload(a) {
-            console.log("show log: " + a);
+        function showload(a, b) {
+            console.log("ok" + a);
+            console.log("Tab Active: " + a);
         }
-        function hideload() {
-           var mfun = eval( $("#tip1").attr("evt") );
-           mfun(500);
-        }
-        function showtip1() {
-            $("#tip1").trigger("auto", ["good day", "warning"]);
-        }
-        function showtip2() {
-            $("#tip2").trigger("auto",["hello world"]);
-        }
-        function showtip3() {
-            $("#tip3").trigger("auto");
-        }
-        function showtip4() {
-            $("#tip4").trigger("auto",["Successful.", "success"]);
+        function hideload(a, b) {
+            console.log("De" + a );
+            console.log("Tab Deactive :" + a);
         }
     </script>
 
 </head>
 <body>
-<button onclick="showload()">Show load</button>
-<button onclick="hideload()">Hide load</button>
+
 <br>
+<div style="width:800px; padding:50px;">
 
-<div wliu-load>
+<ul wliu-tab1 border wliu-tab1-height=160 active="showload" deactive="hideload">
+    <li>Good Dkdld dkf dfjdsakD FASDFSA sdfsdaf DFSDA</li>
+    <li class="selected" >Best Dkddfask ks asd sdafsddfjksdj DFDSAFSAD</li>
+    <li>Boot DFJADSK K DKJ SD sdfasd FSDAFSF</li>
+</ul>
+<div wliu-tab1-body wliu-tab1-height=120>
+    <div>djfklasdjf sad11111</div>
+    <div>djfklasdjf sad22222</div>
+    <div>
+        <div style="display:block; height:300px; border:1px solid yellow;">
+        djfklasdjf sad33333
+        djfklasdjf sad33333
+        djfklasdjf sad33333
+        djfklasdjf sad33333
+        </div>
+        <div style="display:block; height:200px; border:1px solid yellow;">
+        djfklasdjf sad33333
+        djfklasdjf sad33333
+        djfklasdjf sad33333
+        djfklasdjf sad33333
+        </div>
+    </div>
+</div>
 </div>
 
-<div id="tip1" evt="showload(300)">
+<!-- tab 9 - single case -->
+<ul wliu-tab9 fluid color-purple wliu-tab9-height=120>
+    <li><span>AABBB ddf sdaf DFASD ASDFSDA</span><s></s></li>
+</ul>
+<div wliu-tab9-body>
+    <div>djfklasdjf sad11111</div>
+        <div style="display:block; height:300px; border:1px solid yellow;">
+        djfklasdjf sad33333
+        djfklasdjf sad33333
+        djfklasdjf sad33333
+        djfklasdjf sad33333
+        </div>
+        <div style="display:block; height:200px; border:1px solid yellow;">
+        djfklasdjf sad33333
+        djfklasdjf sad33333
+        djfklasdjf sad33333
+        djfklasdjf sad33333
+        </div>
+    </div>
+</div>
+<!-- // end -->
+
+<div style="padding:30px;">
+    <ul wliu-tab9 fluid border-grey1 border  color-peridot>
+        <li><span>AABBB ddf sdaf DFASD ASDFSDA</span><s></s></li>
+        <li><span>BBBB DF ASDF SADF SADFd fasdfas dfsadf saDSA</span><s></s></li>
+        <li><span>CCCCsadf sadf SD ASDFASDF SD</span><s></s></li>
+    </ul>
+    <div wliu-tab9-body>
+        <div>djfklasdjf sad11111</div>
+        <div>djfklasdjf sad22222</div>
+        <div>
+            <div style="display:block; height:300px; border:1px solid yellow;">
+            djfklasdjf sad33333
+            djfklasdjf sad33333
+            djfklasdjf sad33333
+            djfklasdjf sad33333
+            </div>
+            <div style="display:block; height:200px; border:1px solid yellow;">
+            djfklasdjf sad33333
+            djfklasdjf sad33333
+            djfklasdjf sad33333
+            djfklasdjf sad33333
+            </div>
+        </div>
+    </div>
 </div>
 
-<div id="tip2" wliu-tips danger>
-</div>
-
-<div id="tip3" wliu-tips top right>
-Great Ideas.
-</div>
-
-<div id="tip4" wliu-tips bottom left>
-</div>
 </body>
 </html>
