@@ -277,7 +277,7 @@ class cMYSQL implements iSQL {
 		if( is_array($colVal) ) {
 			foreach($colVal as $key=>$val) {
 				if(trim($val)!="") {
-					cTYPE::join($criteria, " AND ", $key . " = '" . trim( cTYPE::quote($val) ) . "'" );
+					cTYPE::join($criteria, " AND ", $key . " = '" . trim( $this->quote($val) ) . "'" );
 				} else {
 					return true;
 				}
@@ -288,7 +288,7 @@ class cMYSQL implements iSQL {
 
 		if(is_array($params[2])) {
 			foreach($params[2] as $key=>$val) {
-				cTYPE::join($criteria, " AND ", $key . " <> '" . trim( cTYPE::quote($val) ) . "'" );
+				cTYPE::join($criteria, " AND ", $key . " <> '" . trim( $this->quote($val) ) . "'" );
 			}
 		} else {
 			if($params[2]!="") cTYPE::join($criteria, " AND ", $params[2]);
@@ -321,7 +321,7 @@ class cMYSQL implements iSQL {
 		$criteria = "1=1";
 		if(is_array($params[2])) {
 			foreach($params[2] as $key=>$val) {
-				cTYPE::join($criteria, " AND ", $key . " = '" . trim( cTYPE::quote($val) ) . "'" );
+				cTYPE::join($criteria, " AND ", $key . " = '" . trim( $this->quote($val) ) . "'" );
 			}
 		} else {
 			if($params[2]!="") cTYPE::join($criteria, " AND ", $params[2]);
@@ -372,7 +372,7 @@ class cMYSQL implements iSQL {
 		$values = "";
 		foreach($field_array as $key=>$val) {
 			$fields .= ($fields==""?$key: ", " . $key); 
-			$values .= ($values==""?"":", ") . "'" . cTYPE::quote($val) . "'"; 
+			$values .= ($values==""?"":", ") . "'" . $this->quote($val) . "'"; 
 		}
 		$query = "INSERT INTO " . $table . " (" . $fields . ") VALUES (" . $values . ")";
 		//echo "\nquery:" . $query;
@@ -411,16 +411,16 @@ class cMYSQL implements iSQL {
 		$criteria = "";
 		if(is_array($params[1])) {
 			foreach($params[1] as $key=>$val) {
-				cTYPE::join( $criteria, " AND ", $key . " = '" . trim( cTYPE::quote($val) ) . "'");
+				cTYPE::join( $criteria, " AND ", $key . " = '" . trim( $this->quote($val) ) . "'");
 			}
 		} else {
-			$criteria = "id = '" . trim( cTYPE::quote($params[1]) ) . "'";
+			$criteria = "id = '" . trim( $this->quote($params[1]) ) . "'";
 		}
 		
 		$fields_update = "";
 		foreach($field_array as $key=>$val) {
 				$val = $this->quote($val);
-				cTYPE::join( $fields_update, ", ",  $key . " = '" . cTYPE::quote($val) . "'" );
+				cTYPE::join( $fields_update, ", ",  $key . " = '" . $val . "'" );
 		}	
 		$query = "UPDATE " . $table . " SET " . $fields_update . " WHERE " . $criteria . ";";
 		//echo "\nquery:" . $query . "\n";
@@ -438,11 +438,11 @@ class cMYSQL implements iSQL {
 		$criteria = "";
 		if(is_array($params[1])) {
 			foreach($params[1] as $key=>$val) {
-				cTYPE::join( $criteria, " AND ", $key . " = '" . trim( cTYPE::quote($val) ) . "'");
+				cTYPE::join( $criteria, " AND ", $key . " = '" . trim( $this->quote($val) ) . "'");
 			}
 			$append_array = $params[1];
 		} else {
-			$criteria = "id = '" . trim( cTYPE::quote($params[1]) ) . "'";
+			$criteria = "id = '" . trim( $this->quote($params[1]) ) . "'";
 			$append_array["id"] = $params[1];
 		}
 		
@@ -452,7 +452,7 @@ class cMYSQL implements iSQL {
 			$fields_update = "";
 			foreach($field_array as $key=>$val) {
 					$val = $this->quote($val);
-					cTYPE::join( $fields_update, ", ",  $key . " = '" . cTYPE::quote($val) . "'" );
+					cTYPE::join( $fields_update, ", ",  $key . " = '" . $val . "'" );
 			}	
 			$query = "UPDATE " . $table . " SET " . $fields_update . " WHERE " . $criteria . ";";
 			//print_r($params[1]);
@@ -476,10 +476,10 @@ class cMYSQL implements iSQL {
 		$criteria = "";
 		if(is_array($params[1])) {
 			foreach($params[1] as $key=>$val) {
-				cTYPE::join( $criteria, " AND ", $key . " = '" . trim( cTYPE::quote($val) ) . "'" );
+				cTYPE::join( $criteria, " AND ", $key . " = '" . trim( $this->quote($val) ) . "'" );
 			}
 		} else {
-			$criteria = "id = '" . trim( cTYPE::quote($params[1]) ) . "'";
+			$criteria = "id = '" . trim( $this->quote($params[1]) ) . "'";
 		}
 		$query = "DELETE FROM " . $table . " WHERE " . $criteria . ";";
 		//echo "\nquery:" . $query . "\n";
@@ -494,10 +494,10 @@ class cMYSQL implements iSQL {
 		$criteria = "";
 		if(is_array($params[1])) {
 			foreach($params[1] as $key=>$val) {
-				cTYPE::join( $criteria, " AND ", $key . " = '" . trim( cTYPE::quote($val) ) . "'" );
+				cTYPE::join( $criteria, " AND ", $key . " = '" . trim( $this->quote($val) ) . "'" );
 			}
 		} else {
-			$criteria = "id = '" . trim( cTYPE::quote($params[1]) ) . "'";
+			$criteria = "id = '" . trim( $this->quote($params[1]) ) . "'";
 		}
 		$query = "UPDATE " . $table . " SET deleted = 1 WHERE " . $criteria . ";";
 		//echo "\nquery:" . $query . "\n";
@@ -560,8 +560,8 @@ class cMYSQL implements iSQL {
 			// if primary table key has defval,  only select defval record
 			$pv = trim($colMeta[$pkey]["defval"]);
 			if( $pv ) {
-				//cTYPE::join($primary_criteria, " AND ", "a.$pk='" . cTYPE::quote($pv) . "'");
-				cTYPE::join($pk_criteria, " AND ", "a.$pk='" . cTYPE::quote($pv) . "'");
+				//cTYPE::join($primary_criteria, " AND ", "a.$pk='" . $this->quote($pv) . "'");
+				cTYPE::join($pk_criteria, " AND ", "a.$pk='" . $this->quote($pv) . "'");
 			} else {
 				// no default value, primary rows should be none
 				//cTYPE::join($primary_criteria, " AND ", "1=0");
@@ -726,8 +726,8 @@ class cMYSQL implements iSQL {
 			// if primary table key has defval,  only select defval record
 			$pv = trim($colMeta[$pkey]["defval"]);
 			if( $pv ) {
-				cTYPE::join($pk_criteria, " AND ", "a.$pk='" . cTYPE::quote($pv) . "'");
-				//cTYPE::join($primary_criteria, " AND ", "a.$pk='" . cTYPE::quote($pv) . "'");
+				cTYPE::join($pk_criteria, " AND ", "a.$pk='" . $this->quote($pv) . "'");
+				//cTYPE::join($primary_criteria, " AND ", "a.$pk='" . $this->quote($pv) . "'");
 			} else {
 				// no default value, primary rows should be none
 				//cTYPE::join($primary_criteria, " AND ", "1=0");
@@ -976,8 +976,8 @@ class cMYSQL implements iSQL {
 			// if primary table key has defval,  only select defval record
 			$pv = trim($colMeta[$pkey]["defval"]);
 			if( $pv ) {
-				cTYPE::join($pk_criteria, " AND ", "a.$pk='" . cTYPE::quote($pv) . "'");
-				cTYPE::join($primary_criteria, " AND ", "a.$pk='" . cTYPE::quote($pv) . "'");
+				cTYPE::join($pk_criteria, " AND ", "a.$pk='" . $this->quote($pv) . "'");
+				cTYPE::join($primary_criteria, " AND ", "a.$pk='" . $this->quote($pv) . "'");
 			} else {
 				//if defval is empty, rows of both primary and return should be none
 				cTYPE::join($pk_criteria, " AND ", "1=0");
@@ -990,7 +990,7 @@ class cMYSQL implements iSQL {
 			$sk = $colMap[$skey];
 			$sv = trim($colMeta[$skey]["defval"]);
 			if( $sv ) {
-				cTYPE::join($sk_criteria, " AND ", "b.$sk='" . cTYPE::quote($sv) . "'");
+				cTYPE::join($sk_criteria, " AND ", "b.$sk='" . $this->quote($sv) . "'");
 			}		
 		}
 
@@ -1215,8 +1215,8 @@ class cMYSQL implements iSQL {
 
 			$pv = trim($colMeta[$pkey]["defval"]);
 			if( $pv ) {
-				cTYPE::join($pjoinOn, " AND " , "a.$pk='" . cTYPE::quote($pv) . "'");
-				cTYPE::join($primary_criteria, " AND ", "a.$pk='" . cTYPE::quote($pv) . "'");
+				cTYPE::join($pjoinOn, " AND " , "a.$pk='" . $this->quote($pv) . "'");
+				cTYPE::join($primary_criteria, " AND ", "a.$pk='" . $this->quote($pv) . "'");
 			} else {
 				//if defval is empty, rows of both primary and return should be none
 				cTYPE::join($pk_criteria, " AND " ,		"1=0");
@@ -1268,7 +1268,7 @@ class cMYSQL implements iSQL {
 			$sk = $colMap[$skey];
 			$sv = trim($colMeta[$skey]["defval"]);
 			if( $sv ) {
-				cTYPE::join($sk_criteria, " AND ", "b.$sk='" . cTYPE::quote($sv) . "'");
+				cTYPE::join($sk_criteria, " AND ", "b.$sk='" . $this->quote($sv) . "'");
 			}		
 		}
 		// criteria 

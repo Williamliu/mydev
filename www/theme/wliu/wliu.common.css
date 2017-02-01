@@ -122,11 +122,13 @@ textarea:focus {
 span.radio,
 span.checkbox {
 	display: 		inline-block;
+	/*
 	white-space: 	nowrap;
-	padding:     	0px;
-	margin: 	 	5px;
 	height:         20px;
 	line-height:    20px;
+	*/
+	padding:     	0px;
+	margin: 	 	5px;
 }
 span.radio > label,
 span.checkbox > label,
@@ -134,8 +136,10 @@ span.checkbox > label,
 [type="radio"] + label
 {
 	display: 	inline-block;
+	/*
 	height:         20px;
 	line-height:    20px;
+	*/
 	vertical-align: middle;
 } 
 
