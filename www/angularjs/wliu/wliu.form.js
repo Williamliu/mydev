@@ -595,7 +595,7 @@ wliu_form.directive("form.intdate", function () {
             format:     "@"
         },
         template: [
-                    '<span ng-hide="form.relationHide(rowsn, name)">{{ form.getCol(name, rowsn).value?(form.getCol(name, rowsn).value>0?(form.getCol(name, rowsn).value * 1000 | date : (format?format:"yyyy-MM-dd hh:mm") ):"") :"" }}</span>'
+                    '<span ng-hide="form.relationHide(rowsn, name)">{{ form.getCol(name, rowsn).value?(form.getCol(name, rowsn).value>0?(form.getCol(name, rowsn).value * 1000 | date : (format?format:"yyyy-MM-dd H:mm") ):"") :"" }}</span>'
 				  ].join(''),
         controller: function ($scope) {
         }

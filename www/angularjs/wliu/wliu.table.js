@@ -60,7 +60,7 @@ wliu_table.directive("table.navi", function () {
                         '</div>',
                         '<div class="pull-right" style="padding:0px; margin:0px;" ng-if="table.navi.pagetotal>0 || table.navi.recordtotal>0">',
                             '<span style="vertical-align:middle;">Size: </span>',                           
-                            '<input type="text" class="input-tiny" style="height:1.2em;width:30px;font-size:1.2em;text-align:center;" ng-model="table.navi.pagesize" ',
+                            '<input type="text" class="input-tiny" style="height:1.2em;width:40px;font-size:1.2em;text-align:center;" ng-model="table.navi.pagesize" ',
                                 'ng-keypress="keypress($event)" ',                                
                                 'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="Page Size" ',
                                 'title="{{tooltip? \'\':\'Page Size\'}}" ',
@@ -848,7 +848,7 @@ wliu_table.directive("table.intdate", function () {
             format:     "@"
         },
         template: [
-                    '<span ng-hide="table.relationHide(rowsn, name)">{{ table.getCol(name, rowsn).value?(table.getCol(name, rowsn).value>0?(table.getCol(name, rowsn).value * 1000 | date : (format?format:"yyyy-MM-dd hh:mm") ):"") :"" }}</span>'
+                    '<span ng-hide="table.relationHide(rowsn, name)">{{ table.getCol(name, rowsn).value?(table.getCol(name, rowsn).value>0?(table.getCol(name, rowsn).value * 1000 | date : (format?format:"yyyy-MM-dd H:mm") ):"") :"" }}</span>'
 				  ].join(''),
         controller: function ($scope) {
         }
@@ -2885,14 +2885,16 @@ wliu_table.directive("table.bicon", function (wliuTableService) {
             xsize:      "@",
             name:       "@",
             actname:    "@",
-            action:     "&"
+            action:     "&",
+            tooltip:    "@"
         },
         template: [
                     '<span>',
                     '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" scope="{{ table.scope }}" ',
-                        'title="{{actname?actname:name}}"',
                         'ng-click="action1(table.getRow(rowsn))" ',
                         'ng-if="buttonState(name, table.getRow(rowsn).rowstate)"',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" ',
+                        'title="{{tooltip?\'\':actname?actname:name}}" ',
                     '>',
                     '</a>',
                     '</span>'
@@ -3112,14 +3114,16 @@ wliu_table.directive("table.hicon", function (wliuTableService) {
             xsize:      "@",
             name:       "@",
             actname:    "@",
-            action:     "&"
+            action:     "&",
+            tooltip:    "@"
         },
         template: [
                     '<span>',
                     '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" scope="{{ table.scope }}" ',
-                        'title="{{actname?actname:name}}"',
                         'ng-click="action1()" ',
                         'ng-if="buttonState(name, rowstate())"',
+                        'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" ',
+                        'title="{{tooltip?\'\':actname?actname:name}}" ',
                     '>',
                     '</a>',
                     '</span>'

@@ -1584,7 +1584,10 @@ class cACTION {
 				cACTION::checkUniques($db, $table);
 				cACTION::saveRows($db, $table);
 				break;
-			case "init":
+			case "custom":
+				cLIST::getList($db, $table);
+				cVALIDATE::validate($table);
+				cACTION::checkUniques($db, $table);
 				break;
 		}
 		cACTION::getRowArray($table);
@@ -1668,6 +1671,7 @@ class cACTION {
 						}
 						break;
 					case "save":
+					case "custom":
 						foreach($theRow["cols"] as &$theCol) {
 							if( !$theCol["key"] ) {
 								unset($theCol["value"]);

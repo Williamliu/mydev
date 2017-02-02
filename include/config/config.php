@@ -2,17 +2,17 @@
 date_default_timezone_set('America/Los_Angeles');
 $CFG = array();
 $CFG["http"]			= "http://";
-//$CFG["web_domain"] 		= $CFG["http"] . $_SERVER['HTTP_HOST'] . "";
+//$CFG["web_domain"] 	= $CFG["http"] . $_SERVER['HTTP_HOST'] . "";
 //$CFG["admin_domain"] 	= $CFG["http"] . $_SERVER['HTTP_HOST'] . "";
 $CFG["web_domain"] 		= "http://www.dev.com";
 $CFG["admin_domain"] 	= "http://www.admin.com";
 
-$CFG["web_root"] 		= "D:\Software\WilliamLiu\Tech_Books\mydev";
-$CFG["admin_root"] 		= "D:\Software\WilliamLiu\Tech_Books\mydev";
+$CFG["web_root"] 		= "C:\Projects\mydev";
+$CFG["admin_root"] 		= "C:\Projects\mydev";
 
 $CFG["include_path"] 	= $CFG["web_root"] . "/include";
 $CFG["report_path"] 	= $CFG["web_root"] . "/reports";
-$CFG["upload_path"] 	= "D:\Software\WilliamLiu\Tech_Books\mydev\uploads";
+$CFG["upload_path"] 	= "C:\Projects\mydev\uploads";
 
 
 // Theme and   use the theme folder name for Array key.
@@ -21,7 +21,6 @@ $CFG["lang_default"] 	= "cn";
 $CFG["lang"]["cn"] 		= "cn";
 $CFG["lang"]["tw"] 		= "tw";
 $CFG["lang"]["en"] 		= "en";
-
 
 $CFG["theme_default"] 	= "blue";
 $CFG["theme"]["blue"] 	= "Blue";

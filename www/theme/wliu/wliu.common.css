@@ -84,11 +84,11 @@ textarea
 	background-color: 	rgb(255,255,255);
 	color: 				rgb(85,85,85);
 	box-shadow: 		rgba(0,​ 0,​ 0,​ 0.075) 0px 1px 1px 0px inset;
-	margin: 			2px 2px;
+	margin: 			1px1px;
 	padding-top: 		2px;
 	padding-bottom: 	2px;
-	padding-left: 		6px;
-	padding-right: 		6px;
+	padding-left: 		2px;
+	padding-right: 		2px;
 	border-radius: 		4px;
 	border: 			1px solid rgb(204,204,204);
 	vertical-align: 	middle;
@@ -530,7 +530,7 @@ input.wliuCommon-datepicker {
 	border-radius: 		0px;
 	background: 		0px center url(wliu.common/wliu-date-16.png) no-repeat;
 	vertical-align: 	middle;
-	box-sizing: content-box;
+	box-sizing: 		content-box;
 }
 
 input.wliuCommon-timepicker {
@@ -550,7 +550,7 @@ input.wliuCommon-timepicker {
 	border-radius: 		0px;
 	background: 		0px center url(wliu.common/wliu-clock-16.png) no-repeat;
 	vertical-align: 	middle;
-	box-sizing: content-box;
+	box-sizing: 		content-box;
 }
 /***************************************************/
 
@@ -809,6 +809,15 @@ input.input-long,
 select.input-long,
 textarea.input-long {
 	width: 				300px;
+}
+
+span.input-auto,
+input.input-auto, 
+input.input-auto,
+select.input-auto,
+textarea.input-auto {
+	box-sizing: 		border-box;
+	width: 				100%;
 }
 
 select {

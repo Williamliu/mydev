@@ -96,7 +96,7 @@ if(1==0) {
 
 <title><?php echo $seo_row["seo_title"];?></title>
 
-<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery-ui-1.8.21.custom.min.js"></script>
 <link type="text/css" 		 href="<?php echo $CFG["web_domain"]?>/jquery/theme/light/jquery-ui-1.8.21.custom.css" rel="stylesheet" />
 
