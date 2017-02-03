@@ -2020,7 +2020,7 @@ class cACTION {
 								$table["success"] 				= 0;
 								$theRow["error"]["errorCode"] 	= 1;
 								$theRow["cols"][$cidx]["errorCode"] 		= 1;  
-								$theRow["cols"][$cidx]["errorMessage"] 		= "'" . $uCol["colname"] . "' already used in our database.";  
+								$theRow["cols"][$cidx]["errorMessage"] 		= "'" . $uCol["colname"] . "' already in used.";  
 							}
 							break;
 						case 2:
@@ -2029,7 +2029,7 @@ class cACTION {
 								$table["success"] 				= 0;
 								$theRow["error"]["errorCode"] 	= 1;
 								$theRow["cols"][$cidx]["errorCode"] 		= 1;  
-								$theRow["cols"][$cidx]["errorMessage"] 		= "'" . $uCol["colname"] . "' already used in our database.";  
+								$theRow["cols"][$cidx]["errorMessage"] 		= "'" . $uCol["colname"] . "' already in used.";  
 							}
 							break;
 						case 3:
