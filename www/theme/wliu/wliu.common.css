@@ -84,7 +84,7 @@ textarea
 	background-color: 	rgb(255,255,255);
 	color: 				rgb(85,85,85);
 	box-shadow: 		rgba(0,​ 0,​ 0,​ 0.075) 0px 1px 1px 0px inset;
-	margin: 			1px1px;
+	margin: 			1px 1px;
 	padding-top: 		1px;
 	padding-bottom: 	1px;
 	padding-left: 		1px;
@@ -130,7 +130,7 @@ span.checkbox {
 	line-height:    20px;
 	*/
 	padding:     	0px;
-	margin: 	 	5px;
+	margin: 	 	1px;
 }
 span.radio > label,
 span.checkbox > label,

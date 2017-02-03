@@ -56,7 +56,8 @@ wliu_table.directive("filter.textbox", function () {
     }
 });
 
-wliu_table.directive("filter.select", function () {
+// for one2many, many2many 
+wliu_table.directive("filter.bind", function () {
     return {
         restrict: "E",
         replace: true,
@@ -64,6 +65,35 @@ wliu_table.directive("filter.select", function () {
             table:      "=",
             name:       "@",
             tooltip:    "@"
+        },
+        template: [
+			    '<select scope="{{ table.scope }}" ',
+                        'ng-model="table.colMeta(name).defval" ',
+                        'ng-disabled="table.colMeta(name)==undefined" ',
+                        'ng-change="table.allRows()" ',
+                        'ng-options="sObj.key as sObj.value for sObj in table.lists[table.filterMeta(name).list].list" ',                        
+                        'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
+                        'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}"',
+                 '>',
+                 '<option value=""></option>',
+                 '</select>'
+                ].join(''),
+        controller: function ($scope) {
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
+wliu_table.directive("filter.select", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            name:       "@",
+            tooltip:    "@",
+            action:     "&"
         },
         template: [
 			    '<select scope="{{ table.scope }}" ',

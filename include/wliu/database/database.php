@@ -2385,8 +2385,19 @@ class cVALIDATE {
 							case "textarea":
 							case "ckeditor":
 							case "password":
-								if(!$theCol["value"]) $theCol["value"]="";
-								if( $dataType == "NUMBER" ) $theCol["value"] = is_numeric($theCol["value"])?$theCol["value"]:0;
+								if( $dataType == "NUMBER" ) {
+									if( is_numeric($theCol["value"]) ) {
+										$theCol["value"] = is_numeric($theCol["value"])?$theCol["value"]:0;
+									} else {
+										$table["success"] 				= 0;
+										$theRow["error"]["errorCode"] 	= 1;
+										$theCol["errorCode"] 			= 1;  
+										$theCol["errorMessage"] 		= "'" . $dispName . "' is invalid NUMBER type.";  
+									}
+								} 
+
+								if(!$theCol["value"] && $dataType != "NUMBER") $theCol["value"]="";
+								
 
 								if($notNull) {
 									if($theCol["value"]=="") {
