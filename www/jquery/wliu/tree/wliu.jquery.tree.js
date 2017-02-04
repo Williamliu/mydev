@@ -8,7 +8,8 @@ $.fn.extend({
     wliuTree: function(opts) {
         var def_settings = {
             cookie: true,
-            nodes:  "auto"
+            nodes:  "auto",
+			tooltip: ""
         };
         $.extend(def_settings, opts);
 
@@ -20,7 +21,7 @@ $.fn.extend({
 				var eidx = 0;
 				$(">li", $(el)).each(function(idx, el1){
 					if( $(el1).has("s").length<=0 ) $(el1).prepend("<s folder></s>") 
-					$(el1).attr("eidx", eidx);
+					$(el1).attr("eidx", eidx).attr("title", $(el1).text());
 					
 					var cookie_name = cookie_prex + "." + eidx;
 					if( def_settings.cookie && ( localStorage.getItem(cookie_name)=="open" || localStorage.getItem(cookie_name)=="close" ) ) {
@@ -32,7 +33,7 @@ $.fn.extend({
 				});
 				$("ul[wliu-tree]>li", $(el)).each(function(idx, el1){
 					if( $(el1).has("s").length<=0 ) $(el1).prepend("<s folder></s>") 
-					$(el1).attr("eidx", eidx);
+					$(el1).attr("eidx", eidx).attr("title", $(el1).text());
 
 					var cookie_name = cookie_prex + "." + eidx;
 					if(  def_settings.cookie && ( localStorage.getItem(cookie_name)=="open" || localStorage.getItem(cookie_name)=="close" ) ) {
