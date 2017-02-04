@@ -5,109 +5,90 @@
 /*  Files: 	jquery.lwh.tree.js ;  jquery.lwh.tree.css								*/
 /************************************************************************************/
 $.fn.extend({
-	lwhTree: function( opts ){
-		var def_settings = {};
-		$.extend(def_settings, opts);
+    wliuTree: function(opts) {
+        var def_settings = {
+            cookie: true,
+            nodes:  "auto"
+        };
+        $.extend(def_settings, opts);
 
-		return this.each( function(idx, el) { 
-			// scan children li
-			$(el).data("single", def_settings.single);
-			$(">li:last" , $(el)).each( function(idx1, el1) {
-				// default as node 
-				if($(el1).hasClass("node")) $(el1).removeClass("node").addClass("node-last");
-				if($(el1).hasClass("nodes")) $(el1).removeClass("nodes").addClass("nodes-last");
-				if($(el1).hasClass("nodes-open")) 	$(el1).removeClass("nodes-open").addClass("nodes-last-open");
-				if($(el1).hasClass("nodes-close")) 	$(el1).removeClass("nodes-close").addClass("nodes-last-close");
-			});
-			
-			// scan decendant li
-			$(">li:last" , $("ul.lwhTree",$(el))).each( function(idx1, el1) {
-				// default as node 
-				if($(el1).hasClass("node")) $(el1).removeClass("node").addClass("node-last");
-				if($(el1).hasClass("nodes")) $(el1).removeClass("nodes").addClass("nodes-last");
-				if($(el1).hasClass("nodes-open")) 	$(el1).removeClass("nodes-open").addClass("nodes-last-open");
-				if($(el1).hasClass("nodes-close")) 	$(el1).removeClass("nodes-close").addClass("nodes-last-close");
-			});
-			
-			// event for click nodes 
-			$(	
-				"li.nodes > s.node-line," +
-				"li.nodes > s.node-img," +
-				"li.nodes > span.click," +
+        return this.each(function(idx, el) { 
+				var treeid = 0;
+				if( !$(el).attr("id") ) $(el).attr("id", "wliuTree." + treeid++);
+				var cookie_prex = $(el).attr("id");
 
-				"li.nodes-open > s.node-line," +
-				"li.nodes-open > s.node-img," +
-				"li.nodes-open > span.click," +
-				"li.nodes-close > s.node-line," +
-				"li.nodes-close	> s.node-img," +
-				"li.nodes-close	> span.click," +
+				var eidx = 0;
+				$(">li", $(el)).each(function(idx, el1){
+					if( $(el1).has("s").length<=0 ) $(el1).prepend("<s folder></s>") 
+					$(el1).attr("eidx", eidx);
+					
+					var cookie_name = cookie_prex + "." + eidx;
+					if( def_settings.cookie && ( localStorage.getItem(cookie_name)=="open" || localStorage.getItem(cookie_name)=="close" ) ) {
+						$(el1).removeAttr("open").removeAttr("close").addAttr(localStorage.getItem(cookie_name));
+					} else if(def_settings.nodes=="open" || def_settings.nodes=="close") {
+						$(el1).removeAttr("open").removeAttr("close").addAttr(def_settings.nodes);
+					}
+					eidx++;
+				});
+				$("ul[wliu-tree]>li", $(el)).each(function(idx, el1){
+					if( $(el1).has("s").length<=0 ) $(el1).prepend("<s folder></s>") 
+					$(el1).attr("eidx", eidx);
 
-				"li.nodes-last > s.node-line," +
-				"li.nodes-last > s.node-img," +
-				"li.nodes-last > span.click," +
+					var cookie_name = cookie_prex + "." + eidx;
+					if(  def_settings.cookie && ( localStorage.getItem(cookie_name)=="open" || localStorage.getItem(cookie_name)=="close" ) ) {
+						$(el1).removeAttr("open").removeAttr("close").addAttr(localStorage.getItem(cookie_name));
+					} else if(def_settings.nodes=="open" || def_settings.nodes=="close") {
+						$(el1).removeAttr("open").removeAttr("close").addAttr(def_settings.nodes);
+					}
+					eidx++;
+				});
+				
+				$(document).off("click.wliuTree", "ul[wliu-tree]>li, ul[wliu-tree]>li>s").on("click.wliuTree", "ul[wliu-tree]>li, ul[wliu-tree]>li>s", function(evt){
+					if( $(this).prop("tagName").toUpperCase() == "LI" ) {
+						if( $(this).hasAttr("nodes open") ) {
+							$(this).removeAttr("open").addAttr("close");
+							
+							if(def_settings.cookie) {
+								var cookie_name = cookie_prex + "." + $(this).attr("eidx");
+								localStorage.setItem(cookie_name, "close"); 
+							}
+					
+						} else if( $(this).hasAttr("nodes close") ) {
+							$(this).removeAttr("close").addAttr("open");
+					
+							if(def_settings.cookie) {
+								var cookie_name = cookie_prex + "." + $(this).attr("eidx");
+								localStorage.setItem(cookie_name, "open"); 
+							}
+						}						
+					} 
+					if( $(this).prop("tagName").toUpperCase() == "S" ) {
+						if( $(this).parent("li").hasAttr("nodes open") ) {
+							$(this).parent("li").removeAttr("open").addAttr("close");
 
-				"li.nodes-last-open > s.node-line," +
-				"li.nodes-last-open > s.node-img," +
-				"li.nodes-last-open > span.click," +
-				"li.nodes-last-close > s.node-line," +
-				"li.nodes-last-close > s.node-img" +
-				"li.nodes-last-close > span.click"
-				, $(el)
-			).die("click.lwhTree").live("click.lwhTree", function(ev) {
-				var pel = $(this).parent("li");
+							if(def_settings.cookie) {
+								var cookie_name = cookie_prex + "." + $(this).parent("li").attr("eidx");
+								localStorage.setItem(cookie_name, "close"); 
+							}
 
-				if(def_settings.single) {
-					  pel.siblings(".nodes, .nodes-last").each(function(idx, el){
-							if($(this).hasClass("nodes-open")) 
-								$(this).removeClass("nodes-open").addClass("nodes-close");
-							else if($(this).hasClass("nodes-last-open")) 
-								$(this).removeClass("nodes-last-open").addClass("nodes-last-close");
-					  });
-				}
+						} else if( $(this).parent("li").hasAttr("nodes close") ) {
+							$(this).parent("li").removeAttr("close").addAttr("open");
+							
+							if(def_settings.cookie) {
+								var cookie_name = cookie_prex + "." + $(this).parent("li").attr("eidx");
+								localStorage.setItem(cookie_name, "open"); 
+							}
+						}						
+					}
+	                evt.preventDefault();
+	                evt.stopPropagation();
+    	            return false;
+				});
+				
+        });
+    }
+});
 
-				if(pel.hasClass("nodes-open")) 
-					pel.removeClass("nodes-open").addClass("nodes-close");
-				else if(pel.hasClass("nodes-close"))
-					pel.removeClass("nodes-close").addClass("nodes-open");
-				else if(pel.hasClass("nodes-last-open")) 
-					pel.removeClass("nodes-last-open").addClass("nodes-last-close");
-				else if(pel.hasClass("nodes-last-close")) 
-					pel.removeClass("nodes-last-close").addClass("nodes-last-open");
-				return false;
-			});
-			// end of event 
-			
-		});
-	},
-	
-	lwhTree_refresh: function( opts ) {
-		var def_settings = {};
-		$.extend(def_settings, opts);
-		return this.each( function(idx, el) { 
-			// scan children li
-			$("li" , $(el)).each( function(idx1, el1) { 
-				if($(el1).hasClass("nodes-last-open")) 	$(el1).removeClass("nodes-last-open").addClass("nodes-open");
-				if($(el1).hasClass("nodes-last-close")) $(el1).removeClass("nodes-last-close").addClass("nodes-close");
-				if($(el1).hasClass("node-last")) $(el1).removeClass("node-last").addClass("node");
-				if($(el1).hasClass("nodes-last")) $(el1).removeClass("nodes-last").addClass("nodes");
-			});
-			
-			$(">li:last" , $(el)).each( function(idx1, el1) {
-				// default as node 
-				if($(el1).hasClass("node")) $(el1).removeClass("node").addClass("node-last");
-				if($(el1).hasClass("nodes")) $(el1).removeClass("nodes").addClass("nodes-last");
-				if($(el1).hasClass("nodes-open")) 	$(el1).removeClass("nodes-open").addClass("nodes-last-open");
-				if($(el1).hasClass("nodes-close")) 	$(el1).removeClass("nodes-close").addClass("nodes-last-close");
-			});
-			
-			// scan decendant li
-			$(">li:last" , $("ul.lwhTree",$(el))).each( function(idx1, el1) {
-				// default as node 
-				if($(el1).hasClass("node")) $(el1).removeClass("node").addClass("node-last");
-				if($(el1).hasClass("nodes")) $(el1).removeClass("nodes").addClass("nodes-last");
-				if($(el1).hasClass("nodes-open")) 	$(el1).removeClass("nodes-open").addClass("nodes-last-open");
-				if($(el1).hasClass("nodes-close")) 	$(el1).removeClass("nodes-close").addClass("nodes-last-close");
-			});
-		});
-	}
+$(function(){
+    $("ul[wliu-tree][root]").wliuTree();
 });

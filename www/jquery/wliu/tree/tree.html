@@ -36,15 +36,26 @@
 
 <br>
 <div style="width:800px; padding:50px;">
-    <ul wliu-tree>
-        <li nodes open><s folder></s>aaa AAA aaa
+    <ul wliu-tree root id="good_world">
+        <li nodes open>aaa AAA aaa
             <ul wliu-tree>
-                <li nodes><s folder></s>bbb BBB bbb</li>
-                <li nodes open><s folder></s>CCC ccc</li>
+                <li nodes open>bbb BBB bbb
+                    <ul wliu-tree>
+                        <li node>Hello World111</li>
+                        <li node>Hello World222</li>
+                        <li nodes>Hello World333</li>
+                    </ul>
+                </li>
+                <li node>CCC ccc</li>
             </ul>
         </li>
-        <li nodes><s folder></s>bbb BBB bbb</li>
-        <li nodes open><s folder></s>CCC ccc</li>
+        <li>bbb BBB bbb</li>
+        <li nodes close>CCC ccc
+            <ul wliu-tree>
+                <li nodes>bbb BBB bbb</li>
+                <li nodes open>CCC ccc</li>
+            </ul>
+        </li>
     </ul>
 </div>
 

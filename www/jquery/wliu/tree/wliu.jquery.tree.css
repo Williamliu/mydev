@@ -9,56 +9,57 @@ ul[wliu-tree] {
 
 /***  li common ***/
 ul[wliu-tree] > li {
+	cursor:					pointer;
 	display: 				block;
-	cursor:					default;
 	padding: 				0px;
 	white-space:			nowrap;
     overflow: 				hidden;
     text-overflow:      	ellipsis;
     box-sizing:         	border-box;
-    font-size:          	16px;
-	padding-left: 			24px;
-	/*
-	height: 				24px;  
-	line-height:   			24px;
-	*/
+
+	background-position: 	0px 0px;
+	background-color:		#ffffff;
+	background-repeat:		repeat-y; 
+	background-image:		url(image/wliu-tree-ln.png);
+
+    font-size:          	14px;
+}
+ul[wliu-tree] > li:last-child {
+	background-repeat:		no-repeat; 
+	background-image:		url(image/wliu-tree-node-last-ln.png);
+}
+
+/*** node open / close  line ***/
+ul[wliu-tree] > li:before {
+	content: 				" ";
+	display: 				inline-block;
+	width:    				22px;
+	height:  				20px;
+	vertical-align: 		middle;
 
 	background-position: 	0px 0px;
 	background-color:		#ffffff;
 	background-repeat:		no-repeat; 
 	background-image:		url(image/wliu-tree-node-ln.png);
 }
-
-/***  li line  ***/
-ul[wliu-tree] > li:last-child {
+ul[wliu-tree] > li:last-child:before {
 	background-image:		url(image/wliu-tree-node-last-ln.png);
 }
-
-ul[wliu-tree] > li[nodes] {
-	background-image:		url(image/wliu-tree-node-ln.png);
-}
-
-ul[wliu-tree] > li[nodes]:last-child {
-	background-image:		url(image/wliu-tree-node-last-ln.png);
-}
-
-ul[wliu-tree] > li[nodes][open] {
+ul[wliu-tree] > li[nodes][open]:before {
 	background-image:		url(image/wliu-tree-nodes-open-ln.png);
 }
-
-ul[wliu-tree] > li[nodes][close] {
+ul[wliu-tree] > li[nodes][close]:before {
 	background-image:		url(image/wliu-tree-nodes-close-ln.png);
 }
-
-ul[wliu-tree] > li[nodes][open]:last-child {
+ul[wliu-tree] > li[nodes][open]:last-child:before {
 	background-image:		url(image/wliu-tree-nodes-last-open-ln.png);
 }
-
-ul[wliu-tree] > li[nodes][close]:last-child {
+ul[wliu-tree] > li[nodes][close]:last-child:before {
 	background-image:		url(image/wliu-tree-nodes-last-close-ln.png);
 }
 
 
+/*** default tree open | close icon here:  default is folder  ***/
 ul[wliu-tree] > li > s {
 	cursor:					pointer;
 	display: 				inline-block;
@@ -66,123 +67,49 @@ ul[wliu-tree] > li > s {
 
 	background-color:		#ffffff;
 	background-repeat:		no-repeat; 
-	background-position: 	0px 1px;
+	background-position: 	left 1px;
 }
 
-/*** default tree open | close icon here:  default is folder  ***/
+ul[wliu-tree] > li[node] > s[folder] {
+	width:	 				22px;
+	height:					20px;
+	background-image:		url(image/wliu-tree-item.png);
+}
 ul[wliu-tree] > li[nodes] > s[folder] {
-	width:	 				24px;
-	height:					24px;
+	width:	 				22px;
+	height:					20px;
 	background-image:		url(image/wliu-tree-folder-close.png);
 }
-
 ul[wliu-tree] > li[nodes][open] > s[folder] {
-	width:	 				24px;
-	height:					24px;
 	background-image:		url(image/wliu-tree-folder-open.png);
 }
-
 ul[wliu-tree] > li[nodes][close] > s[folder] {
-	width:	 				24px;
-	height:					24px;
 	background-image:		url(image/wliu-tree-folder-close.png);
 }
 
 /*** custome tree open | close icon here ***/
+ul[wliu-tree] > li[node] > s[xxxx] {
+	width:	 				22px;
+	height:					20px;
+	background-image:		url(image/wliu-tree-xxxx.png);
+}
 ul[wliu-tree] > li[nodes] > s[xxxx] {
-	width:	 				24px;
-	height:					24px;
+	width:	 				22px;
+	height:					20px;
 	background-image:		url(image/wliu-tree-xxxx-close.png);
 }
-
 ul[wliu-tree] > li[nodes][open] > s[xxxx] {
-	width:	 				24px;
-	height:					24px;
 	background-image:		url(image/wliu-tree-xxxx-open.png);
 }
-
 ul[wliu-tree] > li[nodes][close] > s[xxxx] {
-	width:	 				24px;
-	height:					24px;
 	background-image:		url(image/wliu-tree-xxxx-close.png);
 }
 
-
-
-
-
-/*** nodes close  ***/
-ul.lwhTree > li.nodes-close > ul.lwhTree {
-	display:				none;
+/*** nodes open | close ***/
+ul[wliu-tree] > li[nodes][close] > ul[wliu-tree] {
+	display: 				none;
+}
+ul[wliu-tree] > li[nodes][open] > ul[wliu-tree] {
+	display: 				block;
 }
 
-ul.lwhTree > li.nodes-last-close > ul.lwhTree {
-	display:				none;
-}
-
-ul.lwhTree > li.nodes-close > s.node-line {
-	cursor:					pointer;
-
-	background-image:		url(image/treeview/lwhTree-ln-nodes-close.png);
-}
-
-ul.lwhTree > li.nodes-last-close > s.node-line {
-	cursor:					pointer;
-
-	background-image:		url(image/treeview/lwhTree-ln-nodes-close-last.png);
-}
-
-ul.lwhTree > li.nodes-close 		> s.node-img,
-ul.lwhTree > li.nodes-last-close 	> s.node-img {
-	cursor:					pointer;
-	width:	 				20px;
-	height:					20px;
-
-	background-image:		url(image/treeview/lwhTree-items-close.gif);
-}
-
-/*** add your image here for nodes closed ***/
-/*
-ul.lwhTree > li.nodes-close 		> s.node-img,
-ul.lwhTree > li.nodes-last-close 	> s.node-img {
-	background:		url(image/treeview/lwhTree1-item.gif) center center no-repeat;
-}
-*/
-
-
-/*** add your image here for nodes closed ***/
-/*
-ul.lwhTree > li.nodes-close 		> s.node-img-myimg,
-ul.lwhTree > li.nodes-last-close 	> s.node-img-myimg {
-	background:				#ffffff url(image/treeview/xxxx.png) center center no-repeat;
-}
-*/
-ul.lwhTree > li.nodes-close 		> s.node-img-group,
-ul.lwhTree > li.nodes-last-close 	> s.node-img-group {
-	cursor:					pointer;
-	width:	 				20px;
-	height:					20px;
-	background:	#ffffff url(image/treeview/lwhTree-group-close.png) center center no-repeat;
-}
-
-
-
-
-ul.lwhTree > li > span.title {
-	display:			inline-block;
-	overflow:			hidden;
-	text-overflow: 		ellipsis;
-	-o-text-overflow: 	ellipsis;
-	white-space:		nowrap;
-	vertical-align:		middle;
-}
-
-ul.lwhTree > li.nodes > span.click {
-	cursor:				pointer;
-}
-
-
-.ck-right {
-	vertical-align:	middle;
-	margin-left:	10px;
-}
