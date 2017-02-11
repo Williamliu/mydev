@@ -8,6 +8,22 @@
 		<link href='jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
 		<!-- //JQuery -->
 
+		<!-- Bootstrap3.3 -->
+		<link 	href='theme/bootstrap4.0/css/bootstrap.min.css' type='text/css' rel='stylesheet' />
+		<script src="theme/mdb4.0/js/tether.js" type="text/javascript"></script>
+		<script src="theme/bootstrap4.0/js/bootstrap.min.js" type="text/javascript"></script>    
+		<!-- //Bootstrap -->
+		
+		<!-- MD Bootstrap 4.0 -->
+		<link href='theme/mdb4.0/css/mdb.wliu.css' type='text/css' rel='stylesheet' />
+		<link href='theme/font-awesome-4.6.3/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
+		<!--
+		<link href='theme/mdb_pro/css/woocommerce.css' rel='stylesheet' type='text/css'>
+		<link href='theme/mdb_pro/css/woocommerce-layout.css' rel='stylesheet' type='text/css'>
+		<link href='theme/mdb_pro/css/woocommerce-smallscreen.css' rel='stylesheet' type='text/css'>
+		-->
+		<!-- //MD Bootstrap -->
+
 		<!-- AngularJS 1.3.15 -->
 		<script	src="angularjs/angular-1.3.15/angular.js" type="text/javascript"></script>
 		<script	src="angularjs/angular-1.3.15/angular-cookies.js" type="text/javascript"></script>
@@ -28,8 +44,8 @@
 		<link 	href='jquery/wliu/diag/wliu.jquery.diag.css' type='text/css' rel='stylesheet' />
 		<script src="jquery/wliu/popup/wliu.jquery.popup.js" type="text/javascript"></script>
 		<link 	href='jquery/wliu/popup/wliu.jquery.popup.css' type='text/css' rel='stylesheet' />
-		<script src="jquery/wliu/loading/wliu.jquery.loading.js" type="text/javascript"></script>
-		<link 	href="jquery/wliu/loading/wliu.jquery.loading.css" type='text/css' rel='stylesheet' />
+		<script src="jquery/wliu/load/wliu.jquery.load.js" type="text/javascript"></script>
+		<link 	href="jquery/wliu/load/wliu.jquery.load.css" type='text/css' rel='stylesheet' />
 
 
 		<link href='theme/wliu/wliu.common.css' type='text/css' rel='stylesheet' />
@@ -38,22 +54,25 @@
 
 
         <script language="javascript" type="text/javascript">
-        var iFile = new WLIU.IMAGE();
+        var iImage = new WLIU.IMAGE();
+
+        var app = angular.module("myApp", ["wliuImage"]);
+        app.controller("myImage", function ($scope) {
+            FIMAGE.setScope(iImage, $scope, "myimg");
+
+            $scope.imageSelect = function(imgObj) {
+                if( FIMAGE.imageData(imgObj) ) {
+                    console.log(imgObj);
+                    $("#myview").attr("src", FIMAGE.imageData(imgObj).data);
+                }
+            }
+        });
+
 
         $(function(){
         })
-        function selectFile(theFile) {
-            console.log(theFile.files[0]);
-            //FFILE.exportBlob(theFile.files[0]);
-            FIMAGE.fromFile(iFile, theFile.files[0], function(fObj){
-                console.log(fObj); 
-                if(fObj.errorCode) {
-                    alert(fObj.errorMessage);
-                } else {
-                    $("#myview").attr("src", fObj.data);
-                }
-            });
-        }
+
+
         function iexport() {
             FFILE.exportHTML("<span style='color:red;'>Hello World</span>");
         }
@@ -64,17 +83,17 @@
         }
         </script>
 </head>
-<body>
+<body ng-app="myApp" ng-controller="myImage">
 <div>
     
     <div style="display:inline-block;position:relative; padding:20px; border:1px solid #cccccc;">
      <input type="file"
             onchange="selectFile(this)" 
-            style="display:block; position:absolute; opacity:1; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%; border:1px solid red; z-index:0;" value="Browse..." />
+            style="display:block; position:absolute; opacity:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" value="Browse..." />
          
     </div>
-
-
+    <image.button.select imgobj="myimg" view="origin" actname="Upload Image" action="imageSelect(myimg)"></image.button.select>
+    
     <INPUT type="button" onclick="iexport()" value="Export" />
     <br>
     <img id="myview" src="" />
@@ -88,11 +107,11 @@
     </div>
     -->        
 
-    <image.viewer imglist="listObj" targetid="imgdiag" view="large"></image.viewer>
-
     <INPUT type="button" onclick="" value="Upload" wliu-diag diag-target="#imgdiag" diag-toggle="click" />
     <INPUT type="button" onclick="reset()" value="Reset" />
     <INPUT type="button" onclick="rotate()" value="Rotate" />
 </div>
+
+<script type="text/javascript" src="theme/mdb4.0/js/mdb.min.js"></script>
 </body>
 </html>

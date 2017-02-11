@@ -1514,7 +1514,7 @@ WLIU.TABLEACTION.prototype = {
 }
 
 WLIU.FILEACTION = function(opts) {
-	this.allowSize = 0.1 * 1024 * 1024,	
+	this.allowSize = 20 * 1024 * 1024,	
 	this.allowType = ["PDF", "XLS", "XLSX", "DOC", "DOCX", "TXT", "*"];
 	if(opts) {
 		if(opts.allowSize) this.allowSize = opts.allowSize;
@@ -1621,8 +1621,8 @@ WLIU.FILEACTION.prototype = {
 }
 
 WLIU.IMAGEACTION = function(opts) {
-	this.allowSize 	= 1 * 1024 * 1024,	
-	this.allowType 	= ["PDF", "XLS", "XLSX", "DOC", "DOCX", "TXT", "*"];
+	this.allowSize 	= 20 * 1024 * 1024,	
+	this.allowType 	= ["BMP", "JPG", "JPEG", "PNG", "TIF", "GIF"];
 	this.view 		= "medium";
 	if(opts) {
 		if(opts.allowSize) this.allowSize = opts.allowSize;
@@ -1630,6 +1630,14 @@ WLIU.IMAGEACTION = function(opts) {
 	}
 }
 WLIU.IMAGEACTION.prototype = {
+	setScope: function(theImage, p_scope, ngName) {
+		if( ngName ) {
+			p_scope[ngName] = theImage;
+		} else {
+			p_scope.imgobj 	= theImage;
+		}
+	},
+	
 	fromFile: function(theImage, file, callback) {
 		theImage.full_name 	= file.name.fileName();
 		theImage.short_name = file.name.shortName();
@@ -1649,6 +1657,14 @@ WLIU.IMAGEACTION.prototype = {
 			theImage.errorCode 		= 1;
 			theImage.errorMessage 	= "Only file type: [" + this.allowType.join(", ") + "] allow to upload."; 
 			if(callback) if( $.isFunction(callback) ) callback(theImage);
+		}
+	},
+
+	imageData: function(theImage, view) {
+		if( view ) {
+			return theImage.resize[view]?theImage.resize[view]:undefined;
+		} else {
+			return theImage.resize[this.view]?theImage.resize[this.view]:undefined;
 		}
 	},
 

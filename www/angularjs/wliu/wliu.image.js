@@ -2,12 +2,53 @@ var wliu_image = angular.module("wliuImage",[]);
 
 /****** Filter  ******/
 /** label, textbox, select, bool, datetime, date, time */
+wliu_image.directive("image.button.select", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            imgobj:         "=",
+            targetid:       "@",
+            xsize:          "@",
+            actname:        "@",
+            action:         "&",
+            tooltip:        "@",
+            view:           "@"
+
+        },
+        template: [
+                    '<div class="btn btn-outline-info waves-effect" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;">',
+                    '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-upload"></a>',
+                    '<input type="file" onchange="angular.element(this).scope().selectFile(event);" style="display:block; position:absolute; opacity:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" value="Browse..." />',
+                    ' {{actname}}</div>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.xsize = $scope.xsize?$scope.xsize:16;
+            $scope.view = $scope.view?$scope.view:"medium";
+            $scope.selectFile = function(event) {
+                files = (event.srcElement || event.target).files;
+                FIMAGE.view = $scope.view;
+                FIMAGE.fromFile($scope.imgobj, files[0], function(fObj){
+                    if(fObj.errorCode) {
+                        alert(fObj.errorMessage);
+                    } else {
+                        $scope.action();
+                    }
+                });
+            }
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
+
 wliu_image.directive("image.viewer", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            imglist:        "=",
+            imgobj:         "=",
             targetid:       "@",
             title:          "@"
         },
@@ -15,8 +56,8 @@ wliu_image.directive("image.viewer", function () {
                     '<div id="{{targetid}}" class="wliu-diag" style="min-width:200px;min-height:200px;">',
                         '<div class="wliu-diag-content" style="padding:0px;">',
                             
-                            '<div ng-if="imglist.list[imglist.rowno].error.errorCode">',
-                                '{{imglist.list[imglist.rowno].error.errorMessage}}',
+                            '<div ng-if="imgobj.errorCode">',
+                                '{{imgobj.errorMessage}}',
                             '</div>',
                             
                             '<div ng-if="!imglist.list[imglist.rowno].error.errorCode">',
