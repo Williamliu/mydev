@@ -47,7 +47,7 @@ try {
 							"name"=>"website_admin", 
 							"keys"=>array("id"),  
 							"fkeys"=>array(), 
-							"cols"=>array("id", "uuu", "full_name", "email", "bbb", "password","office", "lang", "color", "status","created_time", "country_id"), 
+							"cols"=>array("id", "uuu", "full_name", "email", "img1", "img2", "bbb", "password","office", "lang", "color", "status","created_time", "country_id"), 
 							"insert"=>array(), 
 							"update"=>array()  
 					),

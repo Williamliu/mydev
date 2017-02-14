@@ -269,8 +269,7 @@ wliu_table.directive("table.ckeditor", function () {
                     '<span ng-hide="table.relationHide(rowsn, name)">',
                         '<a class="wliu-btn16 wliu-btn16-rowstate-error" ng-if="table.getCol(name, rowsn).errorCode"></a>',
                         '<span style="color:red; vertical-align:middle;" ng-if="table.getCol(name, rowsn).errorCode">Error: {{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:""}}</span>',
-                        '<input type="hidden" ng-model="rowsn" ng-change="modelChange()" />',
-                        '<textarea scope="{{ table.scope }}" ng-model="table.getCol(name, rowsn).value" id="{{table.scope}}_{{name}}"" ',
+                        '<textarea scope="{{ table.scope }}" ng-model="table.getCol(name, rowsn).value" id="{{table.scope}}_{{name}}_{{rowsn}}" ',
                                   'title="{{ table.getRow(rowsn).error.errorCode ? table.getRow(rowsn).error.errorMessage : \'\' }}"',
                         '>',
                         '</textarea>',
@@ -281,23 +280,24 @@ wliu_table.directive("table.ckeditor", function () {
             //  only sync to ckeditor when initialize the model.
             $scope.modelChange = function() {
                 if( $scope.table.getCol($scope.name, $scope.rowsn) )  {
-                    if(CKEDITOR.instances[$scope.table.scope+"_"+$scope.name])
-                        CKEDITOR.instances[$scope.table.scope+"_"+$scope.name].setData( $scope.table.getCol($scope.name, $scope.rowsn).value );
+                    if(CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn])
+                        if( $scope.form.getCol( $scope.name, $scope.rowsn ).value != CKEDITOR.instances[$scope.form.scope+"_"+$scope.name+"_"+$scope.rowsn].getData() )
+                            CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn].setData( $scope.table.getCol($scope.name, $scope.rowsn).value );
                 }  else {
-                    if(CKEDITOR.instances[$scope.table.scope+"_"+$scope.name])
-                        CKEDITOR.instances[$scope.table.scope+"_"+$scope.name].setData("");
+                    if(CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn])
+                        CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn].setData("");
                 }
             }
-            $scope.$watch("rowsn", $scope.modelChange);
+            $scope.$watch("table.getCol(name, rowsn).value", $scope.modelChange);
         },
         link: function (sc, el, attr) {
             $(function(){
-                htmlObj_cn = CKEDITOR.replace(sc.table.scope + "_" + sc.name,{});
+                htmlObj_cn = CKEDITOR.replace(sc.table.scope + "_" + sc.name + "_" + sc.rowsn,{});
                 // The "change" event is fired whenever a change is made in the editor.
                 htmlObj_cn.on('change', function (evt) {
                     if( sc.table.getCol( sc.name, sc.rowsn ) ) {
-                        if( sc.table.getCol( sc.name, sc.rowsn ).value != CKEDITOR.instances[sc.table.scope+"_"+sc.name].getData() ) {
-                            sc.table.getCol( sc.name, sc.rowsn ).value = CKEDITOR.instances[sc.table.scope+"_"+sc.name].getData();
+                        if( sc.table.getCol( sc.name, sc.rowsn ).value != CKEDITOR.instances[sc.table.scope+"_"+sc.name + "_" + sc.rowsn].getData() ) {
+                            sc.table.getCol( sc.name, sc.rowsn ).value = CKEDITOR.instances[sc.table.scope+"_"+sc.name + "_" + sc.rowsn].getData();
                             sc.table.changeCol(sc.name, sc.rowsn);
                             // to prevent diggest in progress in angular.
                             if( !sc.$root.$$phase) sc.$apply();

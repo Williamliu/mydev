@@ -394,6 +394,7 @@ WLIU.FILE = function( opts ) {
 }
 WLIU.IMAGE = function( opts ) {
 	this.image 		= {
+		state: 			0,  // 0 - ready for upload, 1 - uploading,  2- done,  9 - error
 		errorCode:		0, 
 		errorMessage:	"",
 		scope: 			"",
@@ -423,8 +424,8 @@ WLIU.IMAGE = function( opts ) {
 			 thumb: 	{ ww: 60, 		hh:60, 		width:0, height:0,  name:"", size: 0, data:"" },
 			 tiny: 		{ ww: 120, 		hh:120, 	width:0, height:0,  name:"", size: 0, data:"" },
 			 small: 	{ ww: 200, 		hh:200, 	width:0, height:0,  name:"", size: 0, data:"" },
-			 medium: 	{ ww: 400, 		hh:400, 	width:0, height:0,  name:"", size: 0, data:"" },
-			 large:		{ ww: 800, 		hh:800, 	width:0, height:0,  name:"", size: 0, data:"" }
+			 medium: 	{ ww: 500, 		hh:500, 	width:0, height:0,  name:"", size: 0, data:"" },
+			 large:		{ ww: 1000, 	hh:1000, 	width:0, height:0,  name:"", size: 0, data:"" }
 		}
 	};
 	$.extend(this.image, opts);
@@ -1320,6 +1321,7 @@ WLIU.TABLEACTION.prototype = {
 				table:	ntable
 			},
 			dataType: "JSON",  
+			contentType:"application/x-www-form-urlencoded",
 			error: function(xhr, tStatus, errorTh ) {
 				if( _self.wait ) $(_self.wait).trigger("hide");
 			},
@@ -1637,7 +1639,12 @@ WLIU.IMAGEACTION.prototype = {
 			p_scope.imgobj 	= theImage;
 		}
 	},
-	
+	setView: function(view) {
+		if(view) 
+			this.view = view
+		else 
+			this.view = "medium"; 
+	},
 	fromFile: function(theImage, file, callback) {
 		theImage.full_name 	= file.name.fileName();
 		theImage.short_name = file.name.shortName();
@@ -1659,12 +1666,51 @@ WLIU.IMAGEACTION.prototype = {
 			if(callback) if( $.isFunction(callback) ) callback(theImage);
 		}
 	},
+	clearImage: function(theImage) {
+		theImage = new WLIU.IMAGE();
+		/*
+		theImage.errorCode 		= 0;
+		theImage.errorMessage 	= "";
+		theImage.scope 			= "";
+		theImage.key1 			= "";
+		theImage.key2 			= "";
+		theImage.key3 			= "";
 
+		theImage.title_en 		= "";
+		theImage.title_cn 		= "";
+		theImage.detail_en 		= "";
+		theImage.detail_cn 		= "";
+
+		theImage.full_name		= "";
+		theImage.short_name		= "";
+		theImage.ext_name		= "";
+		theImage.mime_type		= "";
+		theImage.size			= 0;
+
+		theImage.access			= 0;
+		theImage.main			= 0;
+		theImage.orderno		= 0;
+		theImage.status			= 0;
+		*/
+		return theImage;
+	},
 	imageData: function(theImage, view) {
 		if( view ) {
-			return theImage.resize[view]?theImage.resize[view]:undefined;
+			if( theImage.resize[view] ) 
+				if(theImage.resize[view].data)
+					return theImage.resize[view].data;
+				else 
+					return "";
+			else 
+				return "";
 		} else {
-			return theImage.resize[this.view]?theImage.resize[this.view]:undefined;
+			if( theImage.resize[this.view] ) 
+				if( theImage.resize[this.view].data ) 
+					return theImage.resize[this.view].data;
+				else 
+					return "";
+			else 
+				return "";
 		}
 	},
 
@@ -1672,6 +1718,21 @@ WLIU.IMAGEACTION.prototype = {
 		this._rotateAll(theImage, callback);
 	},
 
+	crop: function(theImage, ww,hh,x,y,nw,nh, callback) {
+		this._cropLarge(theImage, ww,hh,x,y,nw,nh, callback);
+	},
+	cropDiv: function(theImage, frame_div, crop_div, callback ) {
+        //console.log( frame_div.width() + " : " + frame_div.height());
+        //console.log( crop_div.outerWidth() + " : " + crop_div.outerHeight());
+        //console.log(crop_div.position() );
+		this._cropLarge(theImage, frame_div.width(), frame_div.height(), crop_div.position().left, crop_div.position().top, crop_div.outerWidth(), crop_div.outerHeight(), callback );
+	},
+	cropDivReset: function( crop_div ) {
+		crop_div.css({left: "5%", top:"5%", width:"90%", height:"90%"});
+	},
+	cropReset: function(theImage, callback) {
+		this._cropReset(theImage, callback);
+	},
 
 	/*** private methods ***/
 	// file = blob
@@ -1781,6 +1842,43 @@ WLIU.IMAGEACTION.prototype = {
 		t_img.src = originImg.data;
 	},
 
+	_resizeImageFromLarge: function(theImage, rname, callback) {
+		var _self = this;
+		var largeImg = theImage.resize.large;
+		var resizeImg = theImage.resize[rname];
+
+		var t_img = new Image();
+		t_img.onload = function() {
+			var canvas 	= document.createElement("canvas");
+			var ctx 	= canvas.getContext("2d");
+			var ratio_ww = 1;
+			var ratio_hh = 1;
+			if( _self.scale ) {
+				if(resizeImg.ww > 0 ) ratio_ww = resizeImg.ww / t_img.width;
+				if(resizeImg.hh > 0 ) ratio_hh = resizeImg.hh / t_img.height;
+			} else {
+				if(resizeImg.ww > 0 && t_img.width > resizeImg.ww) ratio_ww = resizeImg.ww / t_img.width;
+				if(resizeImg.hh > 0 && t_img.height > resizeImg.hh) ratio_hh = resizeImg.hh / t_img.height;
+			}
+			var ratio = Math.min(ratio_ww, ratio_hh);
+			canvas.width 	= t_img.width * ratio;
+			canvas.height 	= t_img.height * ratio;
+			ctx.drawImage(t_img,0,0, t_img.width, t_img.height, 0, 0, canvas.width, canvas.height); 
+			
+			var imgDataURL = canvas.toDataURL( theImage.mime_type );
+			
+			resizeImg.width 	= canvas.width;
+			resizeImg.height 	= canvas.height;
+			resizeImg.data 		= imgDataURL;
+			resizeImg.size 		= imgDataURL.length;
+			resizeImg.name	    = rname;
+			
+			 if( callback && _self.view==rname ) if( $.isFunction(callback) ) callback(resizeImg);
+ 			canvas = null;
+		}
+		t_img.src = largeImg.data;
+	},
+
 	_rotateAll: function(theImage, callback) {
 		for(var rname in theImage.resize) {
 			if( rname !="origin" )	this._rotateImage(theImage, rname, callback );
@@ -1817,6 +1915,63 @@ WLIU.IMAGEACTION.prototype = {
 			if( callback && $.isFunction(callback) && _self.view==rname ) callback(resizeImg);
 		}
 		t_img.src = resizeImg.data;
+	},
+
+	_cropLarge: function(theImage, ww, hh, x, y, nw, nh, callback) {
+		var _self = this;
+		var largeImg = theImage.resize.large;
+		if( largeImg.data != "") {
+			var t_img = new Image();
+			t_img.onload = function() {
+				var ratio_ww = 1;
+				var ratio_hh = 1;
+				ratio_ww = t_img.width / ww;
+				ratio_hh = t_img.height / hh;
+
+				x 	= x * ratio_ww;
+				y 	= y * ratio_hh;
+				nw 	= nw * ratio_ww;
+				nh  = nh * ratio_hh;
+				if(x<0) x = 0;
+				if(y<0) y = 0;
+				if(x+nw>t_img.width) nw = t_img.width - x;
+				if(y+nh>t_img.height) nh = t_img.height - y;
+
+				var canvas 	= document.createElement("canvas");
+				var ctx 	= canvas.getContext("2d");
+				canvas.width 	= nw;
+				canvas.height	= nh;
+				
+				ctx.drawImage(t_img, x, y, nw, nh, 0, 0, canvas.width, canvas.height); 
+				var imgDataURL = canvas.toDataURL( theImage.mime_type );
+
+				largeImg.width 		= canvas.width;
+				largeImg.height 	= canvas.height;
+				largeImg.data 		= imgDataURL;
+				largeImg.length 	= imgDataURL.length;
+				largeImg.size	    = largeImg.length.toSize();
+				largeImg.name	    = "large";
+
+
+				if( callback && $.isFunction(callback) && _self.view=="large" ) callback(largeImg);
+				
+				_self._cropAll(theImage, callback);
+			}
+			t_img.src = largeImg.data;
+		}
+
+	},
+	_cropAll: function(theImage, callback) {
+		var _self = this;
+		var largeImg = theImage.resize.large;
+
+		var resizeImgs = theImage.resize;
+		for(var rname in resizeImgs) {
+			if(rname!="origin" && rname!="large") this._resizeImageFromLarge(theImage, rname, callback);
+		}
+	},
+	_cropReset: function(theImage, callback) {
+		this._resizeAll(theImage, callback);
 	},
 
 	

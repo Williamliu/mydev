@@ -353,12 +353,31 @@ a.wliu-btn16 {
     background-position:        -40px -460px;
 }
 
-/*** 24 mix button : help , upload*****/
+/*** 24 mix button : help , upload, crop *****/
 .wliu-btn16-error-help {
     background-position:        0px -480px;
 }
 .wliu-btn16-upload {
     background-position:        -20px -480px;
+}
+.wliu-btn16-crop {
+    background-position:        -40px -480px;
+}
+
+/*** 25 mix button : rotate , undo, okey *****/
+.wliu-btn16-rotate-right {
+    background-position:        0px -500px;
+}
+.wliu-btn16-restore {
+    background-position:        -20px -500px;
+}
+.wliu-btn16-okey {
+    background-position:        -40px -500px;
+}
+
+/*** 25 mix button : dispose *****/
+.wliu-btn16-dispose {
+    background-position:        0px -520px;
 }
 
 
@@ -711,8 +730,28 @@ a.wliu-btn24 {
     background-position:        0px -720px;
 }
 .wliu-btn24-upload {
-    background-position:        -20px -720px;
+    background-position:        -30px -720px;
 }
+.wliu-btn24-crop {
+    background-position:        -60px -720px;
+}
+
+/*** 25 mix button : rotate , undo, okey *****/
+.wliu-btn24-rotate-right {
+    background-position:        0px -750px;
+}
+.wliu-btn24-restore {
+    background-position:        -30px -750px;
+}
+.wliu-btn24-okey {
+    background-position:        -60px -750px;
+}
+
+/*** 26 mix button : dispose , undo *****/
+.wliu-btn24-dispose {
+    background-position:        0px -780px;
+}
+
 
 
 .wliu-button-na {

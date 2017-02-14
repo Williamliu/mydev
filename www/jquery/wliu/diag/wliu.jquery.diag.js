@@ -89,7 +89,7 @@ $.fn.extend({
             }
 
             
-            $("a.wliu-btn16-close, input.wliu-diag-close, button.wliu-diag-close", el).unbind("click").bind("click", function(evt){
+            $("a.wliu-btn16-close, input.wliu-diag-close, button.wliu-diag-close, *[wliu-diag-close]", el).unbind("click").bind("click", function(evt){
                 $(el).trigger("hide");
                 evt.preventDefault();
                 evt.stopPropagation();

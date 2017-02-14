@@ -59,8 +59,7 @@ wliu_form.directive("form.ckeditor", function () {
                     '<span ng-hide="form.relationHide(rowsn, name)">',
                         '<a class="wliu-btn16 wliu-btn16-rowstate-error" ng-if="form.getCol(name, rowsn).errorCode"></a>',
                         '<span style="color:red; vertical-align:middle;" ng-if="form.getCol(name, rowsn).errorCode">Error: {{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:""}}</span>',
-                        '<input type="hidden" ng-model="rowsn" ng-change="modelChange()" />',
-                        '<textarea scope="{{ form.scope }}" ng-model="form.getCol(name, rowsn).value" id="{{form.scope}}_{{name}}"" ',
+                        '<textarea scope="{{ form.scope }}" ng-model="form.getCol(name, rowsn).value" id="{{form.scope}}_{{name}}" ',
                                   'title="{{ form.getRow(rowsn).error.errorCode ? form.getRow(rowsn).error.errorMessage : \'\' }}"',
                         '>',
                         '</textarea>',
@@ -71,14 +70,17 @@ wliu_form.directive("form.ckeditor", function () {
             //  only sync to ckeditor when initialize the model.
             $scope.modelChange = function() {
                 if( $scope.form.getCol($scope.name, $scope.rowsn) )  {
+                    $scope.temp_editor = $scope.form.getCol($scope.name, $scope.rowsn).value;
                     if(CKEDITOR.instances[$scope.form.scope+"_"+$scope.name])
-                        CKEDITOR.instances[$scope.form.scope+"_"+$scope.name].setData( $scope.form.getCol($scope.name, $scope.rowsn).value );
+                        if( $scope.form.getCol( $scope.name, $scope.rowsn ).value != CKEDITOR.instances[$scope.form.scope+"_"+$scope.name].getData() )
+                            CKEDITOR.instances[$scope.form.scope+"_"+$scope.name].setData( $scope.form.getCol($scope.name, $scope.rowsn).value );
                 }  else {
+                    $scope.temp_editor = "";
                     if(CKEDITOR.instances[$scope.form.scope+"_"+$scope.name])
                         CKEDITOR.instances[$scope.form.scope+"_"+$scope.name].setData("");
                 }
             }
-            $scope.$watch("rowsn", $scope.modelChange);
+            $scope.$watch("form.getCol(name, rowsn).value", $scope.modelChange);
         },
         link: function (sc, el, attr) {
             $(function(){
@@ -91,7 +93,6 @@ wliu_form.directive("form.ckeditor", function () {
                             sc.form.changeCol(sc.name, sc.rowsn);
                             // to prevent diggest in progress in angular.
                             if( !sc.$root.$$phase) sc.$apply();
-                            
                         }
                     }
                 });
@@ -99,6 +100,70 @@ wliu_form.directive("form.ckeditor", function () {
         }
     }
 });
+
+wliu_form.directive("form.imgupload", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            form:           "=",
+            rowsn:          "@",
+            name:           "@",
+
+            imgobj:         "=",
+            actname:        "@",
+            action:         "&",
+            tooltip:        "@",
+            view:           "@",
+            ww:             "@",
+            hh:             "@"
+        },
+        template: [
+                    '<div style="display:inline-block;text-align:center;border:1px solid #cccccc;border-radius:5px;">',
+                        '<div class="btn btn-outline-info waves-effect" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;">',
+                            '<a class="wliu-btn16 wliu-btn16-upload"></a>',
+                            '<input type="file" style="display:block; position:absolute; opacity:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" value="Browse..." ',
+                                    'onchange="angular.element(this).scope().selectFile(event);" ',
+                                    'ng-disabled="form.getCol(name, rowsn)==undefined" ',
+                            '/>',
+                            ' {{actname}}',
+                        '</div>',
+                        '<div style="display:block;width:{{ww}}px;min-height:{{hh}}px;text-align:center;border-top:1px solid #cccccc;">',
+                            '<img class="img-responsive" width="100%" src="{{form.getCol(name, rowsn).value?form.getCol(name, rowsn).value:\'\'}}" />',
+                        '</div>',
+                        '<input type="hidden" scope="{{ form.scope }}" ',
+                            'ng-model="form.getCol(name, rowsn).value" ',
+                            'ng-change="form.changeCol(name, rowsn)" ',
+                            'ng-disabled="form.getCol(name, rowsn)==undefined" ',
+                        '/>',
+                    '</div>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.ww = $scope.ww?$scope.ww:200;
+            $scope.hh = $scope.hh?$scope.hh:120;
+            $scope.view = $scope.view?$scope.view:"medium";
+            
+
+            $scope.selectFile = function(event) {
+                files = (event.srcElement || event.target).files;
+                FIMAGE.view = $scope.view;
+                FIMAGE.fromFile($scope.imgobj, files[0], function(fObj){
+                    if(fObj.errorCode) {
+                        alert(fObj.errorMessage);
+                    } else {
+                        $scope.form.getCol($scope.name, $scope.rowsn).value = $scope.imgobj.resize[$scope.view].data?$scope.imgobj.resize[$scope.view].data:"";
+                        $scope.form.changeCol($scope.name, $scope.rowsn);
+                        $scope.$apply();  // important: it is async to read image in callback
+                    }
+                });
+            }
+        },
+        link: function (sc, el, attr) {
+            $("img", el).attr("src",   sc.form.getCol(sc.name, sc.rowsn) && sc.form.getCol(sc.name, sc.rowsn).value ? sc.form.getCol(sc.name, sc.rowsn).value:"" );
+        }
+    }
+});
+
 
 wliu_form.directive("form.label", function () {
     return {
@@ -189,11 +254,12 @@ wliu_form.directive("form.hidden", function () {
             name:       "@"
         },
         template: [
-                    '<span><input type="hidden" scope="{{ form.scope }}" ',
-                        'ng-model="form.getCol(name, rowsn).value" ',
-                        'ng-change="form.changeCol(name, rowsn)" ',
-                        'ng-disabled="form.getCol(name, rowsn)==undefined" ',
-                    '/>',
+                    '<span>',
+                        '<input type="hidden" scope="{{ form.scope }}" ',
+                            'ng-model="form.getCol(name, rowsn).value" ',
+                            'ng-change="form.changeCol(name, rowsn)" ',
+                            'ng-disabled="form.getCol(name, rowsn)==undefined" ',
+                        '/>',
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
