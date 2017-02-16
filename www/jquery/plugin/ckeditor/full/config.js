@@ -6,7 +6,6 @@ CKEDITOR.editorConfig = function (config) {
 		{ name: 'links', groups: [ 'links' ] },
 		{ name: 'insert', groups: [ 'insert' ] },
 		{ name: 'colors', groups: [ 'colors' ] },
-		"/",
 		{ name: 'forms', groups: [ 'forms' ] },
 		{ name: 'others', groups: [ 'others' ] },
 		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
@@ -20,7 +19,6 @@ CKEDITOR.editorConfig = function (config) {
     config.shiftEnterMode = CKEDITOR.ENTER_BR;
     config.height = 360;
     config.extraPlugins = "base64image";
-    //config.extraPlugins = "imagepaste";
 };
 
 

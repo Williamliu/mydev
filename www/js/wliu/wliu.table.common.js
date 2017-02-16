@@ -1666,6 +1666,10 @@ WLIU.IMAGEACTION.prototype = {
 			if(callback) if( $.isFunction(callback) ) callback(theImage);
 		}
 	},
+	exportImage: function(theImage, rsize) {
+		var base64_data = this.imageData(theImage,rsize);
+		if( base64_data != "" ) FFILE.exportDataURL(base64_data);
+	},
 	clearImage: function(theImage) {
 		theImage = new WLIU.IMAGE();
 		/*

@@ -53,7 +53,8 @@ wliu_form.directive("form.ckeditor", function () {
         scope: {
             form:      "=",
             rowsn:      "@",
-            name:       "@"
+            name:       "@",
+            hh:         "@"
         },
         template: [
                     '<span ng-hide="form.relationHide(rowsn, name)">',
@@ -70,12 +71,10 @@ wliu_form.directive("form.ckeditor", function () {
             //  only sync to ckeditor when initialize the model.
             $scope.modelChange = function() {
                 if( $scope.form.getCol($scope.name, $scope.rowsn) )  {
-                    $scope.temp_editor = $scope.form.getCol($scope.name, $scope.rowsn).value;
                     if(CKEDITOR.instances[$scope.form.scope+"_"+$scope.name])
                         if( $scope.form.getCol( $scope.name, $scope.rowsn ).value != CKEDITOR.instances[$scope.form.scope+"_"+$scope.name].getData() )
                             CKEDITOR.instances[$scope.form.scope+"_"+$scope.name].setData( $scope.form.getCol($scope.name, $scope.rowsn).value );
                 }  else {
-                    $scope.temp_editor = "";
                     if(CKEDITOR.instances[$scope.form.scope+"_"+$scope.name])
                         CKEDITOR.instances[$scope.form.scope+"_"+$scope.name].setData("");
                 }
@@ -84,7 +83,60 @@ wliu_form.directive("form.ckeditor", function () {
         },
         link: function (sc, el, attr) {
             $(function(){
-                htmlObj_cn = CKEDITOR.replace(sc.form.scope + "_" + sc.name,{});
+                htmlObj_cn = CKEDITOR.replace(sc.form.scope + "_" + sc.name,{height:sc.hh});
+                // The "change" event is fired whenever a change is made in the editor.
+                htmlObj_cn.on('change', function (evt) {
+                    if( sc.form.getCol( sc.name, sc.rowsn ) ) {
+                        if( sc.form.getCol( sc.name, sc.rowsn ).value != CKEDITOR.instances[sc.form.scope+"_"+sc.name].getData() ) {
+                            sc.form.getCol( sc.name, sc.rowsn ).value = CKEDITOR.instances[sc.form.scope+"_"+sc.name].getData();
+                            sc.form.changeCol(sc.name, sc.rowsn);
+                            // to prevent diggest in progress in angular.
+                            if( !sc.$root.$$phase) sc.$apply();
+                        }
+                    }
+                });
+            });
+        }
+    }
+});
+
+wliu_form.directive("form.ckinline", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            form:      "=",
+            rowsn:      "@",
+            name:       "@"
+        },
+        template: [
+                    '<span>',
+                        '<a class="wliu-btn16 wliu-btn16-rowstate-error" ng-if="form.getCol(name, rowsn).errorCode"></a>',
+                        '<span style="color:red; vertical-align:middle;" ng-if="form.getCol(name, rowsn).errorCode">Error: {{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:""}}</span>',
+                        '<input type="textbox" ng-model="form.getCol(name, rowsn).value" />',
+                        '<div scope="{{ form.scope }}" id="{{form.scope}}_{{name}}" contentEditable=true style="display:block; overflow:auto;min-height:200px;border:1px solid #cccccc;">',
+                        '</div>',
+                    '</span>'
+                ].join(''),
+        controller: function ($scope) {
+            //  model change ,  it will not sync to ckeditor
+            //  only sync to ckeditor when initialize the model.
+            $scope.modelChange = function() {
+                if( $scope.form.getCol($scope.name, $scope.rowsn) )  {
+                    if(CKEDITOR.instances[$scope.form.scope+"_"+$scope.name])
+                        if( $scope.form.getCol( $scope.name, $scope.rowsn ).value != CKEDITOR.instances[$scope.form.scope+"_"+$scope.name].getData() )
+                            CKEDITOR.instances[$scope.form.scope+"_"+$scope.name].setData( $scope.form.getCol($scope.name, $scope.rowsn).value );
+                }  else {
+                    if(CKEDITOR.instances[$scope.form.scope+"_"+$scope.name])
+                        CKEDITOR.instances[$scope.form.scope+"_"+$scope.name].setData("");
+                }
+            }
+            $scope.$watch("form.getCol(name, rowsn).value", $scope.modelChange);
+        },
+        link: function (sc, el, attr) {
+            $(function(){
+                CKEDITOR.disableAutoInline = true;
+                htmlObj_cn = CKEDITOR.inline(sc.form.scope + "_" + sc.name);
                 // The "change" event is fired whenever a change is made in the editor.
                 htmlObj_cn.on('change', function (evt) {
                     if( sc.form.getCol( sc.name, sc.rowsn ) ) {

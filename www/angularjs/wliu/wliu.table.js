@@ -255,7 +255,7 @@ wliu_table.directive("table.rowno", function () {
         }
     }
 });
-
+/*
 wliu_table.directive("table.ckeditor", function () {
     return {
         restrict: "E",
@@ -281,7 +281,7 @@ wliu_table.directive("table.ckeditor", function () {
             $scope.modelChange = function() {
                 if( $scope.table.getCol($scope.name, $scope.rowsn) )  {
                     if(CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn])
-                        if( $scope.form.getCol( $scope.name, $scope.rowsn ).value != CKEDITOR.instances[$scope.form.scope+"_"+$scope.name+"_"+$scope.rowsn].getData() )
+                        if( $scope.table.getCol( $scope.name, $scope.rowsn ).value != CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn].getData() )
                             CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn].setData( $scope.table.getCol($scope.name, $scope.rowsn).value );
                 }  else {
                     if(CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn])
@@ -302,6 +302,115 @@ wliu_table.directive("table.ckeditor", function () {
                             // to prevent diggest in progress in angular.
                             if( !sc.$root.$$phase) sc.$apply();
                             
+                        }
+                    }
+                });
+            });
+        }
+    }
+});
+*/
+
+wliu_table.directive("table.ckeditor", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            rowsn:      "@",
+            name:       "@",
+            hh:         "@"
+        },
+        template: [
+                    '<span ng-hide="table.relationHide(rowsn, name)">',
+                        '<a class="wliu-btn16 wliu-btn16-rowstate-error" ng-if="table.getCol(name, rowsn).errorCode"></a>',
+                        '<span style="color:red; vertical-align:middle;" ng-if="table.getCol(name, rowsn).errorCode">Error: {{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:""}}</span>',
+                        '<textarea scope="{{ table.scope }}" ng-model="table.getCol(name, rowsn).value" id="{{table.scope}}_{{name}}_{{rowsn}}" ',
+                                  'title="{{ table.getRow(rowsn).error.errorCode ? table.getRow(rowsn).error.errorMessage : \'\' }}"',
+                        '>',
+                        '</textarea>',
+                    '</span>'
+                ].join(''),
+        controller: function ($scope) {
+            //  model change ,  it will not sync to ckeditor
+            //  only sync to ckeditor when initialize the model.
+            $scope.modelChange = function() {
+                if( $scope.table.getCol($scope.name, $scope.rowsn) )  {
+                    if(CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn])
+                        if( $scope.table.getCol( $scope.name, $scope.rowsn ).value != CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn].getData() )
+                            CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn].setData( $scope.table.getCol($scope.name, $scope.rowsn).value );
+                }  else {
+                    if(CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn])
+                        CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn].setData("");
+                }
+            }
+            $scope.$watch("table.getCol(name, rowsn).value", $scope.modelChange);
+        },
+        link: function (sc, el, attr) {
+            $(function(){
+                htmlObj_cn = CKEDITOR.replace(sc.table.scope + "_" + sc.name+"_"+sc.rowsn,{height:sc.hh});
+                // The "change" event is fired whenever a change is made in the editor.
+                htmlObj_cn.on('change', function (evt) {
+                    if( sc.table.getCol( sc.name, sc.rowsn ) ) {
+                        if( sc.table.getCol( sc.name, sc.rowsn ).value != CKEDITOR.instances[sc.table.scope+"_"+sc.name+"_"+sc.rowsn].getData() ) {
+                            sc.table.getCol( sc.name, sc.rowsn ).value = CKEDITOR.instances[sc.table.scope+"_"+sc.name+"_"+sc.rowsn].getData();
+                            sc.table.changeCol(sc.name, sc.rowsn);
+                            // to prevent diggest in progress in angular.
+                            if( !sc.$root.$$phase) sc.$apply();
+                        }
+                    }
+                });
+            });
+        }
+    }
+});
+
+wliu_table.directive("table.ckinline", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            rowsn:      "@",
+            name:       "@"
+        },
+        template: [
+                    '<span>',
+                        '<a class="wliu-btn16 wliu-btn16-rowstate-error" ng-if="table.getCol(name, rowsn).errorCode"></a>',
+                        '<span style="color:red; vertical-align:middle;" ng-if="table.getCol(name, rowsn).errorCode">Error: {{table.getCol(name, rowsn).errorCode?table.getCol(name, rowsn).errorMessage:""}}</span>',
+                        '<input type="hidden" ng-model="table.getCol(name, rowsn).value" />',
+                        '<div scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{rowsn}}" contentEditable=true style="display:block; overflow:auto;min-height:200px;border:1px solid #cccccc;">',
+                        '{{table.getCol(name, rowsn).value}}',
+                        '</div>',
+                    '</span>'
+                ].join(''),
+        controller: function ($scope) {
+            //  model change ,  it will not sync to ckeditor
+            //  only sync to ckeditor when initialize the model.
+            $scope.modelChange = function() {
+                if( $scope.table.getCol($scope.name, $scope.rowsn) )  {
+                    if(CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn])
+                        if( $scope.table.getCol( $scope.name, $scope.rowsn ).value != CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn].getData() )
+                            CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn].setData( $scope.table.getCol($scope.name, $scope.rowsn).value );
+                }  else {
+                    if(CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn])
+                        CKEDITOR.instances[$scope.table.scope+"_"+$scope.name+"_"+$scope.rowsn].setData("");
+                }
+            }
+            $scope.$watch("table.getCol(name, rowsn).value", $scope.modelChange);
+        },
+        link: function (sc, el, attr) {
+            $(function(){
+                CKEDITOR.disableAutoInline = true;
+                htmlObj_cn = CKEDITOR.inline(sc.table.scope + "_" + sc.name+"_"+sc.rowsn);
+                // The "change" event is fired whenever a change is made in the editor.
+                htmlObj_cn.on('change', function (evt) {
+                    if( sc.table.getCol( sc.name, sc.rowsn ) ) {
+                        if( sc.table.getCol( sc.name, sc.rowsn ).value != CKEDITOR.instances[sc.table.scope+"_"+sc.name+"_"+sc.rowsn].getData() ) {
+                            sc.table.getCol( sc.name, sc.rowsn ).value = CKEDITOR.instances[sc.table.scope+"_"+sc.name+"_"+sc.rowsn].getData();
+                            sc.table.changeCol(sc.name, sc.rowsn);
+                            // to prevent diggest in progress in angular.
+                            if( !sc.$root.$$phase) sc.$apply();
                         }
                     }
                 });
