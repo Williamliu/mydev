@@ -107,14 +107,16 @@ wliu_form.directive("form.ckinline", function () {
         scope: {
             form:      "=",
             rowsn:      "@",
-            name:       "@"
+            name:       "@",
+            hh:         "@"
         },
         template: [
                     '<span>',
                         '<a class="wliu-btn16 wliu-btn16-rowstate-error" ng-if="form.getCol(name, rowsn).errorCode"></a>',
                         '<span style="color:red; vertical-align:middle;" ng-if="form.getCol(name, rowsn).errorCode">Error: {{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:""}}</span>',
-                        '<input type="textbox" ng-model="form.getCol(name, rowsn).value" />',
-                        '<div scope="{{ form.scope }}" id="{{form.scope}}_{{name}}" contentEditable=true style="display:block; overflow:auto;min-height:200px;border:1px solid #cccccc;">',
+                        '<input type="hidden" ng-model="form.getCol(name, rowsn).value" />',
+                        '<div scope="{{ form.scope }}" id="{{form.scope}}_{{name}}" contentEditable=true style="display:block;overflow:auto;min-height:120px;height:{{hh?hh+\'px\':\'auto\'}};border:1px solid #cccccc;">',
+                        '{{form.getCol(name, rowsn).value}}',
                         '</div>',
                     '</span>'
                 ].join(''),
