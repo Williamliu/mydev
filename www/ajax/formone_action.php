@@ -4,6 +4,14 @@ ini_set("display_errors", 0);
 include_once("../../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
 define("DEBUG", 1);
+
+/*
+echo "count: " . strlen( $table["rows"][0]["cols"][4]["value"]);
+echo "\n";
+print_r($table["rows"][0]["cols"][4]["value"]);
+exit();
+*/
+
 $response = array();
 try {
 	$rights = array("view"=>1, "save"=>1, "add"=>1, "delete"=>1);
@@ -61,6 +69,7 @@ try {
 
 	// 4) action 
 	// important to execute formFilter to protect load all rows
+	
 	cACTION::formFilter($table);
 	cACTION::action($db, $table);
 

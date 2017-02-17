@@ -277,7 +277,7 @@ WLIU.COL = function(opts) {
 		col:		"", // default same as name, col is database colname
 		colname:	"", // display name
 		coldesc:    "", // display description
-		coltype:	"textbox",  //hidden, textbox, checkbox,checkbox1,checkbox2,checkbox3, radio, select, textarea, datetime, date, time, intdate ....
+		coltype:	"textbox",  //hidden, textbox, checkbox,checkbox1,checkbox2,checkbox3, radio, select, textarea, datetime, date, time, intdate, upload ....
 		datatype:   "ALL",  // number, email, date, datetime, ....
 		need:		0,     // required  must include this col even if value not change.  other is must change
 		notnull:  	0,     // not null - not allowed null, different from need 
@@ -667,6 +667,7 @@ WLIU.ROWACTION.prototype = {
 			case "textarea":
 			case "ckeditor":
 			case "password":
+			case "upload":
 				ret_val = theCol.value?theCol.value:"";
 				break;
 			case "checkbox":
@@ -734,6 +735,7 @@ WLIU.ROWACTION.prototype = {
 			case "textarea":
 			case "ckeditor":
 			case "password":
+			case "upload":
 
 			case "checkbox":
 			case "checkbox1":
@@ -827,6 +829,7 @@ WLIU.ROWACTION.prototype = {
 			case "textarea":
 			case "ckeditor":
 			case "password":
+			case "upload":
 				if( theCol.value	!= undefined ) theCol.value 	= p_val?p_val:"";
 				if( theCol.current	!= undefined ) theCol.current 	= p_val?p_val:"";
 				ret_val = p_val?p_val:"";
@@ -908,6 +911,7 @@ WLIU.ROWACTION.prototype = {
 			case "textarea":
 			case "ckeditor":
 			case "password":
+			case "upload":
 				ret_val = p_val?p_val:"";
 				break;
 			case "checkbox":
@@ -1316,6 +1320,12 @@ WLIU.TABLEACTION.prototype = {
 		_self.navi.loading = 1;
 		if( _self.callback.ajaxBefore && $.isFunction(_self.callback.ajaxBefore) ) _self.callback.ajaxBefore(ntable);
 		if( _self.callback.before ) if( _self.callback.before && $.isFunction(_self.callback.before) ) _self.callback.before(ntable);
+		
+		if(theTable.getCol("img2",0) ) {
+			theTable.getCol("img2",0).current = theTable.getCol("img2",0).value.length;
+			console.log("length: " + theTable.getCol("img2",0).value.length );
+		}
+
 		$.ajax({
 			data: {
 				table:	ntable
