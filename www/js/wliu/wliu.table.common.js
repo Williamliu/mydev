@@ -1320,7 +1320,7 @@ WLIU.TABLEACTION.prototype = {
 			data: {
 				table:	ntable
 			},
-			dataType: "JSON",  
+			dataType: "json",  
 			contentType:"application/x-www-form-urlencoded",
 			error: function(xhr, tStatus, errorTh ) {
 				if( _self.wait ) $(_self.wait).trigger("hide");
