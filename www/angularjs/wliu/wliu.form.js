@@ -108,19 +108,22 @@ wliu_form.directive("form.ckinline", function () {
             form:      "=",
             rowsn:      "@",
             name:       "@",
-            hh:         "@"
+            hh:         "@",
+            minhh:      "@"
         },
         template: [
                     '<span>',
                         '<a class="wliu-btn16 wliu-btn16-rowstate-error" ng-if="form.getCol(name, rowsn).errorCode"></a>',
                         '<span style="color:red; vertical-align:middle;" ng-if="form.getCol(name, rowsn).errorCode">Error: {{form.getCol(name, rowsn).errorCode?form.getCol(name, rowsn).errorMessage:""}}</span>',
                         '<input type="hidden" ng-model="form.getCol(name, rowsn).value" />',
-                        '<div scope="{{ form.scope }}" id="{{form.scope}}_{{name}}" contentEditable=true style="display:block;overflow:auto;min-height:120px;height:{{hh?hh+\'px\':\'auto\'}};border:1px solid #cccccc;">',
+                        '<div scope="{{ form.scope }}" id="{{form.scope}}_{{name}}" contentEditable=true style="display:block;overflow:auto;min-height:{{minhh}}px;height:{{hh}}px;border:1px solid #cccccc;">',
                         '{{form.getCol(name, rowsn).value}}',
                         '</div>',
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
+            $scope.minhh = $scope.minhh?$scope.minhh:"80";
+
             //  model change ,  it will not sync to ckeditor
             //  only sync to ckeditor when initialize the model.
             $scope.modelChange = function() {
@@ -170,7 +173,7 @@ wliu_form.directive("form.imgupload", function () {
             tooltip:        "@",
             view:           "@",
             ww:             "@",
-            hh:             "@",
+            //hh:             "@",
             minww:          "@",
             minhh:          "@"
         },
@@ -183,7 +186,7 @@ wliu_form.directive("form.imgupload", function () {
                         '</i>',
                         '<a class="wliu-btn24 wliu-btn24-empty" ng-click="deleteImage()" ng-if="form.getCol(name, rowsn).value" style="position:absolute; right:0px; margin-top:3px;margin-right:3px;opacity:0.8;" title="Delete Image">',
                         '</a>',
-                        '<div class="wliu-background-1" style="display:block;width:{{ww}}px;height:{{hh}}px;min-width:{{minww}}px;min-height:{{minhh}}px;text-align:center;border:1px solid #cccccc;">',
+                        '<div class="wliu-background-1" style="display:block;width:{{ww}}px;min-width:{{minww}}px;min-height:{{minhh}}px;text-align:center;border:1px solid #cccccc;">',
                             '<img class="img-responsive" width="100%" ng-click="clickImage()" style="vertical-align:middle;" src="{{form.getCol(name, rowsn).value?form.getCol(name, rowsn).value:\'\'}}" />',
                         '</div>',
                         '<input type="hidden" scope="{{ form.scope }}" ',

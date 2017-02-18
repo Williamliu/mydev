@@ -1321,11 +1321,6 @@ WLIU.TABLEACTION.prototype = {
 		if( _self.callback.ajaxBefore && $.isFunction(_self.callback.ajaxBefore) ) _self.callback.ajaxBefore(ntable);
 		if( _self.callback.before ) if( _self.callback.before && $.isFunction(_self.callback.before) ) _self.callback.before(ntable);
 		
-		if(theTable.getCol("img2",0) ) {
-			theTable.getCol("img2",0).current = theTable.getCol("img2",0).value.length;
-			console.log("length: " + theTable.getCol("img2",0).value.length );
-		}
-
 		$.ajax({
 			data: {
 				table:	ntable
