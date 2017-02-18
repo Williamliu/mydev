@@ -379,6 +379,13 @@ a.wliu-btn16 {
 .wliu-btn16-dispose {
     background-position:        0px -520px;
 }
+.wliu-btn16-empty {
+    background-position:        -20px -520px;
+}
+.wliu-btn16-image {
+    background-position:        -40px -520px;
+}
+
 
 
 /****************************************************************/
@@ -750,6 +757,12 @@ a.wliu-btn24 {
 /*** 26 mix button : dispose , undo *****/
 .wliu-btn24-dispose {
     background-position:        0px -780px;
+}
+.wliu-btn24-empty {
+    background-position:        -30px -780px;
+}
+.wliu-btn24-image {
+    background-position:        -60px -780px;
 }
 
 

@@ -749,6 +749,10 @@ div.ui-resizable-se {
 	left:             100%;
 }
 
+.wliu-background-1 {
+	background-image: url("wliu.background/wliu-bg-1.jpg");
+}
+
 /***  Highest Priority ****/
 .wliuCommon-input-invalid,
 input[type="password"].wliuCommon-input-invalid,

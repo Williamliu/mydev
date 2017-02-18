@@ -170,20 +170,21 @@ wliu_form.directive("form.imgupload", function () {
             tooltip:        "@",
             view:           "@",
             ww:             "@",
-            hh:             "@"
+            hh:             "@",
+            minww:          "@",
+            minhh:          "@"
         },
         template: [
-                    '<div style="display:inline-block;text-align:center;border:1px solid #cccccc;border-radius:5px;">',
-                        '<div class="btn btn-outline-info waves-effect" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;">',
-                            '<a class="wliu-btn16 wliu-btn16-upload"></a>',
-                            '<input type="file" style="display:block; position:absolute; opacity:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" value="Browse..." ',
-                                    'onchange="angular.element(this).scope().selectFile(event);" ',
-                                    'ng-disabled="form.getCol(name, rowsn)==undefined" ',
-                            '/>',
-                            ' {{actname}}',
-                        '</div>',
-                        '<div style="display:block;width:{{ww}}px;min-height:{{hh}}px;text-align:center;border-top:1px solid #cccccc;">',
-                            '<img class="img-responsive" width="100%" src="{{form.getCol(name, rowsn).value?form.getCol(name, rowsn).value:\'\'}}" />',
+                    '<div style="display:inline-block;position:relative;">',
+                        '<i class="wliu-btn24 wliu-btn24-image" style="position:absolute; margin-top:3px;margin-left:3px;opacity:0.8; overflow:hidden;" title="upload Image">',
+                                '<input type="file" style="display:block; position:absolute; opacity:0;top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" value="Browse..." ',
+                                        'onchange="angular.element(this).scope().selectFile(event);" ',
+                                        'ng-disabled="form.getCol(name, rowsn)==undefined" />',
+                        '</i>',
+                        '<a class="wliu-btn24 wliu-btn24-empty" ng-click="deleteImage()" ng-if="form.getCol(name, rowsn).value" style="position:absolute; right:0px; margin-top:3px;margin-right:3px;opacity:0.8;" title="Delete Image">',
+                        '</a>',
+                        '<div class="wliu-background-1" style="display:block;width:{{ww}}px;height:{{hh}}px;min-width:{{minww}}px;min-height:{{minhh}}px;text-align:center;border:1px solid #cccccc;">',
+                            '<img class="img-responsive" width="100%" ng-click="clickImage()" style="vertical-align:middle;" src="{{form.getCol(name, rowsn).value?form.getCol(name, rowsn).value:\'\'}}" />',
                         '</div>',
                         '<input type="hidden" scope="{{ form.scope }}" ',
                             'ng-model="form.getCol(name, rowsn).value" ',
@@ -193,10 +194,18 @@ wliu_form.directive("form.imgupload", function () {
                     '</div>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.ww = $scope.ww?$scope.ww:200;
-            $scope.hh = $scope.hh?$scope.hh:120;
+            $scope.minww = $scope.minww?$scope.minww:"120";
+            $scope.minhh = $scope.minhh?$scope.minhh:"80";
             $scope.view = $scope.view?$scope.view:"medium";
+
+            $scope.clickImage = function() {
+                alert("click image");
+            }
             
+            $scope.deleteImage = function() {
+                 $scope.form.getCol($scope.name, $scope.rowsn).value = "";
+                 $scope.form.changeCol($scope.name, $scope.rowsn);
+            }
 
             $scope.selectFile = function(event) {
                 files = (event.srcElement || event.target).files;
