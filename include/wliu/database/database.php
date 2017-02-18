@@ -1582,6 +1582,7 @@ class cACTION {
 				cLIST::getList($db, $table);
 				cVALIDATE::validate($table);
 				cACTION::checkUniques($db, $table);
+				
 				cACTION::saveRows($db, $table);
 				break;
 			case "custom":
@@ -2454,6 +2455,33 @@ class cVALIDATE {
 									}
 								}
 
+								break;
+							case "upload":
+								// important: don't do regular express for base64 string, it will crash 
+								if(!$theCol["value"]) $theCol["value"]="";
+								if($notNull) {
+									if($theCol["value"]=="") {
+										$table["success"] 				= 0;
+										$theRow["error"]["errorCode"] 	= 1;
+										$theCol["errorCode"] 			= 1;  
+										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
+									}
+								}
+								$slen = mb_strlen($theCol["value"]);
+								if( $theCol["errorCode"]<=0 ) {
+									if( $slen>0 && $minLength>0 && $slen<$minLength ) {
+										$table["success"] 				= 0;
+										$theRow["error"]["errorCode"] 	= 1;
+										$theCol["errorCode"] 			= 1;  
+										$theCol["errorMessage"] 		= "'" . $dispName . "'($slen chars) less than minimum chars($minLength chars).";  
+									}
+									if( $slen>0 && $maxLength>0 && $slen>$maxLength ) {
+										$table["success"] 				= 0;
+										$theRow["error"]["errorCode"] 	= 1;
+										$theCol["errorCode"] 			= 1;  
+										$theCol["errorMessage"] 		= "'" . $dispName . "'($slen chars) exceed maximum chars($maxLength chars).";  
+									}
+								}
 								break;
 
 							case "checkbox":

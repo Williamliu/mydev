@@ -66,8 +66,8 @@
 		   	var col8 = new WLIU.COL({key:0, coltype:"radio", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name", 			defval: 77, notnull:1, 			list:"colorCategory"});
 		   	var col9 = new WLIU.COL({key:0, coltype:"checkbox1", 	name:"country_id",	colname:"Country ISO",  coldesc:"Country ID", list:"countryCategory"});
 		   	var col10 = new WLIU.COL({key:0, coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status"});
-		   	var col11 = new WLIU.COL({key:0, coltype:"hidden", 		name:"img1" });
-		   	var col12 = new WLIU.COL({key:0, coltype:"hidden", 		name:"img2", notnull: 1 });
+		   	var col11 = new WLIU.COL({key:0, coltype:"upload", 		name:"img1" });
+		   	var col12 = new WLIU.COL({key:0, coltype:"upload", 		name:"img2",  notnull: 1 });
 			
             var cols = [];
             cols.push(col1);
@@ -194,11 +194,6 @@
 		<div class="row">
 			<div class="col-md-12">
 				<form.ckinline form="wform" rowsn="0" name="img2" hh=300></form.ckinline>
-			</div>		
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<form.ckeditor form="wform" rowsn="0" name="img1" hh=100></form.ckeditor>
 			</div>		
 		</div>
 		<div class="row">
