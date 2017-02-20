@@ -39,6 +39,7 @@
 		<script src="js/wliu/wliu.common.js" type="text/javascript"></script>
 		<script src="js/wliu/wliu.form.js" type="text/javascript"></script>
 		<script src="js/wliu/wliu.table.common.js" type="text/javascript"></script>
+		<script	src="angularjs/wliu/wliu.image.js" type="text/javascript"></script>
 		<script	src="angularjs/wliu/wliu.form.js" type="text/javascript"></script>
 	
 		<script src="jquery/wliu/diag/wliu.jquery.diag.js" type="text/javascript"></script>
@@ -55,7 +56,6 @@
 
 
         <script language="javascript" type="text/javascript">
-	        var iImage = new WLIU.IMAGE();
 		   	var col1 = new WLIU.COL({key:1, coltype:"hidden", 		name:"id", 			colname:"Admin ID",  	unique: 1, coldesc:"Administrator ID", defval:0 });
 		   	var col2 = new WLIU.COL({key:0, coltype:"textbox", 		name:"uuu",			col:"user_name", 		unique: 1, colname:"User Name", 	coldesc:"Login User", 	sort:"ASC", need:1, notnull: 1});
 		   	var col3 = new WLIU.COL({key:0, coltype:"textbox", 		name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
@@ -66,8 +66,8 @@
 		   	var col8 = new WLIU.COL({key:0, coltype:"radio", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name", 			defval: 77, notnull:1, 			list:"colorCategory"});
 		   	var col9 = new WLIU.COL({key:0, coltype:"checkbox1", 	name:"country_id",	colname:"Country ISO",  coldesc:"Country ID", list:"countryCategory"});
 		   	var col10 = new WLIU.COL({key:0, coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status"});
-		   	var col11 = new WLIU.COL({key:0, coltype:"upload", 		name:"img1" });
-		   	var col12 = new WLIU.COL({key:0, coltype:"upload", 		name:"img2",  notnull: 1 });
+		   	var col11 = new WLIU.COL({key:0, coltype:"upload", 		name:"img1", 		colname:"ID Copy", 		view:"small", maxlength:30 * 1024, notnull: 1 });
+		   	var col12 = new WLIU.COL({key:0, coltype:"upload", 		name:"img2",  		colname:"Your Photo", 	view: "large", notnull: 1 });
 			
             var cols = [];
             cols.push(col1);
@@ -108,9 +108,8 @@
 				}
 			});
 
-            var app = angular.module("myApp", ["wliuForm"]);
+            var app = angular.module("myApp", ["wliuForm", "wliuImage"]);
             app.controller("myForm", function ($scope) {
-	            FIMAGE.setScope(iImage, $scope, "myimg");
 				form.setScope( $scope, "wform" );
 				form.getRecord({id:51}, {after: good});
 		    });
@@ -130,7 +129,9 @@
 <body ng-app="myApp" ng-controller="myForm" style="padding-top:80px;position:relative;">
 <!-- container -->
 <div class="container">
-	<input type="button" onclick="newRow()" value="New" />
+		<form.linkbutton form="wform" rowsn="0" name="add" outline="1" actname="NEW"></form.linkbutton>
+		<form.linkbutton form="wform" rowsn="0" name="delete" outline="1" actname="DELETE"></form.linkbutton>
+		
 		<form.rowstatus form="wform" rowsn="0" tooltip="#mytips"></form.rowstatus>
 		<div class="row">
 			<div class="col-md-1">
@@ -180,7 +181,7 @@
 				<form.textbox form="wform" rowsn="0" name="email" tooltip="#mytips"></form.textbox>
 			</div>
 			<div class="col-md-1">
-				<form.imgupload form="wform" rowsn="0" name="img1" imgobj="myimg" view="medium" actname="Upload Image" ww=300></form.imgupload>
+				<form.imgupload1 form="wform" rowsn="0" name="img1" ratio="4:4" actname="ID Copy" tooltip="#mytips" ww=200></form.imgupload1>
 			</div>		
 			<div class="col-md-3">
 			</div>
@@ -191,18 +192,18 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<form.ckinline form="wform" rowsn="0" name="img2" minhh=260></form.ckinline>
+				<form.imgupload form="wform" rowsn="0" name="img2" targetid="myviewer" actname="Upload Image"  tooltip="#mytips" ww=300></form.imgupload>
+				<!-- <form.ckinline form="wform" rowsn="0" name="img2" minhh=260></form.ckinline>-->
 			</div>		
 		</div>
 		<div class="row">
-			<form.linkbutton form="wform" rowsn="0" name="add" outline="1" actname="NEW"></form.linkbutton>
 			<form.linkbutton form="wform" rowsn="0" name="save" outline="1" actname="SAVE"></form.linkbutton>
 			<form.linkbutton form="wform" rowsn="0" name="cancel" outline="1" actname="CANCEL"></form.linkbutton>
-			<form.linkbutton form="wform" rowsn="0" name="delete" outline="1" actname="DELETE"></form.linkbutton>
 		</div>
 </div>
 <!-- container -->
 <form.checkdiag1 form="wform" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></form.checkdiag1>
+<image.editor imgobj="myimg" view="medium" targetid="myviewer" action="changeImage(myimg)" title="Image Editor and Upload"></image.editor>
 
 <div id="mytips" wliu-popup></div>
 <div id="tabwait" wliu-load></div>

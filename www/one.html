@@ -71,12 +71,14 @@
 		   	var col2 = new WLIU.COL({key:0, coltype:"textbox", 		name:"uuu",			col:"user_name", 		colname:"User Name", 	coldesc:"Login User", 	sort:"ASC", need:1, notnull: 1});
 		   	var col3 = new WLIU.COL({key:0, coltype:"textbox", 		name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
 		   	var col4 = new WLIU.COL({key:0, coltype:"datetime", 	name:"bbb", 		col:"birth_date", 		colname:"Brith Date", 	coldesc:"Date of Birth",  sort:"DESC", notnull:1});
-		   	var col5 = new WLIU.COL({key:0, coltype:"textbox", 		name:"email", 		colname:"Email",   		coldesc:"Email Address", sort:"ASC", need:1, datatype:"email", notnull:1});
+		   	var col5 = new WLIU.COL({key:0, coltype:"textbox", 		name:"email", 		colname:"Email",   		coldesc:"Email Address", sort:"ASC", need:1, datatype:"email", notnull:0});
 		   	var col6 = new WLIU.COL({key:0, coltype:"text", 		name:"created_time",colname:"Created", 		coldesc:"Password for Login"});
 			var col7 = new WLIU.COL({key:0, coltype:"select", 		name:"lang", 		colname:"LangISO", 		coldesc:"Language ISO Code", 	defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory"});
 		   	var col8 = new WLIU.COL({key:0, coltype:"radio", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name", 			defval: 77, notnull:1, 			list:"colorCategory"});
 		   	var col9 = new WLIU.COL({key:0, coltype:"checkbox1", 	name:"country_id",	colname:"Country ISO",  coldesc:"Country ID", list:"countryCategory"});
 		   	var col10 = new WLIU.COL({key:0, coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status"});
+		   	var col11 = new WLIU.COL({key:0, coltype:"upload", 		name:"img1", 		colname:"id copy", 		view: "large", notnull: 1 });
+		   	var col12 = new WLIU.COL({key:0, coltype:"upload", 		name:"img2",  		colname:"photo",   		view: "medium", notnull: 1 });
 
 		   	var cols = [];
 		   	cols.push(col1);
@@ -89,6 +91,8 @@
 		   	cols.push(col8);
 		   	cols.push(col9);
 		   	cols.push(col10);
+		   	cols.push(col11);
+		   	cols.push(col12);
 
 			var filter1 = new WLIU.FILTER({name:"adminname", 	coltype:"textbox", 		cols:"user_name, full_name", 				colname:"Name", 	coldesc:"Search by Name"});
 			var filter2 = new WLIU.FILTER({name:"color", 		coltype:"radio",		cols:"color",  		colname:"Color", 		compare:"", list:"colorCategory", coldesc:"Color Name"});
@@ -189,7 +193,7 @@
 						<table.head table="table"  name="bbb" tooltip="1"></table.head>
 					</td>
 					<td>
-						<table.head table="table"  name="email" tooltip="1"></table.head>
+						<table.head table="table"  name="img1" tooltip="1"></table.head>
 					</td>
 					<td>
 						<table.head table="table"  name="created_time" tooltip="1"></table.head>
@@ -234,10 +238,10 @@
 						<table.datetime class="input-small" table="table" name="bbb" rowsn="{{$index}}" tooltip="#mytips"></table.datetime>
 					</td>
 					<td>
-						<table.textbox class="input-small" table="table" name="email" rowsn="{{$index}}" tooltip="#mytips"></table.textbox>
+						<table.imgupload1 class="input-small" table="table" name="img1" rowsn="{{$index}}" ratio="3:4" actname="Select Image" tooltip="#mytips" ww=40></table.imgupload1>
 					</td>
 					<td>
-						<table.intdate class="input-small" table="table" name="created_time" rowsn="{{$index}}" tooltip="#mytips"></table.intdate>
+						<table.imgupload table="table" name="img2" rowsn="{{$index}}" ratio="4:3" actname="Upload ID" tooltip="#mytips"></table.imgupload>
 					</td>
 					<td>
 						<table.select class="input-small" table="table" name="lang" rowsn="{{$index}}" tooltip="#mytips"></table.select>

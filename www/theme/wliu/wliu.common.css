@@ -750,7 +750,9 @@ div.ui-resizable-se {
 }
 
 .wliu-background-1 {
-	background-image: url("wliu.background/wliu-bg-1.jpg");
+	background-position: 	center center;
+	background-repeat: 		repeat;
+	background-image: 		url("wliu.background/wliu-bg-1.jpg");
 }
 
 /***  Highest Priority ****/

@@ -166,43 +166,61 @@ wliu_form.directive("form.imgupload", function () {
             form:           "=",
             rowsn:          "@",
             name:           "@",
-
-            imgobj:         "=",
             actname:        "@",
-            action:         "&",
+
             tooltip:        "@",
-            view:           "@",
             ww:             "@",
-            //hh:             "@",
+            //hh:           "@",  img responsive applied to width not to height
             minww:          "@",
             minhh:          "@"
         },
         template: [
-                    '<div style="display:inline-block;position:relative;">',
-                        '<i class="wliu-btn24 wliu-btn24-image" style="position:absolute; margin-top:3px;margin-left:3px;opacity:0.8; overflow:hidden;" title="upload Image">',
-                                '<input type="file" style="display:block; position:absolute; opacity:0;top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" value="Browse..." ',
-                                        'onchange="angular.element(this).scope().selectFile(event);" ',
-                                        'ng-disabled="form.getCol(name, rowsn)==undefined" />',
-                        '</i>',
-                        '<a class="wliu-btn24 wliu-btn24-empty" ng-click="deleteImage()" ng-if="form.getCol(name, rowsn).value" style="position:absolute; right:0px; margin-top:3px;margin-right:3px;opacity:0.8;" title="Delete Image">',
-                        '</a>',
-                        '<div class="wliu-background-1" style="display:block;width:{{ww}}px;min-width:{{minww}}px;min-height:{{minhh}}px;text-align:center;border:1px solid #cccccc;">',
-                            '<img class="img-responsive" width="100%" ng-click="clickImage()" style="vertical-align:middle;" src="{{form.getCol(name, rowsn).value?form.getCol(name, rowsn).value:\'\'}}" />',
+                    '<span>',
+                        '<div style="position:relative;font-size:16px;font-weight:bold;color:red;" ng-if="form.getCol(name, rowsn).errorCode">{{form.getCol(name, rowsn).errorMessage}}</div>',
+                        '<div style="display:inline-block;position:relative;">',
+                            '<i class="wliu-btn24 wliu-btn24-image" style="position:absolute; margin-top:3px;margin-left:3px;opacity:0.8; overflow:hidden;" ',
+                                'title="{{tooltip?\'\':\'upload Image\'}}" ',
+                                'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="Upload Image" ',
+                            '>',
+                                    '<input type="file" style="display:block; position:absolute; opacity:0;top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" value="Browse..." ',
+                                            'onchange="angular.element(this).scope().selectFile(event);" ',
+                                            'ng-disabled="form.getCol(name, rowsn)==undefined" />',
+                            '</i>',
+                            '<a class="wliu-btn24 wliu-btn24-img-print" ng-click="printImage()" ng-if="form.getCol(name, rowsn).value" style="position:absolute; margin-top:3px;margin-left:30px;opacity:0.8;" ',
+                                'title="{{tooltip?\'\':\'Print Image\'}}" ',
+                                'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="Print Image" ',
+                            '>',
+                            '</a>',
+                            '<a class="wliu-btn24 wliu-btn24-empty" ng-click="deleteImage()" ng-if="form.getCol(name, rowsn).value" style="position:absolute; right:0px; margin-top:3px;margin-right:3px;opacity:0.8;" ',
+                                'title="{{tooltip?\'\':\'Delete Image\'}}" ',
+                                'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="Delete Image" ',
+                            '>',
+                            '</a>',
+                            '<span style="position:absolute;top:32px;left:3px;font-size:16px;font-weight:bold;color:#666666;" ng-if="!form.getCol(name, rowsn).value && !form.getCol(name, rowsn).errorCode">{{actname}}</span>',
+                            '<div class="wliu-background-1" style="display:block;width:{{ww}}px;min-width:{{minww}}px;min-height:{{minhh}}px;text-align:center;border:1px solid #cccccc;">',
+                                '<img class="img-responsive" width="100%" ng-click="clickImage()" style="vertical-align:middle;" src="{{form.getCol(name, rowsn).value?form.getCol(name, rowsn).value:\'\'}}" />',
+                            '</div>',
+                            '<input type="hidden" scope="{{ form.scope }}" title="" ',
+                                'ng-model="form.getCol(name, rowsn).value" ',
+                                'ng-change="form.changeCol(name, rowsn)" ',
+                                'ng-disabled="form.getCol(name, rowsn)==undefined" ',
+                            '/>',
                         '</div>',
-                        '<input type="hidden" scope="{{ form.scope }}" ',
-                            'ng-model="form.getCol(name, rowsn).value" ',
-                            'ng-change="form.changeCol(name, rowsn)" ',
-                            'ng-disabled="form.getCol(name, rowsn)==undefined" ',
-                        '/>',
-                    '</div>'
+                    '</span>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.minww = $scope.minww?$scope.minww:"120";
-            $scope.minhh = $scope.minhh?$scope.minhh:"80";
-            $scope.view = $scope.view?$scope.view:"medium";
+            $scope.imgobj       = new WLIU.IMAGE();
+            $scope.minww        = $scope.minww?$scope.minww:"120";
+            $scope.minhh        = $scope.minhh?$scope.minhh:"80";
+            $scope.view         = $scope.form.colMeta($scope.name).view?$scope.form.colMeta($scope.name).view:"medium";
+            
+            $scope.printImage = function() {
+                if(  $scope.form.getCol($scope.name, $scope.rowsn).value ) {
+                    FFILE.exportDataURL($scope.form.getCol($scope.name, $scope.rowsn).value);
+                }
+            }
 
             $scope.clickImage = function() {
-                alert("click image");
             }
             
             $scope.deleteImage = function() {
@@ -230,6 +248,220 @@ wliu_form.directive("form.imgupload", function () {
     }
 });
 
+wliu_form.directive("form.imgupload1", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            form:           "=",
+            rowsn:          "@",
+            name:           "@",
+            actname:        "@",
+
+            tooltip:        "@",
+            ww:             "@",
+            ratio:          "@",
+            view:           "@",
+            //hh:           "@",  img responsive applied to width not to height
+            minww:          "@",
+            minhh:          "@"
+        },
+        template: [
+                    '<span>',
+                        '<div style="position:relative;font-size:16px;font-weight:bold;color:red;" ng-if="form.getCol(name, rowsn).errorCode">{{form.getCol(name, rowsn).errorMessage}}</div>',
+                        '<div style="display:inline-block;position:relative;">',
+                            '<i class="wliu-btn24 wliu-btn24-image" style="position:absolute; margin-top:3px;margin-left:3px;opacity:0.8; overflow:hidden;" ',
+                                'title="{{tooltip?\'\':\'upload Image\'}}" ',
+                                'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="Upload Image" ',
+                            '>',
+                                    '<input type="file" style="display:block; position:absolute; opacity:0;top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" value="Browse..." ',
+                                            'onchange="angular.element(this).scope().selectFile(event);" ',
+                                            'ng-disabled="form.getCol(name, rowsn)==undefined" />',
+                            '</i>',
+                            '<a class="wliu-btn24 wliu-btn24-img-print" ng-click="printImage()" ng-if="form.getCol(name, rowsn).value" style="position:absolute; margin-top:3px;margin-left:30px;opacity:0.8;" ',
+                                'title="{{tooltip?\'\':\'Print Image\'}}" ',
+                                'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="Print Image" ',
+                            '>',
+                            '</a>',
+                            '<a class="wliu-btn24 wliu-btn24-empty" ng-click="deleteImage()" ng-if="form.getCol(name, rowsn).value" style="position:absolute; right:0px; margin-top:3px;margin-right:3px;opacity:0.8;" ',
+                                'title="{{tooltip?\'\':\'Delete Image\'}}" ',
+                                'popup-target="{{tooltip?tooltip:\'\'}}" popup-toggle="hover" popup-body="Delete Image" ',
+                            '>',
+                            '</a>',
+                            '<span style="position:absolute;top:32px;left:3px;font-size:16px;font-weight:bold;color:#666666;" ng-if="!form.getCol(name, rowsn).value && !form.getCol(name, rowsn).errorCode">{{actname}}</span>',
+                            '<div class="wliu-background-1" style="display:block;width:{{ww}}px;min-width:{{minww}}px;min-height:{{minhh}}px;text-align:center;border:1px solid #cccccc;">',
+                                '<img class="img-responsive" width="100%" ng-click="clickImage()" style="cursor:pointer;" src="{{form.getCol(name, rowsn).value?form.getCol(name, rowsn).value:\'\'}}" />',
+                            '</div>',
+                            '<input type="hidden" scope="{{ form.scope }}" title="" ',
+                                'ng-model="form.getCol(name, rowsn).value" ',
+                                'ng-change="form.changeCol(name, rowsn)" ',
+                                'ng-disabled="form.getCol(name, rowsn)==undefined" ',
+                            '/>',
+                        '</div>',
+                
+                        '<div id="{{form.scope}}_{{name}}_{{rowsn}}" wliu-diag movable maskable fade>',
+                            '<div wliu-diag-head>Image Editor</div>',
+                            '<div wliu-diag-body>',
+                                
+                                '<div ng-if="imgobj.errorCode">',
+                                    '{{imgobj.errorMessage}}',
+                                '</div>',
+                                '<div ng-if="!imgobj.errorCode">',
+                                    '<div style="min-height:300px;">',
+                                        '<div class="wliu-image-frame" style="position:relative;min-width:400px;max-width:800px;">',
+                                            '<img class="img-responsive" width="100%" src="{{ imgobj.resize[view].data?imgobj.resize[view].data:\'\' }}" />',
+                                            '<div class="wliu-image-crop">',
+                                                '<div class="wliu-image-crop-h"></div>',
+                                                '<div class="wliu-image-crop-v"></div>',
+                                            '</div>',
+                                        '</div>',
+                                    '</div>',
+                                    '<div style="text-align:center;">',
+
+                                        '<button ng-click="reset()" title="Restore Image" class="btn btn-outline-success waves-effect pull-right {{ imgobj.resize[view].data?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                        '<a class="wliu-btn16 wliu-btn16-restore"></a>',
+                                        ' Reset</button>',
+
+                                        '<button ng-click="crop()" title="Crop Image" class="btn btn-outline-primary waves-effect pull-right {{ imgobj.resize[view].data?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                        '<a class="wliu-btn16 wliu-btn16-crop"></a>',
+                                        ' Crop</button>',
+
+                                        '<button ng-click="rotate()" title="Rotate Image" class="btn btn-outline-primary waves-effect pull-right {{ imgobj.resize[view].data?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                        '<a class="wliu-btn16 wliu-btn16-rotate-right"></a>',
+                                        ' Rotate</button>',
+
+                                        '<button ng-click="save()" title="Upload Image" class="btn btn-outline-secondary pull-left waves-effect {{ imgobj.resize[view].data?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                        '<a class="wliu-btn16 wliu-btn16-okey"></a>',
+                                        ' Save</button>',
+
+                                        '<button ng-click="dispose()" title="Cancel Upload" class="btn btn-outline-warning pull-left waves-effect" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                        '<a class="wliu-btn16 wliu-btn16-dispose"></a>',
+                                        ' Cancel</button>',
+
+                                    '</div>',
+                                '</div>',
+                            '</div>',
+                        '</div>',
+
+
+                    '</span>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.imgobj       = new WLIU.IMAGE();
+            $scope.imgeditor    = "#" + $scope.form.scope + "_" + $scope.name + "_" + $scope.rowsn; 
+            $scope.minww = $scope.minww?$scope.minww:"120";
+            $scope.minhh = $scope.minhh?$scope.minhh:"80";
+            $scope.view = $scope.form.colMeta($scope.name).view?$scope.form.colMeta($scope.name).view:"medium";
+            
+
+            $scope.clickImage = function() {
+                if( !$scope.imgobj.resize.origin.data ) {
+                    $scope.imgobj.resize.origin.data = $scope.form.getCol($scope.name, $scope.rowsn).value;
+                    FIMAGE.setView($scope.view);  // important to make ng-model data sync with the callback
+                    FIMAGE.resizeAll($scope.imgobj, function(){
+                        $scope.imgobj.rowsn = $scope.rowsn;
+                        $($scope.imgeditor).trigger("show");
+                        FIMAGE.cropDivReset( $("div.wliu-image-crop", $scope.imgeditor) );
+                        $scope.$apply();  // async must apply
+                    });
+                } else {
+                    $scope.imgobj.rowsn = $scope.rowsn;
+                    $($scope.imgeditor).trigger("show");
+                    FIMAGE.cropDivReset( $("div.wliu-image-crop", $scope.imgeditor) );
+                }
+            }
+
+            $scope.printImage = function() {
+                if(  $scope.form.getCol($scope.name, $scope.rowsn).value ) {
+                    FFILE.exportDataURL($scope.form.getCol($scope.name, $scope.rowsn).value);
+                }
+            }
+            
+            $scope.deleteImage = function() {
+                 $scope.form.getCol($scope.name, $scope.rowsn).value = "";
+                 $scope.form.changeCol($scope.name, $scope.rowsn);
+            }
+
+            $scope.selectFile = function(event) {
+                files = (event.srcElement || event.target).files;
+                FIMAGE.view = $scope.view;
+                FIMAGE.fromFile($scope.imgobj, files[0], function(fObj){
+                    if(fObj.errorCode) {
+                        alert(fObj.errorMessage);
+                    } else {
+                        $scope.form.getCol($scope.name, $scope.rowsn).value = $scope.imgobj.resize[$scope.view].data?$scope.imgobj.resize[$scope.view].data:"";
+                        $scope.form.changeCol($scope.name, $scope.rowsn);
+                        $scope.$apply();  // important: it is async to read image in callback
+
+                        $scope.imgobj.rowsn = $scope.rowsn;
+                        $($scope.imgeditor).trigger("show");
+                        FIMAGE.cropDivReset( $("div.wliu-image-crop", $scope.imgeditor) );
+                        
+                    }
+                });
+            }
+
+
+            /****************************************************** */
+            $scope.rotate = function() {
+                FIMAGE.rotate($scope.imgobj, function(oImg){
+                    FIMAGE.cropDivReset( $("div.wliu-image-crop", $scope.imgeditor) );
+                    $scope.$apply();
+                });
+            }
+
+            $scope.crop = function() {
+                FIMAGE.cropDiv($scope.imgobj, $("div.wliu-image-frame", $scope.imgeditor), $("div.wliu-image-crop", $scope.imgeditor), function(oImg){
+                    FIMAGE.cropDivReset( $("div.wliu-image-crop", $scope.imgeditor) );
+                    $scope.$apply();
+                });
+            }
+
+            $scope.reset = function() {
+                FIMAGE.cropReset($scope.imgobj, function(oImg){
+                    FIMAGE.cropDivReset( $("div.wliu-image-crop", $scope.imgeditor) );
+                    $scope.$apply();
+                });
+            }
+
+            $scope.save = function() {
+                if($scope.imgobj.resize.origin.data!="") {
+					$scope.form.setImage("img1", $scope.imgobj);
+                    $scope.form.changeCol($scope.name, $scope.rowsn);
+                    $scope.dispose();
+                }
+            }
+
+            $scope.dispose = function() {
+                FIMAGE.cropDivReset( $("div.wliu-image-crop", $scope.imgeditor) );
+                if( !$scope.$root.$$phase) $scope.$apply();
+                $($scope.imgeditor).trigger("hide");
+            }
+            
+        },
+        link: function (sc, el, attr) {
+           $(function(){
+               var ratio = 0;
+               if( sc.ratio ) {
+                    var rateArr = sc.ratio.split(":");
+                    var ratio = parseInt(rateArr[0])/parseInt(rateArr[1]);
+               } 
+
+                $("body>" + sc.imgeditor).remove();
+                $(sc.imgeditor).appendTo("body");
+
+                $(sc.imgeditor).wliuDiag({});
+                $("div.wliu-image-crop", sc.imgeditor).draggable({
+                    containment: "parent"
+                });
+                $("div.wliu-image-crop", sc.imgeditor).resizable({ 
+                    aspectRatio: ratio,
+                    containment: "parent"
+                });
+           });
+        }
+    }
+});
 
 wliu_form.directive("form.label", function () {
     return {

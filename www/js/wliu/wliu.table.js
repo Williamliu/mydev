@@ -119,7 +119,9 @@ WLIU.TABLE.prototype = {
 	changeCol: function(col_name, ridx) {
 		return FTABLE.changeCol(this, col_name, ridx);
 	},
-
+	setImage: function(col_name, oImg) {
+		return FTABLE.setImage(this, col_name, oImg);
+	},
 
 	// ; ridx;  nrow;  ridx nrow ;  default position=0  add to first
 	init: function() {

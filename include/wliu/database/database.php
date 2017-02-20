@@ -2457,6 +2457,7 @@ class cVALIDATE {
 
 								break;
 							case "upload":
+							case "editor":
 								// important: don't do regular express for base64 string, it will crash 
 								if(!$theCol["value"]) $theCol["value"]="";
 								if($notNull) {

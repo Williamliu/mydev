@@ -101,13 +101,12 @@ wliu_image.directive("image.upload", function () {
 });
 
 
-wliu_image.directive("image.viewer", function () {
+wliu_image.directive("image.editor", function () {
     return {
         restrict: "E",
         replace: true,
         scope: {
             imgobj:         "=",
-            imglist:        "=",
             targetid:       "@",
             title:          "@",
             view:           "@",
@@ -145,9 +144,9 @@ wliu_image.directive("image.viewer", function () {
                                     '<a class="wliu-btn16 wliu-btn16-rotate-right"></a>',
                                     ' Rotate</button>',
 
-                                    '<button ng-click="upload()" title="Upload Image" class="btn btn-outline-secondary pull-left waves-effect {{ imgobj.resize[view].data?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                    '<button ng-click="save()" title="Upload Image" class="btn btn-outline-secondary pull-left waves-effect {{ imgobj.resize[view].data?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
                                     '<a class="wliu-btn16 wliu-btn16-okey"></a>',
-                                    ' Upload</button>',
+                                    ' Save</button>',
 
                                     '<button ng-click="dispose()" title="Cancel Upload" class="btn btn-outline-warning pull-left waves-effect" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
                                     '<a class="wliu-btn16 wliu-btn16-dispose"></a>',
@@ -180,16 +179,14 @@ wliu_image.directive("image.viewer", function () {
                 });
             }
 
-            $scope.upload = function() {
+            $scope.save = function() {
                 if($scope.imgobj.resize.origin.data!="") {
-                    $scope.imglist.push( angular.copy($scope.imgobj) );
                     $scope.action($scope.imgobj);
                     $scope.dispose();
                 }
             }
 
             $scope.dispose = function() {
-                $scope.imgobj = FIMAGE.clearImage( $scope.imgobj );
                 FIMAGE.cropDivReset( $("div.wliu-image-crop", "#" + $scope.targetid) );
                 if( !$scope.$root.$$phase) $scope.$apply();
                 $("#" + $scope.targetid).trigger("hide");
