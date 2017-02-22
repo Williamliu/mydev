@@ -67,7 +67,7 @@ String.prototype.subName = function(n) {
 	n = n || 10;
 	var name = this.toString().fileName();
 	if (name.length > n){
-			name = name.slice(0, n - 3) + '...' + name.slice(-3);    
+			name = name.slice(0, n - 6) + '...' + name.slice(-6);    
 	}
 	return name;
 }

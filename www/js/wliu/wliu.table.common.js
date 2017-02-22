@@ -1553,7 +1553,7 @@ WLIU.FILEACTION.prototype = {
 
 		if( this.allowType.indexOf(theFile.ext_name.toUpperCase()) >= 0 || this.allowType.indexOf("*") >= 0 ) {
 			if( theFile.size <= this.allowSize ) {
-				this._fromBlob(theFile, file);
+				this._fromBlob(theFile, file, callback);
 			} else {
 				theFile.errorCode 		= 1;
 				theFile.errorMessage 	= "File size {" + theFile.size.toSize() + "} over maximum size {" + this.allowSize.toSize() + "}."; 
