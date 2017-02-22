@@ -66,7 +66,7 @@
 		   	var col8 = new WLIU.COL({key:0, coltype:"radio", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name", 			defval: 77, notnull:1, 			list:"colorCategory"});
 		   	var col9 = new WLIU.COL({key:0, coltype:"checkbox1", 	name:"country_id",	colname:"Country ISO",  coldesc:"Country ID", list:"countryCategory"});
 		   	var col10 = new WLIU.COL({key:0, coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status"});
-		   	var col11 = new WLIU.COL({key:0, coltype:"upload", 		name:"img1", 		colname:"ID Copy", 		view:"small", maxlength:30 * 1024, notnull: 1 });
+		   	var col11 = new WLIU.COL({key:0, coltype:"upload", 		name:"img1", 		colname:"ID Copy", 		view:"large", notnull: 1 });
 		   	var col12 = new WLIU.COL({key:0, coltype:"upload", 		name:"img2",  		colname:"Your Photo", 	view: "large", notnull: 1 });
 			
             var cols = [];
@@ -180,19 +180,19 @@
 			<div class="col-md-3">
 				<form.textbox form="wform" rowsn="0" name="email" tooltip="#mytips"></form.textbox>
 			</div>
-			<div class="col-md-1">
-				<form.imgupload1 form="wform" rowsn="0" name="img1" ratio="4:4" actname="ID Copy" tooltip="#mytips" ww=200></form.imgupload1>
+			<div class="col-md-4">
+				<form.imgupload1 form="wform" rowsn="0" name="img1" actname="ID Copy" tooltip="#mytips" hh=200></form.imgupload1>
 			</div>		
-			<div class="col-md-3">
+			<div class="col-md-1">
 			</div>
 			<div class="col-md-1">
 			</div>		
-			<div class="col-md-3">
+			<div class="col-md-1">
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<form.imgupload form="wform" rowsn="0" name="img2" targetid="myviewer" actname="Upload Image"  tooltip="#mytips" ww=300></form.imgupload>
+				<form.imgupload form="wform" rowsn="0" name="img2" targetid="myviewer" actname="Upload Image"  tooltip="#mytips" hh=200></form.imgupload>
 				<!-- <form.ckinline form="wform" rowsn="0" name="img2" minhh=260></form.ckinline>-->
 			</div>		
 		</div>

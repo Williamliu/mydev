@@ -1120,15 +1120,14 @@ WLIU.TABLEACTION.prototype = {
 		var t_col = this.getCol(theTable, col_name, ridx);
 		return FROW.colChange(t_row, t_col);
 	},
-	setImage: function(theTable, col_name, oImg) {
-		var ridx = oImg.rowsn?oImg.rowsn:0;
+	setImage: function(theTable, col_name, ridx, oImg) {
+		//var ridx = oImg.rowsn?oImg.rowsn:0;
 		var t_col = this.getCol(theTable, col_name, ridx);
 		if( t_col ) {
 			var view = "medium";
 			if(this.colMeta(theTable, col_name) && this.colMeta(theTable,col_name).view ) view = this.colMeta(theTable,col_name).view; 
 			t_col.value = oImg.resize[view].data;
 		}
-		return oImg;
 	},
 	newRow: function(theTable, keyvalues) {
 		var t_row = new  WLIU.ROW(theTable.cols, keyvalues, theTable.scope);
