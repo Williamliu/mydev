@@ -1537,7 +1537,7 @@ WLIU.TABLEACTION.prototype = {
 
 WLIU.FILEACTION = function(opts) {
 	this.allowSize = 20 * 1024 * 1024,	
-	this.allowType = ["PDF", "XLS", "XLSX", "DOC", "DOCX", "TXT", "*"];
+	this.allowType = ["PDF", "XLS", "XLSX", "DOC", "DOCX", "PPT", "PPTX", "TXT", "BMP", "JPG", "JPEG", "PNG", "TIF", "GIF"];
 	if(opts) {
 		if(opts.allowSize) this.allowSize = opts.allowSize;
 		if(opts.allowType) this.allowType = opts.allowType;
@@ -1550,7 +1550,8 @@ WLIU.FILEACTION.prototype = {
 		theFile.ext_name 	= file.name.extName();
 		theFile.mime_type	= file.type;
 		theFile.size  		= file.size;
-
+		theFile.errorCode		= 0;
+		theFile.errorMessage 	= "";
 		if( this.allowType.indexOf(theFile.ext_name.toUpperCase()) >= 0 || this.allowType.indexOf("*") >= 0 ) {
 			if( theFile.size <= this.allowSize ) {
 				this._fromBlob(theFile, file, callback);
@@ -1671,6 +1672,8 @@ WLIU.IMAGEACTION.prototype = {
 		theImage.ext_name 	= file.name.extName();
 		theImage.mime_type 	= file.type;
 		theImage.size  		= file.size;
+		theImage.errorCode		= 0;
+		theImage.errorMessage 	= "";
 
 		if( this.allowType.indexOf(theImage.ext_name.toUpperCase()) >= 0 || this.allowType.indexOf("*") >= 0 ) {
 			if( theImage.size <= this.allowSize ) {
