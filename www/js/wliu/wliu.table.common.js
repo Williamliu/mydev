@@ -396,10 +396,12 @@ WLIU.IMAGE = function( opts ) {
 	this.image 		= {
 		state: 			0,  // 0 - ready for upload, 1 - uploading,  2- done,  9 - error
 		sn:             0,  // sn for image array index
-		rowsn:	        0,  // rowsn for table rows rowsn 
+		rowsn:	        0,  // rowsn for list GUID , for webpage layout
 		errorCode:		0, 
 		errorMessage:	"",
+
 		scope: 			"",
+		id:    			0,
 		key1:			0,
 		key2:			0,
 		key3:			0,
