@@ -21,12 +21,15 @@ CREATE TABLE `wliu_config` (
   `max_length` int(11) DEFAULT '0',
   `max_size` int(11) DEFAULT '0',
   `access` int(11) DEFAULT '0',
+  `key1` tinyint(11) DEFAULT '0',
+  `key2` tinyint(11) DEFAULT '0',
+  `key3` tinyint(11) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Data for the table `wliu_config` */
 
-insert  into `wliu_config`(`id`,`scope`,`max_length`,`max_size`,`access`) values (1,'users',5,0,0);
+insert  into `wliu_config`(`id`,`scope`,`max_length`,`max_size`,`access`,`key1`,`key2`,`key3`) values (1,'users',5,0,1,1,0,0);
 
 /*Table structure for table `wliu_images` */
 
@@ -55,11 +58,11 @@ CREATE TABLE `wliu_images` (
   `created_time` bigint(20) DEFAULT '0',
   `last_updated` bigint(20) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*Data for the table `wliu_images` */
 
-insert  into `wliu_images`(`id`,`scope`,`owner_id`,`key1`,`key2`,`key3`,`title_en`,`title_cn`,`detail_en`,`detail_cn`,`full_name`,`short_name`,`ext_name`,`mime_type`,`access`,`main`,`orderno`,`status`,`deleted`,`created_time`,`last_updated`) values (1,'Users',100,1,1,1,'Image Title En','Title CN','IDJKD ASKDFJKADS','DFASF ASFDSA','hill.jpg','hill','jpg','image/jpeg',0,0,0,1,0,0,0);
+insert  into `wliu_images`(`id`,`scope`,`owner_id`,`key1`,`key2`,`key3`,`title_en`,`title_cn`,`detail_en`,`detail_cn`,`full_name`,`short_name`,`ext_name`,`mime_type`,`access`,`main`,`orderno`,`status`,`deleted`,`created_time`,`last_updated`) values (1,'Users',100,1,1,1,'Image Title En','Title CN','IDJKD ASKDFJKADS','DFASF ASFDSA','hill.jpg','hill','jpg','image/jpeg',0,0,0,1,0,0,0),(2,'Users',100,1,0,0,'AAABBB','CCC DDD','SDFJKSDA ','KSDFJKLASD ','vanc.png','vanc','png','image/png',0,0,0,0,0,0,0);
 
 /*Table structure for table `wliu_images_resize` */
 
@@ -78,9 +81,11 @@ CREATE TABLE `wliu_images_resize` (
   `url` varchar(1024) DEFAULT NULL,
   `data` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 /*Data for the table `wliu_images_resize` */
+
+insert  into `wliu_images_resize`(`id`,`ref_id`,`resize_type`,`name`,`size`,`ww`,`hh`,`width`,`height`,`url`,`data`) values (1,1,'origin','cnd_origin',0,0,0,0,0,NULL,NULL),(2,1,'large','cnd_large',0,0,0,0,0,NULL,NULL),(3,1,'medium',NULL,0,0,0,0,0,NULL,NULL),(4,1,'small',NULL,0,0,0,0,0,NULL,NULL),(5,1,'tiny',NULL,0,0,0,0,0,NULL,NULL),(6,1,'thumb',NULL,0,0,0,0,0,NULL,NULL),(7,2,'origin','111',0,0,0,0,0,NULL,NULL),(8,2,'large','222',0,0,0,0,0,NULL,NULL),(9,2,'medium','333',0,0,0,0,0,NULL,NULL),(10,2,'small','44',0,0,0,0,0,NULL,NULL),(11,2,'tiny','555',0,0,0,0,0,NULL,NULL),(12,2,'thumb',NULL,0,0,0,0,0,NULL,NULL),(13,0,NULL,NULL,0,0,0,0,0,NULL,NULL);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

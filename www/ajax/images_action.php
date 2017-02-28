@@ -5,19 +5,19 @@ include_once("../../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
 define("DEBUG", 1);
 
-/*
-echo "count: " . strlen( $table["rows"][0]["cols"][4]["value"]);
-echo "\n";
-print_r($table["rows"][0]["cols"][4]["value"]);
-exit();
-*/
-
 $response = array();
 try {
 	$db_img = new cMYSQL($CFG["image"]["host"], $CFG["image"]["user"], $CFG["image"]["pwd"], $CFG["image"]["database"]);
 	$images = $_REQUEST["images"];
-	$images["config"]["scope"] = "users";
-	
+	// for secure, please unset below vars first;
+	unset($images["config"]["scope"]);
+	unset($images["config"]["access"]);
+	unset($images["config"]["owner_id"]);
+
+	$images["config"]["scope"] 		= "users";
+	$images["config"]["owner_id"] 	= 100;
+	//$images["filter"]["status"] 	= 1;
+
 	cIMAGE::action($db_img, $images);
 	$response["images"] = $images;
 	echo json_encode($response);

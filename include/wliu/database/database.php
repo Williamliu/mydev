@@ -2636,7 +2636,7 @@ class cIMAGE {
 	}
 
 	static public function getImages($db, &$images ) {
-		$query_config 		= "SELECT scope, max_length, max_size, access FROM wliu_config WHERE scope = '" . $images["config"]["scope"] . "'";
+		$query_config 		= "SELECT scope, max_length, max_size, access, key1, key2, key3 FROM wliu_config WHERE scope = '" . $images["config"]["scope"] . "'";
 		if(!$db->exists($query_config)) {
 			$images["error"]["errorCode"] 		= 1;
 			$images["error"]["errorMessage"] 	= "Invalid Access Images";
@@ -2646,14 +2646,50 @@ class cIMAGE {
 			$result_config 		= $db->query($query_config);
 			$row_config 		= $db->fetch($result_config);
 			$images["config"]["scope"]   		= $row_config["scope"];
-			$images["config"]["max_length"]   	= $row_config["max_length"];
+			$images["config"]["max_length"]   	= $row_config["max_length"]?$row_config["max_length"]:0;
 			$images["config"]["max_size"]   	= $row_config["max_size"];
 			$images["config"]["access"]   		= $row_config["access"];
+			$images["config"]["key1"]   		= $row_config["key1"];
+			$images["config"]["key2"]   		= $row_config["key2"];
+			$images["config"]["key3"]   		= $row_config["key3"];
 
-			$query 	= "SELECT * FROM wliu_images";
+			$criteria = "deleted=0";
+			if($images["config"]["access"]) {
+				if( $images["config"]["owner_id"] ) {
+					$ccc_owner = "owner_id='" . $images["config"]["owner_id"] . "'";
+				} else {
+					$ccc_owner = "1=0";
+				}
+				cTYPE::join($criteria, " AND ", $ccc_owner);
+			} 
+
+			if($images["config"]["key1"] ) 	cTYPE::join($criteria, " AND ", "key1='" . $images["keys"]["key1"] . "'");
+			if($images["config"]["key2"] ) 	cTYPE::join($criteria, " AND ", "key2='" . $images["keys"]["key2"] . "'");
+			if($images["config"]["key3"] ) 	cTYPE::join($criteria, " AND ", "key3='" . $images["keys"]["key3"] . "'");
+			foreach( $images["filter"] as $colName=>$colVal ) {
+				cTYPE::join($criteria, " AND ", $colName . "='" . $colVal . "'");
+			}
+			$orderBy = "ORDER BY orderno DESC, last_updated DESC";
+			$limit = "LIMIT 0," . $images["config"]["max_length"];
+			$query 	= "SELECT id, scope, key1, key2, key3, title_en, title_cn, detail_en, detail_cn, full_name, short_name, ext_name, mime_type, main, orderno, status FROM wliu_images WHERE $criteria $orderBy $limit";
+			if(DEBUG) $images["query"] = $query;
 			$result = $db->query($query);
 			$rows   = $db->rows($result);
+
+			$imgType = "'" . $images["config"]["thumb"] . "','" . $images["config"]["view"] . "'";
+			foreach( $rows as $rowsn=>&$theRow ) {
+				$query_row = "SELECT resize_type, name, ww, hh, width, height, size, data FROM wliu_images_resize WHERE ref_id='" . $theRow["id"] . "' AND resize_type in ($imgType)";
+				$result_row = $db->query($query_row);
+				while( $row_row = $db->fetch($result_row) ) {
+					$image_type = $row_row["resize_type"];
+					unset($row_row["resize_type"]);
+					$theRow["resize"][$image_type] = $row_row;
+				}
+			}
 			$images["rows"] = $rows;
+
+			unset($images["config"]["access"]);
+			unset($images["config"]["owner_id"]);
 			return;
 		}
 	}

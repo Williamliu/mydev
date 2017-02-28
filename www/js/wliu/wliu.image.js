@@ -10,7 +10,7 @@ WLIU.IMAGELIST = function( opts ) {
 	this.autotip 	= opts.autotip?opts.autotip:"";
 
 	this.action		= "get";
-	this.keys 		= {};
+	this.keys 		= {key1: 1};
 	this.config     = {
 						scope: 		"",
 						thumb:  	opts.thumb?opts.thumb:"thumb",						
@@ -30,6 +30,12 @@ WLIU.IMAGELIST.prototype = {
 			p_scope.images = this;
 		}
 		this.sc = p_scope;
+	},
+	imageError: function(p_error) {
+		if(p_error!=undefined) {
+			this.error = p_error;
+		} 
+		return this.error; 
 	},
 	getImages: function(callback) {
 		this.error.errorCode 	= 0;
@@ -56,11 +62,29 @@ WLIU.IMAGELIST.prototype = {
 			},
 			success: function(req, tStatus) {
 				if( _self.wait ) $(_self.wait).trigger("hide");
-				console.log(req);
+				_self.syncRows(req.images);
+				if(!_self.sc.$$phase) {
+					_self.sc.$apply();
+		 		}
 			},
 			type: "post",
 			url: _self.url
 		});
-	}
+	},
+	syncRows: function(nimages) {
+		this.imageError(nimages.error);
+		this.config = angular.copy(nimages.config);
+		this.rows = [];
+		for(var ridx in nimages.rows) {
+			var theRow 		= nimages.rows[ridx];
+			theRow.sn  		= ridx;
+			theRow.rowsn 	= guid();
+			this.rows.push( new WLIU.IMAGE(theRow) );	
+		}
+		
 
+		console.log(this.error);
+		console.log(this.config);
+		console.log(this.rows);
+	}
 }
