@@ -7,12 +7,12 @@ $CFG["http"]			= "http://";
 $CFG["web_domain"] 		= "http://www.dev.com";
 $CFG["admin_domain"] 	= "http://www.admin.com";
 
-$CFG["web_root"] 		= "C:\Projects\mydev";
-$CFG["admin_root"] 		= "C:\Projects\mydev";
+$CFG["web_root"] 		= "D:\Software\WilliamLiu\Tech_Books\mydev";
+$CFG["admin_root"] 		= "D:\Software\WilliamLiu\Tech_Books\mydev";
 
 $CFG["include_path"] 	= $CFG["web_root"] . "/include";
 $CFG["report_path"] 	= $CFG["web_root"] . "/reports";
-$CFG["upload_path"] 	= "C:\Projects\mydev\uploads";
+$CFG["upload_path"] 	= "D:\Software\WilliamLiu\Tech_Books\mydev\uploads";
 
 
 // Theme and   use the theme folder name for Array key.
@@ -21,6 +21,7 @@ $CFG["lang_default"] 	= "cn";
 $CFG["lang"]["cn"] 		= "cn";
 $CFG["lang"]["tw"] 		= "tw";
 $CFG["lang"]["en"] 		= "en";
+
 
 $CFG["theme_default"] 	= "blue";
 $CFG["theme"]["blue"] 	= "Blue";
@@ -68,6 +69,12 @@ switch(ENVIR) {
 			$CFG["mysql"]["database"]  	= "puti_testdb";
 			$CFG["mysql"]["user"] 		= "puti_dbuser";
 			$CFG["mysql"]["pwd"] 		= "putivan258*db";
+
+
+			$CFG["image"]["host"] 		= "";
+			$CFG["image"]["database"]  	= "puti_testdb";
+			$CFG["image"]["user"] 		= "puti_dbuser";
+			$CFG["image"]["pwd"] 		= "putivan258*db";
 			break;
 
 	case PRODUCTION:
@@ -75,6 +82,11 @@ switch(ENVIR) {
 			$CFG["mysql"]["database"]  	= "wliu_maindb";
 			$CFG["mysql"]["user"] 		= "root";
 			$CFG["mysql"]["pwd"] 		= "Liu011225";
+
+			$CFG["image"]["host"] 		= "localhost";
+			$CFG["image"]["database"]  	= "wliu_files";
+			$CFG["image"]["user"] 		= "root";
+			$CFG["image"]["pwd"] 		= "Liu011225";
 			break;
 }
 ?>

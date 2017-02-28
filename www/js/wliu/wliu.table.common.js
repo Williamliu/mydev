@@ -425,7 +425,7 @@ WLIU.IMAGE = function( opts ) {
 
 		resize:     {
 			 origin:	{ ww: 1600, 	hh:1600, 	width:0, height:0,  name:"", size: 0, data:"" },
-			 thumb: 	{ ww: 100, 		hh:100, 		width:0, height:0,  name:"", size: 0, data:"" },
+			 thumb: 	{ ww: 100, 		hh:100, 	width:0, height:0,  name:"", size: 0, data:"" },
 			 tiny: 		{ ww: 200, 		hh:200, 	width:0, height:0,  name:"", size: 0, data:"" },
 			 small: 	{ ww: 600, 		hh:600, 	width:0, height:0,  name:"", size: 0, data:"" },
 			 medium: 	{ ww: 1000, 	hh:1000, 	width:0, height:0,  name:"", size: 0, data:"" },

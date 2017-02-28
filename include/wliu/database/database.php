@@ -2622,6 +2622,43 @@ class cVALIDATE {
 	);
 }
 
+class cIMAGE {
+	static public function action($db, &$images ) {
+		switch( $images["action"] ) {
+			case "get":
+				cIMAGE::getImages($db, $images);
+				break;
+			case "save":
+				break;
+			case "custom":
+				break;
+		}
+	}
+
+	static public function getImages($db, &$images ) {
+		$query_config 		= "SELECT scope, max_length, max_size, access FROM wliu_config WHERE scope = '" . $images["config"]["scope"] . "'";
+		if(!$db->exists($query_config)) {
+			$images["error"]["errorCode"] 		= 1;
+			$images["error"]["errorMessage"] 	= "Invalid Access Images";
+			$images["rows"] = array();
+			return;
+		} else {
+			$result_config 		= $db->query($query_config);
+			$row_config 		= $db->fetch($result_config);
+			$images["config"]["scope"]   		= $row_config["scope"];
+			$images["config"]["max_length"]   	= $row_config["max_length"];
+			$images["config"]["max_size"]   	= $row_config["max_size"];
+			$images["config"]["access"]   		= $row_config["access"];
+
+			$query 	= "SELECT * FROM wliu_images";
+			$result = $db->query($query);
+			$rows   = $db->rows($result);
+			$images["rows"] = $rows;
+			return;
+		}
+	}
+}
+
 class cLIST {
 	static public function getList($db, &$table) {
 		$listMeta = $table["listTable"];
