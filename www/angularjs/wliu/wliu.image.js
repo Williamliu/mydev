@@ -244,6 +244,7 @@ wliu_image.directive("image.list1", function () {
                         '<div style="display:inline-block;position:relative;margin:2px;" imgid="{{imgObj.id}}" class="wliu-background-1 image-item" ',
                                 'ng-repeat="imgObj in imglist.rows"',
                         '>',
+                            '<span style="position:absolute;color:red;margin-top:3px;margin-left:60px">{{imgObj.orderno}}</span>',
                             '<a class="wliu-btn24 wliu-btn24-img-print" ng-click="printImage(imgObj)" style="position:absolute; margin-top:3px;margin-left:3px;opacity:0.8;" ',
                                 'title="{{tooltip?\'\':\'Print Image\'}}" ',
                                 'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Print Image" ',
@@ -258,7 +259,6 @@ wliu_image.directive("image.list1", function () {
                                 'title="{{tooltip?\'\':\'Delete Image\'}}" ',
                                 'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Delete Image" ',
                             '>',
-                            '{{$index}} - {{imgObj.sn}}',
                             '</a>',
                             '<div style="display:table;">',
                                 '<div style="display:table-cell;vertical-align:middle;text-align:center;width:{{ww}}px;height:{{hh}}px;box-sizing:content-box;border:1px solid #cccccc;" class="img-content">',
@@ -302,11 +302,17 @@ wliu_image.directive("image.list1", function () {
                                     '</div>',
                                 '</div>',
                                 '<div class="row">',
-                                    '<div class="col-md-3 text-md-right">',
+                                    '<div class="col-md-2 text-md-right">',
                                         '<span class="wliuCommon-label">Status</span>',
                                     '</div>',
-                                    '<div class="col-md-9 text-md-left">',
+                                    '<div class="col-md-4 text-md-left">',
                                         '<input id="{{targetid}}_status" type="checkbox" ng-model="imglist.rows[select_idx].status" /> <label for="{{targetid}}_status">Active</label>',
+                                    '</div>',
+                                    '<div class="col-md-4 text-md-right">',
+                                        '<span class="wliuCommon-label">Order</span>',
+                                    '</div>',
+                                    '<div class="col-md-2 text-md-left">',
+                                        '<input type="textbox" ng-model="imglist.rows[select_idx].orderno" style="width:100%;text-align:center;" />',
                                     '</div>',
                                 '</div>',
 
@@ -339,7 +345,6 @@ wliu_image.directive("image.list1", function () {
             }
 
             $scope.clickImage = function(imgObj) {
-                alert($scope.targetid);
                 var rowidx = FCOLLECT.indexByKV( $scope.imglist.rows, {id: imgObj.id});
                 $scope.select_idx = rowidx;
                 $scope.imglist.rows[$scope.select_idx].status=$scope.imglist.rows[$scope.select_idx].status=="1"?true:false;
@@ -373,7 +378,7 @@ wliu_image.directive("image.list1", function () {
                 $("#" + sc.targetid).appendTo("body");
                 $("#" + sc.targetid).wliuDiag({});
             
-                
+                /* 
                 $(el).sortable({
                     items: ">div.image-item",
 					stop: function(ev, ui) {
@@ -385,6 +390,7 @@ wliu_image.directive("image.list1", function () {
                         sc.imglist.saveOrder();
                     }
                 });
+                */
             });
         }
     }

@@ -2729,6 +2729,7 @@ class cIMAGE {
 				$fields["title_cn"] 	= $images["title_cn"];
 				$fields["detail_en"] 	= $images["detail_en"];
 				$fields["detail_cn"] 	= $images["detail_cn"];
+				$fields["orderno"] 		= $images["orderno"];
 				$fields["status"] 		= $images["status"];
 				$fields["last_updated"] = time();
 				$db->update("wliu_images", $images["id"], $fields);

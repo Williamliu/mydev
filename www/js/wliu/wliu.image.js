@@ -71,6 +71,7 @@ WLIU.IMAGELIST.prototype = {
 			nimage.title_cn 	= this.rows[rowidx].title_cn;
 			nimage.detail_en 	= this.rows[rowidx].detail_en;
 			nimage.detail_cn 	= this.rows[rowidx].detail_cn;
+			nimage.orderno 		= this.rows[rowidx].orderno;
 			nimage.status 		= this.rows[rowidx].status?1:0;
 			nimage.action 		= "savetext";
 			this.ajaxCall(nimage, callback);
