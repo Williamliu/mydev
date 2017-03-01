@@ -2628,13 +2628,28 @@ class cIMAGE {
 			case "get":
 				cIMAGE::getImages($db, $images);
 				break;
-			case "save":
+			case "savetext":
+				cIMAGE::saveText($db, $images);
+				break;
+			case "saveorder":
+				cIMAGE::saveOrder($db, $images);
+				break;
+			case "delete":
+				cIMAGE::deleteImage($db, $images);
 				break;
 			case "custom":
 				break;
 		}
 	}
-
+	static public function config(&$images, $scope="", $ownerid="", $mode="list") {
+		$images["config"]["access"] 	= 1;
+		$images["config"]["scope"] 		= $scope;
+		$images["config"]["owner_id"] 	= $ownerid;
+		$images["config"]["mode"] 		= $mode;
+	}
+	static public function filter(&$images, $colName, $colVal) {
+		$images["filter"][$colName] = $colVal;
+	}
 	static public function getImages($db, &$images ) {
 		$query_config 		= "SELECT scope, max_length, max_size, access, key1, key2, key3 FROM wliu_config WHERE scope = '" . $images["config"]["scope"] . "'";
 		if(!$db->exists($query_config)) {
@@ -2669,14 +2684,19 @@ class cIMAGE {
 			foreach( $images["filter"] as $colName=>$colVal ) {
 				cTYPE::join($criteria, " AND ", $colName . "='" . $colVal . "'");
 			}
-			$orderBy = "ORDER BY orderno DESC, last_updated DESC";
+			$orderBy = "ORDER BY orderno ASC, last_updated DESC";
 			$limit = "LIMIT 0," . $images["config"]["max_length"];
 			$query 	= "SELECT id, scope, key1, key2, key3, title_en, title_cn, detail_en, detail_cn, full_name, short_name, ext_name, mime_type, main, orderno, status FROM wliu_images WHERE $criteria $orderBy $limit";
 			if(DEBUG) $images["query"] = $query;
 			$result = $db->query($query);
 			$rows   = $db->rows($result);
 
-			$imgType = "'" . $images["config"]["thumb"] . "','" . $images["config"]["view"] . "'";
+			if( $images["config"]["mode"]=="edit" ) {
+				$imgType = "'origin','large','medium','small','tiny','thumb'";
+			} else {
+				$imgType = "'" . $images["config"]["thumb"] . "','" . $images["config"]["view"] . "'";
+			}
+
 			foreach( $rows as $rowsn=>&$theRow ) {
 				$query_row = "SELECT resize_type, name, ww, hh, width, height, size, data FROM wliu_images_resize WHERE ref_id='" . $theRow["id"] . "' AND resize_type in ($imgType)";
 				$result_row = $db->query($query_row);
@@ -2692,6 +2712,55 @@ class cIMAGE {
 			unset($images["config"]["owner_id"]);
 			return;
 		}
+	}
+	static public function saveText($db, &$images ) {
+		$query_img 		= "SELECT * FROM wliu_images WHERE id = '" . $images["id"] . "'";
+		if(!$db->exists($query_img)) {
+			$images["error"]["errorCode"] 		= 1;
+			$images["error"]["errorMessage"] 	= "Invalid Access Images";
+			unset($images["config"]);
+			return;
+		} else {
+			$result_img 	= $db->query($query_img);
+			$row_img 		= $db->fetch($result_img);
+			if( $images["config"]["scope"] == $row_img["scope"] && $images["config"]["owner_id"] == $row_img["owner_id"]  )  {
+				$fields = array();
+				$fields["title_en"] 	= $images["title_en"];
+				$fields["title_cn"] 	= $images["title_cn"];
+				$fields["detail_en"] 	= $images["detail_en"];
+				$fields["detail_cn"] 	= $images["detail_cn"];
+				$fields["status"] 		= $images["status"];
+				$fields["last_updated"] = time();
+				$db->update("wliu_images", $images["id"], $fields);
+			} else {
+				$images["error"]["errorCode"] 		= 1;
+				$images["error"]["errorMessage"] 	= "Invalid Access Images";
+			}
+			unset($images["config"]);
+			return;
+		}
+	}
+	static public function deleteImage($db, &$images ) {
+		$query_img 		= "SELECT * FROM wliu_images WHERE id = '" . $images["id"] . "'";
+		$result_img 	= $db->query($query_img);
+		$row_img 		= $db->fetch($result_img);
+		if( $images["config"]["scope"] == $row_img["scope"] && $images["config"]["owner_id"] == $row_img["owner_id"]  )  {
+			$db->detach("wliu_images", $images["id"]);
+		} else {
+			$images["error"]["errorCode"] 		= 1;
+			$images["error"]["errorMessage"] 	= "Invalid Access Images";
+		}
+		unset($images["config"]);
+		return;
+	}
+	static public function saveOrder($db, &$images ) {
+		foreach($images["rows"] as $imgObj) {
+			$fields = array();
+			$fields["orderno"] 	= $imgObj["sn"];
+			$db->update("wliu_images", $imgObj["id"], $fields);
+		}
+		unset($images["config"]);
+		return;
 	}
 }
 

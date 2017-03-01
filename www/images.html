@@ -56,9 +56,10 @@
 
         <script language="javascript" type="text/javascript">
 		    var imgList = new WLIU.IMAGELIST({
-				scope: 	"myimg",
-				url:   	"ajax/images_action.php",
-				wait:   "#tabwait"
+				scope: 		"myimg",
+				url:   		"ajax/images_action.php",
+				wait:   	"#tabwait",
+				showError: 	"#imgError"
 			});
 
             var app = angular.module("myApp", ["wliuImage"]);
@@ -74,7 +75,10 @@
 <body ng-app="myApp" ng-controller="myForm" style="padding-top:80px;position:relative;">
 <!-- container -->
 <div class="container">
+	<br>
+	<image.list1 imglist="imglist" ww=200 hh=200></image.list1>
 	<div id="tabwait" wliu-load></div>
+	<image.imgerror imglist="imglist" targetid="imgError"></image.imgerror>
 </div>
 
 

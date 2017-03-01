@@ -98,6 +98,48 @@ function guid() {
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
     s4() + '-' + s4() + s4() + s4();
 }
+
+function imageAutoFix(img) {
+	var c_ww = parseInt($(img).attr("ww"))?parseInt($(img).attr("ww")):100;
+	var c_hh = parseInt($(img).attr("hh"))?parseInt($(img).attr("hh")):100;
+	var i_ww = img.naturalWidth;
+	var i_hh = img.naturalHeight;
+
+	var img_rate = i_hh / i_ww;
+	
+	if( !c_ww && !c_hh ) {
+		$(img).css("width", "100%");
+	} else { 
+		$(img).css("width","");
+		if( c_ww && c_hh ) {
+			var rate_ww = 1;
+			var rate_hh = 1;
+			rate_ww = c_ww / img.naturalWidth;
+			rate_hh = c_hh / img.naturalHeight;
+			var rate = Math.min(rate_ww, rate_hh);
+			if(rate < 1) {
+				if(rate_ww < rate_hh) {
+					i_ww 	= c_ww;
+					i_hh 	= c_ww * img_rate;
+				} else { 
+					i_hh 	= c_hh;
+					i_ww	= c_hh / img_rate;
+				}
+			}
+		} else if(sc.ww) {
+			i_ww        = c_ww;
+			i_hh        = c_ww * img_rate;
+		} else if(sc.hh) {
+			i_hh        = c_hh;
+			i_ww        = c_hh / img_rate;
+			img.width   = i_ww;
+			img.height  = i_hh;
+		}
+	} // if
+
+	img.width   = i_ww;
+	img.height  = i_hh;  
+}
 /*****************************/
 
 $.fn.extend({
