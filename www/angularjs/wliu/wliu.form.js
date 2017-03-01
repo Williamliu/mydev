@@ -269,7 +269,7 @@ wliu_form.directive("form.imgupload", function () {
                             '<span style="position:absolute;top:32px;left:3px;font-size:16px;font-weight:bold;color:#666666;" ng-if="!form.getCol(name, rowsn).value && !form.getCol(name, rowsn).errorCode">{{actname}}</span>',
                             '<div style="display:table;">',
                             '<div style="display:table-cell;vertical-align:middle;text-align:center;width:{{ww}}px;height:{{hh}}px;border:1px solid #cccccc;">',
-                                '<img class="img-responsive" width="100%" ng-click="clickImage()" style="display:inline;" src="{{form.getCol(name, rowsn).value?form.getCol(name, rowsn).value:\'\'}}" />',
+                                '<img class="img-responsive" width="100%" ng-click="clickImage()" onload="imageAutoFix(this)" ww={{ww}} hh={{hh}} style="display:inline;" src="{{form.getCol(name, rowsn).value?form.getCol(name, rowsn).value:\'\'}}" />',
                             '</div>',
                             '<div>',
                             '<input type="hidden" scope="{{ form.scope }}" title="" ',
@@ -282,7 +282,7 @@ wliu_form.directive("form.imgupload", function () {
                 ].join(''),
         controller: function ($scope) {
             $scope.imgobj       = new WLIU.IMAGE();
-            $scope.minww        = $scope.minww?$scope.minww:"120";
+            $scope.minww        = $scope.minww?$scope.minww:"100";
             $scope.minhh        = $scope.minhh?$scope.minhh:"80";
 
             $scope.printImage = function() {
@@ -315,46 +315,6 @@ wliu_form.directive("form.imgupload", function () {
             }
         },
         link: function (sc, el, attr) {
-            $("img", el).unbind("load").bind("load", function(evt){
-                var img = evt.target;
-                var i_ww = img.naturalWidth;
-                var i_hh = img.naturalHeight;
-                var img_rate = i_hh / i_ww;
-                
-                if( !sc.ww && !sc.hh ) {
-                    $(img).css("width", "100%");
-                } else { 
-                    $(img).css("width","");
-                    if( sc.ww && sc.hh ) {
-                        var rate_ww = 1;
-                        var rate_hh = 1;
-                        rate_ww = sc.ww / img.naturalWidth;
-                        rate_hh = sc.hh / img.naturalHeight;
-                        var rate = Math.min(rate_ww, rate_hh);
-                        if(rate < 1) {
-                            if(rate_ww < rate_hh) {
-                                i_ww 	= sc.ww;
-                                i_hh 	= sc.ww * img_rate;
-                            } else { 
-                                i_hh 	= sc.hh;
-                                i_ww	= sc.hh / img_rate;
-                            }
-                        }
-                    } else if(sc.ww) {
-                        i_ww        = sc.ww;
-                        i_hh        = sc.ww * img_rate;
-                    } else if(sc.hh) {
-                        i_hh        = sc.hh;
-                        i_ww        = sc.hh / img_rate;
-                        img.width   = i_ww;
-                        img.height  = i_hh;
-                    }
-                } // if
-
-                img.width   = i_ww;
-                img.height  = i_hh;  
-            });
-            
         }
     }
 });
@@ -401,7 +361,7 @@ wliu_form.directive("form.imgupload1", function () {
                             '<span style="position:absolute;top:32px;left:3px;font-size:16px;font-weight:bold;color:#666666;" ng-if="!form.getCol(name, rowsn).value && !form.getCol(name, rowsn).errorCode">{{actname}}</span>',
                             '<div style="display:table;">',
                                 '<div style="display:table-cell;vertical-align:middle;text-align:center;width:{{ww}}px;height:{{hh}}px;border:1px solid #cccccc;" class="img-content" targeid="{{form.scope}}_{{name}}_{{imgobj.rowsn}}">',
-                                    '<img class="img-responsive" width="100%" ng-click="clickImage()" style="display:inline;cursor:pointer;" src="{{form.getCol(name, rowsn).value?form.getCol(name, rowsn).value:\'\'}}" />',
+                                    '<img class="img-responsive" width="100%" ng-click="clickImage()" onload="imageAutoFix(this)" ww={{ww}} hh="{{hh}}" style="display:inline;cursor:pointer;" src="{{form.getCol(name, rowsn).value?form.getCol(name, rowsn).value:\'\'}}" />',
                                 '</div>',
                             '</div>',
                             '<input type="hidden" scope="{{ form.scope }}" title="" ',
@@ -574,48 +534,6 @@ wliu_form.directive("form.imgupload1", function () {
                 });
 
             });
-
-
-            $("div.img-content > img", el).unbind("load").bind("load", function(evt){
-                var img = evt.target;
-                var i_ww = img.naturalWidth;
-                var i_hh = img.naturalHeight;
-                var img_rate = i_hh / i_ww;
-                
-                if( !sc.ww && !sc.hh ) {
-                    $(img).css("width", "100%");
-                } else { 
-                    $(img).css("width","");
-                    if( sc.ww && sc.hh ) {
-                        var rate_ww = 1;
-                        var rate_hh = 1;
-                        rate_ww = sc.ww / img.naturalWidth;
-                        rate_hh = sc.hh / img.naturalHeight;
-                        var rate = Math.min(rate_ww, rate_hh);
-                        if(rate < 1) {
-                            if(rate_ww < rate_hh) {
-                                i_ww 	= sc.ww;
-                                i_hh 	= sc.ww * img_rate;
-                            } else { 
-                                i_hh 	= sc.hh;
-                                i_ww	= sc.hh / img_rate;
-                            }
-                        }
-                    } else if(sc.ww) {
-                        i_ww        = sc.ww;
-                        i_hh        = sc.ww * img_rate;
-                    } else if(sc.hh) {
-                        i_hh        = sc.hh;
-                        i_ww        = sc.hh / img_rate;
-                        img.width   = i_ww;
-                        img.height  = i_hh;
-                    }
-                } // if
-
-                img.width   = i_ww;
-                img.height  = i_hh;  
-            });
-
         }
     }
 });

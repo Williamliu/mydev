@@ -2637,7 +2637,8 @@ class cIMAGE {
 			case "delete":
 				cIMAGE::deleteImage($db, $images);
 				break;
-			case "custom":
+			case "add":
+				cIMAGE::addImage($db, $images);
 				break;
 		}
 	}
@@ -2710,6 +2711,58 @@ class cIMAGE {
 
 			unset($images["config"]["access"]);
 			unset($images["config"]["owner_id"]);
+			unset($images["filter"]);
+			return;
+		}
+	}
+	static public function addImage($db, &$images ) {
+		$query_config 		= "SELECT scope, max_length, max_size, access, key1, key2, key3 FROM wliu_config WHERE scope = '" . $images["config"]["scope"] . "'";
+		if(!$db->exists($query_config)) {
+			$images["error"]["errorCode"] 		= 1;
+			$images["error"]["errorMessage"] 	= "Invalid Access Images";
+			$images["rows"] = array();
+			return;
+		} else {
+			$result_config 		= $db->query($query_config);
+			$row_config 		= $db->fetch($result_config);
+			$images["config"]["scope"]   		= $row_config["scope"];
+			$images["config"]["access"]   		= $row_config["access"];
+			
+			$images["scope"] 	= $images["config"]["scope"];
+			$images["access"] 	= $images["config"]["access"];
+		
+			$fields = array();
+			$fields["scope"]		= $images["scope"];
+			$fields["owner_id"] 	= $images["config"]["owner_id"];
+			$fields["access"] 		= $images["access"];
+			$fields["key1"] 		= $images["key1"];
+			$fields["key2"] 		= $images["key2"];
+			$fields["key3"] 		= $images["key3"];
+			$fields["full_name"] 	= $images["full_name"];
+			$fields["short_name"] 	= $images["short_name"];
+			$fields["ext_name"] 	= $images["ext_name"];
+			$fields["mime_type"] 	= $images["mime_type"];
+			$fields["orderno"] 		= $images["orderno"];
+			$fields["status"] 		= $images["status"];
+			$fields["created_time"] = time();
+			$fields["last_updated"] = time();
+			$images["id"] = $db->insert("wliu_images", $fields);
+			foreach( $images["resize"] as $resizType=>$resizeObj ) {
+				$fields = array();
+				$fields["ref_id"] 		= $images["id"];
+				$fields["resize_type"] 	= $resizType;
+				$fields["name"] 		= $resizeObj["name"];
+				$fields["size"] 		= $resizeObj["size"];
+				$fields["ww"] 			= $resizeObj["ww"];
+				$fields["hh"] 			= $resizeObj["hh"];
+				$fields["width"]		= $resizeObj["width"];
+				$fields["height"]		= $resizeObj["height"];
+				$fields["data"]			= $resizeObj["data"];
+				//echo "$resizType len: " . strlen($fields["data"]). "\n";
+				$db->insert("wliu_images_resize", $fields);
+			}
+			unset($images["config"]);
+			unset($images["filter"]);
 			return;
 		}
 	}

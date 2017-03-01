@@ -239,7 +239,7 @@ wliu_image.directive("image.list1", function () {
             tooltip:        "@"
         },
         template: [
-                    '<div style="display:block;position:relative; border:1px solid #cccccc; padding:5px;" imglist targeid="{{targetid}}">',
+                    '<div style="display:block;position:relative; border:0px solid #cccccc; padding:2px;" imglist targetid="{{targetid}}" viewerid="{{viewerid}}">',
                         '<!---- img box ------------------------------------------------------------------------------------------------>',
                         '<div style="display:inline-block;position:relative;margin:2px;" imgid="{{imgObj.id}}" class="wliu-background-1 image-item" ',
                                 'ng-repeat="imgObj in imglist.rows"',
@@ -250,7 +250,7 @@ wliu_image.directive("image.list1", function () {
                                 'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Print Image" ',
                             '>',
                             '</a>',
-                            '<a class="wliu-btn24 wliu-btn24-comments" ng-click="clickImage(imgObj)" style="position:absolute; margin-top:3px;margin-left:30px;opacity:0.8;" ',
+                            '<a class="wliu-btn24 wliu-btn24-comments" ng-click="textImage(imgObj)" style="position:absolute; margin-top:3px;margin-left:30px;opacity:0.8;" ',
                                 'title="{{tooltip?\'\':\'Print Image\'}}" ',
                                 'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Image Comments" ',
                             '>',
@@ -262,15 +262,24 @@ wliu_image.directive("image.list1", function () {
                             '</a>',
                             '<div style="display:table;">',
                                 '<div style="display:table-cell;vertical-align:middle;text-align:center;width:{{ww}}px;height:{{hh}}px;box-sizing:content-box;border:1px solid #cccccc;" class="img-content">',
-                                    '<img class="img-responsive" width="100%" onload="imageAutoFix(this)" ww="{{ww}}" hh="{{hh}}" style="display:inline;cursor:pointer;" src="{{imglist.thumb($index)}}" />',
+                                    '<img class="img-responsive" width="100%" ng-click="clickImage(imgObj)" onload="imageAutoFix(this)" ww="{{ww}}" hh="{{hh}}" style="display:inline;cursor:pointer;" src="{{imglist.thumb($index)}}" />',
                                 '</div>',
                             '</div>',
                         '</div>',
+                        '<div ng-if="imglist.rows.length<imglist.config.max_length" style="display:inline-block;position:relative;margin:2px;width:{{ww}}px;height:{{hh}}px;line-height:{{hh}}px;text-align:center;font-size:18px;font-weight:700;color:#666666;border:1px solid #cccccc; overflow:hidden;" class="wliu-background-1">',
+                                    '<input type="file" style="display:block; position:absolute; opacity:0;top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" value="Browse..." ',
+                                            'onchange="angular.element(this).scope().selectFile(event);" />',
+                                    'Add Image',
+                        '</div>',
                         '<!---// img box ---------------------------------------------------------------------------------------------->',
                        
-                       
-                       
-                        '<div id="{{targetid}}" wliu-diag movable maskable fade disposable>',
+                        '<div id="{{viewerid}}" wliu-diag maskable fade imglist disposable>',
+                            '<div wliu-diag-body style="text-align:center;">',
+                                    '<img class="img-responsive" width="100%" onload="imageAutoFix(this)" ww="400" hh="400" style="display:inline;" src="{{imglist.view(select_idx)}}" />',
+                            '</div>',
+                        '</div>',
+                        
+                        '<div id="{{targetid}}" wliu-diag movable maskable  fade imglist disposable>',
                             '<div wliu-diag-head>Image Information</div>',
                             '<div wliu-diag-body style="width:400px;">',
                                 '<div class="row">',
@@ -336,15 +345,37 @@ wliu_image.directive("image.list1", function () {
             $scope.ww           = $scope.ww?$scope.ww:"100";
             $scope.hh           = $scope.hh?$scope.hh:"100";
             $scope.targetid     = $scope.imglist.config.scope + "_" + guid(); 
+            $scope.viewerid     = $scope.imglist.config.scope + "_" + guid(); 
             $scope.select_idx   = -1; 
+
+            $scope.selectFile = function(event) {
+                var newImg       = new WLIU.IMAGE({rowsn: guid()});
+                files = (event.srcElement || event.target).files;
+                var view = $scope.imglist.config.thumb?$scope.imglist.config.thumb:"tiny";
+                FIMAGE.view = view;
+                FIMAGE.fromFile(newImg, files[0], function(fObj){
+                    if(fObj.errorCode) {
+                        alert(fObj.errorMessage);
+                    } else {
+                        console.log("select");
+                        console.log(newImg);
+                        $scope.imglist.addImage(newImg);
+                    }
+                });
+            }
+            
             $scope.printImage = function(imgObj) {
                 var rowidx = FCOLLECT.indexByKV( $scope.imglist.rows, {id: imgObj.id});
                 if( $scope.imglist.view(rowidx)!="" ) {
                     FFILE.exportDataURL($scope.imglist.view(rowidx));
                 } 
             }
-
             $scope.clickImage = function(imgObj) {
+                var rowidx = FCOLLECT.indexByKV( $scope.imglist.rows, {id: imgObj.id});
+                $scope.select_idx = rowidx;
+                $("#" + $scope.viewerid).trigger("show");
+            }
+            $scope.textImage = function(imgObj) {
                 var rowidx = FCOLLECT.indexByKV( $scope.imglist.rows, {id: imgObj.id});
                 $scope.select_idx = rowidx;
                 $scope.imglist.rows[$scope.select_idx].status=$scope.imglist.rows[$scope.select_idx].status=="1"?true:false;
@@ -370,13 +401,21 @@ wliu_image.directive("image.list1", function () {
         link: function (sc, el, attr) {
             $(function(){
                 // remove all image editor dialog which record has bee disposed.
-                $("body > div[disposable]").each(function(img_idx, img_editor) {
+                $("body > div[disposable][imglist]").each(function(img_idx, img_editor) {
                     if( $("div[imglist][targeid='" + $(img_editor).attr("id") + "']").length<=0 ) $(img_editor).remove();
                 });
 
+               $("body > div[disposable][imglist]").each(function(img_idx, img_editor) {
+                    if( $("div[imglist][viewerid='" + $(img_editor).attr("id") + "']").length<=0 ) $(img_editor).remove();
+                });
+
                 $("body>#" + sc.targetid).remove();
+                $("body>#" + sc.viewerid).remove();
+                
                 $("#" + sc.targetid).appendTo("body");
+                $("#" + sc.viewerid).appendTo("body");
                 $("#" + sc.targetid).wliuDiag({});
+                $("#" + sc.viewerid).wliuDiag({});
             
                 /* 
                 $(el).sortable({

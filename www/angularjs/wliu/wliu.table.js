@@ -504,7 +504,7 @@ wliu_table.directive("table.imgupload", function () {
                             '<span style="position:absolute;top:24px;left:3px;font-size:12px;font-weight:bold;color:#666666;" ng-if="!table.getCol(name, rowsn).value && !table.getCol(name, rowsn).errorCode">{{actname}}</span>',
                             '<div style="display:table;">',
                                 '<div style="display:table-cell;vertical-align:middle;text-align:center;width:{{ww}}px;height:{{hh}}px;border:1px solid #cccccc;">',
-                                    '<img class="img-responsive" width="100%" ng-click="clickImage()" style="display:inline;" src="{{table.getCol(name, rowsn).value?table.getCol(name, rowsn).value:\'\'}}" />',
+                                    '<img class="img-responsive" width="100%" ng-click="clickImage()" onload="imageAutoFix(this)" ww={{ww}} hh="{{hh}}" style="display:inline;" src="{{table.getCol(name, rowsn).value?table.getCol(name, rowsn).value:\'\'}}" />',
                                 '</div>',
                             '</div>',
                             '<input type="hidden" scope="{{ table.scope }}" title="" ',
@@ -551,45 +551,6 @@ wliu_table.directive("table.imgupload", function () {
             }
         },
         link: function (sc, el, attr) {
-            $("img", el).unbind("load").bind("load", function(evt){
-                var img = evt.target;
-                var i_ww = img.naturalWidth;
-                var i_hh = img.naturalHeight;
-                var img_rate = i_hh / i_ww;
-                
-                if( !sc.ww && !sc.hh ) {
-                    $(img).css("width", "100%");
-                } else { 
-                    $(img).css("width","");
-                    if( sc.ww && sc.hh ) {
-                        var rate_ww = 1;
-                        var rate_hh = 1;
-                        rate_ww = sc.ww / img.naturalWidth;
-                        rate_hh = sc.hh / img.naturalHeight;
-                        var rate = Math.min(rate_ww, rate_hh);
-                        if(rate < 1) {
-                            if(rate_ww < rate_hh) {
-                                i_ww 	= sc.ww;
-                                i_hh 	= sc.ww * img_rate;
-                            } else { 
-                                i_hh 	= sc.hh;
-                                i_ww	= sc.hh / img_rate;
-                            }
-                        }
-                    } else if(sc.ww) {
-                        i_ww        = sc.ww;
-                        i_hh        = sc.ww * img_rate;
-                    } else if(sc.hh) {
-                        i_hh        = sc.hh;
-                        i_ww        = sc.hh / img_rate;
-                        img.width   = i_ww;
-                        img.height  = i_hh;
-                    }
-                } // if
-
-                img.width   = i_ww;
-                img.height  = i_hh;  
-            });
         }
     }
 });
@@ -638,7 +599,7 @@ wliu_table.directive("table.imgupload1", function () {
                             '<span style="position:absolute;top:24px;left:3px;font-size:12px;font-weight:bold;color:#666666;" ng-if="!table.getCol(name, rowsn).value && !table.getCol(name, rowsn).errorCode">{{actname}}</span>',
                             '<div style="display:table;">',
                                 '<div style="display:table-cell;vertical-align:middle;text-align:center;width:{{ww}}px;height:{{hh}}px;border:1px solid #cccccc;" class="img-content" targeid="{{table.scope}}_{{name}}_{{imgobj.rowsn}}">',
-                                    '<img class="img-responsive" width="100%" ng-click="clickImage()" style="display:inline;cursor:pointer;" src="{{table.getCol(name, rowsn).value?table.getCol(name, rowsn).value:\'\'}}" />',
+                                    '<img class="img-responsive" width="100%" ng-click="clickImage()" onload="imageAutoFix(this)" ww={{ww}} hh="{{hh}}" style="display:inline;cursor:pointer;" src="{{table.getCol(name, rowsn).value?table.getCol(name, rowsn).value:\'\'}}" />',
                                 '</div>',
                             '</div>',
                             '<input type="hidden" scope="{{ table.scope }}" title="" ',
@@ -811,47 +772,6 @@ wliu_table.directive("table.imgupload1", function () {
                     containment: "parent"
                });
            });
-
-            $("div.img-content > img", el).unbind("load").bind("load", function(evt){
-                var img = evt.target;
-                var i_ww = img.naturalWidth;
-                var i_hh = img.naturalHeight;
-                var img_rate = i_hh / i_ww;
-                
-                if( !sc.ww && !sc.hh ) {
-                    $(img).css("width", "100%");
-                } else { 
-                    $(img).css("width","");
-                    if( sc.ww && sc.hh ) {
-                        var rate_ww = 1;
-                        var rate_hh = 1;
-                        rate_ww = sc.ww / img.naturalWidth;
-                        rate_hh = sc.hh / img.naturalHeight;
-                        var rate = Math.min(rate_ww, rate_hh);
-                        if(rate < 1) {
-                            if(rate_ww < rate_hh) {
-                                i_ww 	= sc.ww;
-                                i_hh 	= sc.ww * img_rate;
-                            } else { 
-                                i_hh 	= sc.hh;
-                                i_ww	= sc.hh / img_rate;
-                            }
-                        }
-                    } else if(sc.ww) {
-                        i_ww        = sc.ww;
-                        i_hh        = sc.ww * img_rate;
-                    } else if(sc.hh) {
-                        i_hh        = sc.hh;
-                        i_ww        = sc.hh / img_rate;
-                        img.width   = i_ww;
-                        img.height  = i_hh;
-                    }
-                } // if
-
-                img.width   = i_ww;
-                img.height  = i_hh;  
-            });
-            
         }
     }
 });

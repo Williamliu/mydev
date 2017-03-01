@@ -15,13 +15,14 @@ WLIU.IMAGELIST = function( opts ) {
 	this.config     = {
 						mode: 		"",
 						scope: 		"",
-						thumb:  	opts.thumb?opts.thumb:"thumb",						
+						thumb:  	opts.thumb?opts.thumb:"tiny",						
 						view: 		opts.view?opts.view:"medium",
 						max_length: 0,
 						max_size: 	0
 	};
 	this.error		= {errorCode:0, errorMessage:""};  // images level error 
-	this.images 	= [];
+	this.rows 		= [];
+	
 }
 
 WLIU.IMAGELIST.prototype = {
@@ -29,7 +30,7 @@ WLIU.IMAGELIST.prototype = {
 		if( imgList ) {
 			p_scope[imgList] = this;
 		} else {
-			p_scope.images = this;
+			p_scope.imgList = this;
 		}
 		this.sc = p_scope;
 	},
@@ -74,6 +75,7 @@ WLIU.IMAGELIST.prototype = {
 			nimage.orderno 		= this.rows[rowidx].orderno;
 			nimage.status 		= this.rows[rowidx].status?1:0;
 			nimage.action 		= "savetext";
+			nimage.error 		= this.error;
 			this.ajaxCall(nimage, callback);
 		} else {
 			return false;
@@ -84,6 +86,7 @@ WLIU.IMAGELIST.prototype = {
 		this.error.errorMessage = "";
 		var nimages = {};
 		nimages.action 	= "saveorder";
+		nimages.error   = this.error;
 		nimages.rows = [];
 		for(var idx in this.rows) {
 			var imgobj = {};
@@ -102,9 +105,9 @@ WLIU.IMAGELIST.prototype = {
 			nimages.action 		= "delete";
 			nimages.id 			= this.rows[rowidx].id;
 			nimages.scope 		= this.rows[rowidx].scope;
-
+			nimages.error 		= this.error;
 			this.ajaxCall(nimages, {
-				ajaxAfter: function(nimages) {
+				ajaxSuccess: function(nimages) {
 					var ridx = FCOLLECT.indexByKV( _self.rows, {id: nimages.id});
 					if( ridx >= 0 && ridx < _self.rows.length ) {
 						_self.rows.splice(ridx, 1);
@@ -115,6 +118,45 @@ WLIU.IMAGELIST.prototype = {
 		
 		
 		}
+	},
+	addImage: function( imgObj ) {
+		var _self = this;
+		this.error.errorCode 	= 0;
+		this.error.errorMessage = "";
+		imgObj.scope 		= this.config.scope;
+		imgObj.key1 		= this.keys.key1?this.keys.key1:0;
+		imgObj.key2 		= this.keys.key2?this.keys.key2:0;
+		imgObj.key3 		= this.keys.key3?this.keys.key3:0;
+		imgObj.status	    = 1;
+		imgObj.orderno 		= parseInt(this.rows.length) + 1;
+		
+		var nimages = {};
+		nimages.action 		= "add";
+		nimages.rowsn 		= imgObj.rowsn;
+		nimages.id 			= 0;
+		nimages.scope 		= imgObj.scope;
+		nimages.key1 		= imgObj.key1;
+		nimages.key2 		= imgObj.key2;
+		nimages.key3 		= imgObj.key3;
+		nimages.full_name 	= imgObj.full_name; 
+		nimages.short_name 	= imgObj.short_name; 
+		nimages.ext_name 	= imgObj.ext_name; 
+		nimages.mime_type 	= imgObj.mime_type; 
+		nimages.status 		= imgObj.status;
+		nimages.orderno 	= imgObj.orderno;
+		nimages.resize 		= imgObj.resize;
+		nimages.error  		= this.error;
+
+		this.ajaxCall(nimages, {
+			ajaxSuccess: function(oimages) {
+				imgObj.id 		= oimages.id;
+				imgObj.scope 	= oimages.scope;
+				imgObj.access 	= oimages.access;
+				console.log(imgObj);				
+				_self.rows.push(imgObj);
+				_self.sc.$apply();
+			}
+		})
 	},
 	getImages: function(callback) {
 		this.error.errorCode 	= 0;
@@ -131,7 +173,8 @@ WLIU.IMAGELIST.prototype = {
 		var _self = this;
 		if( _self.wait ) $(_self.wait).trigger("show");
 		if( callback && callback.ajaxBefore && $.isFunction(callback.ajaxBefore) ) callback.ajaxBefore(nimages);
-		
+		console.log("ajaxCall");
+		console.log(nimages);
 		$.ajax({
 			data: {
 				images:	nimages
@@ -158,8 +201,17 @@ WLIU.IMAGELIST.prototype = {
 					case "delete":
 						_self.syncText(req.images);
 						break;
+					case "add":
+						break;
 				}
 				if(!_self.sc.$$phase) _self.sc.$apply();
+
+				if( parseInt(req.images.error.errorCode) == 0 ) {
+					if(callback && callback.ajaxSuccess && $.isFunction(callback.ajaxSuccess) ) callback.ajaxSuccess(req.images);
+				} else {
+					if(callback && callback.ajaxError && $.isFunction(callback.ajaxError) ) callback.ajaxError(req.images);
+				}
+				
 				$(_self.showError).trigger("errorshow");
 			},
 			type: "post",
