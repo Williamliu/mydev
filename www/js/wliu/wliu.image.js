@@ -120,6 +120,28 @@ WLIU.IMAGELIST.prototype = {
 		
 		}
 	},
+	saveImage: function( imgObj, callback ) {
+		var _self = this;
+		this.errorCode 		= 0;
+		this.errorMessage 	= "";
+		var nimages  		= angular.copy(imgObj);
+		imgObj.errorCode 	= this.errorCode;
+		imgObj.errorMessage = this.errorMessage;
+		
+		nimages.action 		= "save";
+		nimages.errorCode  	= imgObj.errorCode;
+		nimages.errorMessage= imgObj.errorMessage;
+		
+		this.ajaxCall(nimages, {
+			ajaxAfter: function() {
+				if(callback) if($.isFunction(callback)) callback();
+			},
+			ajaxSuccess: function(oimages) {
+				//console.log(oimages);
+				_self.sc.$apply();
+			}
+		})
+	},
 	addImage: function( imgObj ) {
 		var _self = this;
 		this.errorCode 		= 0;
@@ -175,6 +197,7 @@ WLIU.IMAGELIST.prototype = {
 		var _self = this;
 		if( _self.wait ) $(_self.wait).trigger("show");
 		if( callback && callback.ajaxBefore && $.isFunction(callback.ajaxBefore) ) callback.ajaxBefore(nimages);
+		//console.log(nimages);
 		$.ajax({
 			data: {
 				images:	nimages
@@ -193,15 +216,19 @@ WLIU.IMAGELIST.prototype = {
 						_self.syncRows(req.images);
 						break;
 					case "savetext":
-						_self.syncText(req.images);
+						_self.syncError(req.images);
 						break;
 					case "saveorder":
-						_self.syncText(req.images);
+						_self.syncError(req.images);
 						break;
 					case "delete":
-						_self.syncText(req.images);
+						_self.syncError(req.images);
 						break;
 					case "add":
+						_self.syncError(req.images);
+						break;
+					case "save":
+						_self.syncError(req.images);
 						break;
 				}
 				if(!_self.sc.$$phase) _self.sc.$apply();
@@ -230,7 +257,7 @@ WLIU.IMAGELIST.prototype = {
 			this.rows.push( new WLIU.IMAGE(theRow) );	
 		}
 	},
-	syncText: function(nimages) {
+	syncError: function(nimages) {
 		this.errorCode 		= nimages.errorCode;
 		this.errorMessage 	= nimages.errorMessage;
 	}

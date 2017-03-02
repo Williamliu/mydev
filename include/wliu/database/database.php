@@ -2640,6 +2640,9 @@ class cIMAGE {
 			case "add":
 				cIMAGE::addImage($db, $images);
 				break;
+			case "save":
+				cIMAGE::saveImage($db, $images);
+				break;
 		}
 	}
 	static public function config(&$images, $scope="", $ownerid="", $mode="list") {
@@ -2770,6 +2773,41 @@ class cIMAGE {
 			$images["errorCode"] 		= 1;
 			$images["errorMessage"] 	= "Images are not allow to edited in list mode";
 			$images["rows"] = array();
+			return;
+		}
+	}
+	static public function saveImage($db, &$images ) {
+		if( $images["config"]["mode"]=="edit" ) {		
+			$query_img 		= "SELECT * FROM wliu_images WHERE id = '" . $images["id"] . "'";
+			$result_img 	= $db->query($query_img);
+			$row_img 		= $db->fetch($result_img);
+			if( $images["config"]["scope"] == $row_img["scope"] && $images["config"]["owner_id"] == $row_img["owner_id"]  )  {
+				foreach( $images["resize"] as $resizType=>$resizeObj ) {
+					$fields = array();
+					//$fields["resize_type"] 	= $resizType;
+					$fields["name"] 		= $resizeObj["name"];
+					$fields["size"] 		= $resizeObj["size"];
+					$fields["ww"] 			= $resizeObj["ww"];
+					$fields["hh"] 			= $resizeObj["hh"];
+					$fields["width"]		= $resizeObj["width"];
+					$fields["height"]		= $resizeObj["height"];
+					$fields["data"]			= $resizeObj["data"];
+					//echo "$resizType len: " . strlen($fields["data"]). "\n";
+					$ccc = array("resize_type"=>$resizType, "ref_id"=>$images["id"]);
+					$db->update("wliu_images_resize", $ccc, $fields);
+				}
+			} else {
+				$images["errorCode"] 		= 1;
+				$images["errorMessage"] 	= "Invalid Access Images";
+			}
+			unset($images["resize"]);
+			unset($images["config"]);
+			return;
+		} else {
+			$images["errorCode"] 		= 1;
+			$images["errorMessage"] 	= "Images are not allow to edited in list mode";
+			unset($images["resize"]);
+			unset($images["config"]);
 			return;
 		}
 	}

@@ -1649,6 +1649,7 @@ WLIU.IMAGEACTION = function(opts) {
 	this.allowSize 	= 20 * 1024 * 1024,	
 	this.allowType 	= ["BMP", "JPG", "JPEG", "PNG", "TIF", "GIF"];
 	this.view 		= "medium";
+	this.execute    = [];
 	if(opts) {
 		if(opts.allowSize) this.allowSize = opts.allowSize;
 		if(opts.allowType) this.allowType = opts.allowType;
@@ -1668,7 +1669,10 @@ WLIU.IMAGEACTION.prototype = {
 		else 
 			this.view = "medium"; 
 	},
-	fromFile: function(theImage, file, callback, doneback) {
+	doneReset: function() {
+		this.execute = [];
+	},
+	fromFile: function(theImage, file, callback, donecall) {
 		theImage.full_name 	= file.name.fileName();
 		theImage.short_name = file.name.shortName();
 		theImage.ext_name 	= file.name.extName();
@@ -1676,21 +1680,21 @@ WLIU.IMAGEACTION.prototype = {
 		theImage.size  		= file.size;
 		theImage.errorCode		= 0;
 		theImage.errorMessage 	= "";
-
+		this.doneReset();
 		if( this.allowType.indexOf(theImage.ext_name.toUpperCase()) >= 0 || this.allowType.indexOf("*") >= 0 ) {
 			if( theImage.size <= this.allowSize ) {
-				this._fromBlob(theImage, file, callback, doneback);
+				this._fromBlob(theImage, file, callback, donecall);
 			} else {
 				theImage.errorCode 		= 1;
 				theImage.errorMessage 	= "File size " + theImage.size.toSize() + " over maximum size " + this.allowSize.toSize() + "."; 
 				if(callback) if( $.isFunction(callback) ) callback(theImage);
-				if(doneback) if( $.isFunction(doneback) ) doneback(theImage);
+				if(donecall) if( $.isFunction(donecall) ) donecall(theImage);
 			}
 		} else {
 			theImage.errorCode 		= 1;
 			theImage.errorMessage 	= "Only file type: [" + this.allowType.join(", ") + "] allow to upload."; 
 			if(callback) if( $.isFunction(callback) ) callback(theImage);
-			if(doneback) if( $.isFunction(doneback) ) doneback(theImage);
+			if(donecall) if( $.isFunction(donecall) ) donecall(theImage);
 		}
 	},
 	exportImage: function(theImage, rsize) {
@@ -1721,39 +1725,44 @@ WLIU.IMAGEACTION.prototype = {
 		}
 	},
 
-	resizeAll: function(theImage, callback) {
-		this._resizeAll(theImage, callback);
+	resizeAll: function(theImage, callback, donecall) {
+		this.doneReset();
+		this._resizeAll(theImage, callback, donecall);
 	},
 
-	rotate: function(theImage, callback) {
-		this._rotateAll(theImage, callback);
+	rotate: function(theImage, callback, donecall) {
+		this.doneReset();
+		this._rotateAll(theImage, callback, donecall);
 	},
 
-	crop: function(theImage, ww,hh,x,y,nw,nh, callback) {
-		this._cropLarge(theImage, ww,hh,x,y,nw,nh, callback);
+	crop: function(theImage, ww,hh,x,y,nw,nh, callback, donecall) {
+		this.doneReset();
+		this._cropLarge(theImage, ww,hh,x,y,nw,nh, callback, donecall);
 	},
-	cropDiv: function(theImage, frame_div, crop_div, callback ) {
+	cropDiv: function(theImage, frame_div, crop_div, callback, donecall ) {
         //console.log( frame_div.width() + " : " + frame_div.height());
         //console.log( crop_div.outerWidth() + " : " + crop_div.outerHeight());
         //console.log(crop_div.position() );
-		this._cropLarge(theImage, frame_div.width(), frame_div.height(), crop_div.position().left, crop_div.position().top, crop_div.outerWidth(), crop_div.outerHeight(), callback );
+		this.doneReset();
+		this._cropLarge(theImage, frame_div.width(), frame_div.height(), crop_div.position().left, crop_div.position().top, crop_div.outerWidth(), crop_div.outerHeight(), callback, donecall );
 	},
 	cropDivReset: function( crop_div ) {
 		crop_div.css({left: "5%", top:"5%", width:"90%", height:"90%"});
 	},
-	cropReset: function(theImage, callback) {
-		this._cropReset(theImage, callback);
+	cropReset: function(theImage, callback, donecall) {
+		this.doneReset();
+		this._cropReset(theImage, callback, donecall);
 	},
 
 	/*** private methods ***/
 	// file = blob
 	// DataURL format: data:mimeType;base64,base64_string 
-	_fromBlob: function(theImage, file, callback, doneback) {
+	_fromBlob: function(theImage, file, callback, donecall) {
 		var _self = this;
 		var fs = new FileReader();
 		fs.onload = function(ev1) {
 			var data = ev1.target.result;
-			_self._imageDataURL(theImage, data, callback, doneback);
+			_self._imageDataURL(theImage, data, callback, donecall);
 		}                
 		fs.readAsDataURL(file);
 	},
@@ -1767,16 +1776,16 @@ WLIU.IMAGEACTION.prototype = {
 	},
 
 	/*** private methods ***/
-	_imageDataURL: function(theImage, dataURL, callback, doneback) {
+	_imageDataURL: function(theImage, dataURL, callback, donecall) {
 		var _self = this;
 		var t_img = new Image();
 		t_img.onload = function() {
-			_self._initImage(theImage, t_img, callback, doneback);
+			_self._initImage(theImage, t_img, callback, donecall);
 		}
 		t_img.src = dataURL;
 	},
 
-	_initImage:  function(theImage, t_img, callback, doneback) {
+	_initImage:  function(theImage, t_img, callback, donecall) {
 		var _self = this;
 
 		var originImg = theImage.resize.origin;
@@ -1804,19 +1813,20 @@ WLIU.IMAGEACTION.prototype = {
 		originImg.size 		= imgDataURL.length;
 		originImg.name	    = "origin";
 		canvas = null;
-		_self._resizeAll(theImage, callback, doneback);
+		_self._resizeAll(theImage, callback, donecall);
 		if( callback && _self.view=="origin") if( $.isFunction(callback) ) callback(originImg);
 	},
 	// resize base on origin image which alreay resize to 1200 * 1200 from selected image 
-	_resizeAll: function(theImage, callback, doneback) {
+	_resizeAll: function(theImage, callback, donecall) {
 		var _self = this;
+		_self.execute.push("origin");
 		for(var rname in theImage.resize) {
 			if(rname!="origin") {
-				this._resizeImage(theImage, rname, callback, doneback);
+				this._resizeImage(theImage, rname, callback, donecall);
 			} 
 		}
 	},
-	_resizeImage: function(theImage, rname, callback, doneback) {
+	_resizeImage: function(theImage, rname, callback, donecall) {
 		var _self = this;
 		var originImg = theImage.resize.origin;
 		var resizeImg = theImage.resize[rname];
@@ -1849,22 +1859,17 @@ WLIU.IMAGEACTION.prototype = {
 			
 			if( callback && _self.view==rname ) if( $.isFunction(callback) ) callback(resizeImg);
 			
+			_self.execute.push(rname);
 			var flag_done = true;
-			for(var key in theImage.resize ) {
-				if( theImage.resize[key].size <=0 || theImage.resize[key].data=="" ) {
-					flag_done = false;				
-					break;
-				}
-			}
-  	 		if( doneback && flag_done ) if( $.isFunction(doneback) ) {
-				doneback(theImage);
-			}
+			if(_self.execute.length<6) flag_done = false;
+  	 		if( donecall && flag_done ) if( $.isFunction(donecall) ) donecall(theImage);
+			
 			canvas = null;
 		}
 		t_img.src = originImg.data;
 	},
 
-	_resizeImageFromLarge: function(theImage, rname, callback) {
+	_resizeImageFromLarge: function(theImage, rname, callback, donecall) {
 		var _self = this;
 		var largeImg = theImage.resize.large;
 		var resizeImg = theImage.resize[rname];
@@ -1895,18 +1900,25 @@ WLIU.IMAGEACTION.prototype = {
 			resizeImg.size 		= imgDataURL.length;
 			resizeImg.name	    = rname;
 			
-			 if( callback && _self.view==rname ) if( $.isFunction(callback) ) callback(resizeImg);
+			if( callback && _self.view==rname ) if( $.isFunction(callback) ) callback(resizeImg);
+
+			_self.execute.push(rname);
+			var flag_done = true;
+			if(_self.execute.length<6) flag_done=false;
+  	 		if( donecall && flag_done ) if( $.isFunction(donecall) ) donecall(theImage);
+			 
  			canvas = null;
 		}
 		t_img.src = largeImg.data;
 	},
 
-	_rotateAll: function(theImage, callback) {
+	_rotateAll: function(theImage, callback, donecall) {
+		this.execute.push("origin");
 		for(var rname in theImage.resize) {
-			if( rname !="origin" )	this._rotateImage(theImage, rname, callback );
+			if( rname !="origin" )	this._rotateImage(theImage, rname, callback, donecall );
 		}
 	},
-	_rotateImage : function(theImage, rname, callback) {
+	_rotateImage : function(theImage, rname, callback, donecall) {
 		var _self 	= this;
 		var degree 	= 90;
 		var resizeImg = theImage.resize[rname];
@@ -1935,11 +1947,17 @@ WLIU.IMAGEACTION.prototype = {
 
 			// important :  img is old img,  imgDataURL is transform image
 			if( callback && $.isFunction(callback) && _self.view==rname ) callback(resizeImg);
+
+			_self.execute.push(rname);
+			var flag_done = true;
+			if(_self.execute.length<6) flag_done=false;
+  	 		if( donecall && flag_done ) if( $.isFunction(donecall) ) donecall(theImage);
+			
 		}
 		t_img.src = resizeImg.data;
 	},
 
-	_cropLarge: function(theImage, ww, hh, x, y, nw, nh, callback) {
+	_cropLarge: function(theImage, ww, hh, x, y, nw, nh, callback, donecall) {
 		var _self = this;
 		var largeImg = theImage.resize.large;
 		if( largeImg.data != "") {
@@ -1976,24 +1994,26 @@ WLIU.IMAGEACTION.prototype = {
 
 
 				if( callback && $.isFunction(callback) && _self.view=="large" ) callback(largeImg);
-				
-				_self._cropAll(theImage, callback);
+				_self._cropAll(theImage, callback, donecall);
 			}
 			t_img.src = largeImg.data;
 		}
 
 	},
-	_cropAll: function(theImage, callback) {
+	_cropAll: function(theImage, callback, donecall) {
 		var _self = this;
+		_self.execute.push("origin");
+		_self.execute.push("large");
 		var largeImg = theImage.resize.large;
-
 		var resizeImgs = theImage.resize;
 		for(var rname in resizeImgs) {
-			if(rname!="origin" && rname!="large") this._resizeImageFromLarge(theImage, rname, callback);
+			if(rname!="origin" && rname!="large") {
+				this._resizeImageFromLarge(theImage, rname, callback, donecall);
+			} 
 		}
 	},
-	_cropReset: function(theImage, callback) {
-		this._resizeAll(theImage, callback);
+	_cropReset: function(theImage, callback, donecall) {
+		this._resizeAll(theImage, callback, donecall);
 	},
 
 	
