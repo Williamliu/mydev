@@ -287,7 +287,7 @@ $(function(){
 
     $(document).off("click", "*[diag-toggle='click']").on("click", "*[diag-toggle='click']", function(evt){
         //if( $( $(this).attr("wliu-target") ).is(":hidden")  ) {
-            $( $(this).attr("diag-target") ).trigger("show");
+              $( $(this).attr("diag-target") ).trigger("show");
         //} else {
         //    $( $(this).attr("wliu-target") ).trigger("hide");
         //}

@@ -1,4 +1,10 @@
 <?php 
+$images = $_REQUEST["images"];
+$images["info"]["count"] = count($_REQUEST["images"]["resize"]);
+foreach($_REQUEST["images"]["resize"] as $rname=>$robj) {
+	$images["info"][$rname] = $robj;
+}
+
 session_start();
 ini_set("display_errors", 0);
 include_once("../../include/config/config.php");
@@ -8,7 +14,11 @@ define("DEBUG", 1);
 $response = array();
 try {
 	$db_img = new cMYSQL($CFG["image"]["host"], $CFG["image"]["user"], $CFG["image"]["pwd"], $CFG["image"]["database"]);
-	$images = $_REQUEST["images"];
+	
+	$images["info"]["max_input_vars"] = ini_get("max_input_vars");
+	$images["info"]["post_max_size "] = ini_get("post_max_size");
+	$images["info"]["upload_max_filesize "] = ini_get("upload_max_filesize");
+	
 	// for secure, please unset below vars first;
 	// imgObj, scope, owner_id, mode
 	cIMAGE::config($images, "Users", 100, "edit");

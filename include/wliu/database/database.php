@@ -2654,9 +2654,9 @@ class cIMAGE {
 	static public function getImages($db, &$images ) {
 		$query_config 		= "SELECT scope, max_length, max_size, access, key1, key2, key3 FROM wliu_config WHERE scope = '" . $images["config"]["scope"] . "'";
 		if(!$db->exists($query_config)) {
-			$images["error"]["errorCode"] 		= 1;
-			$images["error"]["errorMessage"] 	= "Invalid Access Images";
-			$images["rows"] = array();
+			$images["errorCode"] 		= 1;
+			$images["errorMessage"] 	= "Invalid Access Images";
+			$images["rows"] 			= array();
 			return;
 		} else {
 			$result_config 		= $db->query($query_config);
@@ -2716,96 +2716,117 @@ class cIMAGE {
 		}
 	}
 	static public function addImage($db, &$images ) {
-		$query_config 		= "SELECT scope, max_length, max_size, access, key1, key2, key3 FROM wliu_config WHERE scope = '" . $images["config"]["scope"] . "'";
-		if(!$db->exists($query_config)) {
-			$images["error"]["errorCode"] 		= 1;
-			$images["error"]["errorMessage"] 	= "Invalid Access Images";
-			$images["rows"] = array();
-			return;
-		} else {
-			$result_config 		= $db->query($query_config);
-			$row_config 		= $db->fetch($result_config);
-			$images["config"]["scope"]   		= $row_config["scope"];
-			$images["config"]["access"]   		= $row_config["access"];
+		if( $images["config"]["mode"]=="edit" ) {		
+			$query_config 		= "SELECT scope, max_length, max_size, access, key1, key2, key3 FROM wliu_config WHERE scope = '" . $images["config"]["scope"] . "'";
+			if(!$db->exists($query_config)) {
+				$images["errorCode"] 		= 1;
+				$images["errorMessage"] 	= "Invalid Access Images";
+				$images["rows"] = array();
+				return;
+			} else {
+				$result_config 		= $db->query($query_config);
+				$row_config 		= $db->fetch($result_config);
+				$images["config"]["scope"]   		= $row_config["scope"];
+				$images["config"]["access"]   		= $row_config["access"];
+				
+				$images["scope"] 	= $images["config"]["scope"];
+				$images["access"] 	= $images["config"]["access"];
 			
-			$images["scope"] 	= $images["config"]["scope"];
-			$images["access"] 	= $images["config"]["access"];
-		
-			$fields = array();
-			$fields["scope"]		= $images["scope"];
-			$fields["owner_id"] 	= $images["config"]["owner_id"];
-			$fields["access"] 		= $images["access"];
-			$fields["key1"] 		= $images["key1"];
-			$fields["key2"] 		= $images["key2"];
-			$fields["key3"] 		= $images["key3"];
-			$fields["full_name"] 	= $images["full_name"];
-			$fields["short_name"] 	= $images["short_name"];
-			$fields["ext_name"] 	= $images["ext_name"];
-			$fields["mime_type"] 	= $images["mime_type"];
-			$fields["orderno"] 		= $images["orderno"];
-			$fields["status"] 		= $images["status"];
-			$fields["created_time"] = time();
-			$fields["last_updated"] = time();
-			$images["id"] = $db->insert("wliu_images", $fields);
-			foreach( $images["resize"] as $resizType=>$resizeObj ) {
 				$fields = array();
-				$fields["ref_id"] 		= $images["id"];
-				$fields["resize_type"] 	= $resizType;
-				$fields["name"] 		= $resizeObj["name"];
-				$fields["size"] 		= $resizeObj["size"];
-				$fields["ww"] 			= $resizeObj["ww"];
-				$fields["hh"] 			= $resizeObj["hh"];
-				$fields["width"]		= $resizeObj["width"];
-				$fields["height"]		= $resizeObj["height"];
-				$fields["data"]			= $resizeObj["data"];
-				//echo "$resizType len: " . strlen($fields["data"]). "\n";
-				$db->insert("wliu_images_resize", $fields);
+				$fields["scope"]		= $images["scope"];
+				$fields["owner_id"] 	= $images["config"]["owner_id"];
+				$fields["access"] 		= $images["access"];
+				$fields["key1"] 		= $images["key1"];
+				$fields["key2"] 		= $images["key2"];
+				$fields["key3"] 		= $images["key3"];
+				$fields["full_name"] 	= $images["full_name"];
+				$fields["short_name"] 	= $images["short_name"];
+				$fields["ext_name"] 	= $images["ext_name"];
+				$fields["mime_type"] 	= $images["mime_type"];
+				$fields["orderno"] 		= $images["orderno"];
+				$fields["status"] 		= $images["status"];
+				$fields["created_time"] = time();
+				$fields["last_updated"] = time();
+				$images["id"] = $db->insert("wliu_images", $fields);
+				foreach( $images["resize"] as $resizType=>$resizeObj ) {
+					$fields = array();
+					$fields["ref_id"] 		= $images["id"];
+					$fields["resize_type"] 	= $resizType;
+					$fields["name"] 		= $resizeObj["name"];
+					$fields["size"] 		= $resizeObj["size"];
+					$fields["ww"] 			= $resizeObj["ww"];
+					$fields["hh"] 			= $resizeObj["hh"];
+					$fields["width"]		= $resizeObj["width"];
+					$fields["height"]		= $resizeObj["height"];
+					$fields["data"]			= $resizeObj["data"];
+					//echo "$resizType len: " . strlen($fields["data"]). "\n";
+					$db->insert("wliu_images_resize", $fields);
+				}
+				unset($images["config"]);
+				unset($images["filter"]);
+				return;
 			}
-			unset($images["config"]);
-			unset($images["filter"]);
+		} else {
+			$images["errorCode"] 		= 1;
+			$images["errorMessage"] 	= "Images are not allow to edited in list mode";
+			$images["rows"] = array();
 			return;
 		}
 	}
 	static public function saveText($db, &$images ) {
-		$query_img 		= "SELECT * FROM wliu_images WHERE id = '" . $images["id"] . "'";
-		if(!$db->exists($query_img)) {
-			$images["error"]["errorCode"] 		= 1;
-			$images["error"]["errorMessage"] 	= "Invalid Access Images";
-			unset($images["config"]);
-			return;
-		} else {
-			$result_img 	= $db->query($query_img);
-			$row_img 		= $db->fetch($result_img);
-			if( $images["config"]["scope"] == $row_img["scope"] && $images["config"]["owner_id"] == $row_img["owner_id"]  )  {
-				$fields = array();
-				$fields["title_en"] 	= $images["title_en"];
-				$fields["title_cn"] 	= $images["title_cn"];
-				$fields["detail_en"] 	= $images["detail_en"];
-				$fields["detail_cn"] 	= $images["detail_cn"];
-				$fields["orderno"] 		= $images["orderno"];
-				$fields["status"] 		= $images["status"];
-				$fields["last_updated"] = time();
-				$db->update("wliu_images", $images["id"], $fields);
+		if( $images["config"]["mode"]=="edit" ) {		
+			$query_img 		= "SELECT * FROM wliu_images WHERE id = '" . $images["id"] . "'";
+			if(!$db->exists($query_img)) {
+				$images["errorCode"] 		= 1;
+				$images["errorMessage"] 	= "Invalid Access Images";
+				unset($images["config"]);
+				return;
 			} else {
-				$images["error"]["errorCode"] 		= 1;
-				$images["error"]["errorMessage"] 	= "Invalid Access Images";
+				$result_img 	= $db->query($query_img);
+				$row_img 		= $db->fetch($result_img);
+				if( $images["config"]["scope"] == $row_img["scope"] && $images["config"]["owner_id"] == $row_img["owner_id"]  )  {
+					$fields = array();
+					$fields["title_en"] 	= $images["title_en"];
+					$fields["title_cn"] 	= $images["title_cn"];
+					$fields["detail_en"] 	= $images["detail_en"];
+					$fields["detail_cn"] 	= $images["detail_cn"];
+					$fields["orderno"] 		= $images["orderno"];
+					$fields["status"] 		= $images["status"];
+					$fields["last_updated"] = time();
+					$db->update("wliu_images", $images["id"], $fields);
+				} else {
+					$images["errorCode"] 		= 1;
+					$images["errorMessage"] 	= "Invalid Access Images";
+				}
+				unset($images["config"]);
+				return;
 			}
-			unset($images["config"]);
+		} else {
+			$images["errorCode"] 		= 1;
+			$images["errorMessage"] 	= "Images are not allow to edited in list mode";
+			$images["rows"] = array();
 			return;
 		}
 	}
 	static public function deleteImage($db, &$images ) {
-		$query_img 		= "SELECT * FROM wliu_images WHERE id = '" . $images["id"] . "'";
-		$result_img 	= $db->query($query_img);
-		$row_img 		= $db->fetch($result_img);
-		if( $images["config"]["scope"] == $row_img["scope"] && $images["config"]["owner_id"] == $row_img["owner_id"]  )  {
-			$db->detach("wliu_images", $images["id"]);
+		if( $images["config"]["mode"]=="edit" ) {		
+			$query_img 		= "SELECT * FROM wliu_images WHERE id = '" . $images["id"] . "'";
+			$result_img 	= $db->query($query_img);
+			$row_img 		= $db->fetch($result_img);
+			if( $images["config"]["scope"] == $row_img["scope"] && $images["config"]["owner_id"] == $row_img["owner_id"]  )  {
+				$db->detach("wliu_images", $images["id"]);
+			} else {
+				$images["errorCode"] 		= 1;
+				$images["errorMessage"] 	= "Invalid Access Images";
+			}
+			unset($images["config"]);
+			return;
 		} else {
-			$images["error"]["errorCode"] 		= 1;
-			$images["error"]["errorMessage"] 	= "Invalid Access Images";
+			$images["errorCode"] 		= 1;
+			$images["errorMessage"] 	= "Images are not allow to edited in list mode";
+			$images["rows"] = array();
+			return;
 		}
-		unset($images["config"]);
-		return;
 	}
 	static public function saveOrder($db, &$images ) {
 		foreach($images["rows"] as $imgObj) {
