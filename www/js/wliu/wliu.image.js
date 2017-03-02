@@ -11,6 +11,7 @@ WLIU.IMAGELIST = function( opts ) {
 	this.errorShow 	= opts.errorShow?opts.errorShow:"";
 	this.infoEditor = opts.infoEditor?opts.infoEditor:"";
 	this.imgViewer  = opts.imgViewer?opts.imgViewer:"";
+	this.imgEditor  = opts.imgEditor?opts.imgEditor:"";
 	this.action		= "get";
 	this.keys 		= {key1: 1};
 	this.config     = {

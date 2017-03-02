@@ -100,113 +100,6 @@ wliu_image.directive("image.upload", function () {
     }
 });
 
-
-wliu_image.directive("image.editor", function () {
-    return {
-        restrict: "E",
-        replace: true,
-        scope: {
-            imgobj:         "=",
-            targetid:       "@",
-            title:          "@",
-            view:           "@",
-            action:         "&"
-        },
-        template: [
-                    '<div id="{{targetid}}" wliu-diag movable fade>',
-                        '<div wliu-diag-head>{{title}}</div>',
-                        '<div wliu-diag-body>',
-                            
-                            '<div ng-if="imgobj.errorCode">',
-                                '{{imgobj.errorMessage}}',
-                            '</div>',
-                            '<div ng-if="!imgobj.errorCode">',
-                                '<div style="min-width:320px;min-height:300px;">',
-                                    '<div class="wliu-image-frame">',
-                                        '<img src="{{ imgobj.resize[view].data?imgobj.resize[view].data:\'\' }}" />',
-                                        '<div class="wliu-image-crop">',
-                                            '<div class="wliu-image-crop-h"></div>',
-                                            '<div class="wliu-image-crop-v"></div>',
-                                        '</div>',
-                                    '</div>',
-                                '</div>',
-                                '<div style="text-align:center;">',
-
-                                    '<button ng-click="reset()" title="Restore Image" class="btn btn-outline-success waves-effect pull-right {{ imgobj.resize[view].data?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
-                                    '<a class="wliu-btn16 wliu-btn16-restore"></a>',
-                                    ' Reset</button>',
-
-                                    '<button ng-click="crop()" title="Crop Image" class="btn btn-outline-primary waves-effect pull-right {{ imgobj.resize[view].data?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
-                                    '<a class="wliu-btn16 wliu-btn16-crop"></a>',
-                                    ' Crop</button>',
-
-                                    '<button ng-click="rotate()" title="Rotate Image" class="btn btn-outline-primary waves-effect pull-right {{ imgobj.resize[view].data?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
-                                    '<a class="wliu-btn16 wliu-btn16-rotate-right"></a>',
-                                    ' Rotate</button>',
-
-                                    '<button ng-click="save()" title="Upload Image" class="btn btn-outline-secondary pull-left waves-effect {{ imgobj.resize[view].data?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
-                                    '<a class="wliu-btn16 wliu-btn16-okey"></a>',
-                                    ' Save</button>',
-
-                                    '<button ng-click="dispose()" title="Cancel Upload" class="btn btn-outline-warning pull-left waves-effect" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
-                                    '<a class="wliu-btn16 wliu-btn16-dispose"></a>',
-                                    ' Cancel</button>',
-
-                                '</div>',
-                            '</div>',
-                        '</div>',
-                    '</div>'
-                ].join(''),
-        controller: function ($scope) {
-            $scope.rotate = function() {
-                FIMAGE.rotate($scope.imgobj, function(oImg){
-                    FIMAGE.cropDivReset( $("div.wliu-image-crop", "#" + $scope.targetid) );
-                    $scope.$apply();
-                });
-            }
-
-            $scope.crop = function() {
-                FIMAGE.cropDiv($scope.imgobj, $("div.wliu-image-frame", "#" + $scope.targetid), $("div.wliu-image-crop", "#" + $scope.targetid), function(oImg){
-                    FIMAGE.cropDivReset( $("div.wliu-image-crop", "#" + $scope.targetid) );
-                    $scope.$apply();
-                });
-            }
-
-            $scope.reset = function() {
-                FIMAGE.cropReset($scope.imgobj, function(oImg){
-                    FIMAGE.cropDivReset( $("div.wliu-image-crop", "#" + $scope.targetid) );
-                    $scope.$apply();
-                });
-            }
-
-            $scope.save = function() {
-                if($scope.imgobj.resize.origin.data!="") {
-                    $scope.action($scope.imgobj);
-                    $scope.dispose();
-                }
-            }
-
-            $scope.dispose = function() {
-                FIMAGE.cropDivReset( $("div.wliu-image-crop", "#" + $scope.targetid) );
-                if( !$scope.$root.$$phase) $scope.$apply();
-                $("#" + $scope.targetid).trigger("hide");
-            }
-
-        },
-        link: function (sc, el, attr) {
-            $(function(){
-                $("div.wliu-image-crop", el).draggable({
-                    containment: "parent"
-                });
-				$("div.wliu-image-crop", el).resizable({ 
-                    containment: "parent"
-   			    });
-            });
-        }
-    }
-});
-
-
 wliu_image.directive("image.list", function () {
     return {
         restrict: "E",
@@ -236,12 +129,13 @@ wliu_image.directive("image.list1", function () {
             imglist:        "=",
             ww:             "@",
             hh:             "@",  // only for ratio
+            view:           "@",  // only for show or hide , not for "image resize type"
             tooltip:        "@"
         },
         template: [
                     '<div style="display:block;position:relative; border:0px solid #cccccc; padding:2px;" imglist targetid="{{targetid}}" viewerid="{{viewerid}}">',
                         '<!---- img box ------------------------------------------------------------------------------------------------>',
-                        '<div style="display:inline-block;position:relative;margin:2px;" imgid="{{imgObj.id}}" class="wliu-background-1 image-item" ',
+                        '<div style="display:inline-block;position:relative;margin:2px;border:1px solid #cccccc;" imgid="{{imgObj.id}}" class="wliu-background-1 image-item" ',
                                 'ng-repeat="imgObj in imglist.rows"',
                         '>',
                             '<span ng-if="imglist.config.mode==\'edit\'">',                            
@@ -263,8 +157,8 @@ wliu_image.directive("image.list1", function () {
                                 '</a>',
                             '</span>',
                             '<div style="display:table;">',
-                                '<div style="display:table-cell;vertical-align:middle;text-align:center;width:{{ww}}px;height:{{hh}}px;box-sizing:content-box;border:1px solid #cccccc;" class="img-content">',
-                                    '<img class="img-responsive" width="100%" ng-click="clickImage(imgObj)" onload="imageAutoFix(this)" ww="{{ww}}" hh="{{hh}}" style="display:inline;cursor:pointer;" src="{{imglist.thumb($index)}}" />',
+                                '<div style="display:table-cell;vertical-align:middle;text-align:center;width:{{ww}}px;height:{{hh}}px;box-sizing:content-box;" class="img-content">',
+                                    '<img class="img-responsive" width="100%" ng-click="clickImage(imgObj)" onload="imageAutoFix(this)" ww="{{ww}}" hh="{{hh}}" style="cursor:pointer;" src="{{imglist.thumb($index)}}" />',
                                 '</div>',
                             '</div>',
                         '</div>',
@@ -301,9 +195,17 @@ wliu_image.directive("image.list1", function () {
                 } 
             }
             $scope.clickImage = function(imgObj) {
-                var rowidx = FCOLLECT.indexByKV( $scope.imglist.rows, {id: imgObj.id});
-                $scope.imglist.curidx = rowidx;
-                $($scope.imglist.imgViewer).trigger("ishow");
+                if( $scope.view ) {
+                    if($scope.imglist.config.mode=="edit") {
+                        var rowidx = FCOLLECT.indexByKV( $scope.imglist.rows, {id: imgObj.id});
+                        $scope.imglist.curidx = rowidx;
+                        $($scope.imglist.imgEditor).trigger("ishow");
+                    } else {
+                        var rowidx = FCOLLECT.indexByKV( $scope.imglist.rows, {id: imgObj.id});
+                        $scope.imglist.curidx = rowidx;
+                        $($scope.imglist.imgViewer).trigger("ishow");
+                    }
+                }
             }
             $scope.textImage = function(imgObj) {
                 var rowidx = FCOLLECT.indexByKV( $scope.imglist.rows, {id: imgObj.id});
@@ -332,6 +234,187 @@ wliu_image.directive("image.list1", function () {
                     }
                 });
                 */
+            });
+        }
+    }
+});
+
+wliu_image.directive("image.editor", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            imglist:         "=",
+            targetid:       "@",
+            title:          "@",
+            view:           "@",
+            ww:             "@",
+            hh:             "@"
+        },
+        template: [
+                    '<div id="{{targetid}}" wliu-diag movable fade>',
+                        '<div wliu-diag-head>{{title}}</div>',
+                        '<div wliu-diag-body>',
+                            
+                            '<div ng-if="imglist.rows[imglist.curidx].errorCode">',
+                                '{{imglist.rows[imglist.curidx].errorMessage}}',
+                            '</div>',
+                            '<div ng-if="!imglist.rows[imglist.curidx].errorCode">',
+                                '<div style="min-height:300px;">',
+                                    '<div class="wliu-image-frame" style="position:relative;">',
+                                        '<img class="img-responsive" width="100%" ww="{{ww}}" hh="{{hh}}" style="cursor:pointer;" src="{{ imglist.view(imglist.curidx) }}" />',
+                                        '<div class="wliu-image-crop">',
+                                            '<div class="wliu-image-crop-h"></div>',
+                                            '<div class="wliu-image-crop-v"></div>',
+                                        '</div>',
+                                    '</div>',
+                                '</div>',
+                                '<div style="text-align:center;">',
+
+                                    '<button ng-click="reset()" title="Restore Image" class="btn btn-outline-success waves-effect pull-right {{ imglist.view(imglist.curidx)?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                    '<a class="wliu-btn16 wliu-btn16-restore"></a>',
+                                    ' Reset</button>',
+
+                                    '<button ng-click="crop()" title="Crop Image" class="btn btn-outline-primary waves-effect pull-right {{ imglist.view(imglist.curidx)?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                    '<a class="wliu-btn16 wliu-btn16-crop"></a>',
+                                    ' Crop</button>',
+
+                                    '<button ng-click="rotate()" title="Rotate Image" class="btn btn-outline-primary waves-effect pull-right {{ imglist.view(imglist.curidx)?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                    '<a class="wliu-btn16 wliu-btn16-rotate-right"></a>',
+                                    ' Rotate</button>',
+
+                                    '<button ng-click="save()" title="Upload Image" class="btn btn-outline-secondary pull-left waves-effect {{ imglist.view(imglist.curidx)?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                    '<a class="wliu-btn16 wliu-btn16-okey"></a>',
+                                    ' Save</button>',
+
+                                    '<button ng-click="dispose()" title="Cancel Upload" class="btn btn-outline-warning pull-left waves-effect" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                    '<a class="wliu-btn16 wliu-btn16-dispose"></a>',
+                                    ' Cancel</button>',
+
+                                '</div>',
+                            '</div>',
+                        '</div>',
+                    '</div>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.title    = $scope.title?$scope.title:"Image Editor";
+            $scope.ww       = $scope.ww?$scope.ww:"400";
+            //$scope.hh     = $scope.hh?$scope.hh:"400";
+
+            $scope.rotate = function() {
+                var view = $scope.imglist.config.view?$scope.imglist.config.view:"medium";
+                FIMAGE.view = view;
+                FIMAGE.rotate($scope.imglist.rows[$scope.imglist.curidx], function(oImg){
+                    FIMAGE.cropDivReset( $("div.wliu-image-crop", "#" + $scope.targetid) );
+                    $scope.$apply();
+                    $scope.imglist.sc.$apply();
+                });
+            }
+
+            $scope.crop = function() {
+                var view = $scope.imglist.config.view?$scope.imglist.config.view:"medium";
+                FIMAGE.view = view;
+                FIMAGE.cropDiv($scope.imglist.rows[$scope.imglist.curidx], $("div.wliu-image-frame", "#" + $scope.targetid), $("div.wliu-image-crop", "#" + $scope.targetid), function(oImg){
+                    FIMAGE.cropDivReset( $("div.wliu-image-crop", "#" + $scope.targetid) );
+                    $scope.$apply();
+                    $scope.imglist.sc.$apply();
+                });
+            }
+
+            $scope.reset = function() {
+                var view = $scope.imglist.config.view?$scope.imglist.config.view:"medium";
+                FIMAGE.view = view;
+                FIMAGE.cropReset($scope.imglist.rows[$scope.imglist.curidx], function(oImg){
+                    FIMAGE.cropDivReset( $("div.wliu-image-crop", "#" + $scope.targetid) );
+                    $scope.$apply();
+                    $scope.imglist.sc.$apply();
+                });
+            }
+
+            $scope.save = function() {
+            }
+
+            $scope.dispose = function() {
+                $scope.reset();
+                $("#" + $scope.targetid).trigger("hide");
+            }
+
+        },
+        link: function (sc, el, attr) {
+            $(function(){
+
+                $(el).wliuDiag({});
+                /*********************************************************/
+                $(el).unbind("ishow").bind("ishow", function(evt){
+                    $(el).trigger("show");
+                    var click_flag = true;
+                    $("img", el).unbind("load").bind("load", function(ev){
+                            var img = ev.target;
+                            var i_ww = img.naturalWidth;
+                            var i_hh = img.naturalHeight;
+                            var img_rate = i_hh / i_ww;
+
+                            var c_ww = 400;
+                            var c_hh = 400;
+                            if( parseInt($(img).attr("ww")) && parseInt($(img).attr("hh")) ) {
+                                c_ww = parseInt($(img).attr("ww"));
+                                c_hh = parseInt($(img).attr("hh"));
+                            } else if( parseInt($(img).attr("ww")) ) {
+                                c_ww = parseInt($(img).attr("ww"));
+                                c_hh = c_ww * img_rate;
+                            } else if( parseInt($(img).attr("hh")) ) {
+                                c_hh = parseInt($(img).attr("hh"));
+                                c_ww = c_hh / img_rate;
+                            } 
+                                                    
+                            if( !c_ww && !c_hh ) {
+                                $(img).css("width", "100%");
+                            } else { 
+                                $(img).css("width","");
+                                if( c_ww && c_hh ) {
+                                    var rate_ww = 1;
+                                    var rate_hh = 1;
+                                    rate_ww = c_ww / img.naturalWidth;
+                                    rate_hh = c_hh / img.naturalHeight;
+                                    var rate = Math.min(rate_ww, rate_hh);
+                                    if(rate < 1) {
+                                        if(rate_ww < rate_hh) {
+                                            i_ww 	= c_ww;
+                                            i_hh 	= c_ww * img_rate;
+                                        } else { 
+                                            i_hh 	= c_hh;
+                                            i_ww	= c_hh / img_rate;
+                                        }
+                                    }
+                                } else if(sc.ww) {
+                                    i_ww        = c_ww;
+                                    i_hh        = c_ww * img_rate;
+                                } else if(sc.hh) {
+                                    i_hh        = c_hh;
+                                    i_ww        = c_hh / img_rate;
+                                    img.width   = i_ww;
+                                    img.height  = i_hh;
+                                }
+                            } // if
+
+                            img.width   = i_ww;
+                            img.height  = i_hh;  
+                            if(click_flag) {
+                                click_flag=false;
+                                $(el).trigger("show");
+                            }
+                    });
+
+                });
+                /*********************************************************/
+
+
+                $("div.wliu-image-crop", el).draggable({
+                    containment: "parent"
+                });
+				$("div.wliu-image-crop", el).resizable({ 
+                    containment: "parent"
+   			    });
             });
         }
     }
@@ -441,7 +524,7 @@ wliu_image.directive("image.viewer", function () {
         template: [
                         '<div id="{{targetid}}" wliu-diag maskable fade>',
                             '<div wliu-diag-body style="text-align:center;">',
-                                    '<img class="img-responsive" width="100%" ww="400" hh="400" style="display:inline;" src="{{imglist.view(imglist.curidx)}}" />',
+                                    '<img class="img-responsive" width="100%" ww="{{ww}}" hh="{{hh}}" src="{{imglist.view(imglist.curidx)}}" />',
                             '</div>',
                         '</div>'
                 ].join(''),
@@ -455,6 +538,7 @@ wliu_image.directive("image.viewer", function () {
                 //onload="imageAutoFix(this)"
                 $(el).unbind("ishow").bind("ishow", function(evt){
                     $(el).trigger("show");
+                    var click_flag = true;
                     $("img", el).unbind("load").bind("load", function(ev){
                             var img = ev.target;
                             var i_ww = img.naturalWidth;
@@ -507,7 +591,10 @@ wliu_image.directive("image.viewer", function () {
 
                             img.width   = i_ww;
                             img.height  = i_hh;  
-                            $(el).trigger("show");
+                            if(click_flag) {
+                                click_flag = false;
+                                $(el).trigger("show");
+                            }
                     });
 
                 });
@@ -515,7 +602,6 @@ wliu_image.directive("image.viewer", function () {
         }
     }
 });
-
 
 wliu_image.directive("image.error", function () {
     return {
