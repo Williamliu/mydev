@@ -392,12 +392,16 @@ wliu_image.directive("image.editor", function () {
 
                 });
                 /*********************************************************/
-
+                var ratio = 0;
+                if( sc.ww && sc.hh ) {
+                    var ratio = parseInt(sc.ww)/parseInt(sc.hh);
+                } 
 
                 $("div.wliu-image-crop", el).draggable({
                     containment: "parent"
                 });
 				$("div.wliu-image-crop", el).resizable({ 
+                    aspectRatio: ratio,
                     containment: "parent"
    			    });
             });
