@@ -265,11 +265,11 @@ wliu_image.directive("image.editor", function () {
                                     '<button ng-click="save()" title="Upload Image" class="btn btn-outline-secondary pull-left waves-effect {{ imglist.view(imglist.curidx)?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
                                     '<a class="wliu-btn16 wliu-btn16-okey"></a>',
                                     ' Save</button>',
-
+                                    /*
                                     '<button ng-click="dispose()" title="Cancel Upload" class="btn btn-outline-warning pull-left waves-effect" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
                                     '<a class="wliu-btn16 wliu-btn16-dispose"></a>',
                                     ' Cancel</button>',
-
+                                    */
                                 '</div>',
                             '</div>',
                         '</div>',
