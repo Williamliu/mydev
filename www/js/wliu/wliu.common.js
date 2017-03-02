@@ -100,12 +100,25 @@ function guid() {
 }
 
 function imageAutoFix(img) {
-	var c_ww = parseInt($(img).attr("ww"))?parseInt($(img).attr("ww")):100;
-	var c_hh = parseInt($(img).attr("hh"))?parseInt($(img).attr("hh")):100;
 	var i_ww = img.naturalWidth;
 	var i_hh = img.naturalHeight;
-
 	var img_rate = i_hh / i_ww;
+
+	var c_ww = 100;
+	var c_hh = 100;
+	if( parseInt($(img).attr("ww")) && parseInt($(img).attr("hh")) ) {
+		c_ww = parseInt($(img).attr("ww"));
+		c_hh = parseInt($(img).attr("hh"));
+	} else if( parseInt($(img).attr("ww")) ) {
+		c_ww = parseInt($(img).attr("ww"));
+		c_hh = c_ww * img_rate;
+	} else if( parseInt($(img).attr("hh")) ) {
+		c_hh = parseInt($(img).attr("hh"));
+		c_ww = c_hh / img_rate;
+	} 
+
+	//var c_ww = parseInt($(img).attr("ww"))?parseInt($(img).attr("ww")):100;
+	//var c_hh = parseInt($(img).attr("hh"))?parseInt($(img).attr("hh")):100;
 	
 	if( !c_ww && !c_hh ) {
 		$(img).css("width", "100%");

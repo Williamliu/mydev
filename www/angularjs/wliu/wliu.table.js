@@ -569,6 +569,8 @@ wliu_table.directive("table.imgupload1", function () {
             tooltip:        "@",
             ww:             "@",  //  case 1: ww + hh;   case 2:  ww    don't use  only hh 
             hh:             "@",
+            vw:             "@",
+            vh:             "@",
             ratio:          "@",
             view:           "@",
             minww:          "@",
@@ -618,8 +620,8 @@ wliu_table.directive("table.imgupload1", function () {
                                 '</div>',
                                 '<div ng-if="!imgobj.errorCode">',
                                     '<div style="min-height:300px;">',
-                                        '<div class="wliu-image-frame" style="position:relative;min-width:400px;max-width:600px;width:400px;">',
-                                            '<img class="img-responsive" width="100%" style="cursor:pointer;" src="{{ imgobj.resize[view].data?imgobj.resize[view].data:\'\' }}" />',
+                                        '<div class="wliu-image-frame" style="position:relative;">',
+                                            '<img class="img-responsive" width="100%" ww="{{vw}}" hh="{{vh}}" style="cursor:pointer;" src="{{ imgobj.resize[view].data?imgobj.resize[view].data:\'\' }}" />',
                                             '<div class="wliu-image-crop">',
                                                 '<div class="wliu-image-crop-h"></div>',
                                                 '<div class="wliu-image-crop-v"></div>',
@@ -662,6 +664,8 @@ wliu_table.directive("table.imgupload1", function () {
             $scope.minww        = $scope.minww?$scope.minww:"80";
             $scope.minhh        = $scope.minhh?$scope.minhh:"60";
             $scope.ww           = $scope.ww?$scope.ww:$scope.minww;  // important for table
+            $scope.vw       = $scope.vw?$scope.vw:"400";
+            //$scope.vh       = $scope.vh?$scope.vh:"400";
             
             $scope.view = $scope.table.colMeta($scope.name).view?$scope.table.colMeta($scope.name).view:"medium";
 
@@ -670,12 +674,12 @@ wliu_table.directive("table.imgupload1", function () {
                     $scope.imgobj.resize.origin.data = $scope.table.getCol($scope.name, $scope.rowsn).value;
                     FIMAGE.setView($scope.view);  // important to make ng-model data sync with the callback
                     FIMAGE.resizeAll($scope.imgobj, function(){
-                        $($scope.imgeditor).trigger("show");
+                        $($scope.imgeditor).trigger("ishow");
                         FIMAGE.cropDivReset( $("div.wliu-image-crop", $scope.imgeditor) );
                         $scope.$apply();  // async must apply
                     });
                 } else {
-                    $($scope.imgeditor).trigger("show");
+                    $($scope.imgeditor).trigger("ishow");
                     FIMAGE.cropDivReset( $("div.wliu-image-crop", $scope.imgeditor) );
                 }
             }
@@ -703,7 +707,7 @@ wliu_table.directive("table.imgupload1", function () {
                         $scope.table.changeCol($scope.name, $scope.rowsn);
                         $scope.$apply();  // important: it is async to read image in callback
 
-                        $($scope.imgeditor).trigger("show");
+                        $($scope.imgeditor).trigger("ishow");
                         FIMAGE.cropDivReset( $("div.wliu-image-crop", $scope.imgeditor) );
                         
                     }
@@ -763,6 +767,65 @@ wliu_table.directive("table.imgupload1", function () {
                 $("body > " + sc.imgeditor).remove();
                 $(sc.imgeditor).appendTo("body");
                 $(sc.imgeditor).wliuDiag({});
+                /*********************************************************/
+                $(sc.imgeditor).unbind("ishow").bind("ishow", function(evt){
+                    $(sc.imgeditor).trigger("show");
+                    $("img", sc.imgeditor).unbind("load").bind("load", function(ev){
+                            var img = ev.target;
+                            var i_ww = img.naturalWidth;
+                            var i_hh = img.naturalHeight;
+                            var img_rate = i_hh / i_ww;
+
+                            var c_ww = 400;
+                            var c_hh = 400;
+                            if( parseInt($(img).attr("ww")) && parseInt($(img).attr("hh")) ) {
+                                c_ww = parseInt($(img).attr("ww"));
+                                c_hh = parseInt($(img).attr("hh"));
+                            } else if( parseInt($(img).attr("ww")) ) {
+                                c_ww = parseInt($(img).attr("ww"));
+                                c_hh = c_ww * img_rate;
+                            } else if( parseInt($(img).attr("hh")) ) {
+                                c_hh = parseInt($(img).attr("hh"));
+                                c_ww = c_hh / img_rate;
+                            } 
+                                                    
+                            if( !c_ww && !c_hh ) {
+                                $(img).css("width", "100%");
+                            } else { 
+                                $(img).css("width","");
+                                if( c_ww && c_hh ) {
+                                    var rate_ww = 1;
+                                    var rate_hh = 1;
+                                    rate_ww = c_ww / img.naturalWidth;
+                                    rate_hh = c_hh / img.naturalHeight;
+                                    var rate = Math.min(rate_ww, rate_hh);
+                                    if(rate < 1) {
+                                        if(rate_ww < rate_hh) {
+                                            i_ww 	= c_ww;
+                                            i_hh 	= c_ww * img_rate;
+                                        } else { 
+                                            i_hh 	= c_hh;
+                                            i_ww	= c_hh / img_rate;
+                                        }
+                                    }
+                                } else if(sc.ww) {
+                                    i_ww        = c_ww;
+                                    i_hh        = c_ww * img_rate;
+                                } else if(sc.hh) {
+                                    i_hh        = c_hh;
+                                    i_ww        = c_hh / img_rate;
+                                    img.width   = i_ww;
+                                    img.height  = i_hh;
+                                }
+                            } // if
+
+                            img.width   = i_ww;
+                            img.height  = i_hh;  
+                            $(sc.imgeditor).trigger("show");
+                    });
+
+                });
+                /*********************************************************/
 
                $("div.wliu-image-crop", sc.imgeditor).draggable({
                     containment: "parent"
