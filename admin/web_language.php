@@ -135,9 +135,9 @@ include_once("../include/config/config.php");
 			<table class="table table-condensed">
 				<tr style="background-color:#eeeeee;"> 
 					<td width=50>
-						<table.hicon table="lang_table" name="add" 		actname="Add New"  	action="" 		tooltip="#tool_tip"></table.hicon>
-						<table.hicon table="lang_table" name="save" 	actname="Save" 	action="" 	tooltip="#tool_tip"></table.hicon>
-						<table.hicon table="lang_table" name="cancel" 	actname="Undo" 	action="" 		tooltip="#tool_tip"></table.hicon>
+						<table.hicon table="lang_table" name="add" 		actname="Add New"  	action="" 		tooltip="tool_tip"></table.hicon>
+						<table.hicon table="lang_table" name="save" 	actname="Save" 		action="" 		tooltip="tool_tip"></table.hicon>
+						<table.hicon table="lang_table" name="cancel" 	actname="Undo" 		action="" 		tooltip="tool_tip"></table.hicon>
 					</td>
 					<td width=40 align="center">
 						<table.head table="lang_table" name="SN"></table.head>
@@ -166,9 +166,9 @@ include_once("../include/config/config.php");
 				</tr>	
 				<tr ng-repeat="row in lang_table.rows">
 					<td style="white-space:nowrap; width:40px;">
-						<table.bicon table="lang_table" name="save"  	actname="Save" 		rowsn="{{$index}}" 	action="" tooltip="#tool_tip"></table.bicon>
-						<table.bicon table="lang_table" name="cancel"	actname="Cancel" 	rowsn="{{$index}}" 	action="" tooltip="#tool_tip"></table.bicon>
-						<table.bicon table="lang_table" name="delete" 	actname="Delete" 	rowsn="{{$index}}" 	action="" tooltip="#tool_tip"></table.bicon>
+						<table.bicon table="lang_table" name="save"  	actname="Save" 		rowsn="{{$index}}" 	action="" tooltip="tool_tip"></table.bicon>
+						<table.bicon table="lang_table" name="cancel"	actname="Cancel" 	rowsn="{{$index}}" 	action="" tooltip="tool_tip"></table.bicon>
+						<table.bicon table="lang_table" name="delete" 	actname="Delete" 	rowsn="{{$index}}" 	action="" tooltip="tool_tip"></table.bicon>
 					</td>
 					<td width=30 align="center">
 						<table.rowno table="lang_table"  rowsn="{{$index}}"></table.rowno>

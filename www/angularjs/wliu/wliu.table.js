@@ -778,13 +778,11 @@ wliu_table.directive("table.imgupload1", function () {
                     $scope.imgobj.resize.origin.data = $scope.table.getCol($scope.name, $scope.rowsn).value;
                     FIMAGE.setView($scope.view);  // important to make ng-model data sync with the callback
                     FIMAGE.resizeAll($scope.imgobj, function(){
-                        $($scope.imgeditor).trigger("ishow");
-                        FIMAGE.cropDivReset( $("div.wliu-image-crop", $scope.imgeditor) );
                         $scope.$apply();  // async must apply
+                        $($scope.imgeditor).trigger("ishow");
                     });
                 } else {
                     $($scope.imgeditor).trigger("ishow");
-                    FIMAGE.cropDivReset( $("div.wliu-image-crop", $scope.imgeditor) );
                 }
             }
 
@@ -812,8 +810,6 @@ wliu_table.directive("table.imgupload1", function () {
                         $scope.$apply();  // important: it is async to read image in callback
 
                         $($scope.imgeditor).trigger("ishow");
-                        FIMAGE.cropDivReset( $("div.wliu-image-crop", $scope.imgeditor) );
-                        
                     }
                 });
             }
@@ -822,22 +818,22 @@ wliu_table.directive("table.imgupload1", function () {
             /****************************************************** */
             $scope.rotate = function() {
                 FIMAGE.rotate($scope.imgobj, function(oImg){
-                    FIMAGE.cropDivReset( $("div.wliu-image-crop", $scope.imgeditor) );
                     $scope.$apply();
+                    $($scope.imgeditor).trigger("ishow");
                 });
             }
 
             $scope.crop = function() {
                 FIMAGE.cropDiv($scope.imgobj, $("div.wliu-image-frame", $scope.imgeditor), $("div.wliu-image-crop", $scope.imgeditor), function(oImg){
-                    FIMAGE.cropDivReset( $("div.wliu-image-crop", $scope.imgeditor) );
                     $scope.$apply();
+                    $($scope.imgeditor).trigger("ishow");
                 });
             }
 
             $scope.reset = function() {
                 FIMAGE.cropReset($scope.imgobj, function(oImg){
-                    FIMAGE.cropDivReset( $("div.wliu-image-crop", $scope.imgeditor) );
                     $scope.$apply();
+                    $($scope.imgeditor).trigger("ishow");
                 });
             }
 
@@ -874,6 +870,7 @@ wliu_table.directive("table.imgupload1", function () {
                 /*********************************************************/
                 $(sc.imgeditor).unbind("ishow").bind("ishow", function(evt){
                     $(sc.imgeditor).trigger("show");
+                    FIMAGE.cropDivReset( $("div.wliu-image-crop", sc.imgeditor) );
                     var click_flag = true;
                     $("img", sc.imgeditor).unbind("load").bind("load", function(ev){
                             var img = ev.target;
@@ -929,6 +926,7 @@ wliu_table.directive("table.imgupload1", function () {
                             if(click_flag) {
                                 click_flag = false;
                                 $(sc.imgeditor).trigger("show");
+                                FIMAGE.cropDivReset( $("div.wliu-image-crop", sc.imgeditor) );
                             }
                     });
 

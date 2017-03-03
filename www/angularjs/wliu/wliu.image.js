@@ -154,7 +154,7 @@ wliu_image.directive("image.list", function () {
             $scope.hh           = $scope.hh?$scope.hh:"100";
 
             $scope.selectFile = function(event) {
-                var newImg       = new WLIU.IMAGE({rowsn: guid()});
+                var newImg       = new WLIU.IMAGE({rowsn: guid(), token:guid()});
                 files = (event.srcElement || event.target).files;
                 var view = $scope.imglist.config.thumb?$scope.imglist.config.thumb:"tiny";
                 FIMAGE.view = view;
@@ -231,7 +231,7 @@ wliu_image.directive("image.editor", function () {
             hh:             "@"
         },
         template: [
-                    '<div id="{{targetid}}" wliu-diag movable fade>',
+                    '<div id="{{targetid}}" wliu-diag movable maskable fade>',
                         '<div wliu-diag-head>{{title}}</div>',
                         '<div wliu-diag-body>',
                             
@@ -287,7 +287,7 @@ wliu_image.directive("image.editor", function () {
                     console.log("here");
                     $scope.$apply();
                     $scope.imglist.sc.$apply();
-                    FIMAGE.cropDivReset( $("div.wliu-image-crop", "#" + $scope.targetid) );
+                    $("#"+$scope.targetid).trigger("ishow");
                 });
             }
 
@@ -297,7 +297,7 @@ wliu_image.directive("image.editor", function () {
                 FIMAGE.cropDiv($scope.imglist.rows[$scope.imglist.curidx], $("div.wliu-image-frame", "#" + $scope.targetid), $("div.wliu-image-crop", "#" + $scope.targetid), null, function(oImg){
                     $scope.$apply();
                     $scope.imglist.sc.$apply();
-                    FIMAGE.cropDivReset( $("div.wliu-image-crop", "#" + $scope.targetid) );
+                    $("#"+$scope.targetid).trigger("ishow");
                 });
             }
 
@@ -307,7 +307,7 @@ wliu_image.directive("image.editor", function () {
                 FIMAGE.cropReset($scope.imglist.rows[$scope.imglist.curidx], null, function(oImg){
                     $scope.$apply();
                     $scope.imglist.sc.$apply();
-                    FIMAGE.cropDivReset( $("div.wliu-image-crop", "#" + $scope.targetid) );
+                    $("#"+$scope.targetid).trigger("ishow");
                 });
             }
 

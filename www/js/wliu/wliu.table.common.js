@@ -364,6 +364,8 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 }
 WLIU.FILE = function( opts ) {
 	this.file 		= {
+		sn:             0,  	// sn for image array index
+		rowsn:	        "",  	// rowsn for list GUID , for webpage layout
 		errorCode:		0, 
 		errorMessage:	"",
 		scope: 			"",
@@ -387,19 +389,18 @@ WLIU.FILE = function( opts ) {
 		main:       	0,
 		orderno:    	0,
 		status:     	0,
-		data:       	""
+		data:       	"",
+		token:			""
 	};
 	$.extend(this.file, opts);
 	return this.file;
 }
 WLIU.IMAGE = function( opts ) {
 	this.image 		= {
-		state: 			0,  // 0 - ready for upload, 1 - uploading,  2- done,  9 - error
 		sn:             0,  // sn for image array index
 		rowsn:	        0,  // rowsn for list GUID , for webpage layout
 		errorCode:		0, 
 		errorMessage:	"",
-
 		scope: 			"",
 		id:    			0,
 		key1:			0,
@@ -422,6 +423,7 @@ WLIU.IMAGE = function( opts ) {
 		main:       	0,
 		orderno:    	0,
 		status:     	0,
+		token:			"",
 
 		resize:     {
 			 origin:	{ ww: 1000, 	hh:1000, 	width:0, height:0,  name:"", size: 0, data:"" },

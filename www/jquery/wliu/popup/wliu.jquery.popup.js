@@ -365,5 +365,11 @@ $(function(){
         $( "div[wliu-popup-head]", $(target_el) ).remove();
         $( "div[wliu-popup-body]", $(target_el) ).empty();
     });
+    $(document).off("mouseleft", "*[popup-toggle='hover']").on("mouseleft", "*[popup-toggle='hover']", function(evt){
+        var target_el  = $(this).attr("popup-target");
+        $(target_el).removeAttr("active");
+        $( "div[wliu-popup-head]", $(target_el) ).remove();
+        $( "div[wliu-popup-body]", $(target_el) ).empty();
+    });
 
 });

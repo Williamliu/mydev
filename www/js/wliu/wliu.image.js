@@ -155,7 +155,6 @@ WLIU.IMAGELIST.prototype = {
 		
 		var nimages = {};
 		nimages.action 		= "add";
-		nimages.rowsn 		= imgObj.rowsn;
 		nimages.id 			= 0;
 		nimages.scope 		= imgObj.scope;
 		nimages.key1 		= imgObj.key1;
@@ -167,6 +166,8 @@ WLIU.IMAGELIST.prototype = {
 		nimages.mime_type 	= imgObj.mime_type; 
 		nimages.status 		= imgObj.status;
 		nimages.orderno 	= imgObj.orderno;
+		nimages.rowsn 		= imgObj.rowsn;
+		nimages.token		= imgObj.token;
 		nimages.resize 		= angular.copy(imgObj.resize);
 		nimages.errorCode  	= this.errorCode;
 		nimages.errorMessage = this.errorMessage;
@@ -253,7 +254,6 @@ WLIU.IMAGELIST.prototype = {
 		for(var ridx in nimages.rows) {
 			var theRow 		= nimages.rows[ridx];
 			theRow.sn  		= parseInt(nimages.rows[ridx].orderno);
-			theRow.rowsn 	= guid();
 			this.rows.push( new WLIU.IMAGE(theRow) );	
 		}
 	},

@@ -2690,7 +2690,7 @@ class cIMAGE {
 			}
 			$orderBy = "ORDER BY orderno ASC, last_updated DESC";
 			$limit = "LIMIT 0," . $images["config"]["max_length"];
-			$query 	= "SELECT id, scope, key1, key2, key3, title_en, title_cn, detail_en, detail_cn, full_name, short_name, ext_name, mime_type, main, orderno, status FROM wliu_images WHERE $criteria $orderBy $limit";
+			$query 	= "SELECT id, scope, key1, key2, key3, title_en, title_cn, detail_en, detail_cn, full_name, short_name, ext_name, mime_type, main, orderno, status, rowsn, token FROM wliu_images WHERE $criteria $orderBy $limit";
 			if(DEBUG) $images["query"] = $query;
 			$result = $db->query($query);
 			$rows   = $db->rows($result);
@@ -2748,6 +2748,8 @@ class cIMAGE {
 				$fields["mime_type"] 	= $images["mime_type"];
 				$fields["orderno"] 		= $images["orderno"];
 				$fields["status"] 		= $images["status"];
+				$fields["rowsn"] 		= $images["rowsn"];
+				$fields["token"] 		= $images["token"];
 				$fields["created_time"] = time();
 				$fields["last_updated"] = time();
 				$images["id"] = $db->insert("wliu_images", $fields);
