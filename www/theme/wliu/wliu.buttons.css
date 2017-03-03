@@ -386,7 +386,7 @@ a.wliu-btn16 {
     background-position:        -40px -520px;
 }
 
-/*** 27 mix button : img-print *****/
+/*** 27 mix button : img-print, upload, comments *****/
 .wliu-btn16-img-print {
     background-position:        0px -540px;
 }
@@ -395,6 +395,17 @@ a.wliu-btn16 {
 }
 .wliu-btn16-comments {
     background-position:        -40px -540px;
+}
+
+/*** 28 mix button : notes, nav-left, nav-right *****/
+.wliu-btn16-notes {
+    background-position:        0px -560px;
+}
+.wliu-btn16-nav-left {
+    background-position:        -20px -560px;
+}
+.wliu-btn16-nav-right {
+    background-position:        -40px -560px;
 }
 
 
@@ -775,7 +786,7 @@ a.wliu-btn24 {
     background-position:        -60px -780px;
 }
 
-/*** 27 mix button : img-print , *****/
+/*** 27 mix button : img-print, upload, comments *****/
 .wliu-btn24-img-print {
     background-position:        0px -810px;
 }
@@ -786,6 +797,16 @@ a.wliu-btn24 {
     background-position:        -60px -810px;
 }
 
+/*** 28 mix button : notes, nav-left, nav-right *****/
+.wliu-btn24-notes {
+    background-position:        0px -840px;
+}
+.wliu-btn24-nav-left {
+    background-position:        -30px -840px;
+}
+.wliu-btn24-nav-right {
+    background-position:        -60px -840px;
+}
 
 .wliu-button-na {
     display:                    none;

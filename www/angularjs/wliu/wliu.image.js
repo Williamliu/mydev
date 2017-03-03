@@ -112,9 +112,9 @@ wliu_image.directive("image.list", function () {
             tooltip:        "@"
         },
         template: [
-                    '<div style="display:block;position:relative; border:0px solid #cccccc; padding:2px;" imglist targetid="{{targetid}}" viewerid="{{viewerid}}">',
+                    '<div style="display:block;position:relative;padding:2px;" imglist targetid="{{targetid}}" viewerid="{{viewerid}}">',
                         '<!---- img box ------------------------------------------------------------------------------------------------>',
-                        '<div style="display:inline-block;position:relative;margin:2px;border:1px solid #cccccc;" imgid="{{imgObj.id}}" class="wliu-background-1 image-item" ',
+                        '<div style="display:inline-block;position:relative;margin:2px 4px;border:1px solid #cccccc;border-radius:5px;overflow:hidden;" imgid="{{imgObj.id}}" class="wliu-background-1 image-item" ',
                                 'ng-repeat="imgObj in imglist.rows"',
                         '>',
                             '<span ng-if="imglist.config.mode==\'edit\'">',                            
@@ -141,7 +141,7 @@ wliu_image.directive("image.list", function () {
                                 '</div>',
                             '</div>',
                         '</div>',
-                        '<div ng-if="imglist.rows.length<imglist.config.max_length" style="display:inline-block;position:relative;margin:2px;width:{{ww}}px;height:{{hh}}px;line-height:{{hh}}px;text-align:center;font-size:18px;font-weight:700;color:#666666;border:1px solid #cccccc; overflow:hidden;" class="wliu-background-1">',
+                        '<div ng-if="imglist.rows.length<imglist.config.max_length && imglist.config.mode==\'edit\'" style="display:inline-block;position:relative;margin:2px;width:{{ww}}px;height:{{hh}}px;line-height:{{hh}}px;text-align:center;font-size:18px;font-weight:700;color:#666666;border:1px solid #cccccc;border-radius:5px;overflow:hidden;" class="wliu-background-1">',
                                     '<input type="file" style="display:block; position:absolute; opacity:0;top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" value="Browse..." ',
                                             'onchange="angular.element(this).scope().selectFile(event);" />',
                                     'Add Image',
@@ -200,7 +200,7 @@ wliu_image.directive("image.list", function () {
         },
         link: function (sc, el, attr) {
             $(function(){
-                /* 
+                /*
                 $(el).sortable({
                     items: ">div.image-item",
 					stop: function(ev, ui) {
@@ -512,14 +512,35 @@ wliu_image.directive("image.viewer", function () {
         },
         template: [
                         '<div id="{{targetid}}" wliu-diag maskable fade>',
+                            '<a class="wliu-btn24 wliu-btn24-nav-left" ng-click="navLeft()" ng-show="leftShow()" style="position:absolute;left:2px;opacity:0.6;top:45%;z-index:99;"></a>',
                             '<div wliu-diag-body style="text-align:center;">',
                                     '<img class="img-responsive" width="100%" ww="{{ww}}" hh="{{hh}}" src="{{imglist.view(imglist.curidx)}}" />',
                             '</div>',
+                            '<a class="wliu-btn24 wliu-btn24-nav-right" ng-click="navRight()" ng-show="rightShow()" style="position:absolute;right:2px;opacity:0.6;top:45%;z-index:99;"></a>',
                         '</div>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.ww = $scope.ww?$scope.ww:400;
-            $scope.hh = $scope.hh?$scope.hh:400;
+            $scope.ww = $scope.ww?$scope.ww:600;
+            $scope.hh = $scope.hh?$scope.hh:600;
+            $scope.leftShow = function() {
+                if($scope.imglist.rows.length <= 1) return false; 
+                if($scope.imglist.curidx == 0) return false; 
+                return true;
+            }
+            $scope.rightShow = function() {
+                if($scope.imglist.rows.length <= 1) return false; 
+                if($scope.imglist.curidx >= $scope.imglist.rows.length -1 ) return false; 
+                return true;
+            }
+            $scope.navLeft = function() {
+                if($scope.imglist.curidx>0) $scope.imglist.curidx--;
+                $("#" + $scope.targetid).trigger("ishow");
+            }
+            $scope.navRight = function() {
+                if($scope.imglist.curidx<$scope.imglist.rows.length-1) $scope.imglist.curidx++;
+                $("#" + $scope.targetid).trigger("ishow");
+            }
+
         },
         link: function (sc, el, attr) {
             $(function(){

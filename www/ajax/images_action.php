@@ -12,7 +12,7 @@ try {
 	$images = $_REQUEST["images"];
 	// for secure, please unset below vars first;
 	// imgObj, scope, owner_id, mode
-	cIMAGE::config($images, "Users", 100, "edit");
+	cIMAGE::config($images, "Users", 100, "edit1");
 
 	// filter:  imgObj, colName, colVal
 	// cIMAGE::filter($images, "status", 1);
