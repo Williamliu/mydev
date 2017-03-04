@@ -15,8 +15,11 @@ wliu_file.directive("file.list", function () {
         template: [
                     '<ul style="display:inline-block;">',
                         '<li ng-repeat="fileObj in filelist.rows" style="text-decoration:underline;">',
-                            '<a href="{{fileObj.url}}" target="_blank" title="{{fileObj.title_en}}\n{{fileObj.title_cn}}">',
-                                '{{$index+1}}. {{(\'\'+fileObj.full_name).subName(namemax)}}',
+                            '<a href="{{fileObj.url?fileObj.url:\'javascript:void(0);\'}}" target="_blank" ',
+                                'title="{{fileObj.title_en}}\n{{fileObj.title_cn}}" ',
+                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{ fileObj.title_en.join(\'<br>\',fileObj.detail_en).join(\'<br>\',fileObj.title_cn).join(\'<br>\',fileObj.detail_cn)  }}" ',
+                            '>',
+                                    '{{$index+1}}. {{(\'\'+fileObj.full_name).subName(namemax)}}',
                             '</a>',
                             '<a class="wliu-btn16 wliu-btn16-notes" ng-click="textFile(fileObj)" style="margin-left:10px;" ',
                                 'title="{{tooltip?\'\':\'File Comments\'}}" ',

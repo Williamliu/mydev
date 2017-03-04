@@ -176,6 +176,7 @@ WLIU.IMAGELIST.prototype = {
 				imgObj.id 		= oimages.id;
 				imgObj.scope 	= oimages.scope;
 				imgObj.access 	= oimages.access;
+				imgObj.url 		= oimages.url;
 				_self.rows.push(imgObj);
 				_self.sc.$apply();
 			}

@@ -408,6 +408,16 @@ a.wliu-btn16 {
     background-position:        -40px -560px;
 }
 
+/*** 29 mix button : download,  *****/
+.wliu-btn16-download {
+    background-position:        0px -580px;
+}
+.wliu-btn16-xxxx1 {
+    background-position:        -20px -580px;
+}
+.wliu-btn16-xxx2 {
+    background-position:        -40px -580px;
+}
 
 /****************************************************************/
 i.wliu-btn24, 
@@ -806,6 +816,17 @@ a.wliu-btn24 {
 }
 .wliu-btn24-nav-right {
     background-position:        -60px -840px;
+}
+
+/*** 29 mix button : download,  *****/
+.wliu-btn24-download {
+    background-position:        0px -870px;
+}
+.wliu-btn24-xxxx1 {
+    background-position:        -30px -870px;
+}
+.wliu-btn24-xxxx2 {
+    background-position:        -60px -870px;
 }
 
 .wliu-button-na {

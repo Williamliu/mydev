@@ -2703,6 +2703,7 @@ class cIMAGE {
 			}
 
 			foreach( $rows as $rowsn=>&$theRow ) {
+				$theRow["url"] = $GLOBALS["CFG"]["image_download_template"] . "?token=" . $theRow["token"] . "&id=" . $theRow["id"] . "&sn=" . $theRow["rowsn"];
 				$query_row = "SELECT resize_type, name, ww, hh, width, height, size, data FROM wliu_images_resize WHERE ref_id='" . $theRow["id"] . "' AND resize_type in ($imgType)";
 				$result_row = $db->query($query_row);
 				while( $row_row = $db->fetch($result_row) ) {
@@ -2768,6 +2769,7 @@ class cIMAGE {
 					//echo "$resizType len: " . strlen($fields["data"]). "\n";
 					$db->insert("wliu_images_resize", $fields);
 				}
+				$images["url"] 	= $GLOBALS["CFG"]["image_download_template"] . "?token=" . $images["token"] . "&id=" . $images["id"] . "&sn=" . $images["rowsn"];
 				unset($images["config"]);
 				unset($images["filter"]);
 				return;
@@ -2950,8 +2952,10 @@ class cFILE {
 			if(DEBUG) $files["query"] = $query;
 			$result 		= $db->query($query);
 			$rows   		= $db->rows($result);
+			foreach( $rows as $rowsn=>&$theRow ) {
+				$theRow["url"] = $GLOBALS["CFG"]["file_download_template"] . "?token=" . $theRow["token"] . "&id=" . $theRow["id"] . "&sn=" . $theRow["rowsn"];
+			}
 			$files["rows"] 	= $rows;
-
 			unset($files["config"]["access"]);
 			unset($files["config"]["owner_id"]);
 			unset($files["filter"]);
@@ -2994,6 +2998,7 @@ class cFILE {
 				$fields["created_time"] = time();
 				$fields["last_updated"] = time();
 				$files["id"] = $db->insert("wliu_files", $fields);
+				$files["url"] 	= $GLOBALS["CFG"]["file_download_template"] . "?token=" . $files["token"] . "&id=" . $files["id"] . "&sn=" . $files["rowsn"];
 				unset($files["config"]);
 				unset($files["filter"]);
 				return;

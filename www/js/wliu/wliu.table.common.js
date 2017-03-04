@@ -389,6 +389,7 @@ WLIU.FILE = function( opts ) {
 		main:       	0,
 		orderno:    	0,
 		status:     	0,
+		url:			"",
 		data:       	"",
 		token:			""
 	};
@@ -423,6 +424,7 @@ WLIU.IMAGE = function( opts ) {
 		main:       	0,
 		orderno:    	0,
 		status:     	0,
+		url:			"",
 		token:			"",
 
 		resize:     {

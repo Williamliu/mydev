@@ -137,6 +137,7 @@ WLIU.FILELIST.prototype = {
 				fileObj.id 		= ofiles.id;
 				fileObj.scope 	= ofiles.scope;
 				fileObj.access 	= ofiles.access;
+				fileObj.url 	= ofiles.url;
 				_self.rows.push(fileObj);
 				_self.sc.$apply();
 			}

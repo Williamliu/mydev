@@ -1,4 +1,11 @@
 <?php
+$a = "dkfadskfds;base64,/9dkfjasdk";
+$b = substr( $a, strpos($a, "base64,") + strlen("base64,"));
+echo "b=$b";
+echo "<br>";
+echo "<br>";
+echo "<br>";
+
 class cARRAY {
 	static public function arrayFilter($arr, $kv) {
         $ret = array();
