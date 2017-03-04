@@ -433,6 +433,8 @@ wliu_table.directive("table.fileupload", function () {
             $scope.theFile = new WLIU.FILE();
             $scope.selectFile = function(event) {
                 files = (event.srcElement || event.target).files;
+                FFILE.allowSize = $scope.table.colMeta($scope.name).maxlength>0 &&$scope.table.colMeta($scope.name).maxlength<=GCONFIG.max_upload_size?$scope.table.colMeta($scope.name).maxlength:GCONFIG.max_upload_size;
+                FFILE.allowType = $scope.table.colMeta($scope.name).allowtype?$scope.table.colMeta($scope.name).allowtype:GCONFIG.file_allow_type;
                 FFILE.fromFile($scope.theFile, files[0], function(fObj){
                     if(fObj.errorCode) {
                         alert(fObj.errorMessage);
@@ -566,6 +568,8 @@ wliu_table.directive("table.imgupload", function () {
                 files = (event.srcElement || event.target).files;
                 var view = $scope.table.colMeta($scope.name).view?$scope.table.colMeta($scope.name).view:"medium";
                 FIMAGE.view = view; 
+                FIMAGE.allowSize = $scope.table.colMeta($scope.name).maxlength>0 &&$scope.table.colMeta($scope.name).maxlength<=GCONFIG.max_upload_size?$scope.table.colMeta($scope.name).maxlength:GCONFIG.max_upload_size;
+                FIMAGE.allowType = $scope.table.colMeta($scope.name).allowtype?$scope.table.colMeta($scope.name).allowtype:GCONFIG.image_allow_type;
                 FIMAGE.fromFile($scope.imgobj, files[0], function(fObj){
                     if(fObj.errorCode) {
                         alert(fObj.errorMessage);
@@ -801,6 +805,8 @@ wliu_table.directive("table.imgupload1", function () {
                 files = (event.srcElement || event.target).files;
                 var view = $scope.table.colMeta($scope.name).view?$scope.table.colMeta($scope.name).view:"medium";
                 FIMAGE.view = $scope.view;
+                FIMAGE.allowSize = $scope.table.colMeta($scope.name).maxlength>0 &&$scope.table.colMeta($scope.name).maxlength<=GCONFIG.max_upload_size?$scope.table.colMeta($scope.name).maxlength:GCONFIG.max_upload_size;
+                FIMAGE.allowType = $scope.table.colMeta($scope.name).allowtype?$scope.table.colMeta($scope.name).allowtype:GCONFIG.image_allow_type;
                 FIMAGE.fromFile($scope.imgobj, files[0], function(fObj){
                     if(fObj.errorCode) {
                         alert(fObj.errorMessage);

@@ -125,7 +125,7 @@ wliu_image.directive("image.list", function () {
                                 '>',
                                 '</a>',
                                 '<a class="wliu-btn24 wliu-btn24-comments" ng-click="textImage(imgObj)" style="position:absolute; margin-top:3px;margin-left:30px;opacity:0.8;" ',
-                                    'title="{{tooltip?\'\':\'Print Image\'}}" ',
+                                    'title="{{tooltip?\'\':\'Image Comments\'}}" ',
                                     'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Image Comments" ',
                                 '>',
                                 '</a>',
@@ -158,6 +158,8 @@ wliu_image.directive("image.list", function () {
                 files = (event.srcElement || event.target).files;
                 var view = $scope.imglist.config.thumb?$scope.imglist.config.thumb:"tiny";
                 FIMAGE.view = view;
+                FIMAGE.allowSize = parseInt($scope.imglist.config.max_size)>0 && ($scope.imglist.config.max_size)<GCONFIG.max_upload_size?parseInt($scope.imglist.config.max_size):GCONFIG.max_upload_size;
+                FIMAGE.allowType = (""+$scope.imglist.config.allow_type).toArray(",","upper");
                 FIMAGE.fromFile(newImg, files[0], null, function(fObj){
                     if(fObj.errorCode) {
                         alert(fObj.errorMessage);

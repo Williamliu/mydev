@@ -1540,8 +1540,8 @@ WLIU.TABLEACTION.prototype = {
 }
 
 WLIU.FILEACTION = function(opts) {
-	this.allowSize = 20 * 1024 * 1024,	
-	this.allowType = ["PDF", "XLS", "XLSX", "DOC", "DOCX", "PPT", "PPTX", "TXT", "BMP", "JPG", "JPEG", "PNG", "TIF", "GIF"];
+	this.allowSize = GCONFIG.max_upload_size;	
+	this.allowType = GCONFIG.file_allow_type;
 	if(opts) {
 		if(opts.allowSize) this.allowSize = opts.allowSize;
 		if(opts.allowType) this.allowType = opts.allowType;
@@ -1648,8 +1648,8 @@ WLIU.FILEACTION.prototype = {
 }
 
 WLIU.IMAGEACTION = function(opts) {
-	this.allowSize 	= 20 * 1024 * 1024,	
-	this.allowType 	= ["BMP", "JPG", "JPEG", "PNG", "TIF", "GIF"];
+	this.allowSize 	= GCONFIG.max_upload_size,	
+	this.allowType 	= GCONFIG.image_allow_type;
 	this.view 		= "medium";
 	this.execute    = [];
 	if(opts) {

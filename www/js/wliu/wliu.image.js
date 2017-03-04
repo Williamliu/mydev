@@ -4,7 +4,6 @@ WLIU.IMAGELIST = function( opts ) {
 	this.sc			= null;
 
 	this.lang       = opts.lang?opts.lan:"cn";
-	//this.scope  	= opts.scope?opts.scope:""; // for secure reason, scope provide by server side, client not allow to change
 	this.url		= opts.url?opts.url:"";
 	this.wait		= opts.wait?opts.wait:"";
 	this.autotip 	= opts.autotip?opts.autotip:"";
@@ -13,7 +12,7 @@ WLIU.IMAGELIST = function( opts ) {
 	this.imgViewer  = opts.imgViewer?opts.imgViewer:"";
 	this.imgEditor  = opts.imgEditor?opts.imgEditor:"";
 	this.action		= "get";
-	this.keys 		= {key1: 1};
+	this.keys 		= {key1:"", key2:"", key3:""};
 	this.config     = {
 						mode: 		"",
 						scope: 		"",
@@ -181,6 +180,10 @@ WLIU.IMAGELIST.prototype = {
 				_self.sc.$apply();
 			}
 		})
+	},
+	getRecord: function(IDKeyValues, callback) {
+		this.keys = IDKeyValues;
+		this.getImages(callback);
 	},
 	getImages: function(callback) {
 		this.errorCode 		= 0;

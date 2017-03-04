@@ -1,6 +1,12 @@
 /**************************************************************/
 /**** 				 Data Type Prototype        		    ***/
 /**************************************************************/
+var GCONFIG = {
+	max_upload_size: 	20 * 1024 * 1024,
+	image_allow_type: 	["BMP", "JPG", "JPEG", "PNG", "TIF", "GIF"],
+	file_allow_type:	["PDF", "XLS", "XLSX", "DOC", "DOCX", "PPT", "PPTX", "TXT", "BMP", "JPG", "JPEG", "PNG", "TIF", "GIF"]
+};
+
 String.prototype.nl2br = function() {
 	var str = this.toString();
 	str = str.replace(/\n|\r/gi, "<br>");
@@ -49,6 +55,28 @@ String.prototype.toBlob = function(mime) {
 		u8arr[n] = bstr.charCodeAt(n);
 	}
 	return new Blob([u8arr], {type:mime});
+}
+
+String.prototype.toArray = function(sp, case_sense) {
+	case_sense = case_sense?case_sense:"origin"; 
+	sp = sp?sp:",";
+	var bstr = "" + this.toString();
+	var barr = bstr.split(sp);
+	var narr = [];
+	for(var key in barr) {
+		switch(case_sense) {
+			case "upper":
+				narr.push( barr[key].trim().toUpperCase() );
+				break;
+			case "lower":
+				narr.push( barr[key].trim().toLowerCase() );
+				break;
+			default:
+				narr.push( barr[key].trim() );
+				break;
+		}
+	}
+	return narr;
 }
 
 /*** File Name ***/

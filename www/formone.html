@@ -66,8 +66,8 @@
 		   	var col8 = new WLIU.COL({key:0, coltype:"radio", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name", 			defval: 77, notnull:1, 			list:"colorCategory"});
 		   	var col9 = new WLIU.COL({key:0, coltype:"checkbox1", 	name:"country_id",	colname:"Country ISO",  coldesc:"Country ID", list:"countryCategory"});
 		   	var col10 = new WLIU.COL({key:0, coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status"});
-		   	var col11 = new WLIU.COL({key:0, coltype:"upload", 		name:"img1", 		colname:"ID Copy", 		view:"large", 	notnull: 0 });
-		   	var col12 = new WLIU.COL({key:0, coltype:"upload", 		name:"img2",  		colname:"Your Photo",   view: "large", 	notnull: 0 });
+		   	var col11 = new WLIU.COL({key:0, coltype:"upload", 		name:"img1", 		colname:"ID Copy", 		view:"large", 	maxlength:1024*1024, allowtype:["JPG"], notnull: 0 });
+		   	var col12 = new WLIU.COL({key:0, coltype:"upload", 		name:"img2",  		colname:"Your Photo",   view: "large",  maxlength:40*1024, allowtype:["PNG"], notnull: 0 });
 			
             var cols = [];
             cols.push(col1);
@@ -203,7 +203,6 @@
 </div>
 <!-- container -->
 <form.checkdiag1 form="wform" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></form.checkdiag1>
-<image.editor imgobj="myimg" view="medium" targetid="myviewer" action="changeImage(myimg)" title="Image Editor and Upload"></image.editor>
 
 <div id="mytips" wliu-popup></div>
 <div id="tabwait" wliu-load></div>

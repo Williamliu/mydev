@@ -37,9 +37,9 @@
 
 		<!-- wliu components -->
 		<script src="js/wliu/wliu.common.js" type="text/javascript"></script>
-		<script src="js/wliu/wliu.image.js" type="text/javascript"></script>
+		<script src="js/wliu/wliu.file.js" type="text/javascript"></script>
 		<script src="js/wliu/wliu.table.common.js" type="text/javascript"></script>
-		<script	src="angularjs/wliu/wliu.image.js" type="text/javascript"></script>
+		<script	src="angularjs/wliu/wliu.file.js" type="text/javascript"></script>
 	
 		<script src="jquery/wliu/diag/wliu.jquery.diag.js" type="text/javascript"></script>
 		<link 	href='jquery/wliu/diag/wliu.jquery.diag.css' type='text/css' rel='stylesheet' />
@@ -55,22 +55,22 @@
 
 
         <script language="javascript" type="text/javascript">
-		    var imgList = new WLIU.IMAGELIST({
-				url:   		"ajax/images_action.php",
+		    var fileList = new WLIU.FILELIST({
+				url:   		"ajax/files_action.php",
 				wait:   	"#tabwait",
-				errorShow: 	"#imgError",
+				errorShow: 	"#fileError",
 				infoEditor: "#textEditor",
 				imgViewer: 	"#imgView",
 				imgEditor:  "#imgEdit"
 			});
 
-            var app = angular.module("myApp", ["wliuImage"]);
+            var app = angular.module("myApp", ["wliuFile"]);
             app.controller("myForm", function ($scope) {
-				imgList.setScope($scope, "imglist");
+				fileList.setScope($scope, "filelist");
 		    });
 
 			$(function(){
-				imgList.getRecord({key1:1, key2:10});
+				fileList.getRecord({key1:1});
 			})
 		</script>
 </head>
@@ -78,14 +78,11 @@
 <!-- container -->
 <div class="container">
 	<br>
-	<image.list imglist="imglist" view=1 ww=160 hh=160></image.list>
-	<div style="display:block; width:400px; overflow-x:auto; white-space:nowrap;">
-	</div>
+	<file.list filelist="filelist"></file.list>
+
 	<div id="tabwait" wliu-load></div>
-	<image.error imglist="imglist" targetid="imgError"></image.error>
-	<image.info imglist="imglist" targetid="textEditor"></image.info>
-	<image.viewer imglist="imglist" targetid="imgView"></image.viewer>
-	<image.editor imglist="imglist" targetid="imgEdit" ww=400 hh=400></image.editor>
+	<file.info filelist="filelist" targetid="textEditor"></file.info>
+	<file.error filelist="filelist" targetid="fileError"></file.error>
 	
 </div>
 

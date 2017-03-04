@@ -2655,7 +2655,7 @@ class cIMAGE {
 		$images["filter"][$colName] = $colVal;
 	}
 	static public function getImages($db, &$images ) {
-		$query_config 		= "SELECT scope, max_length, max_size, access, key1, key2, key3 FROM wliu_config WHERE scope = '" . $images["config"]["scope"] . "'";
+		$query_config 		= "SELECT scope, allow_type, max_length, max_size, access, key1, key2, key3 FROM wliu_config WHERE scope = '" . $images["config"]["scope"] . "'";
 		if(!$db->exists($query_config)) {
 			$images["errorCode"] 		= 1;
 			$images["errorMessage"] 	= "Invalid Access Images";
@@ -2665,6 +2665,7 @@ class cIMAGE {
 			$result_config 		= $db->query($query_config);
 			$row_config 		= $db->fetch($result_config);
 			$images["config"]["scope"]   		= $row_config["scope"];
+			$images["config"]["allow_type"]   	= $row_config["allow_type"];
 			$images["config"]["max_length"]   	= $row_config["max_length"]?$row_config["max_length"]:0;
 			$images["config"]["max_size"]   	= $row_config["max_size"];
 			$images["config"]["access"]   		= $row_config["access"];
@@ -2875,6 +2876,229 @@ class cIMAGE {
 			$db->update("wliu_images", $imgObj["id"], $fields);
 		}
 		unset($images["config"]);
+		return;
+	}
+}
+
+class cFILE {
+	static public function action($db, &$files ) {
+		switch( $files["action"] ) {
+			case "get":
+				cFILE::getFiles($db, $files);
+				break;
+			case "savetext":
+				cFILE::saveText($db, $files);
+				break;
+			case "print":
+				cFILE::printFile($db, $files);
+				break;
+			case "delete":
+				cFILE::deleteFile($db, $files);
+				break;
+			case "add":
+				cFILE::addFile($db, $files);
+				break;
+		}
+	}
+	static public function config(&$files, $scope="", $ownerid="", $mode="list") {
+		$files["config"]["access"] 	= 1;
+		$files["config"]["scope"] 		= $scope;
+		$files["config"]["owner_id"] 	= $ownerid;
+		$files["config"]["mode"] 		= $mode;
+	}
+	static public function filter(&$files, $colName, $colVal) {
+		$files["filter"][$colName] = $colVal;
+	}
+	static public function getFiles($db, &$files ) {
+		$query_config 		= "SELECT scope, allow_type, max_length, max_size, access, key1, key2, key3 FROM wliu_config WHERE scope = '" . $files["config"]["scope"] . "'";
+		if(!$db->exists($query_config)) {
+			$files["errorCode"] 	= 1;
+			$files["errorMessage"] 	= "Invalid Access Files";
+			$files["rows"] 			= array();
+			return;
+		} else {
+			$result_config 		= $db->query($query_config);
+			$row_config 		= $db->fetch($result_config);
+			$files["config"]["scope"]   	= $row_config["scope"];
+			$files["config"]["allow_type"]  = $row_config["allow_type"];
+			$files["config"]["max_length"]  = $row_config["max_length"]?$row_config["max_length"]:0;
+			$files["config"]["max_size"]   	= $row_config["max_size"];
+			$files["config"]["access"]   	= $row_config["access"];
+			$files["config"]["key1"]   		= $row_config["key1"];
+			$files["config"]["key2"]   		= $row_config["key2"];
+			$files["config"]["key3"]   		= $row_config["key3"];
+
+			$criteria = "deleted=0";
+			if($files["config"]["access"]) {
+				if( $files["config"]["owner_id"] ) {
+					$ccc_owner = "owner_id='" . $files["config"]["owner_id"] . "'";
+				} else {
+					$ccc_owner = "1=0";
+				}
+				cTYPE::join($criteria, " AND ", $ccc_owner);
+			} 
+
+			if($files["config"]["key1"] ) 	cTYPE::join($criteria, " AND ", "key1='" . $files["keys"]["key1"] . "'");
+			if($files["config"]["key2"] ) 	cTYPE::join($criteria, " AND ", "key2='" . $files["keys"]["key2"] . "'");
+			if($files["config"]["key3"] ) 	cTYPE::join($criteria, " AND ", "key3='" . $files["keys"]["key3"] . "'");
+			foreach( $files["filter"] as $colName=>$colVal ) {
+				cTYPE::join($criteria, " AND ", $colName . "='" . $colVal . "'");
+			}
+			$orderBy = "ORDER BY orderno ASC, last_updated DESC";
+			$limit = "LIMIT 0," . $files["config"]["max_length"];
+			$query 	= "SELECT id, scope, key1, key2, key3, title_en, title_cn, detail_en, detail_cn, full_name, short_name, ext_name, mime_type, main, orderno, status, rowsn, token FROM wliu_files WHERE $criteria $orderBy $limit";
+			if(DEBUG) $files["query"] = $query;
+			$result 		= $db->query($query);
+			$rows   		= $db->rows($result);
+			$files["rows"] 	= $rows;
+
+			unset($files["config"]["access"]);
+			unset($files["config"]["owner_id"]);
+			unset($files["filter"]);
+			return;
+		}
+	}
+	static public function addFile($db, &$files ) {
+		if( $files["config"]["mode"]=="edit" ) {		
+			$query_config 		= "SELECT scope, allow_type, max_length, max_size, access, key1, key2, key3 FROM wliu_config WHERE scope = '" . $files["config"]["scope"] . "'";
+			if(!$db->exists($query_config)) {
+				$files["errorCode"] 		= 1;
+				$files["errorMessage"] 	= "Invalid Access Files";
+				$files["rows"] = array();
+				return;
+			} else {
+				$result_config 		= $db->query($query_config);
+				$row_config 		= $db->fetch($result_config);
+				$files["config"]["scope"]   		= $row_config["scope"];
+				$files["config"]["access"]   		= $row_config["access"];
+				
+				$files["scope"] 	= $files["config"]["scope"];
+				$files["access"] 	= $files["config"]["access"];
+			
+				$fields = array();
+				$fields["scope"]		= $files["scope"];
+				$fields["owner_id"] 	= $files["config"]["owner_id"];
+				$fields["access"] 		= $files["access"];
+				$fields["key1"] 		= $files["key1"];
+				$fields["key2"] 		= $files["key2"];
+				$fields["key3"] 		= $files["key3"];
+				$fields["full_name"] 	= $files["full_name"];
+				$fields["short_name"] 	= $files["short_name"];
+				$fields["ext_name"] 	= $files["ext_name"];
+				$fields["mime_type"] 	= $files["mime_type"];
+				$fields["orderno"] 		= $files["orderno"];
+				$fields["status"] 		= $files["status"];
+				$fields["rowsn"] 		= $files["rowsn"];
+				$fields["token"] 		= $files["token"];
+				$fields["data"] 		= $files["data"];
+				$fields["created_time"] = time();
+				$fields["last_updated"] = time();
+				$files["id"] = $db->insert("wliu_files", $fields);
+				unset($files["config"]);
+				unset($files["filter"]);
+				return;
+			}
+		} else {
+			$files["errorCode"] 		= 1;
+			$files["errorMessage"] 		= "Files are not allow to edited in list mode";
+			$files["rows"] = array();
+			return;
+		}
+	}
+	static public function saveText($db, &$files ) {
+		if( $files["config"]["mode"]=="edit" ) {		
+			$query_file 		= "SELECT * FROM wliu_files WHERE id = '" . $files["id"] . "'";
+			if(!$db->exists($query_file)) {
+				$files["errorCode"] 		= 1;
+				$files["errorMessage"] 	= "Invalid Access Files";
+				unset($files["config"]);
+				return;
+			} else {
+				$result_file 	= $db->query($query_file);
+				$row_file 		= $db->fetch($result_file);
+				if( $files["config"]["scope"] == $row_file["scope"] && $files["config"]["owner_id"] == $row_file["owner_id"]  )  {
+					$fields = array();
+					$fields["title_en"] 	= $files["title_en"];
+					$fields["title_cn"] 	= $files["title_cn"];
+					$fields["detail_en"] 	= $files["detail_en"];
+					$fields["detail_cn"] 	= $files["detail_cn"];
+					$fields["orderno"] 		= $files["orderno"];
+					$fields["status"] 		= $files["status"];
+					$fields["last_updated"] = time();
+					$db->update("wliu_files", $files["id"], $fields);
+				} else {
+					$files["errorCode"] 		= 1;
+					$files["errorMessage"] 	= "Invalid Access Files";
+				}
+				unset($files["config"]);
+				return;
+			}
+		} else {
+			$files["errorCode"] 		= 1;
+			$files["errorMessage"] 	= "Files are not allow to edited in list mode";
+			$files["rows"] = array();
+			return;
+		}
+	}
+	static public function printFile($db, &$files ) {
+		if( $files["config"]["mode"]=="edit" ) {		
+			$query_file 		= "SELECT * FROM wliu_files WHERE id = '" . $files["id"] . "'";
+			$result_file 	= $db->query($query_file);
+			$row_file 		= $db->fetch($result_file);
+			if( $files["config"]["scope"] == $row_file["scope"] ) {
+				if($files["config"]["access"] == 1 ) {
+					if( $files["config"]["owner_id"] == $row_file["owner_id"] ) {
+						$result_data = $db->query("SELECT data FROM wliu_files WHERE deleted=0 AND id='". $files["id"] . "'");
+						$row_data = $db->fetch($result_data);
+						$files["data"] = $row_data["data"];
+					} else {
+						$files["errorCode"] 		= 1;
+						$files["errorMessage"] 	= "Invalid Access Files";
+					}
+				} else {
+					$result_data = $db->query("SELECT data FROM wliu_files WHERE deleted=0 AND id='". $files["id"] . "'");
+					$row_data = $db->fetch($result_data);
+					$files["data"] = $row_data["data"];
+				}
+			} else {
+				$files["errorCode"] 		= 1;
+				$files["errorMessage"] 	= "Invalid Access Files";
+			}
+			unset($files["config"]);
+			return;
+		} else {
+			$files["errorCode"] 	= 1;
+			$files["errorMessage"] 	= "Files are not allow to print";
+			return;
+		}
+	}
+
+	static public function deleteFile($db, &$files ) {
+		if( $files["config"]["mode"]=="edit" ) {		
+			$query_file 		= "SELECT * FROM wliu_files WHERE id = '" . $files["id"] . "'";
+			$result_file 	= $db->query($query_file);
+			$row_file 		= $db->fetch($result_file);
+			if( $files["config"]["scope"] == $row_file["scope"] && $files["config"]["owner_id"] == $row_file["owner_id"]  )  {
+				$db->detach("wliu_files", $files["id"]);
+			} else {
+				$files["errorCode"] 		= 1;
+				$files["errorMessage"] 	= "Invalid Access Files";
+			}
+			unset($files["config"]);
+			return;
+		} else {
+			$files["errorCode"] 		= 1;
+			$files["errorMessage"] 	= "Files are not allow to edited in list mode";
+			return;
+		}
+	}
+	static public function saveOrder($db, &$files ) {
+		foreach($files["rows"] as $fileObj) {
+			$fields = array();
+			$fields["orderno"] 	= $fileObj["sn"];
+			$db->update("wliu_images", $fileObj["id"], $fields);
+		}
+		unset($files["config"]);
 		return;
 	}
 }
