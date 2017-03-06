@@ -8,14 +8,31 @@
         dot_flag = false;
 
     var x = "black",
-        y = 2;
+        y = 8;
     
     function init() {
         canvas = document.getElementById('can');
         ctx = canvas.getContext("2d");
         w = canvas.width;
         h = canvas.height;
-    
+        var img = new Image();
+        img.src = "cat.png";
+        ctx.drawImage(img,0,0, canvas.width, canvas.height);
+
+ctx.font="20px Georgia";
+ctx.fillText("Print Name: William Liu",2,50);
+
+ctx.font="30px Verdana";
+// Create gradient
+var gradient=ctx.createLinearGradient(0,0,canvas.width,0);
+gradient.addColorStop("0","magenta");
+gradient.addColorStop("0.5","blue");
+gradient.addColorStop("1.0","red");
+// Fill with gradient
+ctx.fillStyle=gradient;
+ctx.fillText("Big smile!",10,90); 
+
+
         canvas.addEventListener("mousemove", function (e) {
             findxy('move', e)
         }, false);
