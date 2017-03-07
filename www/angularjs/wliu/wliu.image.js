@@ -657,3 +657,64 @@ wliu_image.directive("image.error", function () {
         }
     }
 });
+
+
+wliu_image.directive("image.esign", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:          "=",  // table of form is ok;
+            name:           "@",
+            rowsn:          "@",
+            targetid:       "@",
+            ww:             "@",
+            hh:             "@"
+        },
+        template: [
+                        '<div id="{{targetid}}" wliu-diag maskable fade>',
+                            '<div wliu-diag-body>',
+                                '<span style="display:block;color:blue;">Please Sign Your Name</span>',
+                                '<canvas id="can" width="{{ww}}" height={{hh}} style="border:2px solid #666666;"></canvas>',
+                                '<div style="text-align:center;">',
+                                    '<button ng-click="save()" title="Save" class="btn btn-lg btn-outline-success waves-effect" ',
+                                            'style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                            ' Confirm',
+                                    '</button>',
+                                    '<button ng-click="clear()" title="Close" class="btn btn-lg btn-outline-danger waves-effect" ',
+                                            'style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                            ' Clear',
+                                    '</button>',
+                                    '<button ng-click="cancel()" title="Close" class="btn btn-lg btn-outline-info waves-effect" ',
+                                            'style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                            ' Cancel',
+                                    '</button>',
+                                '</div>',
+                            '</div>',
+                        '</div>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.ww = $scope.ww?$scope.ww:640;
+            $scope.hh = $scope.hh?$scope.hh:480;
+
+            $scope.save  = function() {
+                $scope.mycan.save();
+            }
+            $scope.clear = function() {
+              $scope.mycan.clear();  
+            }
+            $scope.cancel = function() {
+                $scope.clear();
+                $("#" + $scope.targetid).trigger("hide");
+            }
+
+        },
+        link: function (sc, el, attr) {
+            $(function(){
+                $(el).wliuDiag();
+                sc.mycan = new WLIU.CANVAS({ canvas: $("canvas", el).get(0) });
+                sc.mycan.init();
+            });
+        }
+    }
+});

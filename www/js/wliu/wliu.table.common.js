@@ -2023,6 +2023,96 @@ WLIU.IMAGEACTION.prototype = {
 	
 }
 
+WLIU.CANVAS = function(opts) {
+	this.flag 	= false;
+	this.prevX 	= 0,
+	this.currX 	= 0,
+	this.prevY 	= 0,
+	this.currY 	= 0,
+	this.dot_flag = false;
+	this.lineColor 	= "black";
+	this.lineWidth 	= 4;
+	this.font 		= "14px Georgia";
+
+	this.canvas = opts.canvas?opts.canvas:document.createElement("canvas");
+	this.ctx 	= this.canvas.getContext("2d");
+	return this;
+}
+WLIU.CANVAS.prototype = {
+	init: function() {
+		this.addCanvasEvent();
+	},
+	addCanvasEvent: function() {
+		var _self = this;
+		this.canvas.addEventListener("mousemove", function (e) {
+			_self.findxy('move', e);
+		}, false);
+		this.canvas.addEventListener("mousedown", function (e) {
+			_self.findxy('down', e);
+		}, false);
+		this.canvas.addEventListener("mouseup", function (e) {
+			_self.findxy('up', e);
+		}, false);
+		this.canvas.addEventListener("mouseout", function (e) {
+			_self.findxy('out', e);
+		}, false);
+	},
+	drawText: function(text, x, y) {
+		this.ctx.font = this.font;
+		this.ctx.fillText(text, x, y);
+	},
+	drawLine: function() {
+		this.ctx.beginPath();
+		this.ctx.moveTo(this.prevX, this.prevY);
+		this.ctx.lineTo(this.currX, this.currY);
+		this.ctx.strokeStyle 	= this.lineColor;
+		this.ctx.lineWidth 		= this.lineWidth;
+		this.ctx.stroke();
+		this.ctx.closePath();
+	},
+	getDataUrl : function() {
+		this.drawText("DateTime: " + (new Date()).toString(), 2,16);
+		this.drawText("Print Name: William Liu", 2, this.canvas.height-2);
+		return this.canvas.toDataURL();
+	},
+	clear:	function() {
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	},
+    findxy: function(res, e) {
+		switch(res) {
+			case "down":
+				this.prevX = this.currX;
+				this.prevY = this.currY;
+				this.currX = e.offsetX;
+				this.currY = e.offsetY;
+		
+				this.flag = true;
+				this.dot_flag = true;
+				if (this.dot_flag) {
+					this.ctx.beginPath();
+					this.ctx.fillStyle = this.lineColor;
+					this.ctx.fillRect(this.currX, this.currY, 2, 2);
+					this.ctx.closePath();
+					dot_flag = false;
+				}
+				break;
+			case "up":
+			case "out":
+				this.flag = false;
+				break;
+			case "move":
+				if(this.flag) {
+					this.prevX = this.currX;
+					this.prevY = this.currY;
+					this.currX = e.offsetX;
+					this.currY = e.offsetY;
+					this.drawLine();
+				}
+				break;
+		}
+	}     
+}
+
 var FCOLLECT = new WLIU.COLLECTION();
 var FOBJECT  = new WLIU.OBJECT();
 var	FROW     = new WLIU.ROWACTION();

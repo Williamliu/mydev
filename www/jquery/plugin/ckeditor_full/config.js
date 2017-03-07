@@ -14,12 +14,13 @@ CKEDITOR.editorConfig = function (config) {
 		{ name: 'styles', groups: [ 'styles' ] }
 	];
 
+	//config.removeButtons = 'Form,Checkbox,Radio,TextField,Select,Button,ImageButton,Textarea,HiddenField,Image,Flash,Iframe';   
 	config.removeButtons = 'Form,Checkbox,Radio,TextField,Select,Button,ImageButton,Textarea,HiddenField,Image,Flash,Iframe';   
     
     config.enterMode = CKEDITOR.ENTER_BR;
     config.shiftEnterMode = CKEDITOR.ENTER_BR;
     config.height = 360;
-    config.extraPlugins = "base64image";
+    config.extraPlugins = "base64image,imagepaste";
     //config.extraPlugins = "imagepaste";
 };
 
