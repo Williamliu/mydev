@@ -228,7 +228,6 @@ wliu_form.directive("form.fileupload", function () {
     }
 });
 
-
 wliu_form.directive("form.imgupload", function () {
     return {
         restrict: "E",
@@ -736,7 +735,7 @@ wliu_form.directive("form.esign", function () {
                         '<br ng-if="form.getCol(name, rowsn).errorCode">',
                         '<div ng-click="showEsign()" style="display:inline-block;position:relative;min-width:{{minww}}px;min-height:{{minhh}}px;border:1px solid #cccccc;" class="wliu-background-11" >',
                             '<div style="display:table;">',
-                            '<div style="display:table-cell;vertical-align:middle;text-align:center;width:{{minww}}px;height:{{minhh}}px;">',
+                            '<div style="display:table-cell;vertical-align:middle;text-align:center;width:{{minww}}px;height:{{minhh}}px;" class="esign-content" targetid="{{esignDivid}}">',
                                 '<img class="img-responsive" width="100%" onload="imageAutoFix(this)" ww={{minww}} hh={{minhh}} src="{{form.getCol(name, rowsn).value?form.getCol(name, rowsn).value:\'\'}}" />',
                             '</div>',
                             '<input type="hidden" scope="{{ form.scope }}" title="" ',
@@ -758,9 +757,13 @@ wliu_form.directive("form.esign", function () {
                                     //        'style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
                                     //        ' Clear',
                                     //'</button>',
-                                    '<button ng-click="cancel()" title="Close" class="btn btn-lg btn-outline-warning waves-effect" ',
+                                    '<button ng-click="cancel()" title="Be careful. clear signature" class="btn btn-lg btn-outline-danger waves-effect" ',
                                             'style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
-                                            ' Clear',
+                                            ' Clear Signature',
+                                    '</button>',
+                                    '<button ng-click="close()" title="Close" class="btn btn-lg btn-outline-info waves-effect pull-right" ',
+                                            'style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                            ' Close',
                                     '</button>',
                                 '</div>',
                             '</div>',
@@ -788,7 +791,7 @@ wliu_form.directive("form.esign", function () {
                     if($scope.form.getCol($scope.firstname, $scope.rowsn) )
                         $scope.esign_canvas.firstName = $scope.form.getCol($scope.firstname, $scope.rowsn).value;
     
-                    if($scope.form.getCol($scope.lastName, $scope.rowsn) )
+                    if($scope.form.getCol($scope.lastname, $scope.rowsn) )
                         $scope.esign_canvas.lastName = $scope.form.getCol($scope.lastname, $scope.rowsn).value;
                     
                     $scope.form.getCol($scope.name, $scope.rowsn).value = $scope.esign_canvas.getDataUrl();
@@ -803,11 +806,14 @@ wliu_form.directive("form.esign", function () {
                 $scope.esign_canvas.clear();  
                 //$($scope.esignDiv).trigger("hide");
             }
+            $scope.close = function() {
+                $($scope.esignDiv).trigger("hide");
+            }
         },
         link: function (sc, el, attr) {
             $(function(){
                 $("body > div[esign-diag][disposable]").each(function(el_idx, el_esign) {
-                    if( $("a.esign-button[targetid='" + $(el_esign).attr("id") + "']").length<=0 ) $(el_esign).remove();
+                    if( $("div.esign-content[targetid='" + $(el_esign).attr("id") + "']").length<=0 ) $(el_esign).remove();
                 });
                 $("body>" + sc.esignDiv).remove();
                 $(sc.esignDiv).appendTo("body");

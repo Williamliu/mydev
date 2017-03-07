@@ -951,6 +951,122 @@ wliu_table.directive("table.imgupload1", function () {
     }
 });
 
+wliu_table.directive("table.esign", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            name:       "@",
+            rowsn:      "@",
+            subject:    "@",
+            firstname:  "@",
+            lastname:   "@",
+            ww:         "@",
+            hh:         "@",
+            minww:      "@",
+            minhh:      "@",
+            tooltip:    "@"
+        },
+        template: [
+                    '<span>',
+                        '<span style="font-size:16px;font-weight:bold;color:red;" ng-if="table.getCol(name, rowsn).errorCode">{{table.getCol(name, rowsn).errorMessage}}</span>',
+                        '<br ng-if="table.getCol(name, rowsn).errorCode">',
+                        '<div ng-click="showEsign()" style="display:inline-block;position:relative;min-width:{{minww}}px;min-height:{{minhh}}px;border:1px solid #cccccc;" class="wliu-background-11" >',
+                            '<div style="display:table;">',
+                            '<div style="display:table-cell;vertical-align:middle;text-align:center;width:{{minww}}px;height:{{minhh}}px;" class="esign-content" targetid="{{esignDivid}}">',
+                                '<img class="img-responsive" width="100%" onload="imageAutoFix(this)" ww={{minww}} hh={{minhh}} src="{{table.getCol(name, rowsn).value?table.getCol(name, rowsn).value:\'\'}}" />',
+                            '</div>',
+                            '<input type="hidden" scope="{{ table.scope }}" title="" ',
+                                'ng-model="table.getCol(name, rowsn).value" ',
+                                'ng-change="table.changeCol(name, rowsn)" ',
+                                'ng-disabled="table.getCol(name, rowsn)==undefined" ',
+                            '/>',
+                        '</div>',
+                        '<div id="{{esignDivid}}" wliu-diag maskable fade esign-diag disposable>',
+                            '<div wliu-diag-body>',
+                                '<span style="display:block;color:blue;">Please use mouse or touch screen pen to sign your name:</span>',
+                                '<canvas id="can" width="{{ww}}" height={{hh}} style="border:2px solid #666666;"></canvas>',
+                                '<div style="text-align:center;">',
+                                    '<button ng-click="save()" title="Save" class="btn btn-lg btn-outline-success waves-effect" ',
+                                            'style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                            ' Confirm',
+                                    '</button>',
+                                    //'<button ng-click="clear()" title="Close" class="btn btn-lg btn-outline-danger waves-effect" ',
+                                    //        'style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                    //        ' Clear',
+                                    //'</button>',
+                                    '<button ng-click="cancel()" title="Be careful. clear signature!" class="btn btn-lg btn-outline-danger waves-effect" ',
+                                            'style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                            ' Clear Signature',
+                                    '</button>',
+                                    '<button ng-click="close()" title="Close" class="btn btn-lg btn-outline-info waves-effect pull-right" ',
+                                            'style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                            ' Close',
+                                    '</button>',
+                                '</div>',
+                            '</div>',
+                        '</div>',
+                    '<span>',
+                ].join(''),
+        controller: function ($scope) {
+            $scope.ww = $scope.ww?$scope.ww:640;
+            $scope.hh = $scope.hh?$scope.hh:320;
+            $scope.minww  = $scope.minww?$scope.minww:"100";
+            $scope.minhh  = $scope.minhh?$scope.minhh:"50";
+
+            $scope.esignDivid  = $scope.table.scope + "_" + $scope.name + "_" + guid();
+            $scope.esignDiv    = "#" + $scope.esignDivid; 
+            
+            $scope.showEsign = function() {
+                FIMAGE.image2Canvas($scope.esign_canvas.ctx, $scope.table.getCol($scope.name, $scope.rowsn).value);
+                $($scope.esignDiv).trigger("show");
+            }
+
+            $scope.save  = function() {
+                if( $scope.esign_canvas.signed ) {
+                    $scope.esign_canvas.subject = $scope.subject;
+                    
+                    if($scope.table.getCol($scope.firstname, $scope.rowsn) )
+                        $scope.esign_canvas.firstName = $scope.table.getCol($scope.firstname, $scope.rowsn).value;
+    
+                    if($scope.table.getCol($scope.lastname, $scope.rowsn) )
+                        $scope.esign_canvas.lastName = $scope.table.getCol($scope.lastname, $scope.rowsn).value;
+                    
+                    $scope.table.getCol($scope.name, $scope.rowsn).value = $scope.esign_canvas.getDataUrl();
+                    $scope.table.changeCol($scope.name, $scope.rowsn);
+                    $scope.esign_canvas.clear();  
+                }
+                $($scope.esignDiv).trigger("hide");
+            }
+            $scope.cancel = function() {
+                $scope.table.getCol($scope.name, $scope.rowsn).value = "";
+                $scope.table.changeCol($scope.name, $scope.rowsn);
+                $scope.esign_canvas.clear();  
+                //$($scope.esignDiv).trigger("hide");
+            }
+            $scope.close = function() {
+                $($scope.esignDiv).trigger("hide");
+            }
+        },
+        link: function (sc, el, attr) {
+            $(function(){
+                $("body > div[esign-diag][disposable]").each(function(el_idx, el_esign) {
+                    if( $("div.esign-content[targetid='" + $(el_esign).attr("id") + "']").length<=0 ) $(el_esign).remove();
+                });
+                $("body>" + sc.esignDiv).remove();
+                $(sc.esignDiv).appendTo("body");
+                $(sc.esignDiv).wliuDiag();
+
+                sc.esign_canvas = new WLIU.CANVAS({ 
+                    canvas: $("canvas", sc.esignDiv).get(0)
+                });
+                sc.esign_canvas.init();
+                
+            });
+        }
+    }
+});
 
 wliu_table.directive("table.head", function () {
     return {
@@ -1336,8 +1452,8 @@ wliu_table.directive("table.bool", function () {
                                 //'<abbr title="{{rdObj.desc}}" ng-if="rdObj.desc!=\'\'">{{ rdObj.value }}</abbr>',
                                 '{{ label.toLowerCase()=="default"?table.colMeta(name).colname:label?label:"" }}',
                             '</label>',
-                            '<br ng-if="form.getCol(name, rowsn).errorCode">',
-                            '<span style="color:red;" ng-if="form.getCol(name, rowsn).errorCode">{{form.getCol(name, rowsn).errorMessage}}</span>',
+                            '<br ng-if="table.getCol(name, rowsn).errorCode">',
+                            '<span style="color:red;" ng-if="table.getCol(name, rowsn).errorCode">{{table.getCol(name, rowsn).errorMessage}}</span>',
                     '</span>',
                 ].join(''),
         controller: function ($scope) {

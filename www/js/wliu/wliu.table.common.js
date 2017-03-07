@@ -2089,7 +2089,7 @@ WLIU.CANVAS.prototype = {
 		this.ctx.fillRect(0, this.canvas.height-20, this.canvas.width, 20);
 		this.ctx.fillStyle = this.lineColor;
 		this.drawText("Subject: " + this.subject, 2,16);
-		this.drawText("Print Name: " + this.firstName + " " + this.lastName + " [ Signed on: " + (new Date()).format("Y-m-d H:i:s") + " " + (new Date()).timezone() + " ]", 2, this.canvas.height-4);
+		this.drawText("Print Name: " + this.firstName + " " + this.lastName + " {Signed on: " + (new Date()).format("Y-m-d H:i:s") + " " + (new Date()).timezone() + "}", 2, this.canvas.height-4);
 		return this.canvas.toDataURL();
 	},
 	clear:	function() {
