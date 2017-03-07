@@ -315,6 +315,9 @@ Date.prototype.format = function(format) {
     return returnStr;
 };
 
+Date.prototype.timezone = function() {
+	return this.getTimezoneOffset()>=0?"+" + (this.getTimezoneOffset()/60):"-" + ( Math.abs(this.getTimezoneOffset())/60);
+};
 
 Date.replaceChars = {
     shortMonths: 	['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],

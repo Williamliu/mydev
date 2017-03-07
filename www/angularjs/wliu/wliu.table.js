@@ -1336,7 +1336,8 @@ wliu_table.directive("table.bool", function () {
                                 //'<abbr title="{{rdObj.desc}}" ng-if="rdObj.desc!=\'\'">{{ rdObj.value }}</abbr>',
                                 '{{ label.toLowerCase()=="default"?table.colMeta(name).colname:label?label:"" }}',
                             '</label>',
-
+                            '<br ng-if="form.getCol(name, rowsn).errorCode">',
+                            '<span style="color:red;" ng-if="form.getCol(name, rowsn).errorCode">{{form.getCol(name, rowsn).errorMessage}}</span>',
                     '</span>',
                 ].join(''),
         controller: function ($scope) {

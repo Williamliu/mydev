@@ -65,9 +65,9 @@
 			var col7 = new WLIU.COL({key:0, coltype:"select", 		name:"lang", 		colname:"LangISO", 		coldesc:"Language ISO Code", 	defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory"});
 		   	var col8 = new WLIU.COL({key:0, coltype:"radio", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name", 			defval: 77, notnull:1, 			list:"colorCategory"});
 		   	var col9 = new WLIU.COL({key:0, coltype:"checkbox1", 	name:"country_id",	colname:"Country ISO",  coldesc:"Country ID", list:"countryCategory"});
-		   	var col10 = new WLIU.COL({key:0, coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status"});
+		   	var col10 = new WLIU.COL({key:0, coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"please agree", need:1, notnull:1});
 		   	var col11 = new WLIU.COL({key:0, coltype:"upload", 		name:"img1", 		colname:"ID Copy", 		view:"large", 	maxlength:1024*1024, allowtype:["JPG"], notnull: 0 });
-		   	var col12 = new WLIU.COL({key:0, coltype:"upload", 	name:"img2",  		colname:"Your Photo",   view: "large",  maxlength:40*1024, allowtype:["PNG"], notnull: 0 });
+		   	var col12 = new WLIU.COL({key:0, coltype:"upload", 		name:"img2",  		colname:"Your Signature",   view: "large",  notnull: 1 });
 			
             var cols = [];
             cols.push(col1);
@@ -192,7 +192,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<form.esign form="wform" rowsn="0" name="img2"></form.esign>
+				<form.esign form="wform" subject="Investmenst Privacy Policy" firstname="uuu" rowsn="0" name="img2"></form.esign>
 				<!-- 
 					<form.imgupload form="wform" rowsn="0" name="img2" icon=1 actname="Upload" ww=200 vw=400 view="large"  filename="ID Copy Agreement"></form.imgupload>
 					<form.ckinline form="wform" rowsn="0" name="img2" minhh=260></form.ckinline>

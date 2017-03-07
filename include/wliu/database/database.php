@@ -2591,10 +2591,26 @@ class cVALIDATE {
 							case "radio2":
 							case "radio3":
 								$theCol["value"]=intval($theCol["value"])?intval($theCol["value"]):0;
+								if($notNull) {
+									if($theCol["value"]) {
+										$table["success"] 				= 0;
+										$theRow["error"]["errorCode"] 	= 1;
+										$theCol["errorCode"] 			= 1;  
+										$theCol["errorMessage"] 		= $theCol["coldesc"];  
+									}
+								}
 								break;
 							case "relation":
 							case "bool":
 								if(!$theCol["value"])  $theCol["value"]=0;
+  								if($notNull) {
+									if(!$theCol["value"]) {
+										$table["success"] 				= 0;
+										$theRow["error"]["errorCode"] 	= 1;
+										$theCol["errorCode"] 			= 1;  
+										$theCol["errorMessage"] 		= $theCol["coldesc"];  
+									}
+								}
 								break;
 							default:
 								break;

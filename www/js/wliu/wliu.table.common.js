@@ -1728,7 +1728,14 @@ WLIU.IMAGEACTION.prototype = {
 				return "";
 		}
 	},
-
+	image2Canvas: function( ctx, dataUrl, callback) {
+		var img = new Image();
+		img.onload = function() {
+			ctx.drawImage(img,0,0);
+			if(callback) if( $.isFunction(callback) ) callback(ctx);
+		}
+		img.src = dataUrl;
+	},
 	resizeAll: function(theImage, callback, donecall) {
 		this.doneReset();
 		this._resizeAll(theImage, callback, donecall);
@@ -2030,9 +2037,13 @@ WLIU.CANVAS = function(opts) {
 	this.prevY 	= 0,
 	this.currY 	= 0,
 	this.dot_flag = false;
+	this.signed   = false;
+	this.subject    = opts.subject?opts.subject:"";
+	this.firstName 	= opts.firstName?opts.firstName:"";
+	this.lastName  	= opts.lastName?opts.lastName:"";
 	this.lineColor 	= "black";
 	this.lineWidth 	= 4;
-	this.font 		= "14px Georgia";
+	this.font 		= "14px Arial";
 
 	this.canvas = opts.canvas?opts.canvas:document.createElement("canvas");
 	this.ctx 	= this.canvas.getContext("2d");
@@ -2040,6 +2051,7 @@ WLIU.CANVAS = function(opts) {
 }
 WLIU.CANVAS.prototype = {
 	init: function() {
+		this.signed=false;
 		this.addCanvasEvent();
 	},
 	addCanvasEvent: function() {
@@ -2048,6 +2060,7 @@ WLIU.CANVAS.prototype = {
 			_self.findxy('move', e);
 		}, false);
 		this.canvas.addEventListener("mousedown", function (e) {
+			 document.onmousewheel=stop;
 			_self.findxy('down', e);
 		}, false);
 		this.canvas.addEventListener("mouseup", function (e) {
@@ -2071,11 +2084,16 @@ WLIU.CANVAS.prototype = {
 		this.ctx.closePath();
 	},
 	getDataUrl : function() {
-		this.drawText("DateTime: " + (new Date()).toString(), 2,16);
-		this.drawText("Print Name: William Liu", 2, this.canvas.height-2);
+		this.ctx.fillStyle = "white";
+		this.ctx.fillRect(0, 0, this.canvas.width, 20);
+		this.ctx.fillRect(0, this.canvas.height-20, this.canvas.width, 20);
+		this.ctx.fillStyle = this.lineColor;
+		this.drawText("Subject: " + this.subject, 2,16);
+		this.drawText("Print Name: " + this.firstName + " " + this.lastName + " [ Signed on: " + (new Date()).format("Y-m-d H:i:s") + " " + (new Date()).timezone() + " ]", 2, this.canvas.height-4);
 		return this.canvas.toDataURL();
 	},
 	clear:	function() {
+		this.signed = false;
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	},
     findxy: function(res, e) {
@@ -2086,6 +2104,7 @@ WLIU.CANVAS.prototype = {
 				this.currX = e.offsetX;
 				this.currY = e.offsetY;
 		
+				this.signed = true;
 				this.flag = true;
 				this.dot_flag = true;
 				if (this.dot_flag) {
@@ -2098,7 +2117,7 @@ WLIU.CANVAS.prototype = {
 				break;
 			case "up":
 			case "out":
-				this.flag = false;
+				this.flag 	= false;
 				break;
 			case "move":
 				if(this.flag) {
