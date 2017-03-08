@@ -114,7 +114,7 @@ wliu_image.directive("image.list", function () {
         template: [
                     '<div style="display:block;position:relative;padding:2px;" imglist targetid="{{targetid}}" viewerid="{{viewerid}}">',
                         '<!---- img box ------------------------------------------------------------------------------------------------>',
-                        '<div style="display:inline-block;position:relative;margin:2px 4px;border:1px solid #cccccc;border-radius:5px;overflow:hidden;" imgid="{{imgObj.id}}" class="wliu-background-1 image-item" ',
+                        '<div style="display:inline-block;position:relative;margin:2px 4px;overflow:hidden;" imgid="{{imgObj.id}}" class="image-item" ',
                                 'ng-repeat="imgObj in imglist.rows"',
                         '>',
                             '<span ng-if="imglist.config.mode==\'edit\'">',                            
@@ -141,23 +141,46 @@ wliu_image.directive("image.list", function () {
                                 '</a>',
                             '</span>',
                             '<div style="display:table;">',
-                                '<div style="display:table-cell;vertical-align:middle;text-align:center;width:{{ww}}px;height:{{hh}}px;box-sizing:content-box;" class="img-content">',
+                                '<div style="display:table-cell;vertical-align:middle;text-align:center;width:{{ww}}px;height:{{hh}}px;box-sizing:content-box;border:1px solid #cccccc;border-radius:5px;" class="img-content wliu-background-1">',
                                     '<img class="img-responsive" width="100%" ng-click="clickImage(imgObj)" onload="imageAutoFix(this)" ww="{{ww}}" hh="{{hh}}" style="cursor:pointer;" src="{{imglist.thumb($index)}}" />',
                                 '</div>',
                             '</div>',
+                            '<div style="display:block;text-align:center;width:{{ww}}px;padding-top:6px;height:16px;line-height:16px;box-sizing:content-box;font-size:14px;cursor:pointer;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;" class="image-detail-tooltips" ',
+                                 'popup-target="{{detailTips}}" popup-placement="up" popup-toggle="hover" popup-body="{{displayDetail(imgObj)}}" targetid="{{detailTipsID}}" ',
+                            '>',
+                                '{{displayTitle(imgObj)}}',
+                            '</div>',
                         '</div>',
-                        '<div ng-if="imglist.rows.length<imglist.config.max_length && imglist.config.mode==\'edit\'" style="display:inline-block;position:relative;margin:2px;width:{{ww}}px;height:{{hh}}px;line-height:{{hh}}px;text-align:center;font-size:18px;font-weight:700;color:#666666;border:1px solid #cccccc;border-radius:5px;overflow:hidden;" class="wliu-background-1">',
+
+                        '<div ng-if="imglist.rows.length<imglist.config.max_length && imglist.config.mode==\'edit\'" style="display:inline-block;position:relative;margin:2px 4px;overflow:hidden;">',
+                            '<div style="display:table;">',
+                                '<div style="display:table-cell;vertical-align:middle;text-align:center;width:{{ww}}px;height:{{hh}}px;box-sizing:content-box;border:1px solid #cccccc;border-radius:5px;font-size:18px;font-weight:700;color:#666666" class="wliu-background-1">',
                                     '<input type="file" style="display:block; position:absolute; opacity:0;top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" value="Browse..." ',
-                                            'onchange="angular.element(this).scope().selectFile(event);" />',
+                                        'onchange="angular.element(this).scope().selectFile(event);" />',
                                     'Add Image',
+                                '</div>',
+                            '</div>',
+                            '<div style="display:block;text-align:center;height:20px;">&nbsp;</div>',
                         '</div>',
                         '<!---// img box ---------------------------------------------------------------------------------------------->',
+
+                        '<div id="{{detailTipsID}}" wliu-popup image-popup disposable></div>',
                 '</div>'
                 ].join(''),
         controller: function ($scope) {
+            $scope.detailTipsID = $scope.imglist.scope + "_" + guid();
+            $scope.detailTips = "#" + $scope.detailTipsID;
+            
             $scope.ww           = $scope.ww?$scope.ww:"100";
             $scope.hh           = $scope.hh?$scope.hh:"100";
-
+            $scope.displayTitle = function(imgObj) {
+                return imgObj["title_" + $scope.imglist.lang];
+            }
+            $scope.displayDetail = function(imgObj) {
+                var detail_str = imgObj["title_" + $scope.imglist.lang]?"<center>" + imgObj["title_" + $scope.imglist.lang] + "</center>":"";
+                detail_str = detail_str.join("<hr>", imgObj["detail_" + $scope.imglist.lang]?imgObj["detail_" + $scope.imglist.lang].nl2br():"");
+                return detail_str;
+            }
             $scope.selectFile = function(event) {
                 var newImg       = new WLIU.IMAGE({rowsn: guid(), token:guid()});
                 files = (event.srcElement || event.target).files;
@@ -207,6 +230,16 @@ wliu_image.directive("image.list", function () {
         },
         link: function (sc, el, attr) {
             $(function(){
+                $("body > div[image-popup][disposable]").each(function(img_idx, img_detail) {
+                    if( $("div.image-detail-tooltips[targetid='" + $(img_detail).attr("id") + "']").length<=0 ) $(img_detail).remove();
+                });
+
+                $("body>" + sc.detailTips).remove();
+                $(sc.detailTips).appendTo("body");
+
+                $(sc.detailTips).wliuPopup({});
+             
+             
                 /*
                 $(el).sortable({
                     items: ">div.image-item",
@@ -427,28 +460,23 @@ wliu_image.directive("image.info", function () {
         template: [
                     '<div id="{{targetid}}" wliu-diag movable maskable fade>',
                         '<div wliu-diag-head>Image Information</div>',
-                        
-                        '<div wliu-diag-body style="width:400px;">',
+                        '<div wliu-diag-body border style="width:400px;">',
                             '<div class="row">',
-                                '<div class="col-md-3 text-md-right">',
-                                    '<span class="wliuCommon-label">Title-EN</span>',
-                                '</div>',
-                                '<div class="col-md-9 text-md-left">',
+                                '<div class="col-md-12">',
+                                    '<span class="wliuCommon-label">Title-EN</span><br>',
                                     '<input type="textbox" ng-model="imglist.rows[imglist.curidx].title_en" style="width:100%;" />',
-                                '</div>',
-                            '</div>',
-                            '<div class="row">',
-                                '<div class="col-md-3 text-md-right">',
-                                    '<span class="wliuCommon-label">Title-CN</span>',
-                                '</div>',
-                                '<div class="col-md-9 text-md-left">',
-                                    '<input type="textbox" ng-model="imglist.rows[imglist.curidx].title_cn" style="width:100%;" />',
                                 '</div>',
                             '</div>',
                             '<div class="row">',
                                 '<div class="col-md-12">',
                                     '<span class="wliuCommon-label">Description-EN</span><br>',
                                     '<textarea ng-model="imglist.rows[imglist.curidx].detail_en" style="width:100%;height:60px;"></textarea>',
+                                '</div>',
+                            '</div>',
+                            '<div class="row">',
+                                '<div class="col-md-12">',
+                                    '<span class="wliuCommon-label">Title-CN</span><br>',
+                                    '<input type="textbox" ng-model="imglist.rows[imglist.curidx].title_cn" style="width:100%;" />',
                                 '</div>',
                             '</div>',
                             '<div class="row">',
