@@ -425,7 +425,7 @@ WLIU.IMAGE = function( opts ) {
 		orderno:    	0,
 		status:     	0,
 		url:			"",
-		guid:	        0,  // guid for postion image in the list, for webpage layout
+		guid:	        "",  // guid for postion image in the list, for webpage layout
 		token:			"",
 
 		resize:     {
@@ -978,6 +978,9 @@ WLIU.TABLEACTION.prototype = {
 	index: function(theTable, guid) {
 		return FCOLLECT.indexByKV(theTable.rows, {guid: guid});
 	},
+	indexByRow: function(theTable, theRow) {
+		return this.index(theTable, theRow.guid);
+	},
 	indexByKeys: function(theTable, p_keys) {
 		return FCOLLECT.indexByKeys(theTable.rows, p_keys);
 	},
@@ -1015,13 +1018,13 @@ WLIU.TABLEACTION.prototype = {
 			return undefined;
 		}
 	},
-	relationHide: function(theTable, ridx, col_name) {
-		var theRow = this.getRow(theTable, ridx);
-		var theCol = this.getCol(theTable, col_name, ridx);
+	relationHide: function(theTable, theRow, col_name) {
+		var theRow = this.getRow(theTable, theRow);
+		var theCol = this.getCol(theTable, theRow, col_name);
 		return FROW.relationHide(theRow, theCol);
 	},
-	relationChange: function(theTable, ridx) {
-		var theRow = this.getRow(theTable, ridx);
+	relationChange: function(theTable, theRow) {
+		var theRow = this.getRow(theTable, theRow);
 		return FROW.relationChange(theRow);
 	},
 	getList: function(theTable, list_name) {
@@ -1111,28 +1114,28 @@ WLIU.TABLEACTION.prototype = {
 		return nfilters;
 	},
 	
-	getRow: function(theTable, ridx) {
-		return FCOLLECT.objectByIndex(theTable.rows, ridx);
+	getRow: function(theTable, theRow) {
+		return FCOLLECT.objectByKV(theTable.rows, {guid: theRow.guid});
 	},
 	getRowByKeys: function(theTable, p_keys) {
 		return FCOLLECT.objectByKeys(theTable.rows, p_keys);
 	},
-	getCol: function(theTable, col_name, ridx) {
-		var t_row = this.getRow(theTable, ridx);
+	getCol: function(theTable, theRow, col_name) {
+		var t_row = this.getRow(theTable, theRow);
 		if( t_row != undefined ) {
 			return FCOLLECT.objectByKV(t_row.cols, {name:col_name});
 		} else {
 			return undefined;
 		}
 	},
-	changeCol: function(theTable, col_name, ridx) {
-		var t_row = this.getRow(theTable, ridx);
-		var t_col = this.getCol(theTable, col_name, ridx);
+	changeCol: function(theTable, theRow, col_name) {
+		var t_row = this.getRow(theTable, theRow);
+		var t_col = this.getCol(theTable, theRow, col_name);
 		return FROW.colChange(t_row, t_col);
 	},
-	setImage: function(theTable, col_name, ridx, oImg) {
+	setImage: function(theTable, theRow, col_name, oImg) {
 		//var ridx = oImg.rowsn?oImg.rowsn:0;
-		var t_col = this.getCol(theTable, col_name, ridx);
+		var t_col = this.getCol(theTable, theRow, col_name);
 		if( t_col ) {
 			var view = "medium";
 			if(this.colMeta(theTable, col_name) && this.colMeta(theTable,col_name).view ) view = this.colMeta(theTable,col_name).view; 
@@ -1219,7 +1222,7 @@ WLIU.TABLEACTION.prototype = {
 	},
 	removeRow: function(theTable, theRow) {
 		if( theTable && theRow ) {
-			var ridx = FCOLLECT.indexByKeys(theTable.rows, theRow.keys);
+			var ridx = this.index(theTable, theRow.guid);
 			FCOLLECT.delete(theTable.rows, ridx);
 		}
 		return theRow;
@@ -1508,6 +1511,9 @@ WLIU.TABLEACTION.prototype = {
 			this.getRows(theTable);
 		}
 	},
+	firstState: function(theTable) {
+		return !theTable.navi.pageno || !theTable.navi.pagetotal || theTable.navi.pageno<=1 || theTable.navi.pagetotal<=0
+	},
 	previousPage: function(theTable) {
 		if(theTable.navi.pageno<=0){
 			theTable.navi.pageno=1;
@@ -1517,6 +1523,9 @@ WLIU.TABLEACTION.prototype = {
 			theTable.navi.pageno--;
 			this.getRows(theTable);
 		}
+	},
+	previousState: function(theTable) {
+		return !theTable.navi.pageno || !theTable.navi.pagetotal || theTable.navi.pageno<=1 || theTable.navi.pagetotal<=0
 	},
 	nextPage: function(theTable) {
 		if(theTable.navi.pagetotal<=0) theTable.navi.pageno=0;
@@ -1529,6 +1538,9 @@ WLIU.TABLEACTION.prototype = {
 			this.getRows(theTable);
 		}
 	},
+	nextState: function(theTable) {
+		return !theTable.navi.pageno || !theTable.navi.pagetotal || theTable.navi.pageno>=theTable.navi.pagetotal || theTable.navi.pagetotal<=0
+	},
 	lastPage: function(theTable) {
 		if(theTable.navi.pagetotal<=0) theTable.navi.pageno=0;
 		if(theTable.navi.pageno!=theTable.navi.pagetotal){
@@ -1536,6 +1548,9 @@ WLIU.TABLEACTION.prototype = {
 			this.getRows(theTable);
 		}
 	},	
+	lastState: function(theTable) {
+		return !theTable.navi.pageno || !theTable.navi.pagetotal || theTable.navi.pageno>=theTable.navi.pagetotal || theTable.navi.pagetotal<=0;
+	},
 	nextRecord: function(theTable) {
 		this.rowno(theTable, theTable.rowno() + 1 );
 	},
@@ -2046,7 +2061,7 @@ WLIU.CANVAS = function(opts) {
 	this.firstName 	= opts.firstName?opts.firstName:"";
 	this.lastName  	= opts.lastName?opts.lastName:"";
 	this.lineColor 	= "black";
-	this.lineWidth 	= 4;
+	this.lineWidth 	= 6;
 	this.font 		= "14px Arial";
 
 	this.canvas = opts.canvas?opts.canvas:document.createElement("canvas");
@@ -2082,6 +2097,7 @@ WLIU.CANVAS.prototype = {
 		this.ctx.beginPath();
 		this.ctx.moveTo(this.prevX, this.prevY);
 		this.ctx.lineTo(this.currX, this.currY);
+		//this.ctx.lineJoin 		= "round";
 		this.ctx.strokeStyle 	= this.lineColor;
 		this.ctx.lineWidth 		= this.lineWidth;
 		this.ctx.stroke();

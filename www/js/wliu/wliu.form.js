@@ -13,6 +13,7 @@ WLIU.FORM = function( opts ) {
 	this.taberror 	= opts.taberror?opts.taberror:"";
 	this.autotip 	= opts.autotip?opts.autotip:"";
 	
+	this.current    = "";
 	this._rowno 	= -1; // private for rowno
 	this.action		= "get";
 	this.error		= {errorCode:0, errorMessage:""};  // table level error : action rights 

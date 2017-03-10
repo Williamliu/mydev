@@ -13,6 +13,7 @@ WLIU.TABLE = function( opts ) {
 	this.taberror 	= opts.taberror?opts.taberror:"";
 	this.autotip 	= opts.autotip?opts.autotip:"";
 	
+	this.current    = ""; // row guid
 	this._rowno 	= -1; // private for rowno
 	this.action		= "get";
 	this.error		= {errorCode:0, errorMessage:""};  // table level error : action rights 
@@ -41,7 +42,12 @@ WLIU.TABLE.prototype = {
 		}
 		this.sc = p_scope;
 	},
-
+	index:  function(guid) {
+		return FTABLE.index(this, guid);
+	},
+	indexByRow: function(theRow) {
+		return FTABLE.indexByRow(this, theRow);
+	},
 	rowstate: function(theRow, p_rowstate) {
 		return FROW.rowstate(theRow, p_rowstate);
 	},
@@ -66,11 +72,11 @@ WLIU.TABLE.prototype = {
 	},
 
 	/*** relationship */
-	relationHide: function(ridx, col_name) {
-		return FTABLE.relationHide(this, ridx, col_name);
+	relationHide: function(theRow, col_name) {
+		return FTABLE.relationHide(this, theRow, col_name);
 	},
-	relationChange: function(ridx) {
-		return FTABLE.relationChange(this, ridx); 
+	relationChange: function(theRow) {
+		return FTABLE.relationChange(this, theRow); 
 	},
 	/******************/
 
@@ -89,16 +95,16 @@ WLIU.TABLE.prototype = {
     
 
 	// get row object
-	getRow: function(ridx) {
-		return FTABLE.getRow(this, ridx);
+	getRow: function(theRow) {
+		return FTABLE.getRow(this, theRow);
 	},
 	getRowByKeys: function(p_keys) {
 		return FTABLE.getRowByKeys(this, p_keys);
 	},
 	
 	// return rows[ridx].cols[index of col_name]
-	getCol: function(col_name, ridx) {
-		return FTABLE.getCol(this, col_name, ridx);
+	getCol: function(theRow, col_name) {
+		return FTABLE.getCol(this, theRow, col_name);
 	},
 	/********************************************** */
 
@@ -116,11 +122,11 @@ WLIU.TABLE.prototype = {
 	/************************************/
 
 	/*** event for external call ***/
-	changeCol: function(col_name, ridx) {
-		return FTABLE.changeCol(this, col_name, ridx);
+	changeCol: function(theRow, col_name) {
+		return FTABLE.changeCol(this, theRow, col_name);
 	},
-	setImage: function(col_name, ridx, oImg) {
-		return FTABLE.setImage(this, col_name, ridx, oImg);
+	setImage: function(theRow, col_name, oImg) {
+		return FTABLE.setImage(this, theRow, col_name, oImg);
 	},
 
 	// ; ridx;  nrow;  ridx nrow ;  default position=0  add to first
@@ -186,17 +192,28 @@ WLIU.TABLE.prototype = {
 
 	// Navigation
 	firstPage: function() {
-		console.log(this.rows);
 		FTABLE.firstPage(this);
+	},
+	firstState: function() {
+		return FTABLE.firstState(this);
 	},
 	previousPage: function() {
 		FTABLE.previousPage(this);
 	},
+	previousState: function() {
+		return FTABLE.previousState(this);
+	},
 	nextPage: function() {
 		FTABLE.nextPage(this);
 	},
-	lastPage: function() {
+	nextState: function() {
+		return FTABLE.nextState(this);
+	},
+ 	lastPage: function() {
 		FTABLE.lastPage(this);
+	},
+	lastState: function() {
+		return FTABLE.lastState(this);
 	},	
 	nextRecord: function() {
 		FTABLE.nextRecord(this);
