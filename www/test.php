@@ -63,3 +63,6 @@ $a = array("aaa", "ddd");
 $b = array("ccc","aaa");
 print_r( array_merge($a, $b) );
 ?>
+
+<script>
+</script>

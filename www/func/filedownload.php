@@ -5,10 +5,10 @@ include_once($CFG["include_path"] . "/wliu/database/database.php");
 try {
 	$db = new cMYSQL($CFG["image"]["host"], $CFG["image"]["user"], $CFG["image"]["pwd"], $CFG["image"]["database"]);
 	$token 	= $db->quote($_REQUEST["token"]);
-	$rowsn 	= $db->quote($_REQUEST["sn"]);
+	$guid 	= $db->quote($_REQUEST["sn"]);
 	$id 	= $db->quote($_REQUEST["id"]);
 
-	$query = "SELECT full_name, mime_type, data FROM wliu_files WHERE deleted=0 AND id='" . $id . "' AND rowsn='" . $rowsn . "' AND token='" . $token . "'";
+	$query = "SELECT full_name, mime_type, data FROM wliu_files WHERE deleted=0 AND id='" . $id . "' AND guid='" . $guid . "' AND token='" . $token . "'";
 	if( $db->exists($query) ) {
 		$result=$db->query($query);
 		$row=$db->fetch($result);

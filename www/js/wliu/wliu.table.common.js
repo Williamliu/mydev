@@ -298,6 +298,7 @@ WLIU.COL = function(opts) {
 }
 WLIU.ROW = function( cols, nameValues, scope ) {
 	if( scope == undefined ) scope = "";
+	this.guid			= guid();
 	this.scope			= scope;
 	this.keys 			= {};
 	this.rowstate 		= 2;  //default is new row;   0 - normal; 1 - changed;  2 - added;  3 - deleted
@@ -365,7 +366,6 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 WLIU.FILE = function( opts ) {
 	this.file 		= {
 		sn:             0,  	// sn for image array index
-		rowsn:	        "",  	// rowsn for list GUID , for webpage layout
 		errorCode:		0, 
 		errorMessage:	"",
 		scope: 			"",
@@ -391,6 +391,7 @@ WLIU.FILE = function( opts ) {
 		status:     	0,
 		url:			"",
 		data:       	"",
+		guid:	        "",  	// guid for position file in the list,  webpage layout
 		token:			""
 	};
 	$.extend(this.file, opts);
@@ -399,7 +400,6 @@ WLIU.FILE = function( opts ) {
 WLIU.IMAGE = function( opts ) {
 	this.image 		= {
 		sn:             0,  // sn for image array index
-		rowsn:	        0,  // rowsn for list GUID , for webpage layout
 		errorCode:		0, 
 		errorMessage:	"",
 		scope: 			"",
@@ -425,6 +425,7 @@ WLIU.IMAGE = function( opts ) {
 		orderno:    	0,
 		status:     	0,
 		url:			"",
+		guid:	        0,  // guid for postion image in the list, for webpage layout
 		token:			"",
 
 		resize:     {
@@ -974,6 +975,9 @@ WLIU.ROWACTION.prototype = {
 
 WLIU.TABLEACTION = function(){}
 WLIU.TABLEACTION.prototype = {
+	index: function(theTable, guid) {
+		return FCOLLECT.indexByKV(theTable.rows, {guid: guid});
+	},
 	indexByKeys: function(theTable, p_keys) {
 		return FCOLLECT.indexByKeys(theTable.rows, p_keys);
 	},
@@ -1573,25 +1577,25 @@ WLIU.FILEACTION.prototype = {
 		}
 	},
     exportFile: function(theFile) {
-		window.open(theFile.data);
+		if(theFile.data) window.open(theFile.data);
 	},
 	exportBlob: function(blob) {
 		this._readBlob(blob, function(dataURL){
-			window.open(dataURL);
+			if(dataURL) window.open(dataURL);
 		});
 	},
 	exportDataURL: function(dataURL) {
-		window.open(dataURL);
+		if(dataURL) window.open(dataURL);
 	},
 	//data:MimeType;base64, + base64_str
 	exportBase64: function( base64_str, mimeType) {
 		if( mimeType )
-			window.open(this.toBase64(base64_str, mimeType));
+			if(base64_str) window.open(this.toBase64(base64_str, mimeType));
 		else 
-			window.open(base64_str);
+			if(base64_str) window.open(base64_str);
 	},
 	exportHTML: function(html) {
-		this.exportDataURL( this._string2DataURL(html, "text/html") );
+		if(html) this.exportDataURL( this._string2DataURL(html, "text/html") );
 	},
 
 	/*** private methods ***/
@@ -1703,7 +1707,7 @@ WLIU.IMAGEACTION.prototype = {
 	},
 	exportImage: function(theImage, rsize) {
 		var base64_data = this.imageData(theImage,rsize);
-		if( base64_data != "" ) FFILE.exportDataURL(base64_data);
+		FFILE.exportDataURL(base64_data);
 	},
 	clearImage: function(theImage) {
 		theImage = new WLIU.IMAGE();

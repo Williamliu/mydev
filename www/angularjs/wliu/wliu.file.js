@@ -50,11 +50,10 @@ wliu_file.directive("file.list", function () {
             $scope.namemax      = $scope.namemax?parseInt($scope.namemax):20;
 
             $scope.selectFile = function(event) {
-                var newFile       = new WLIU.FILE({rowsn: guid(), token:guid()});
+                var newFile       = new WLIU.FILE({guid: guid(), token:guid()});
                 files = (event.srcElement || event.target).files;
                 FFILE.allowSize = parseInt($scope.filelist.config.max_size)>0 && ($scope.filelist.config.max_size)<GCONFIG.max_upload_size?parseInt($scope.filelist.config.max_size):GCONFIG.max_upload_size;
                 FFILE.allowType = (""+$scope.filelist.config.allow_type).toArray(",","upper");
-                console.log(FFILE.allowType);
                 FFILE.fromFile(newFile, files[0], function(fObj){
                     if(fObj.errorCode) {
                         alert(fObj.errorMessage);
@@ -64,21 +63,18 @@ wliu_file.directive("file.list", function () {
                 });
             }
             $scope.printFile = function(fileObj) {
-                var rowidx = FCOLLECT.indexByKV( $scope.filelist.rows, {id: fileObj.id});
-                $scope.filelist.printFile(rowidx, function(oFile){
+                $scope.filelist.printFile(fileObj, function(oFile){
                     if( oFile.data ) FFILE.exportDataURL(oFile.data);
                 });
             }
             $scope.textFile = function(fileObj) {
-                var rowidx = FCOLLECT.indexByKV( $scope.filelist.rows, {id: fileObj.id});
-                $scope.filelist.curidx = rowidx;
-                $scope.filelist.rows[rowidx].status=$scope.filelist.rows[rowidx].status=="1"?true:false;
+                $scope.filelist.current = fileObj.guid;
+                fileObj.status=fileObj.status=="1"?true:false;
                 $($scope.filelist.infoEditor).trigger("show");
             }
             $scope.deleteFile = function(fileObj) {
-                var rowidx = FCOLLECT.indexByKV( $scope.filelist.rows, {id: fileObj.id});
                 if( confirm("Delete file, are you sure?") )
-                    $scope.filelist.deleteFile(rowidx);
+                    $scope.filelist.deleteFile(fileObj);
             }
         },
         link: function (sc, el, attr) {
@@ -119,7 +115,7 @@ wliu_file.directive("file.info", function () {
                                     '<span class="wliuCommon-label">Title-EN</span>',
                                 '</div>',
                                 '<div class="col-md-9 text-md-left">',
-                                    '<input type="textbox" ng-model="filelist.rows[filelist.curidx].title_en" style="width:100%;" />',
+                                    '<input type="textbox" ng-model="filelist.getCurrent().title_en" style="width:100%;" />',
                                 '</div>',
                             '</div>',
                             '<div class="row">',
@@ -127,19 +123,19 @@ wliu_file.directive("file.info", function () {
                                     '<span class="wliuCommon-label">Title-CN</span>',
                                 '</div>',
                                 '<div class="col-md-9 text-md-left">',
-                                    '<input type="textbox" ng-model="filelist.rows[filelist.curidx].title_cn" style="width:100%;" />',
+                                    '<input type="textbox" ng-model="filelist.getCurrent().title_cn" style="width:100%;" />',
                                 '</div>',
                             '</div>',
                             '<div class="row">',
                                 '<div class="col-md-12">',
                                     '<span class="wliuCommon-label">Description-EN</span><br>',
-                                    '<textarea ng-model="filelist.rows[filelist.curidx].detail_en" style="width:100%;height:60px;"></textarea>',
+                                    '<textarea ng-model="filelist.getCurrent().detail_en" style="width:100%;height:60px;"></textarea>',
                                 '</div>',
                             '</div>',
                             '<div class="row">',
                                 '<div class="col-md-12">',
                                     '<span class="wliuCommon-label">Description-CN</span><br>',
-                                    '<textarea ng-model="filelist.rows[filelist.curidx].detail_cn" style="width:100%;height:60px;"></textarea>',
+                                    '<textarea ng-model="filelist.getCurrent().detail_cn" style="width:100%;height:60px;"></textarea>',
                                 '</div>',
                             '</div>',
                             '<div class="row">',
@@ -147,18 +143,18 @@ wliu_file.directive("file.info", function () {
                                     '<span class="wliuCommon-label">Status</span>',
                                 '</div>',
                                 '<div class="col-md-4 text-md-left">',
-                                    '<input id="{{targetid}}_status" type="checkbox" ng-model="filelist.rows[filelist.curidx].status" /> <label for="{{targetid}}_status">Active</label>',
+                                    '<input id="{{targetid}}_status" type="checkbox" ng-model="filelist.getCurrent().status" /> <label for="{{targetid}}_status">Active</label>',
                                 '</div>',
                                 '<div class="col-md-4 text-md-right">',
                                     '<span class="wliuCommon-label">Order</span>',
                                 '</div>',
                                 '<div class="col-md-2 text-md-left">',
-                                    '<input type="textbox" ng-model="filelist.rows[filelist.curidx].orderno" style="width:100%;text-align:center;" />',
+                                    '<input type="textbox" ng-model="filelist.getCurrent().orderno" style="width:100%;text-align:center;" />',
                                 '</div>',
                             '</div>',
 
                             '<center>',
-                                '<button ng-click="save(filelist.curidx)" title="Save" class="btn btn-lg btn-outline-success waves-effect" ',
+                                '<button ng-click="save()" title="Save" class="btn btn-lg btn-outline-success waves-effect" ',
                                         'style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
                                         ' Save',
                                 '</button>',
@@ -174,7 +170,7 @@ wliu_file.directive("file.info", function () {
         controller: function ($scope) {
             $scope.save = function(rowidx) {
                 //var rowidx = FCOLLECT.indexByKV( $scope.filelist.rows, {id: imgObj.id});
-                $scope.filelist.saveText(rowidx, { ajaxAfter:
+                $scope.filelist.saveText($scope.filelist.getCurrent(), { ajaxAfter:
                     function(ofiles){
                        $("#" + $scope.targetid).trigger("hide"); 
                     }

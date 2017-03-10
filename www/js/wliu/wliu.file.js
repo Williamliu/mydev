@@ -17,7 +17,7 @@ WLIU.FILELIST = function( opts ) {
 						max_length: 0,
 						max_size: 	0
 	};
-	this.curidx 		= -1;
+	this.current 		= "";
 	this.errorCode  	= 0;
 	this.errorMessage 	= "";  // files level error 
 	this.rows 			= [];
@@ -33,19 +33,42 @@ WLIU.FILELIST.prototype = {
 		}
 		this.sc = p_scope;
 	},
-	saveText: function(rowidx, callback) {
-		if( this.rows[rowidx] ) {
+	index: function(guid) {
+		return FCOLLECT.indexByKV(this.rows, {guid:guid});
+	},
+	currentIndex: function() {
+		var curImg = this.getCurrent();
+		if(curImg) 
+			return this.index(curImg.guid);
+		else 
+			return -1;
+	},
+	getFile: function(guid) {
+		var rowidx = this.index(guid);
+		if(rowidx>=0 && rowidx < this.rows.length) {
+			return this.rows[rowidx];
+		} else {
+			return undefined;
+		}
+	},
+	getCurrent: function() {
+		return this.getFile(this.current);
+	},
+
+	saveText: function(oFile, callback) {
+		if( oFile ) {
 			this.errorCode 		= 0;
 			this.errorMessage 	= "";
 			var nfile = {};
-			nfile.id 			= this.rows[rowidx].id;
-			nfile.scope 		= this.rows[rowidx].scope;
-			nfile.title_en 	= this.rows[rowidx].title_en;
-			nfile.title_cn 	= this.rows[rowidx].title_cn;
-			nfile.detail_en 	= this.rows[rowidx].detail_en;
-			nfile.detail_cn 	= this.rows[rowidx].detail_cn;
-			nfile.orderno 		= this.rows[rowidx].orderno;
-			nfile.status 		= this.rows[rowidx].status?1:0;
+			nfile.id 			= oFile.id;
+			nfile.guid 			= oFile.guid;
+			nfile.scope 		= oFile.scope;
+			nfile.title_en 		= oFile.title_en;
+			nfile.title_cn 		= oFile.title_cn;
+			nfile.detail_en 	= oFile.detail_en;
+			nfile.detail_cn 	= oFile.detail_cn;
+			nfile.orderno 		= oFile.orderno;
+			nfile.status 		= oFile.status?1:0;
 			nfile.action 		= "savetext";
 			nfile.errorCode 	= this.errorCode;
 			nfile.errorMessage = this.errorMessage;
@@ -54,39 +77,41 @@ WLIU.FILELIST.prototype = {
 			return false;
 		}
 	},
-	printFile: function( rowidx, callback ) {
+	printFile: function( oFile, callback ) {
 		var _self = this;
-		if( this.rows[rowidx] ) {
-			if( this.rows[rowidx].data ) {
-				callback(this.rows[rowidx]);
+		if( oFile ) {
+			if( oFile.data ) {
+				callback(oFile);
 			} else {
 				this.errorCode 		= 0;
 				this.errorMessage 	= "";
 				var nfiles = {};
 				nfiles.action 		= "print";
-				nfiles.id 			= this.rows[rowidx].id;
-				nfiles.scope 		= this.rows[rowidx].scope;
+				nfiles.id 			= oFile.id;
+				nfiles.guid			= oFile.guid;
+				nfiles.scope 		= oFile.scope;
 				nfiles.errorCode 	= this.errorCode;
 				nfiles.errorMessage = this.errorMessage;
 				this.ajaxCall(nfiles, {
-					ajaxSuccess: function(ofiles) {
-						_self.rows[rowidx].data = ofiles.data;
+					ajaxSuccess: function(rfile) {
+						oFile.data = rfile.data;
 						_self.sc.$apply();
-						if(callback) if($.isFunction(callback)) callback(ofiles);
+						if(callback) if($.isFunction(callback)) callback(rfile);
 					}
 				})
 			}
 		}
 	},
-	deleteFile: function( rowidx ) {
+	deleteFile: function( oFile ) {
 		var _self = this;
-		if( this.rows[rowidx] ) {
+		if( oFile ) {
 			this.errorCode 		= 0;
 			this.errorMessage 	= "";
 			var nfiles = {};
 			nfiles.action 		= "delete";
-			nfiles.id 			= this.rows[rowidx].id;
-			nfiles.scope 		= this.rows[rowidx].scope;
+			nfiles.id 			= oFile.id;
+			nfiles.guid 		= oFile.guid;
+			nfiles.scope 		= oFile.scope;
 			nfiles.errorCode 	= this.errorCode;
 			nfiles.errorMessage = this.errorMessage;
 			this.ajaxCall(nfiles, {
@@ -127,7 +152,7 @@ WLIU.FILELIST.prototype = {
 		nfiles.status 		= fileObj.status;
 		nfiles.orderno 		= fileObj.orderno;
 		nfiles.data 		= fileObj.data;
-		nfiles.rowsn 		= fileObj.rowsn;
+		nfiles.guid 		= fileObj.guid;
 		nfiles.token 		= fileObj.token;
 		nfiles.errorCode  	= this.errorCode;
 		nfiles.errorMessage = this.errorMessage;

@@ -44,7 +44,6 @@ wliu_image.directive("image.pickup", function () {
     }
 });
 
-
 wliu_image.directive("image.upload", function () {
     return {
         restrict: "E",
@@ -109,6 +108,7 @@ wliu_image.directive("image.list", function () {
             ww:             "@",
             hh:             "@",  // only for ratio
             view:           "@",  // only for show or hide , not for "image resize type"
+            text:           "@",
             tooltip:        "@"
         },
         template: [
@@ -142,10 +142,10 @@ wliu_image.directive("image.list", function () {
                             '</span>',
                             '<div style="display:table;">',
                                 '<div style="display:table-cell;vertical-align:middle;text-align:center;width:{{ww}}px;height:{{hh}}px;box-sizing:content-box;border:1px solid #cccccc;border-radius:5px;" class="img-content wliu-background-1">',
-                                    '<img class="img-responsive" width="100%" ng-click="clickImage(imgObj)" onload="imageAutoFix(this)" ww="{{ww}}" hh="{{hh}}" style="cursor:pointer;" src="{{imglist.thumb($index)}}" />',
+                                    '<img class="img-responsive" width="100%" ng-click="clickImage(imgObj)" onload="imageAutoFix(this)" ww="{{ww}}" hh="{{hh}}" style="cursor:pointer;" src="{{imglist.thumbImageData(imgObj)}}" />',
                                 '</div>',
                             '</div>',
-                            '<div style="display:block;text-align:center;width:{{ww}}px;padding-top:6px;height:16px;line-height:16px;box-sizing:content-box;font-size:14px;cursor:pointer;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;" class="image-detail-tooltips" ',
+                            '<div ng-if="text" style="display:block;text-align:center;width:{{ww}}px;padding-top:6px;height:16px;line-height:16px;box-sizing:content-box;font-size:14px;cursor:pointer;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;" class="image-detail-tooltips" ',
                                  'popup-target="{{detailTips}}" popup-placement="up" popup-toggle="hover" popup-body="{{displayDetail(imgObj)}}" targetid="{{detailTipsID}}" ',
                             '>',
                                 '{{displayTitle(imgObj)}}',
@@ -160,11 +160,11 @@ wliu_image.directive("image.list", function () {
                                     'Add Image',
                                 '</div>',
                             '</div>',
-                            '<div style="display:block;text-align:center;height:20px;">&nbsp;</div>',
+                            '<div ng-if="text" style="display:block;text-align:center;height:20px;">&nbsp;</div>',
                         '</div>',
                         '<!---// img box ---------------------------------------------------------------------------------------------->',
 
-                        '<div id="{{detailTipsID}}" wliu-popup image-popup disposable></div>',
+                        '<div ng-if="text" id="{{detailTipsID}}" wliu-popup image-popup disposable></div>',
                 '</div>'
                 ].join(''),
         controller: function ($scope) {
@@ -182,10 +182,12 @@ wliu_image.directive("image.list", function () {
                 return detail_str;
             }
             $scope.selectFile = function(event) {
-                var newImg       = new WLIU.IMAGE({rowsn: guid(), token:guid()});
+                var newImg       = new WLIU.IMAGE({guid: guid(), token:guid()});
                 files = (event.srcElement || event.target).files;
+                
                 var view = $scope.imglist.config.thumb?$scope.imglist.config.thumb:"tiny";
                 FIMAGE.view = view;
+                
                 FIMAGE.allowSize = parseInt($scope.imglist.config.max_size)>0 && ($scope.imglist.config.max_size)<GCONFIG.max_upload_size?parseInt($scope.imglist.config.max_size):GCONFIG.max_upload_size;
                 FIMAGE.allowType = (""+$scope.imglist.config.allow_type).toArray(",","upper");
                 FIMAGE.fromFile(newImg, files[0], null, function(fObj){
@@ -198,34 +200,26 @@ wliu_image.directive("image.list", function () {
             }
             
             $scope.printImage = function(imgObj) {
-                var rowidx = FCOLLECT.indexByKV( $scope.imglist.rows, {id: imgObj.id});
-                if( $scope.imglist.view(rowidx)!="" ) {
-                    FFILE.exportDataURL($scope.imglist.view(rowidx));
-                } 
+                FFILE.exportDataURL( $scope.imglist.viewImageData(imgObj) );
             }
             $scope.clickImage = function(imgObj) {
                 if( $scope.view ) {
+                    $scope.imglist.current = imgObj.guid;
                     if($scope.imglist.config.mode=="edit") {
-                        var rowidx = FCOLLECT.indexByKV( $scope.imglist.rows, {id: imgObj.id});
-                        $scope.imglist.curidx = rowidx;
                         $($scope.imglist.imgEditor).trigger("ishow");
                     } else {
-                        var rowidx = FCOLLECT.indexByKV( $scope.imglist.rows, {id: imgObj.id});
-                        $scope.imglist.curidx = rowidx;
                         $($scope.imglist.imgViewer).trigger("ishow");
                     }
                 }
             }
             $scope.textImage = function(imgObj) {
-                var rowidx = FCOLLECT.indexByKV( $scope.imglist.rows, {id: imgObj.id});
-                $scope.imglist.curidx = rowidx;
-                $scope.imglist.rows[rowidx].status=$scope.imglist.rows[rowidx].status=="1"?true:false;
+                $scope.imglist.current = imgObj.guid;
+                imgObj.status=imgObj.status=="1"?true:false;
                 $($scope.imglist.infoEditor).trigger("show");
             }
             $scope.deleteImage = function(imgObj) {
-                var rowidx = FCOLLECT.indexByKV( $scope.imglist.rows, {id: imgObj.id});
                 if( confirm("Delete image, are you sure?") )
-                    $scope.imglist.deleteImage(rowidx);
+                    $scope.imglist.deleteImage(imgObj);
             }
         },
         link: function (sc, el, attr) {
@@ -275,13 +269,13 @@ wliu_image.directive("image.editor", function () {
                         '<div wliu-diag-head>{{title}}</div>',
                         '<div wliu-diag-body>',
                             
-                            '<div ng-if="imglist.rows[imglist.curidx].errorCode">',
-                                '{{imglist.rows[imglist.curidx].errorMessage}}',
+                            '<div ng-if="imglist.getCurrent().errorCode">',
+                                '{{imglist.getCurrent().errorMessage}}',
                             '</div>',
-                            '<div ng-if="!imglist.rows[imglist.curidx].errorCode">',
+                            '<div ng-if="!imglist.getCurrent().errorCode">',
                                 '<div style="min-height:300px;">',
                                     '<div class="wliu-image-frame" style="position:relative;">',
-                                        '<img class="img-responsive" width="100%" ww="{{ww}}" hh="{{hh}}" style="cursor:pointer;" src="{{ imglist.view(imglist.curidx) }}" />',
+                                        '<img class="img-responsive" width="100%" ww="{{ww}}" hh="{{hh}}" style="cursor:pointer;" src="{{ imglist.currentViewData() }}" />',
                                         '<div class="wliu-image-crop">',
                                             '<div class="wliu-image-crop-h"></div>',
                                             '<div class="wliu-image-crop-v"></div>',
@@ -290,19 +284,19 @@ wliu_image.directive("image.editor", function () {
                                 '</div>',
                                 '<div style="text-align:center;">',
 
-                                    '<button ng-click="reset()" title="Restore Image" class="btn btn-outline-success waves-effect pull-right {{ imglist.view(imglist.curidx)?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                    '<button ng-click="reset()" title="Restore Image" class="btn btn-outline-success waves-effect pull-right {{ imglist.currentViewData()?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
                                     '<a class="wliu-btn16 wliu-btn16-restore"></a>',
                                     ' Reset</button>',
 
-                                    '<button ng-click="crop()" title="Crop Image" class="btn btn-outline-primary waves-effect pull-right {{ imglist.view(imglist.curidx)?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                    '<button ng-click="crop()" title="Crop Image" class="btn btn-outline-primary waves-effect pull-right {{ imglist.currentViewData()?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
                                     '<a class="wliu-btn16 wliu-btn16-crop"></a>',
                                     ' Crop</button>',
 
-                                    '<button ng-click="rotate()" title="Rotate Image" class="btn btn-outline-primary waves-effect pull-right {{ imglist.view(imglist.curidx)?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                    '<button ng-click="rotate()" title="Rotate Image" class="btn btn-outline-primary waves-effect pull-right {{ imglist.currentViewData()?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
                                     '<a class="wliu-btn16 wliu-btn16-rotate-right"></a>',
                                     ' Rotate</button>',
 
-                                    '<button ng-click="save()" title="Upload Image" class="btn btn-outline-secondary pull-left waves-effect {{ imglist.view(imglist.curidx)?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
+                                    '<button ng-click="save()" title="Upload Image" class="btn btn-outline-secondary pull-left waves-effect {{ imglist.currentViewData()?\'\':\'disabled\' }}" style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
                                     '<a class="wliu-btn16 wliu-btn16-okey"></a>',
                                     ' Save</button>',
                                     /*
@@ -323,8 +317,7 @@ wliu_image.directive("image.editor", function () {
             $scope.rotate = function() {
                 var view = $scope.imglist.config.view?$scope.imglist.config.view:"medium";
                 FIMAGE.view = view;
-                FIMAGE.rotate($scope.imglist.rows[$scope.imglist.curidx], null, function(oImg){
-                    console.log("here");
+                FIMAGE.rotate($scope.imglist.getCurrent(), null, function(oImg){
                     $scope.$apply();
                     $scope.imglist.sc.$apply();
                     $("#"+$scope.targetid).trigger("ishow");
@@ -334,7 +327,7 @@ wliu_image.directive("image.editor", function () {
             $scope.crop = function() {
                 var view = $scope.imglist.config.view?$scope.imglist.config.view:"medium";
                 FIMAGE.view = view;
-                FIMAGE.cropDiv($scope.imglist.rows[$scope.imglist.curidx], $("div.wliu-image-frame", "#" + $scope.targetid), $("div.wliu-image-crop", "#" + $scope.targetid), null, function(oImg){
+                FIMAGE.cropDiv($scope.imglist.getCurrent(), $("div.wliu-image-frame", "#" + $scope.targetid), $("div.wliu-image-crop", "#" + $scope.targetid), null, function(oImg){
                     $scope.$apply();
                     $scope.imglist.sc.$apply();
                     $("#"+$scope.targetid).trigger("ishow");
@@ -344,7 +337,7 @@ wliu_image.directive("image.editor", function () {
             $scope.reset = function() {
                 var view = $scope.imglist.config.view?$scope.imglist.config.view:"medium";
                 FIMAGE.view = view;
-                FIMAGE.cropReset($scope.imglist.rows[$scope.imglist.curidx], null, function(oImg){
+                FIMAGE.cropReset($scope.imglist.getCurrent(), null, function(oImg){
                     $scope.$apply();
                     $scope.imglist.sc.$apply();
                     $("#"+$scope.targetid).trigger("ishow");
@@ -352,7 +345,7 @@ wliu_image.directive("image.editor", function () {
             }
 
             $scope.save = function() {
-                $scope.imglist.saveImage($scope.imglist.rows[$scope.imglist.curidx], function(){
+                $scope.imglist.saveImage($scope.imglist.getCurrent(), function(){
                     $("#" + $scope.targetid).trigger("hide");
                 });
             }
@@ -464,25 +457,25 @@ wliu_image.directive("image.info", function () {
                             '<div class="row">',
                                 '<div class="col-md-12">',
                                     '<span class="wliuCommon-label">Title-EN</span><br>',
-                                    '<input type="textbox" ng-model="imglist.rows[imglist.curidx].title_en" style="width:100%;" />',
+                                    '<input type="textbox" ng-model="imglist.getCurrent().title_en" style="width:100%;" />',
                                 '</div>',
                             '</div>',
                             '<div class="row">',
                                 '<div class="col-md-12">',
                                     '<span class="wliuCommon-label">Description-EN</span><br>',
-                                    '<textarea ng-model="imglist.rows[imglist.curidx].detail_en" style="width:100%;height:60px;"></textarea>',
+                                    '<textarea ng-model="imglist.getCurrent().detail_en" style="width:100%;height:60px;"></textarea>',
                                 '</div>',
                             '</div>',
                             '<div class="row">',
                                 '<div class="col-md-12">',
                                     '<span class="wliuCommon-label">Title-CN</span><br>',
-                                    '<input type="textbox" ng-model="imglist.rows[imglist.curidx].title_cn" style="width:100%;" />',
+                                    '<input type="textbox" ng-model="imglist.getCurrent().title_cn" style="width:100%;" />',
                                 '</div>',
                             '</div>',
                             '<div class="row">',
                                 '<div class="col-md-12">',
                                     '<span class="wliuCommon-label">Description-CN</span><br>',
-                                    '<textarea ng-model="imglist.rows[imglist.curidx].detail_cn" style="width:100%;height:60px;"></textarea>',
+                                    '<textarea ng-model="imglist.getCurrent().detail_cn" style="width:100%;height:60px;"></textarea>',
                                 '</div>',
                             '</div>',
                             '<div class="row">',
@@ -490,18 +483,18 @@ wliu_image.directive("image.info", function () {
                                     '<span class="wliuCommon-label">Status</span>',
                                 '</div>',
                                 '<div class="col-md-4 text-md-left">',
-                                    '<input id="{{targetid}}_status" type="checkbox" ng-model="imglist.rows[imglist.curidx].status" /> <label for="{{targetid}}_status">Active</label>',
+                                    '<input id="{{targetid}}_status" type="checkbox" ng-model="imglist.getCurrent().status" /> <label for="{{targetid}}_status">Active</label>',
                                 '</div>',
                                 '<div class="col-md-4 text-md-right">',
                                     '<span class="wliuCommon-label">Order</span>',
                                 '</div>',
                                 '<div class="col-md-2 text-md-left">',
-                                    '<input type="textbox" ng-model="imglist.rows[imglist.curidx].orderno" style="width:100%;text-align:center;" />',
+                                    '<input type="textbox" ng-model="imglist.getCurrent().orderno" style="width:100%;text-align:center;" />',
                                 '</div>',
                             '</div>',
 
                             '<center>',
-                                '<button ng-click="save(imglist.curidx)" title="Save" class="btn btn-lg btn-outline-success waves-effect" ',
+                                '<button ng-click="save()" title="Save" class="btn btn-lg btn-outline-success waves-effect" ',
                                         'style="display:inline-block;position:relative;text-transform:none;height:20px;line-height:20px;padding:2px 8px;margin:0px 2px;">',
                                         ' Save',
                                 '</button>',
@@ -515,10 +508,10 @@ wliu_image.directive("image.info", function () {
                     '</div>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.save = function(rowidx) {
+            $scope.save = function() {
                 //var rowidx = FCOLLECT.indexByKV( $scope.imglist.rows, {id: imgObj.id});
-                $scope.imglist.saveText(rowidx, { ajaxAfter:
-                    function(imgs){
+                $scope.imglist.saveText( $scope.imglist.getCurrent(), { ajaxAfter:
+                    function(oImg){
                        $("#" + $scope.targetid).trigger("hide"); 
                     }
                 });
@@ -547,33 +540,25 @@ wliu_image.directive("image.viewer", function () {
         },
         template: [
                         '<div id="{{targetid}}" wliu-diag maskable fade>',
-                            '<a class="wliu-btn24 wliu-btn24-nav-left" ng-click="navLeft()" ng-show="leftShow()" style="position:absolute;left:2px;opacity:0.6;top:45%;z-index:99;"></a>',
+                            '<a class="wliu-btn24 wliu-btn24-nav-left" ng-click="navLeft()" ng-show="imglist.navLeftState()" style="position:absolute;left:2px;opacity:0.6;top:45%;z-index:99;"></a>',
                             '<div wliu-diag-body style="text-align:center;">',
-                                    '<img class="img-responsive" width="100%" ww="{{ww}}" hh="{{hh}}" src="{{imglist.view(imglist.curidx)}}" />',
+                                    '<img class="img-responsive" width="100%" ww="{{ww}}" hh="{{hh}}" src="{{imglist.currentViewData()}}" />',
                             '</div>',
-                            '<a class="wliu-btn24 wliu-btn24-nav-right" ng-click="navRight()" ng-show="rightShow()" style="position:absolute;right:2px;opacity:0.6;top:45%;z-index:99;"></a>',
+                            '<a class="wliu-btn24 wliu-btn24-nav-right" ng-click="navRight()" ng-show="imglist.navRightState()" style="position:absolute;right:2px;opacity:0.6;top:45%;z-index:99;"></a>',
                         '</div>'
                 ].join(''),
         controller: function ($scope) {
             $scope.ww = $scope.ww?$scope.ww:600;
             $scope.hh = $scope.hh?$scope.hh:600;
-            $scope.leftShow = function() {
-                if($scope.imglist.rows.length <= 1) return false; 
-                if($scope.imglist.curidx == 0) return false; 
-                return true;
-            }
-            $scope.rightShow = function() {
-                if($scope.imglist.rows.length <= 1) return false; 
-                if($scope.imglist.curidx >= $scope.imglist.rows.length -1 ) return false; 
-                return true;
-            }
             $scope.navLeft = function() {
-                if($scope.imglist.curidx>0) $scope.imglist.curidx--;
-                $("#" + $scope.targetid).trigger("ishow");
+                $scope.imglist.navLeft( function(oImg) {
+                    $("#" + $scope.targetid).trigger("ishow");
+                });
             }
             $scope.navRight = function() {
-                if($scope.imglist.curidx<$scope.imglist.rows.length-1) $scope.imglist.curidx++;
-                $("#" + $scope.targetid).trigger("ishow");
+                $scope.imglist.navRight( function(oImg) {
+                    $("#" + $scope.targetid).trigger("ishow");
+                });
             }
 
         },
@@ -694,7 +679,6 @@ wliu_image.directive("image.esign", function () {
         scope: {
             table:          "=",  // table of form is ok;
             name:           "@",
-            rowsn:          "@",
             targetid:       "@",
             ww:             "@",
             hh:             "@"
