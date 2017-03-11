@@ -2592,11 +2592,11 @@ class cVALIDATE {
 							case "radio3":
 								$theCol["value"]=intval($theCol["value"])?intval($theCol["value"]):0;
 								if($notNull) {
-									if($theCol["value"]) {
+									if(!$theCol["value"]) {
 										$table["success"] 				= 0;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= $theCol["coldesc"];  
+										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
 									}
 								}
 								break;

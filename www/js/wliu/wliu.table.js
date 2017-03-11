@@ -66,7 +66,9 @@ WLIU.TABLE.prototype = {
 	colDefault: function(col_name, p_value) {
 		return FTABLE.colDefault(this, col_name, p_value);
 	},
-
+	colList: function(col_name) {
+		return FTABLE.colList(this, col_name);
+	},
 	getList: function(list_name) {
 		return FTABLE.getList(this, list_name);
 	},
@@ -101,10 +103,15 @@ WLIU.TABLE.prototype = {
 	getRowByKeys: function(p_keys) {
 		return FTABLE.getRowByKeys(this, p_keys);
 	},
-	
+	getRowByGuid: function(guid) {
+		return FTABLE.getRowByGuid(this, guid);
+	},
 	// return rows[ridx].cols[index of col_name]
 	getCol: function(theRow, col_name) {
 		return FTABLE.getCol(this, theRow, col_name);
+	},
+	getColByGuid: function(guid, col_name) {
+		return FTABLE.getColByGuid(this, guid, col_name);
 	},
 	/********************************************** */
 
@@ -125,6 +132,10 @@ WLIU.TABLE.prototype = {
 	changeCol: function(theRow, col_name) {
 		return FTABLE.changeCol(this, theRow, col_name);
 	},
+	changeColByGuid: function(guid, col_name) {
+		return FTABLE.changeColByGuid(this, guid, col_name);
+	},
+		
 	setImage: function(theRow, col_name, oImg) {
 		return FTABLE.setImage(this, theRow, col_name, oImg);
 	},

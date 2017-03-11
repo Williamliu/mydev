@@ -1018,6 +1018,19 @@ WLIU.TABLEACTION.prototype = {
 			return undefined;
 		}
 	},
+	colList: function(theTable, col_name) {
+		var ret_list = {};
+		var oCol = this.colMeta(theTable, col_name);
+		if( oCol ) {
+			var listName = oCol.list?oCol.list:"";
+			if( listName ) {
+				if( theTable.lists[listName] ) {
+					ret_list = theTable.lists[listName];
+				} 
+			} 
+		} 
+		return ret_list;
+	},
 	relationHide: function(theTable, theRow, col_name) {
 		var theRow = this.getRow(theTable, theRow);
 		var theCol = this.getCol(theTable, theRow, col_name);
@@ -1120,8 +1133,19 @@ WLIU.TABLEACTION.prototype = {
 	getRowByKeys: function(theTable, p_keys) {
 		return FCOLLECT.objectByKeys(theTable.rows, p_keys);
 	},
+	getRowByGuid: function(theTable, guid) {
+		return FCOLLECT.objectByKV(theTable.rows, {guid: guid});
+	},
 	getCol: function(theTable, theRow, col_name) {
 		var t_row = this.getRow(theTable, theRow);
+		if( t_row != undefined ) {
+			return FCOLLECT.objectByKV(t_row.cols, {name:col_name});
+		} else {
+			return undefined;
+		}
+	},
+	getColByGuid: function(theTable, guid, col_name) {
+		var t_row = this.getRowByGuid(theTable, guid);
 		if( t_row != undefined ) {
 			return FCOLLECT.objectByKV(t_row.cols, {name:col_name});
 		} else {
@@ -1131,6 +1155,11 @@ WLIU.TABLEACTION.prototype = {
 	changeCol: function(theTable, theRow, col_name) {
 		var t_row = this.getRow(theTable, theRow);
 		var t_col = this.getCol(theTable, theRow, col_name);
+		return FROW.colChange(t_row, t_col);
+	},
+	changeColByGuid: function(theTable, guid, col_name) {
+		var t_row = this.getRowByGuid(theTable, guid);
+		var t_col = this.getColByGuid(theTable, guid, col_name);
 		return FROW.colChange(t_row, t_col);
 	},
 	setImage: function(theTable, theRow, col_name, oImg) {

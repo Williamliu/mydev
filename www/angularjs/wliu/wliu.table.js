@@ -1,3 +1,24 @@
+var common_scope        = 'scope="{{ table.scope }}" ';
+var common_ng_hide      = 'ng-hide="table.relationHide(row, name)" ';
+var common_ng_change    = 'ng-change="table.changeCol(row, name)" ';
+var common_ng_class     = 'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" '; 
+var common_ng_disabled  = 'ng-disabled="table.getCol(row, name)==undefined" '; 
+var common_ng_options   = 'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ';
+var common_ng =     [
+                        common_scope,
+                        common_ng_change,
+                        common_ng_class,
+                        common_ng_disabled,
+                        common_ng_hide,
+                        common_ng_options
+                    ].join('');
+
+var common_tooltip = [  'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" ',
+                        'popup-toggle="hover" ',
+                        'popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" '
+                     ].join('');
+
 var wliu_table = angular.module("wliuTable",[]);
 
 wliu_table.directive("table.navi", function () {
@@ -1041,7 +1062,7 @@ wliu_table.directive("table.text", function () {
         replace: true,
         scope: {
             table:      "=",
-            row:       "=",
+            row:        "=",
             name:       "@",
             tooltip:    "@"
         },
@@ -1095,16 +1116,10 @@ wliu_table.directive("table.textbox", function () {
             tooltip:    "@"
         },
         template: [
-                    '<input type="textbox" scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)" ',
-                        //'ng-init="col=table.getCol(row, name)" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
+                    '<input type="textbox" ',
                         'ng-model="table.getCol(row, name).value" ',
-                        'ng-change="table.changeCol(row, name)" ',
-                        'ng-disabled="table.getCol(row, name)==undefined" ',
-                        'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ',
-
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                        'title="{{tooltip? \'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        common_ng,
+                        common_tooltip,
                     '/>'
                 ].join(''),
         controller: function ($scope) {
@@ -1125,16 +1140,10 @@ wliu_table.directive("table.password", function () {
             tooltip:    "@"
         },
         template: [
-                    '<input type="password" scope="{{ table.scope }}" placeholder="Password" ng-hide="table.relationHide(row, name)" ',
-                        //'ng-init="col=table.getCol(row, name)" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
+                    '<input type="password" placeholder="Password" ',
                         'ng-model="table.getCol(row, name).value" ',
-                        'ng-change="table.changeCol(row, name)" ',
-                        'ng-disabled="table.getCol(row, name)==undefined" ',
-                        'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ',
-
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        common_ng,
+                        common_tooltip,
                     '/>'
                 ].join(''),
         controller: function ($scope) {
@@ -1155,24 +1164,25 @@ wliu_table.directive("table.passpair", function () {
             tooltip:    "@"
         },
         template: [
-                    '<span style="display:inline-block;vertical-align:top;" ng-hide="table.relationHide(row, name)">',
-                    '<input type="password" style="box-sizing:border-box;width:100%;" scope="{{ table.scope }}" placeholder="Password" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
+                    '<span style="display:inline-block;vertical-align:top;" ' + common_ng_hide + '>',
+                    '<input type="password" style="box-sizing:border-box;width:100%;" placeholder="Password" ',
                         'ng-model="table.getCol(row, name).value.password" ',
                         'ng-change="passChange()" ',
-                        'ng-disabled="table.getCol(row, name)==undefined" ',
-                        'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ',
-
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():\'\'}}" ',
-                        'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:\'\'}}" ',
+                        common_scope,
+                        common_ng_class,
+                        common_ng_disabled,
+                        common_ng_options,
+                        common_tooltip,
+                        //'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():\'\'}}" ',
+                        //'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:\'\'}}" ',
                     '/>',
-                    '<input type="password" style="box-sizing:border-box;width:100%;" scope="{{ table.scope }}" placeholder="Confirm Password" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).value.password!=table.getCol(row, name).value.confirm }" ',
+                    '<input type="password" style="box-sizing:border-box;width:100%;" placeholder="Confirm Password" ',
                         'ng-model="table.getCol(row, name).value.confirm" ',
+                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).value.password!=table.getCol(row, name).value.confirm }" ',
                         //'ng-change="confirmChange()" ',
-                        'ng-disabled="table.getCol(row, name)==undefined" ',
-                        'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ',
-
+                        common_scope,
+                        common_ng_disabled,
+                        common_ng_options,
                         'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).value.password!=table.getCol(row, name).value.confirm ?\'Password not match!\':\'\'}}" ',
                         'title="{{tooltip?\'\':table.getCol(row, name).value.password!=table.getCol(row, name).value.confirm?\'Password not match!\':\'\'}}" ',
                     '/>',
@@ -1204,21 +1214,15 @@ wliu_table.directive("table.textarea", function () {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
+            row:        "=",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<textarea scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)" ',
-                        //'ng-init="col=table.getCol(row, name)" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
+                    '<textarea ',
                         'ng-model="table.getCol(row, name).value" ',
-                        'ng-change="table.changeCol(row, name)" ',
-                        'ng-disabled="table.getCol(row, name)==undefined" ',
-                        'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ',
-
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        common_ng,
+                        common_tooltip,
                     '>',
                     '</textarea>'
                 ].join(''),
@@ -1235,19 +1239,20 @@ wliu_table.directive("table.select", function () {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
+            row:        "=",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-			    '<select scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
+			    '<select ',
                         'ng-model="table.getCol(row, name).value" ',
-                        'ng-change="table.changeCol(row, name)" ',
-                        'ng-disabled="table.getCol(row, name)==undefined" ',
                         'ng-options="sObj.key as sObj.value for sObj in table.lists[table.colMeta(name).list].list" ',                        
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
+                        common_scope,
+                        common_ng_change,
+                        common_ng_class,
+                        common_ng_disabled,
+                        common_ng_hide,
+                        common_tooltip,
                  '>',
                  '<option value=""></option>',
                  '</select>'
@@ -1265,23 +1270,23 @@ wliu_table.directive("table.relation", function () {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
+            row:        "=",
             name:       "@",
             label:      "@",
             tooltip:    "@"
         },
         template: [
-                    '<span class="checkbox" scope="{{ table.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                        'title="{{tooltip==\'1\'?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                    '<span class="checkbox" ',
+                        common_scope,
+                        common_ng_class,
+                        common_tooltip,
                     '>',
-                            '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{row}}" ',
+                            '<input type="checkbox" id="{{table.scope}}_{{name}}_{{row}}" ',
                                 'ng-model="table.getCol(row, name).value" ng-value="1"  ',
                                 'ng-change="table.relationChange(row); table.changeCol(row, name);" ',
-                                'ng-disabled="table.getCol(row, name)==undefined" ',
+                                common_scope,
+                                common_ng_disabled,                                
                             '/>',
-
                             '<label for="{{table.scope}}_{{name}}_{{row}}" title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}">',
                                 //'<abbr title="{{rdObj.desc}}" ng-if="rdObj.desc!=\'\'">{{ rdObj.value }}</abbr>',
                                 '{{ label.toLowerCase()=="default"?table.colMeta(name).colname:label?label:"" }}',
@@ -1302,24 +1307,24 @@ wliu_table.directive("table.bool", function () {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
+            row:        "=",
             name:       "@",
             label:      "@",
             tooltip:    "@"
         },
         template: [
-                    '<span class="checkbox" scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                        'title="{{tooltip==\'1\'?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                    '<span class="checkbox" ',
+                        common_scope,
+                        common_ng_class,
+                        common_ng_hide,
+                        common_tooltip,
                     '>',
-
-                            '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{row}}" ',
+                            '<input type="checkbox" id="{{table.scope}}_{{name}}_{{row}}" ',
                                 'ng-model="table.getCol(row, name).value" ng-value="1"  ',
-                                'ng-change="table.changeCol(row, name)" ',
-                                'ng-disabled="table.getCol(row, name)==undefined" ',
+                                common_scope,
+                                common_ng_change,
+                                common_ng_disabled,
                             '/>',
-
                             '<label for="{{table.scope}}_{{name}}_{{row}}" title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}">',
                                 //'<abbr title="{{rdObj.desc}}" ng-if="rdObj.desc!=\'\'">{{ rdObj.value }}</abbr>',
                                 '{{ label.toLowerCase()=="default"?table.colMeta(name).colname:label?label:"" }}',
@@ -1341,28 +1346,28 @@ wliu_table.directive("table.datetime", function () {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
+            row:        "=",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<span  ng-hide="table.relationHide(row, name)" ',
-                        //'ng-init="table.getCol(row, name).value=$.isPlainObject(table.getCol(row, name).value)?table.getCol(row, name).value:{}" ',
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',                    
+                    '<span  ',
+                        common_ng_hide,
+                        common_tooltip,
                     '>',
-                        '<input type="textbox" class="wliuCommon-datepicker" scope="{{ table.scope }}" placeholder="yyyy-mm-dd" ',
-                            'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
+                        '<input type="textbox" class="wliuCommon-datepicker" placeholder="yyyy-mm-dd" ',
                             'ng-model="table.getCol(row, name).value.date" ',
-                            'ng-change="table.changeCol(row, name)" ',
-                            'ng-disabled="table.getCol(row, name)==undefined" ',
+                            common_scope,
+                            common_ng_change,
+                            common_ng_class,
+                            common_ng_disabled,
                         '/>',
-                        '<input type="textbox" class="wliuCommon-timepicker" scope="{{ table.scope }}" placeholder="hh:mm" ',
-                            //'ng-init="col=table.getCol(row, name)" ',
-                            'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
+                        '<input type="textbox" class="wliuCommon-timepicker" placeholder="hh:mm" ',
                             'ng-model="table.getCol(row, name).value.time" ',
-                            'ng-change="table.changeCol(row, name)" ',
-                            'ng-disabled="table.getCol(row, name)==undefined" ',
+                            common_scope,
+                            common_ng_change,
+                            common_ng_class,
+                            common_ng_disabled,
                         '/>',
                     '</span>'
                 ].join(''),
@@ -1375,10 +1380,10 @@ wliu_table.directive("table.datetime", function () {
                     format: "yyyy-mm-dd",
                     formatSubmit: "yyyy-mm-dd",
                     closeOnSelect: true,
-                    disable: [ {from:[2016,9,1], to:[2016,9,10]} , [2016,10,5] ],
+                    //disable: [ {from:[2016,9,1], to:[2016,9,10]} , [2016,10,5] ],
                     //min: new Date(2015,3,20),
                     //max: new Date(2016,11,14),
-                    selectYears: 200,
+                    selectYears: 100,
                     min: new Date(today.getFullYear()-90,1,1),
                     max: new Date(today.getFullYear()+10,12,31)
                 });
@@ -1403,14 +1408,15 @@ wliu_table.directive("table.date", function () {
             tooltip:    "@"
         },
         template: [
-                    '<input type="textbox" class="wliuCommon-datepicker" scope="{{ table.scope }}" placeholder="yyyy-mm-dd" ng-hide="table.relationHide(row, name)" ',
-                        //'ng-init="col=table.getCol(row, name)" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
+                    '<input type="textbox" class="wliuCommon-datepicker" placeholder="yyyy-mm-dd" ',
                         'ng-model="table.getCol(row, name).value" ',
-                        'ng-change="table.changeCol(row, name)" ',
-                        'ng-disabled="table.getCol(row, name)==undefined" ',
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        common_scope,
+                        common_ng_change,
+                        common_ng_class,
+                        common_ng_disabled,
+                        common_ng_hide,
+
+                        common_tooltip,
                     '/>'
                 ].join(''),
         controller: function ($scope) {
@@ -1422,10 +1428,10 @@ wliu_table.directive("table.date", function () {
                     format: "yyyy-mm-dd",
                     formatSubmit: "yyyy-mm-dd",
                     closeOnSelect: true,
-                    disable: [ {from:[2016,9,1], to:[2016,9,10]} , [2016,10,5] ],
+                    //disable: [ {from:[2016,9,1], to:[2016,9,10]} , [2016,10,5] ],
                     //min: new Date(2015,3,20),
                     //max: new Date(2016,11,14),
-                    selectYears: 200,
+                    selectYears: 100,
                     min: new Date(today.getFullYear()-90,1,1),
                     max: new Date(today.getFullYear()+10,12,31)
                 });
@@ -1440,19 +1446,19 @@ wliu_table.directive("table.time", function () {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
+            row:        "=",
             name:       "@",
             tooltip:    "@"
         },
         template: [
-                    '<input type="textbox" class="wliuCommon-timepicker" scope="{{ table.scope }}" placeholder="hh:mm" ng-hide="table.relationHide(row, name)" ',
-                        //'ng-init="col=table.getCol(row, name)" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
+                    '<input type="textbox" class="wliuCommon-timepicker" placeholder="hh:mm" ',
                         'ng-model="table.getCol(row, name).value" ',
-                        'ng-change="table.changeCol(row, name)" ',
-                        'ng-disabled="table.getCol(row, name)==undefined" ',
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        common_scope,
+                        common_ng_change,
+                        common_ng_class,
+                        common_ng_hide,
+                        common_ng_disabled,
+                        common_tooltip,
                     '/>'
                 ].join(''),
         controller: function ($scope) {
@@ -1474,12 +1480,16 @@ wliu_table.directive("table.intdate", function () {
         transclude: true,
         scope: {
             table:      "=",
-            row:      "=",
+            row:        "=",
             name:       "@",
             format:     "@"
         },
         template: [
-                    '<span ng-hide="table.relationHide(row, name)">{{ table.getCol(row, name).value?(table.getCol(row, name).value>0?(table.getCol(row, name).value * 1000 | date : (format?format:"yyyy-MM-dd H:mm") ):"") :"" }}</span>'
+                    '<span ',
+                        common_ng_hide,
+                    '>',
+                        '{{ table.getCol(row, name).value?(table.getCol(row, name).value>0?(table.getCol(row, name).value * 1000 | date : (format?format:"yyyy-MM-dd H:mm") ):"") :"" }}',
+                    '</span>'
 				  ].join(''),
         controller: function ($scope) {
         }
@@ -1492,27 +1502,26 @@ wliu_table.directive("table.checkbox", function () {
         replace: true,
         scope: {
             table:      "=",
+            row:        "=",
             name:       "@",
-            row:      "=",
             colnum:     "@",
             tooltip:    "@"
         },
         template: [
-                    '<div  scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)" ',
-                        //'ng-init="table.getCol(row, name).value=$.isPlainObject(table.getCol(row, name).value)?table.getCol(row, name).value:{}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                    '<div ',
+                        common_scope,
+                        common_ng_class,
+                        common_ng_hide,
+                        common_tooltip,
                     '>',
                         '<span ',
-                            //'ng-init="table.getCol(row, name).value=table.getCol(row, name).value?table.getCol(row, name).value:{};" ',                          
                             'ng-repeat="rdObj in table.lists[table.colMeta(name).list].list">',
                                 '<span class="checkbox">',
-
-                                        '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{row}}_{{rdObj.key}}" ',
+                                        '<input type="checkbox" id="{{table.scope}}_{{name}}_{{row}}_{{rdObj.key}}" ',
                                             'ng-model="table.getCol(row, name).value[rdObj.key]" ng-value="rdObj.key"  ',
-                                            'ng-change="table.changeCol(row, name)" ',
-                                            'ng-disabled="table.getCol(row, name)==undefined" ',
+                                            common_scope,
+                                            common_ng_change,
+                                            common_ng_disabled,
                                         '/>',
 
                                         '<label for="{{table.scope}}_{{name}}_{{row}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
@@ -1538,28 +1547,31 @@ wliu_table.directive("table.checkbox1", function () {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
-            name:       "@",
+            row:        "=",
+            name:       "@",  // col_name 
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                    '<input type="text" readonly scope="{{ table.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ng-hide="table.relationHide(row, name)" ',
+                    '<input type="text" readonly class="wliuCommon-checklist" value="{{ valueText() }}" ',
                             'ng-click="change(row, name)" ',
-                            'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
                             'diag-target="#{{targetid}}" diag-toggle="click" ',
                             'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                             'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                            common_scope,
+                            common_ng_class,
+                            common_ng_disabled,
+                            common_ng_hide,
                     '/>'
                 ].join(''),
         controller: function ($scope) {
             $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys || {};
             $scope.change = function(row, name) {
-                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.row = row;
-                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.name = name;
+                $scope.table.colList(name).keys.guid = row.guid;
+                $scope.table.colList(name).keys.name = name;
             }
             $scope.valueText = function() {
-                    var text = $.map( $scope.table.lists[$scope.table.colMeta($scope.name).list].list , function(n) {
+                    var text = $.map( $scope.table.colList($scope.name).list , function(n) {
                     if( $scope.table.getCol($scope.row, $scope.name)!= undefined ) {
                         if($scope.table.getCol($scope.row, $scope.name).value[n.key]) 
                             return n.value;
@@ -1584,41 +1596,43 @@ wliu_table.directive("table.checkdiag1", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
+            name:       "@",   // $scope.name is  listName
             targetid:   "@",
             colnum:     "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" wliu-diag movable maskable scope="{{ table.scope }}" ',
-                        //'ng-init="table.getCol( table.lists[name].keys.name, table.lists[name].keys.row ).value=$.isPlainObject(table.getCol( table.lists[name].keys.name, table.lists[name].keys.row ).value)?table.getCol( table.lists[name].keys.name, table.lists[name].keys.row ).value:{}" ',
+                    '<div id="{{targetid}}" wliu-diag movable maskable ',
+                        common_scope,
                     '>',
                         '<div wliu-diag-head>{{ title }}</div>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '<li ng-repeat="vObj in valueArr(table.lists[name].keys.row, table.lists[name].keys.name)">',
+                                    '<li ng-repeat="vObj in valueArr(table.lists[name].keys.guid, table.lists[name].keys.name)">',
                                     '{{ vObj.value }}',
                                     '</li>',
                                 '</ul>',
                             '</div>',
                         '</a>',
 
-                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
-                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(table.lists[name].keys.row, table.lists[name].keys.name)" title="check all"  ng-show="bar==1"></a>',
-                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(table.lists[name].keys.row, table.lists[name].keys.name)" title="remove all"  ng-show="bar==1"></a>',
+                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-show="bar==1" ',
+                            common_ng_options,
+                        '/>',
+                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(table.lists[name].keys.guid, table.lists[name].keys.name)" title="check all"  ng-show="bar==1"></a>',
+                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(table.lists[name].keys.guid, table.lists[name].keys.name)" title="remove all"  ng-show="bar==1"></a>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-body" style="font-size:14px;">',
                         '<span ',
                             'ng-repeat="rdObj in table.lists[name].list|filter:search">',
                                 '<span class="checkbox">',
-
-                                        '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{rdObj.key}}" ',
-                                            'ng-model="table.getCol( table.lists[name].keys.name, table.lists[name].keys.row ).value[rdObj.key]" ng-value="rdObj.key"  ',
-                                            'ng-change="table.changeCol(table.lists[name].keys.name, table.lists[name].keys.row)" ',
-                                            'ng-disabled="table.getCol( table.lists[name].keys.name, table.lists[name].keys.row )==undefined" ',
+                                        '<input type="checkbox" id="{{table.scope}}_{{name}}_{{rdObj.key}}" ',
+                                            'ng-model="table.getColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name).value[rdObj.key]" ng-value="rdObj.key"  ',
+                                            'ng-change="table.changeColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name)" ',
+                                            'ng-disabled="table.getColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name)==undefined" ',
+                                            common_scope,
                                         '/>',
 
                                         '<label for="{{table.scope}}_{{name}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
@@ -1634,31 +1648,23 @@ wliu_table.directive("table.checkdiag1", function () {
                 ].join(''),
         controller: function ($scope) {
             $scope.table.lists[$scope.name].keys = $scope.table.lists[$scope.name].keys || {};
-            $scope.change = function(row, name) {
-                // $scope.name is  lists[name],   name is colname
-                $scope.table.lists[$scope.name].keys.row = row;
-                $scope.table.lists[$scope.name].keys.name = name;
-            }
-
-            $scope.checkall = function(row, name) {
-                $scope.table.getCol( name, row ).value = $scope.table.getCol( name, row ).value || {};
-                for( var key in $scope.table.lists[$scope.name].list  ) {
-                    $scope.table.getCol( name, row ).value[ $scope.table.lists[$scope.name].list[key].key ] = true;
+            $scope.checkall = function(guid, name) {
+                $scope.table.getColByGuid(guid, name).value = $scope.table.getColByGuid(guid, name).value || {};
+                for( var key in $scope.table.lists[$scope.name].list ) {
+                   $scope.table.getColByGuid(guid, name).value[$scope.table.lists[$scope.name].list[key].key] = true;
                 }
-                $scope.table.changeCol(row, name);
+                $scope.table.changeColByGuid(guid, name);
             }
 
-            $scope.removeall = function(row, name) {
-                for( var key in $scope.table.lists[$scope.name].list  ) {
-                    $scope.table.getCol( name, row ).value = {};
-                }
-                $scope.table.changeCol(row, name);
+            $scope.removeall = function(guid, name) {
+                $scope.table.getColByGuid(guid, name).value = {};
+                $scope.table.changeColByGuid(guid, name);
             }
-
-            $scope.valueArr = function(row, name) {
+            // $scope.name  is different with  name;  $scope.name is listName,   name is col_name for selected value
+            $scope.valueArr = function(guid, name) {
                var valueArr = $.map( $scope.table.lists[$scope.name].list , function(n) {
-                   if( $scope.table.getCol( name, row )!= undefined  ) {
-                        if( $scope.table.getCol( name, row ).value[n.key] ) 
+                   if( $scope.table.getColByGuid(guid, name)!= undefined ) {
+                        if( $scope.table.getColByGuid(guid, name).value[n.key] ) 
                                 return n;
                         else
                                 return null;
@@ -1685,15 +1691,16 @@ wliu_table.directive("table.checklist1", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
-            row:      "=",
+            row:        "=",
+            name:       "@",   // $scope.name is  col_name 
             colnum:     "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px; padding:2px; overflow-y:auto;text-align:left; min-width:240px;" scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)" ',
-                        //'ng-init="table.getCol( name, row ).value=$.isPlainObject(table.getCol( name, row ).value)?table.getCol( name, row ).value:{}"',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px; padding:2px; overflow-y:auto;text-align:left; min-width:240px;" ',
+                        common_scope,
+                        common_ng_hide,
                     '>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
@@ -1706,21 +1713,22 @@ wliu_table.directive("table.checklist1", function () {
                             '</div>',
                         '</a>',
 
-                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
+                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-show="bar==1" ',
+                            common_ng_options,
+                        '/>',
                         '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall()" title="check all" ng-show="bar==1"></a>',
                         '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall()" title="remove all" ng-show="bar==1"></a>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="font-size:14px;">',
                         '<span ',
-                            'ng-repeat="rdObj in table.lists[table.colMeta(name).list].list|filter:search">',
+                            'ng-repeat="rdObj in table.colList(name).list|filter:search">',
                                 '<span class="checkbox">',
-
-                                        '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{row}}_{{rdObj.key}}" ',
-                                            'ng-model="table.getCol( name, row ).value[rdObj.key]" ng-value="rdObj.key"  ',
-                                            'ng-change="table.changeCol(row, name)" ',
-                                            'ng-disabled="table.getCol( name, row )==undefined" ',
+                                        '<input type="checkbox" id="{{table.scope}}_{{name}}_{{row}}_{{rdObj.key}}" ',
+                                            'ng-model="table.getCol(row, name).value[rdObj.key]" ng-value="rdObj.key"  ',
+                                            common_scope,
+                                            common_ng_change,
+                                            common_ng_disabled,
                                         '/>',
-
                                         '<label for="{{table.scope}}_{{name}}_{{row}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
                                             '{{ rdObj.value }}',
                                         '</label>',
@@ -1733,28 +1741,25 @@ wliu_table.directive("table.checklist1", function () {
             
                 ].join(''),
         controller: function ($scope) {
-            $scope.table.lists[$scope.table.colMeta($scope.name).list].keys = $scope.table.lists[$scope.table.colMeta($scope.name).list].keys || {};
+            $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
 
             $scope.checkall = function() {
                 $scope.table.getCol($scope.row, $scope.name).value = $scope.table.getCol($scope.row, $scope.name).value || {};
-                for( var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list  ) {
-                    $scope.table.getCol($scope.row, $scope.name).value[ $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key].key ] = true;
+                for( var key in $scope.table.colList($scope.name).list  ) {
+                    $scope.table.getCol($scope.row, $scope.name).value[$scope.table.colList($scope.name).list[key].key] = true;
                 }
-
                 $scope.table.changeCol($scope.row, $scope.name);
             }
 
             $scope.removeall = function() {
-                for( var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list  ) {
-                    $scope.table.getCol($scope.row, $scope.name).value = {};
-                }
+                $scope.table.getCol($scope.row, $scope.name).value = {};
                 $scope.table.changeCol($scope.row, $scope.name);
             }
 
             $scope.valueArr = function() {
-               var valueArr = $.map( $scope.table.lists[$scope.table.colMeta($scope.name).list].list , function(n) {
-                   if( $scope.table.getCol( $scope.name, $scope.row  )!= undefined  ) {
-                        if( $scope.table.getCol( $scope.name, $scope.row  ).value[n.key] ) 
+               var valueArr = $.map( $scope.table.colList($scope.name).list , function(n) {
+                   if( $scope.table.getCol($scope.row, $scope.name)!= undefined ) {
+                        if( $scope.table.getCol($scope.row, $scope.name).value[n.key] ) 
                                 return n;
                         else
                                 return null;
@@ -1778,31 +1783,33 @@ wliu_table.directive("table.checkbox2", function () {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
-            name:       "@",
+            row:        "=",
+            name:       "@", // col_name
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                        '<input type="text" readonly scope="{{ table.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ng-hide="table.relationHide(row, name)" ',
+                        '<input type="text" readonly class="wliuCommon-checklist" value="{{ valueText() }}" ',
                                 'ng-click="change(row, name)" ',
-                                'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
-
                                 'diag-target="#{{targetid}}" diag-toggle="click" ',
                                 'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                                 'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                                common_scope,
+                                common_ng_class,
+                                common_ng_disabled,
+                                common_ng_hide,
                         '/>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys || {};
+            $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
             $scope.change = function(row, name) {
-                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.row = row;
-                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.name = name;
+                $scope.table.colList(name).keys.guid = row.guid;
+                $scope.table.colList(name).keys.name = name;
             }
             $scope.valueText = function() {
                 var ret_text = "";
-                for(var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list) {
-                    var dList = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key].list;
+                for(var key in $scope.table.colList($scope.name).list) {
+                    var dList = $scope.table.colList($scope.name).list[key].list;
                     var text = $.map( dList , function(n) {
                         if( $scope.table.getCol($scope.row, $scope.name)!=undefined ) {
                             if($scope.table.getCol($scope.row, $scope.name).value[n.key]) 
@@ -1830,7 +1837,7 @@ wliu_table.directive("table.checkdiag2", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
+            name:       "@",  // ListName  
             targetid:   "@",
             colnum:     "@",
             colnum1:    "@",
@@ -1838,23 +1845,25 @@ wliu_table.directive("table.checkdiag2", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" wliu-diag movable maskable class="container" scope="{{ table.scope }}" ',
-                        //'ng-init="table.getCol( table.lists[name].keys.name, table.lists[name].keys.row ).value=$.isPlainObject(table.getCol( table.lists[name].keys.name, table.lists[name].keys.row ).value)?table.getCol( table.lists[name].keys.name, table.lists[name].keys.row ).value:{}"',
+                    '<div id="{{targetid}}" wliu-diag movable maskable class="container" ',
+                        common_scope,
                     '>',
                         '<div wliu-diag-head>{{ title }}</div>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '<li ng-repeat="vObj in valueArr(table.lists[name].keys.row, table.lists[name].keys.name)">',
+                                    '<li ng-repeat="vObj in valueArr(table.lists[name].keys.guid, table.lists[name].keys.name)">',
                                     '{{ vObj.value }}',
                                     '</li>',
                                 '</ul>',
                             '</div>',
                         '</a>',
-                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
-                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(table.lists[name].keys.row, table.lists[name].keys.name)" title="check all" ng-show="bar==1"></a>',
-                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(table.lists[name].keys.row, table.lists[name].keys.name)" title="remove all" ng-show="bar==1"></a>',
+                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-show="bar==1" ',
+                            common_ng_options,
+                        '/>',
+                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(table.lists[name].keys.guid, table.lists[name].keys.name)" title="check all" ng-show="bar==1"></a>',
+                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(table.lists[name].keys.guid, table.lists[name].keys.name)" title="remove all" ng-show="bar==1"></a>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-body" style="font-size:14px;">',
                             '<span style="display:none;" ng-repeat-start="rdObj in table.lists[name].list|filter:search"></span>',
@@ -1865,16 +1874,15 @@ wliu_table.directive("table.checkdiag2", function () {
                                                 '<ul style="border-top:1px solid #cccccc;">',
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="checkbox">',
-                                                                    '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{tdObj.key}}" ',
-                                                                        'ng-model="table.getCol( table.lists[name].keys.name, table.lists[name].keys.row ).value[tdObj.key]" ng-value="tdObj.key"  ',
-                                                                        'ng-change="table.changeCol(table.lists[name].keys.name, table.lists[name].keys.row)" ',
-                                                                        'ng-disabled="table.getCol( table.lists[name].keys.name, table.lists[name].keys.row )==undefined" ',
+                                                                    '<input type="checkbox" id="{{table.scope}}_{{name}}_{{tdObj.key}}" ',
+                                                                        'ng-model="table.getColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name).value[tdObj.key]" ng-value="tdObj.key"  ',
+                                                                        'ng-change="table.changeColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name)" ',
+                                                                        'ng-disabled="table.getColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name)==undefined" ',
+                                                                        common_scope,
                                                                     '/>',
-
                                                                     '<label for="{{table.scope}}_{{name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
-
                                                             '</span>',
                                                             '<br ng-if="colnum1>0?(($index+1)%colnum1)==0:false" />',  
                                                         '</span>',                                                  
@@ -1889,38 +1897,31 @@ wliu_table.directive("table.checkdiag2", function () {
                 ].join(''),
         controller: function ($scope) {
             $scope.table.lists[$scope.name].keys = $scope.table.lists[$scope.name].keys || {};
-            $scope.change = function(row, name) {
-                // $scope.name is  lists[name],   name is colname
-                $scope.table.lists[$scope.name].keys.row = row;
-                $scope.table.lists[$scope.name].keys.name = name;
-            }
 
-            $scope.checkall = function(row, name) {
-                $scope.table.getCol( name, row ).value = $scope.table.getCol( name, row ).value || {};
+            $scope.checkall = function(guid, name) {
+                $scope.table.getColByGuid(guid, name).value = $scope.table.getColByGuid(guid, name).value || {};
                 for( var key in $scope.table.lists[$scope.name].list  ) {
                     var dList = $scope.table.lists[$scope.name].list[key].list;
                     for( var dkey in dList) {
-                        $scope.table.getCol( name, row ).value[ dList[dkey].key ] = true;
+                        $scope.table.getColByGuid(guid, name).value[dList[dkey].key] = true;
                     }
                 }
 
-                $scope.table.changeCol(row, name);
+                $scope.table.changeColByGuid(guid, name);
             }
 
-            $scope.removeall = function(row, name) {
-                for( var key in $scope.table.lists[$scope.name].list  ) {
-                    $scope.table.getCol( name, row ).value = {};
-                }
-                $scope.table.changeCol(row, name);
+            $scope.removeall = function(guid, name) {
+                $scope.table.getColByGuid(guid, name).value = {};
+                $scope.table.changeColByGuid(guid, name);
             }
 
-            $scope.valueArr = function(row, name) {
+            $scope.valueArr = function(guid, name) {
                 var ret_arr = [];
                 for(var key in $scope.table.lists[$scope.name].list) {
                     var dList = $scope.table.lists[$scope.name].list[key].list;
                     var valueArr = $.map( dList , function(n) {
-                        if( $scope.table.getCol( name, row )!= undefined  ) {
-                                if( $scope.table.getCol( name, row ).value[n.key] ) 
+                        if( $scope.table.getColByGuid(guid, name)!= undefined  ) {
+                                if( $scope.table.getColByGuid(guid, name).value[n.key] ) 
                                         return n;
                                 else
                                         return null;
@@ -1948,16 +1949,17 @@ wliu_table.directive("table.checklist2", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
-            row:      "=",
+            row:        "=",
+            name:       "@",  // col_name
             colnum:     "@",
             colnum1:    "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)" ',
-                        //'ng-init="table.getCol( name, row ).value=$.isPlainObject(table.getCol( name, row ).value)?table.getCol( name, row ).value:{}"',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" ',
+                        common_scope,
+                        common_ng_hide,
                     '>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
@@ -1969,12 +1971,14 @@ wliu_table.directive("table.checklist2", function () {
                                 '</ul>',
                             '</div>',
                         '</a>',
-                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
+                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-show="bar==1" ',
+                            common_ng_options,
+                        '/>',
                         '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall()" title="check all" ng-show="bar==1"></a>',
                         '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall()" title="remove all" ng-show="bar==1"></a>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="min-height:250px;min-width:350px;font-size:14px;">',
-                            '<span style="display:none;" ng-repeat-start="rdObj in table.lists[table.colMeta(name).list].list|filter:search"></span>',
+                            '<span style="display:none;" ng-repeat-start="rdObj in table.colList(name).list|filter:search"></span>',
                                     '<div class="col-sm-{{colnum}}" ng-if="rdObj.list && rdObj.list.length>0">',
                                         '<ul>',
                                             '<li title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
@@ -1982,12 +1986,12 @@ wliu_table.directive("table.checklist2", function () {
                                                 '<ul style="border-top:1px solid #cccccc;">',
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="checkbox">',
-                                                                    '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{row}}_{{tdObj.key}}" ',
-                                                                        'ng-model="table.getCol( name, row ).value[tdObj.key]" ng-value="tdObj.key"  ',
-                                                                        'ng-change="table.changeCol(row, name)" ',
-                                                                        'ng-disabled="table.getCol( name, row )==undefined" ',
+                                                                    '<input type="checkbox" id="{{table.scope}}_{{name}}_{{row}}_{{tdObj.key}}" ',
+                                                                        'ng-model="table.getCol(row, name).value[tdObj.key]" ng-value="tdObj.key" ',
+                                                                        common_scope,
+                                                                        common_ng_change,
+                                                                        common_ng_disabled,
                                                                     '/>',
-
                                                                     '<label for="{{table.scope}}_{{name}}_{{row}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
@@ -2005,33 +2009,31 @@ wliu_table.directive("table.checklist2", function () {
             
                 ].join(''),
         controller: function ($scope) {
-            $scope.table.lists[$scope.table.colMeta($scope.name).list].keys = $scope.table.lists[$scope.table.colMeta($scope.name).list].keys || {};
+            $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
 
             $scope.checkall = function() {
                 $scope.table.getCol($scope.row, $scope.name).value = $scope.table.getCol($scope.row, $scope.name).value || {};
-                for( var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list  ) {
-                    var dList = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key].list;
+                for( var key in $scope.table.colList($scope.name).list  ) {
+                    var dList = $scope.table.colList($scope.name).list[key].list;
                     for( var dkey in dList) {
-                        $scope.table.getCol($scope.row, $scope.name).value[ dList[dkey].key ] = true;
+                        $scope.table.getCol($scope.row, $scope.name).value[dList[dkey].key] = true;
                     }
                 }
                 $scope.table.changeCol($scope.row, $scope.name);
             }
 
             $scope.removeall = function() {
-                for( var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list  ) {
-                    $scope.table.getCol($scope.row, $scope.name).value = {};
-                }
+                $scope.table.getCol($scope.row, $scope.name).value = {};
                 $scope.table.changeCol($scope.row, $scope.name);
             }
 
             $scope.valueArr = function() {
                 var ret_arr = [];
-                for(var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list) {
-                    var dList = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key].list;
+                for(var key in  $scope.table.colList($scope.name).list) {
+                    var dList = $scope.table.colList($scope.name).list[key].list;
                     var valueArr = $.map( dList , function(n) {
-                        if( $scope.table.getCol( $scope.name, $scope.row  )!= undefined  ) {
-                                if( $scope.table.getCol( $scope.name, $scope.row  ).value[n.key] ) 
+                        if( $scope.table.getCol($scope.row, $scope.name)!= undefined  ) {
+                                if( $scope.table.getCol($scope.row, $scope.name).value[n.key] ) 
                                         return n;
                                 else
                                         return null;
@@ -2043,7 +2045,6 @@ wliu_table.directive("table.checklist2", function () {
                }
                return ret_arr;
             }
-            
         },
         link: function (sc, el, attr) {
         }
@@ -2056,36 +2057,38 @@ wliu_table.directive("table.checkbox3", function () {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
-            name:       "@",
+            row:        "=", 
+            name:       "@",  // col_name
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                    '<input type="text" readonly scope="{{ table.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ng-hide="table.relationHide(row, name)" ',
+                    '<input type="text" readonly class="wliuCommon-checklist" value="{{ valueText() }}" ',
                             'ng-click="change(row, name)" ',
-                            'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
-
                             'diag-target="#{{targetid}}" diag-toggle="click" ',
                             'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                             'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                            common_scope,
+                            common_ng_class,
+                            common_ng_disabled,
+                            common_ng_hide,
                     '/>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys || {};
+            $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
             $scope.change = function(row, name) {
-                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.row = row;
-                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.name = name;
+                $scope.table.colList(name).keys.guid = row.guid;
+                $scope.table.colList(name).keys.name = name;
             }
             $scope.valueText = function() {
                 var ret_text = "";
-                for(var key1 in $scope.table.lists[$scope.table.colMeta($scope.name).list].list) {
-                    var list2 = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key1].list;
+                for(var key1 in $scope.table.colList($scope.name).list) {
+                    var list2 = $scope.table.colList($scope.name).list[key1].list;
                     for(var key2 in list2) {
                         var list3 = list2[key2].list;
                         var text = $.map( list3 , function(n) {
                             if( $scope.table.getCol($scope.row, $scope.name)!= undefined ) {
-                                if($scope.table.getCol($scope.row, $scope.name).value[n.key]) 
+                                if( $scope.table.getCol($scope.row, $scope.name).value[n.key] ) 
                                         return n.value;
                                 else
                                         return null;
@@ -2111,7 +2114,7 @@ wliu_table.directive("table.checkdiag3", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
+            name:       "@",  // listName
             targetid:   "@",
             colnum:     "@",
             colnum1:    "@",
@@ -2119,23 +2122,25 @@ wliu_table.directive("table.checkdiag3", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" wliu-diag maskable movable class="container" scope="{{ table.scope }}" ',
-                        //'ng-init="table.getCol( table.lists[name].keys.name, table.lists[name].keys.row ).value=$.isPlainObject(table.getCol( table.lists[name].keys.name, table.lists[name].keys.row ).value)?table.getCol( table.lists[name].keys.name, table.lists[name].keys.row ).value:{}"',
+                    '<div id="{{targetid}}" wliu-diag maskable movable class="container" ',
+                        common_scope,
                     '>',
                         '<div wliu-diag-head>{{ title }}</div>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '<li ng-repeat="vObj in valueArr(table.lists[name].keys.row, table.lists[name].keys.name)">',
+                                    '<li ng-repeat="vObj in valueArr(table.lists[name].keys.guid, table.lists[name].keys.name)">',
                                     '{{ vObj.value }}',
                                     '</li>',
                                 '</ul>',
                             '</div>',
                         '</a>',
-                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
-                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(table.lists[name].keys.row, table.lists[name].keys.name)" title="check all" ng-show="bar==1"></a>',
-                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(table.lists[name].keys.row, table.lists[name].keys.name)" title="remove all" ng-show="bar==1"></a>',
+                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-show="bar==1" ',
+                            common_ng_options,
+                        '/>',
+                        '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(table.lists[name].keys.guid, table.lists[name].keys.name)" title="check all" ng-show="bar==1"></a>',
+                        '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(table.lists[name].keys.guid, table.lists[name].keys.name)" title="remove all" ng-show="bar==1"></a>',
                         
                         '<select class="wliuCommon-filter" ',
                                 'ng-model="listFilter.key" ',
@@ -2154,10 +2159,11 @@ wliu_table.directive("table.checkdiag3", function () {
                                                 '<ul style="border-top:1px solid #cccccc;">',
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="checkbox">',
-                                                                    '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{tdObj.key}}" ',
-                                                                        'ng-model="table.getCol( table.lists[name].keys.name, table.lists[name].keys.row ).value[tdObj.key]" ng-value="tdObj.key"  ',
-                                                                        'ng-change="table.changeCol(table.lists[name].keys.name, table.lists[name].keys.row)" ',
-                                                                        'ng-disabled="table.getCol( table.lists[name].keys.name, table.lists[name].keys.row )==undefined" ',
+                                                                    '<input type="checkbox" id="{{table.scope}}_{{name}}_{{tdObj.key}}" ',
+                                                                        'ng-model="table.getColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name ).value[tdObj.key]" ng-value="tdObj.key"  ',
+                                                                        'ng-change="table.changeColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name)" ',
+                                                                        'ng-disabled="table.getColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name)==undefined" ',
+                                                                        common_scope,
                                                                     '/>',
 
                                                                     '<label for="{{table.scope}}_{{name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
@@ -2180,31 +2186,24 @@ wliu_table.directive("table.checkdiag3", function () {
         controller: function ($scope) {
             $scope.table.lists[$scope.name].keys = $scope.table.lists[$scope.name].keys || {};
             $scope.listFilter = $scope.listFilter || {};
-            $scope.change = function(row, name) {
-                // $scope.name is  lists[name],   name is colname
-                $scope.table.lists[$scope.name].keys.row = row;
-                $scope.table.lists[$scope.name].keys.name = name;
-            }
 
-            $scope.checkall = function(row, name) {
-                $scope.table.getCol( name, row ).value = $scope.table.getCol( name, row ).value || {};
+            $scope.checkall = function(guid, name) {
+                $scope.table.getColByGuid(guid, name).value = $scope.table.getColByGuid(guid, name).value || {};
                 for( var key1 in $scope.table.lists[$scope.name].list  ) {
                     var list2 = $scope.table.lists[$scope.name].list[key1].list;
                     for( var key2 in list2) {
                         var list3 = list2[key2].list;
                         for(var key3 in list3) {
-                            $scope.table.getCol( name, row ).value[ list3[key3].key ] = true;
+                            $scope.table.getColByGuid(guid, name).value[list3[key3].key] = true;
                         }
                      }
                 }
-                $scope.table.changeCol(row, name);
+                $scope.table.changeColByGuid(guid, name);
             }
 
-            $scope.removeall = function(row, name) {
-                for( var key in $scope.table.lists[$scope.name].list  ) {
-                    $scope.table.getCol( name, row ).value = {};
-                }
-                $scope.table.changeCol(row, name);
+            $scope.removeall = function(guid, name) {
+                $scope.table.getColByGuid(guid, name).value = {};
+                $scope.table.changeColByGuid(guid, name);
             }
 
             $scope.getListFilter = function() {
@@ -2212,15 +2211,15 @@ wliu_table.directive("table.checkdiag3", function () {
                 return $scope.listFilter;
             }
 
-            $scope.valueArr = function(row, name) {
+            $scope.valueArr = function(guid, name) {
                 var ret_arr = [];
                 for(var key1 in $scope.table.lists[$scope.name].list) {
                     var list2 = $scope.table.lists[$scope.name].list[key1].list;
                     for(var key2 in list2) {
                         var list3 = list2[key2].list;
                         var valueArr = $.map( list3 , function(n) {
-                            if( $scope.table.getCol( name, row )!= undefined  ) {
-                                    if( $scope.table.getCol( name, row ).value[n.key] ) 
+                            if( $scope.table.getColByGuid(guid, name)!= undefined  ) {
+                                    if( $scope.table.getColByGuid(guid, name).value[n.key] ) 
                                             return n;
                                     else
                                             return null;
@@ -2249,16 +2248,17 @@ wliu_table.directive("table.checklist3", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
-            row:      "=",
+            row:        "=",
+            name:       "@", // col_name
             colnum:     "@",
             colnum1:    "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)" ',
-                        //'ng-init="table.getCol( name, row ).value=$.isPlainObject(table.getCol( name, row ).value)?table.getCol( name, row ).value:{}"',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" ',
+                        common_scope,
+                        common_ng_hide,
                     '>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
@@ -2270,19 +2270,21 @@ wliu_table.directive("table.checklist3", function () {
                                 '</ul>',
                             '</div>',
                         '</a>',
-                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
+                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-show="bar==1" ',
+                            common_ng_options,
+                        '/>',
                         '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall()" title="check all" ng-show="bar==1"></a>',
                         '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall()" title="remove all" ng-show="bar==1"></a>',
                         
                         '<select class="wliuCommon-filter" ',
                                 'ng-model="listFilter.key" ',
-                                'ng-options="sObj.key as sObj.value for sObj in table.lists[table.colMeta(name).list].list" ',                        
+                                'ng-options="sObj.key as sObj.value for sObj in table.colList(name).list" ',                        
                         ' ng-show="bar==1">',
                         '<option value=""></option>',
                         '</select>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="min-height:250px;min-width:350px;font-size:14px;">',
-                            '<span style="display:none;" ng-repeat-start="bbObj in table.lists[table.colMeta(name).list].list|filter:getListFilter()"></span>',
+                            '<span style="display:none;" ng-repeat-start="bbObj in table.colList(name).list|filter:getListFilter()"></span>',
                             '<span style="display:none;" ng-repeat-start="rdObj in bbObj.list|filter:search"></span>',
                                     '<div class="col-md-{{colnum}} col-sm-{{colnum}} col-xs-12" ng-if="rdObj.list && rdObj.list.length>0">',
                                         '<ul>',
@@ -2291,12 +2293,12 @@ wliu_table.directive("table.checklist3", function () {
                                                 '<ul style="border-top:1px solid #cccccc;">',
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="checkbox">',
-                                                                    '<input type="checkbox" scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{row}}_{{tdObj.key}}" ',
+                                                                    '<input type="checkbox" id="{{table.scope}}_{{name}}_{{row}}_{{tdObj.key}}" ',
                                                                         'ng-model="table.getCol( name, row ).value[tdObj.key]" ng-value="tdObj.key"  ',
-                                                                        'ng-change="table.changeCol(row, name)" ',
-                                                                        'ng-disabled="table.getCol( name, row )==undefined" ',
+                                                                        common_scope,
+                                                                        common_ng_change,
+                                                                        common_ng_disabled,
                                                                     '/>',
-
                                                                     '<label for="{{table.scope}}_{{name}}_{{row}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
@@ -2315,17 +2317,17 @@ wliu_table.directive("table.checklist3", function () {
             
                 ].join(''),
         controller: function ($scope) {
-            $scope.table.lists[$scope.table.colMeta($scope.name).list].keys = $scope.table.lists[$scope.table.colMeta($scope.name).list].keys || {};
+            $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
             $scope.listFilter = $scope.listFilter || {};
 
             $scope.checkall = function() {
                 $scope.table.getCol($scope.row, $scope.name).value = $scope.table.getCol($scope.row, $scope.name).value || {};
-                for( var key1 in $scope.table.lists[$scope.table.colMeta($scope.name).list].list ) {
-                    var list2 = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key1].list;
-                    for( var key2 in list2) {
+                for(var key1 in $scope.table.colList($scope.name).list) {
+                    var list2 = $scope.table.colList($scope.name).list[key1].list;
+                    for(var key2 in list2) {
                         var list3 = list2[key2].list;
                         for(var key3 in list3) {
-                            $scope.table.getCol($scope.row, $scope.name).value[ list3[key3].key ] = true;
+                            $scope.table.getCol($scope.row, $scope.name).value[list3[key3].key] = true;
                         }
                      }
                 }
@@ -2333,9 +2335,7 @@ wliu_table.directive("table.checklist3", function () {
             }
 
             $scope.removeall = function() {
-                for( var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list  ) {
-                    $scope.table.getCol($scope.row, $scope.name).value = {};
-                }
+                $scope.table.getCol($scope.row, $scope.name).value = {};
                 $scope.table.changeCol($scope.row, $scope.name);
             }
 
@@ -2346,8 +2346,8 @@ wliu_table.directive("table.checklist3", function () {
 
             $scope.valueArr = function() {
                 var ret_arr = [];
-                for(var key1 in $scope.table.lists[$scope.table.colMeta($scope.name).list].list) {
-                    var list2 = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key1].list;
+                for(var key1 in $scope.table.colList($scope.name).list) {
+                    var list2 = $scope.table.colList($scope.name).list[key1].list;
                     for(var key2 in list2) {
                         var list3 = list2[key2].list;
                         var valueArr = $.map( list3 , function(n) {
@@ -2378,33 +2378,30 @@ wliu_table.directive("table.radio", function () {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
-            colnum:     "@",
+            row:        "=",
             name:       "@",
+            colnum:     "@",
             tooltip:    "@"
         },
         template: [
-                    '<div scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                    '<div ',
+                        common_scope,
+                        common_ng_class,
+                        common_ng_hide,
+                        common_tooltip,
                     '>',
                         '<span ',
-                            //'ng-init="table.getCol(row, name).value=table.getCol(row, name).value?table.getCol(row, name).value:{};" ',                          
                             'ng-repeat="rdObj in table.lists[table.colMeta(name).list].list">',
                                 '<span class="radio">',
-
-                                        '<input type="radio"  scope="{{ table.scope }}" id="{{table.scope}}_{{name}}_{{row}}_{{rdObj.key}}" ',
+                                        '<input type="radio" id="{{table.scope}}_{{name}}_{{row}}_{{rdObj.key}}" ',
                                             'ng-model="table.getCol(row, name).value" ng-value="rdObj.key"  ',
-                                            'ng-change="table.changeCol(row, name)" ',
-                                            'ng-disabled="table.getCol(row, name)==undefined" ',
+                                            common_scope,
+                                            common_ng_change,
+                                            common_ng_disabled,
                                         '/>',
-
                                         '<label scope="{{ table.scope }}" for="{{table.scope}}_{{name}}_{{row}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
-                                            //'<abbr title="{{rdObj.desc}}" ng-if="rdObj.desc!=\'\'">{{ rdObj.value }}</abbr>',
                                             '{{ rdObj.value }}',
                                         '</label>',
-
                                 '</span>',
                                 '<br ng-if="colnum>0?(($index+1)%colnum)==0:false" />',
                         '</span>',
@@ -2423,31 +2420,34 @@ wliu_table.directive("table.radio1", function () {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
-            name:       "@",
+            row:        "=",
+            name:       "@",  // col_name
             targetid:   "@",
             tooltip:    "@"
         },
-        template: [
-                        '<input  type="text" readonly scope="{{ table.scope }}" class="wliuCommon-radiolist" value="{{ valueText() }}" ng-hide="table.relationHide(row, name)" ',
+        template: [     '<input  type="text" readonly class="wliuCommon-radiolist" value="{{ valueDesc() }}" ',
                                 'ng-click="change(row, name)" ',
-                                'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
-
                                 'diag-target="#{{targetid}}" diag-toggle="click" ',
                                 'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                                 'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                        '/>',
+                                common_scope,
+                                common_ng_class,
+                                common_ng_disabled,
+                                common_ng_hide,
+                        '/>'
                 ].join(''),
         controller: function ($scope) {
+            //$scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
             $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys || {};
             $scope.change = function(row, name) {
-                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.row = row;
-                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.name = name;
+                $scope.table.colList(name).keys.guid = row.guid;
+                $scope.table.colList(name).keys.name = name;
             }
-            $scope.valueText = function() {
-                var val =  $scope.table.getCol( $scope.name, $scope.row  )?$scope.table.getCol($scope.row, $scope.name).value:"";
-                var valueText = $scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.table.colMeta($scope.name).list].list, {key:val} )?$scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.table.colMeta($scope.name).list].list, {key:val} ).value:"";
-                return valueText;
+
+            $scope.valueDesc = function() {
+                var val =  $scope.table.getCol($scope.row, $scope.name)?$scope.table.getCol($scope.row, $scope.name).value:"";
+                var valText = $scope.table.FCOLLECT.firstByKV( $scope.table.colList($scope.name).list, {key:val})?$scope.table.FCOLLECT.firstByKV( $scope.table.colList($scope.name).list, {key:val} ).value:"";
+                return valText;
             }
         },
         link: function (sc, el, attr) {
@@ -2461,36 +2461,39 @@ wliu_table.directive("table.radiodiag1", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
+            name:       "@",  // listName
             targetid:   "@",
             colnum:     "@",
             bar:        "@", 
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" wliu-diag movable maskable scope="{{ table.scope }}">',
+                    '<div id="{{targetid}}" wliu-diag movable maskable ',
+                        common_scope,
+                    '>',
                         '<div wliu-diag-head>{{ title }}</div>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '{{ valueText(table.lists[name].keys.row, table.lists[name].keys.name) }}',
+                                    '{{ valueText(table.lists[name].keys.guid, table.lists[name].keys.name) }}',
                                 '</ul>',
                             '</div>',
                         '</a>',
-                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
+                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-show="bar==1" ',
+                            common_ng_options,
+                        '/>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-body" style="font-size:14px;">',
                         '<span ',
                             'ng-repeat="rdObj in table.lists[name].list|filter:search">',
                                 '<span class="radio">',
-
-                                        '<input type="radio" scope="{{ table.scope }}" name="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}" id="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{rdObj.key}}" ',
-                                            'ng-model="table.getCol( table.lists[name].keys.name, table.lists[name].keys.row ).value" ng-value="rdObj.key"  ',
-                                            'ng-change="table.changeCol(table.lists[name].keys.name, table.lists[name].keys.row)" ',
-                                            'ng-disabled="table.getCol( table.lists[name].keys.name, table.lists[name].keys.row )==undefined" ',
+                                        '<input type="radio" name="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}" id="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{rdObj.key}}" ',
+                                            'ng-model="table.getColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name).value" ng-value="rdObj.key"  ',
+                                            'ng-change="table.changeColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name)" ',
+                                            'ng-disabled="table.getColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name)==undefined" ',
+                                            common_scope,
                                         '/>',
-
                                         '<label for="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
                                             '{{ rdObj.value }}',
                                         '</label>',
@@ -2505,8 +2508,8 @@ wliu_table.directive("table.radiodiag1", function () {
         controller: function ($scope) {
             $scope.table.lists[$scope.name].keys = $scope.table.lists[$scope.name].keys || {};
 
-            $scope.valueText = function(row, name) {
-                var val =  $scope.table.getCol( name, row )?$scope.table.getCol( name, row ).value:"";
+            $scope.valueText = function(guid, name) {
+                var val =  $scope.table.getColByGuid(guid, name)?$scope.table.getColByGuid(guid, name).value:"";
                 var valueText = $scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.name].list, {key:val} )?$scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.name].list, {key:val} ).value:"";
                 return valueText;
             }
@@ -2526,14 +2529,17 @@ wliu_table.directive("table.radiolist1", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
-            row:      "=",
+            row:        "=",
+            name:       "@", // col_name
             colnum:     "@",
             bar:        "@", 
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px; padding:2px; overflow-y:auto;text-align:left; min-width:240px;" scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)">',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px; padding:2px; overflow-y:auto;text-align:left; min-width:240px;" ',
+                        common_scope,
+                        common_ng_hide,
+                    '>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
@@ -2542,19 +2548,20 @@ wliu_table.directive("table.radiolist1", function () {
                                 '</ul>',
                             '</div>',
                         '</a>',
-                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
+                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-show="bar==1" ',
+                            common_ng_options,
+                        '/>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="font-size:14px;">',
                         '<span ',
-                            'ng-repeat="rdObj in table.lists[table.colMeta(name).list].list|filter:search">',
+                            'ng-repeat="rdObj in table.colList(name).list|filter:search">',
                                 '<span class="radio">',
-
-                                        '<input type="radio" scope="{{ table.scope }}" name="{{table.scope}}_{{name}}_{{row}}" id="{{table.scope}}_{{name}}_{{row}}_{{rdObj.key}}" ',
-                                            'ng-model="table.getCol( name, row ).value" ng-value="rdObj.key"  ',
-                                            'ng-change="table.changeCol(name,row)" ',
-                                            'ng-disabled="table.getCol( name, row )==undefined" ',
+                                        '<input type="radio" name="{{table.scope}}_{{name}}_{{row}}" id="{{table.scope}}_{{name}}_{{row}}_{{rdObj.key}}" ',
+                                            'ng-model="table.getCol(row, name).value" ng-value="rdObj.key"  ',
+                                            common_scope,
+                                            common_ng_change,
+                                            common_ng_disabled,
                                         '/>',
-
                                         '<label for="{{table.scope}}_{{name}}_{{row}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
                                             '{{ rdObj.value }}',
                                         '</label>',
@@ -2568,8 +2575,8 @@ wliu_table.directive("table.radiolist1", function () {
                 ].join(''),
         controller: function ($scope) {
             $scope.valueText = function() {
-                var val =  $scope.table.getCol( $scope.name, $scope.row  )?$scope.table.getCol( $scope.name, $scope.row  ).value:"";
-                var valueText = $scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.table.colMeta($scope.name).list].list, {key:val} )?$scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.table.colMeta($scope.name).list].list, {key:val} ).value:"";
+                var val =  $scope.table.getCol($scope.row, $scope.name)?$scope.table.getCol($scope.row, $scope.name).value:"";
+                var valueText = $scope.table.FCOLLECT.firstByKV( $scope.table.colList($scope.name).list, {key:val} )?$scope.table.FCOLLECT.firstByKV( $scope.table.colList($scope.name).list, {key:val} ).value:"";
                 return valueText;
             }
             
@@ -2585,32 +2592,34 @@ wliu_table.directive("table.radio2", function () {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
-            name:       "@",
+            row:        "=",
+            name:       "@", // col_name
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                        '<input type="text" readonly scope="{{ table.scope }}" class="wliuCommon-radiolist" value="{{ valueText() }}" ng-hide="table.relationHide(row, name)" ',
+                        '<input type="text" readonly class="wliuCommon-radiolist" value="{{ valueText() }}" ',
                                 'ng-click="change(row, name)" ',
-                                'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
-
                                 'diag-target="#{{targetid}}" diag-toggle="click" ',
+
                                 'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                                 'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                                common_scope,
+                                common_ng_class,
+                                common_ng_hide,
                         '/>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys || {};
+            $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
             $scope.change = function(row, name) {
-                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.row = row;
-                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.name = name;
+                $scope.table.colList(name).keys.guid = row.guid;
+                $scope.table.colList(name).keys.name = name;
             }
             $scope.valueText = function() {
                 var ret_text = "";
-                for(var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list) {
-                    var dList = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key].list;
-                    var text = $.map( dList , function(n) {
+                for(var key in $scope.table.colList($scope.name).list) {
+                    var dList = $scope.table.colList($scope.name).list[key].list;
+                    var text = $.map(dList , function(n) {
                         if($scope.table.getCol($scope.row, $scope.name)!=undefined) {
                             if($scope.table.getCol($scope.row, $scope.name).value == n.key) 
                                     return n.value;
@@ -2811,31 +2820,33 @@ wliu_table.directive("table.radio3", function () {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
-            name:       "@",
+            row:        "=",
+            name:       "@", // col_name
             targetid:   "@",
             tooltip:    "@"
         },
         template: [
-                    '<input type="text" readonly scope="{{ table.scope }}" class="wliuCommon-radiolist" value="{{ valueText() }}" ng-hide="table.relationHide(row, name)" ',
+                    '<input type="text" readonly class="wliuCommon-radiolist" value="{{ valueText() }}" ',
                             'ng-click="change(row, name)" ',
-                            'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
-
                             'diag-target="#{{targetid}}" diag-toggle="click" ',
                             'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                             'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                            common_scope,
+                            common_ng_class,
+                            common_ng_disabled,
+                            common_ng_hide,
                     '/>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys || {};
+            $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
             $scope.change = function(row, name) {
-                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.row = row;
-                $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys.name = name;
+                $scope.table.colList(name).keys.guid = row.guid;
+                $scope.table.colList(name).keys.name = name;
             }
             $scope.valueText = function() {
                 var ret_text = "";
-                for(var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list) {
-                    var dList = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key].list;
+                for(var key in $scope.table.colList($scope.name).list) {
+                    var dList = $scope.table.colList($scope.name).list[key].list;
                     for(var pkey in dList) {
                         var pList = dList[pkey].list;
                         var text = $.map( pList , function(n) {
@@ -2866,7 +2877,7 @@ wliu_table.directive("table.radiodiag3", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
+            name:       "@",  // listName
             targetid:   "@",
             colnum:     "@",
             colnum1:    "@",
@@ -2880,7 +2891,7 @@ wliu_table.directive("table.radiodiag3", function () {
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '<li ng-repeat="vObj in valueArr(table.lists[name].keys.row, table.lists[name].keys.name)">',
+                                    '<li ng-repeat="vObj in valueArr(table.lists[name].keys.guid, table.lists[name].keys.name)">',
                                     '{{ vObj.value }}',
                                     '</li>',
                                 '</ul>',
@@ -2905,15 +2916,13 @@ wliu_table.directive("table.radiodiag3", function () {
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="radio">',
                                                                     '<input type="radio" scope="{{ table.scope }}" name="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}" id="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{tdObj.key}}" ',
-                                                                        'ng-model="table.getCol( table.lists[name].keys.name, table.lists[name].keys.row ).value" ng-value="tdObj.key"  ',
-                                                                        'ng-change="table.changeCol(table.lists[name].keys.name, table.lists[name].keys.row)" ',
-                                                                        'ng-disabled="table.getCol( table.lists[name].keys.name, table.lists[name].keys.row )==undefined" ',
+                                                                        'ng-model="table.getColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name).value" ng-value="tdObj.key"  ',
+                                                                        'ng-change="table.changeColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name)" ',
+                                                                        'ng-disabled="table.getColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name)==undefined" ',
                                                                     '/>',
-
                                                                     '<label for="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
-
                                                             '</span>',
                                                             '<br ng-if="colnum1>0?(($index+1)%colnum1)==0:false" />',  
                                                         '</span>',                                                  
@@ -2934,13 +2943,13 @@ wliu_table.directive("table.radiodiag3", function () {
                 return $scope.listFilter;
             }
 
-            $scope.valueArr = function(row, name) {
+            $scope.valueArr = function(guid, name) {
                 var ret_arr = [];
                 for(var key in $scope.table.lists[$scope.name].list) {
                     var dList = $scope.table.lists[$scope.name].list[key].list;
                     var valueArr = $.map( dList , function(n) {
-                        if( $scope.table.getCol( name, row )!= undefined  ) {
-                                if( $scope.table.getCol( name, row ).value == n.key ) 
+                        if( $scope.table.getColByGuid(guid, name)!= undefined  ) {
+                                if( $scope.table.getColByGuid(guid, name).value == n.key ) 
                                         return n;
                                 else
                                         return null;
