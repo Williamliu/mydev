@@ -56,10 +56,6 @@ WLIU.TABLE.prototype = {
 		return FTABLE.indexByKeys(this, p_keys);
 	},
 
-	rowno: function(p_ridx) {
-		return FTABLE.rowno(this, p_ridx);
-	},
-
 	colMeta: function(col_name) {
 		return FTABLE.colMeta(this, col_name);
 	},
@@ -225,12 +221,22 @@ WLIU.TABLE.prototype = {
 	},
 	lastState: function() {
 		return FTABLE.lastState(this);
-	},	
-	nextRecord: function() {
-		FTABLE.nextRecord(this);
 	},
-	previousRecord: function() {
-		FTABLE.previousRecord(this);
+
+	rowno: function(guid) {
+		return FTABLE.rowno(this, guid);
 	},
+	naviLeft: function() {
+		FTABLE.naviLeft(this);
+	},
+	leftState: function() {
+		return FTABLE.leftState(this);
+	},
+	naviRight: function() {
+		FTABLE.naviRight(this);
+	},
+	rightState: function() {
+		return FTABLE.rightState(this);
+	}
 	
 }

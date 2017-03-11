@@ -62,7 +62,7 @@
 		   	var col4 = new WLIU.COL({key:0, coltype:"relation", 	name:"user_id",		col:"id", 				colname:"VIP?",  		coldesc:"is VIP?"});
 		   	var col5 = new WLIU.COL({key:0, coltype:"textbox", 		name:"horby", 		colname:"Horby",   		coldesc:"Horby of User", 		relation:"user_id",	sort:"ASC", need:1, notnull:1});
 			var col6 = new WLIU.COL({key:0, coltype:"select", 		name:"lang", 		colname:"LangISO", 		coldesc:"Language ISO Code",  	relation:"user_id", defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory"});
-		   	var col7 = new WLIU.COL({key:0, coltype:"radio1", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name",  			relation:"user_id", notnull:0, 	list:"colorCategory"});
+		   	var col7 = new WLIU.COL({key:0, coltype:"radio2", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name",  			relation:"user_id", notnull:0, 	list:"colorCategory"});
 			var col8 = new WLIU.COL({key:0, coltype:"checkbox1", 	name:"country", 	colname:"Homeland", 	coldesc:"Nationality",  		relation:"user_id", sort:"DESC", need:1,  notnull:1, list:"countryCategory"});
 		   	var col9 = new WLIU.COL({key:0, coltype:"datetime", 	name:"memberdate", 	colname:"Enroll Date", 	coldesc:"Date of Enroll",  		relation:"user_id", 	sort:"DESC"});
 		   	var col10 = new WLIU.COL({key:0, coltype:"text", 		name:"stime", 		col:"created_time", 	colname:"Created Date", 	coldesc:"Date of Enroll",  		relation:"user_id", 	sort:"DESC"});
@@ -99,8 +99,8 @@
 				filters:filters,
 				cols: 	cols,
 				lists: 	{
-							colorCategory: 		{ loaded: 0 },
-							countryCategory: 	{ loaded: 0 },
+							colorCategory: 		{ loaded: 0, keys: {guid:"", name:""}, list:[] },
+							countryCategory: 	{ loaded: 0, keys: {guid:"", name:""}, list:[] },
 							langCategory: 	{ 
 											loaded: 2, 
 											keys: {guid:"", name:""}, 
@@ -188,13 +188,13 @@
 				</tr>	
 				<tr ng-repeat="row in table.rows">
 					<td style="white-space:nowrap; width:20px;padding-right:10px;">
-						<table.bgroup table="table" actname="Action"row="row">
-						<table.blink table="table" name="detail" 	actname="Detail" 	rowsn="{{$index}}" 	action="detail(row)" wliu-diag diag-toggle="click" diag-target="#frm"></table.blink>
-						<table.blink table="table" name="save"  	actname="Save" 		rowsn="{{$index}}" 	action=""></table.blink>
-						<table.blink table="table" name="cancel"	actname="Cancel" 	rowsn="{{$index}}" 	action=""></table.blink>
-						<table.blink table="table" name="output" 	actname="Output" 	rowsn="{{$index}}" 	action=""></table.blink>
-						<table.blink table="table" name="print"		actname="Print" 	rowsn="{{$index}}" 	action=""></table.blink>
-						<table.blink table="table" name="delete" 	actname="Delete" 	rowsn="{{$index}}" 	action=""></table.blink>
+						<table.bgroup table="table" actname="Action" row="row">
+						<table.blink table="table" name="detail" 	actname="Detail" 	row="row" 	action="detail(row)" wliu-diag diag-toggle="click" diag-target="#frm"></table.blink>
+						<table.blink table="table" name="save"  	actname="Save" 		row="row" 	action=""></table.blink>
+						<table.blink table="table" name="cancel"	actname="Cancel" 	row="row" 	action=""></table.blink>
+						<table.blink table="table" name="output" 	actname="Output" 	row="row" 	action=""></table.blink>
+						<table.blink table="table" name="print"		actname="Print" 	row="row" 	action=""></table.blink>
+						<table.blink table="table" name="delete" 	actname="Delete" 	row="row" 	action=""></table.blink>
 						</table.bgroup>
 					</td>
 					<td width=30 align="center">
@@ -219,7 +219,7 @@
 						<table.select class="input-small" table="table" name="lang" row="row" tooltip="mytips"></table.select>
 					</td>
 					<td>
-						<table.radio1 class="input-tiny" table="table" name="color" row="row" targetid="colorCategory_diag" tooltip="mytips"></table.radio1>
+						<table.radio2 class="input-tiny" table="table" name="color" row="row" targetid="colorCategory_diag" tooltip="mytips"></table.radio2>
 					</td>
 					<td>
 						<table.checkbox1 class="input-small" table="table" name="country" row="row" tooltip="mytips" targetid="countryCategory_diag"></table.checkbox1>
@@ -238,7 +238,8 @@
 <table.taberror table="table" targetid="taberror"></table.taberror>
 
 <table.checkdiag1 table="table" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></table.checkdiag1>
-<table.radiodiag1 table="table" targetid="colorCategory_diag" name="colorCategory" colnum="3" colnum1="0" bar="1" title="Please Select"></table.radiodiag1>
+
+<table.radiodiag2 table="table" targetid="colorCategory_diag" name="colorCategory" colnum="3" colnum1="0" bar="1" title="Please Select"></table.radiodiag2>
 
 <div id="myauto" wliu-tips></div>
 <div id="mywait" wliu-load></div>

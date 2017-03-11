@@ -996,16 +996,6 @@ WLIU.TABLEACTION.prototype = {
 		} 
 		return theTable.error; 
 	},
-	rowno: function(theTable, p_ridx) {
-		if(p_ridx!=undefined) {
-			if(p_ridx<0) theTable._rowno = -1;
-			if(p_ridx >= theTable.rows.length) theTable._rowno = theTable.rows.length - 1;
-			if(p_ridx>=0 && p_ridx < theTable.rows.length) theTable._rowno = p_ridx;
-			return theTable._rowno;
-		} else {
-			return theTable._rowno;
-		}
-	},
 	colMeta: function(theTable, col_name) {
 		return FCOLLECT.objectByKV(theTable.cols, {name: col_name});
 	},
@@ -1128,7 +1118,9 @@ WLIU.TABLEACTION.prototype = {
 	},
 	
 	getRow: function(theTable, theRow) {
-		return FCOLLECT.objectByKV(theTable.rows, {guid: theRow.guid});
+		if(theRow) {
+			return FCOLLECT.objectByKV(theTable.rows, {guid: theRow.guid});
+		} 
 	},
 	getRowByKeys: function(theTable, p_keys) {
 		return FCOLLECT.objectByKeys(theTable.rows, p_keys);
@@ -1163,7 +1155,6 @@ WLIU.TABLEACTION.prototype = {
 		return FROW.colChange(t_row, t_col);
 	},
 	setImage: function(theTable, theRow, col_name, oImg) {
-		//var ridx = oImg.rowsn?oImg.rowsn:0;
 		var t_col = this.getCol(theTable, theRow, col_name);
 		if( t_col ) {
 			var view = "medium";
@@ -1580,13 +1571,54 @@ WLIU.TABLEACTION.prototype = {
 	lastState: function(theTable) {
 		return !theTable.navi.pageno || !theTable.navi.pagetotal || theTable.navi.pageno>=theTable.navi.pagetotal || theTable.navi.pagetotal<=0;
 	},
-	nextRecord: function(theTable) {
-		this.rowno(theTable, theTable.rowno() + 1 );
+
+	/*
+	rowno: function(theTable, p_ridx) {
+		if(p_ridx!=undefined) {
+			if(p_ridx<0) theTable._rowno = -1;
+			if(p_ridx >= theTable.rows.length) theTable._rowno = theTable.rows.length - 1;
+			if(p_ridx>=0 && p_ridx < theTable.rows.length) theTable._rowno = p_ridx;
+			return theTable._rowno;
+		} else {
+			return theTable._rowno;
+		}
 	},
-	previousRecord: function(theTable) {
-		this.rowno(theTable, theTable.rowno() - 1 );
+	*/
+
+	rowno: function(theTable, guid) {
+		if(guid!=undefined) {
+			return this.index(theTable, guid);
+		} else {
+			return this.index(theTable, theTable.current);
+		}
+	},
+	naviLeft: function(theTable) {
+		var rowidx = this.rowno(theTable);
+		if(rowidx < 0) rowidx = 0;
+		if(rowidx > 0 && rowidx < theTable.rows.length) rowidx--;
+		theTable.current = theTable.rows[rowidx]?theTable.rows[rowidx].guid:""; 
+	},
+	leftState: function(theTable) {
+		var rowidx = this.rowno(theTable);
+		if(rowidx > 0 && table.rows.length > 0) 
+			return true;
+		else 
+			return false;
+	},
+	naviRight: function(theTable) {
+		var rowidx = this.rowno(theTable);
+		if(rowidx < 0) rowidx = 0;
+		if(rowidx >= theTable.rows.length - 1) rowidx = theTable.rows.length - 1;
+		if(rowidx >= 0 && rowidx < theTable.rows.length - 1) rowidx++;
+		theTable.current = theTable.rows[rowidx]?theTable.rows[rowidx].guid:""; 
+	},
+	rightState: function(theTable) {
+		var rowidx = this.rowno(theTable);
+		if(rowidx >= 0 && rowidx < theTable.rows.length - 1 && table.rows.length > 0) 
+			return true;
+		else 
+			return false;
 	}
-	
 }
 
 WLIU.FILEACTION = function(opts) {

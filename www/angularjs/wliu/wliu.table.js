@@ -258,7 +258,6 @@ wliu_table.directive("table.rowno", function () {
                         'popup-body="{{row.error.errorCode?row.error.errorMessage.nl2br():\'\'}}"',
                         'title="{{ tooltip?\'\':(row.error.errorCode ? row.error.errorMessage : \'\') }}"',
                     '>',
-                        //'{{table.getRow(row).rowstate}}-',
                         '<a class="wliu-btn16 wliu-btn16-rowstate-error"    ng-if="row.error.errorCode" ',
                             'title="{{ tooltip?\'\':( row.error.errorCode? row.error.errorMessage : \'\') }}"',
                         '>',
@@ -267,7 +266,6 @@ wliu_table.directive("table.rowno", function () {
                         '<a class="wliu-btn16 wliu-btn16-rowstate-save"     ng-if="row.error.errorCode==0 && row.rowstate==1"   title="Changed"></a>',
                         '<a class="wliu-btn16 wliu-btn16-rowstate-add"      ng-if="row.error.errorCode==0 && row.rowstate==2"   title="New"></a>',
                         '<a class="wliu-btn16 wliu-btn16-rowstate-delete"   ng-if="row.error.errorCode==0 && row.rowstate==3"   title="Deleted"></a>',
-                        //' - {{table.getRow(row).keys}}',
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
@@ -1565,7 +1563,7 @@ wliu_table.directive("table.checkbox1", function () {
                     '/>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys || {};
+            $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
             $scope.change = function(row, name) {
                 $scope.table.colList(name).keys.guid = row.guid;
                 $scope.table.colList(name).keys.name = name;
@@ -2425,7 +2423,7 @@ wliu_table.directive("table.radio1", function () {
             targetid:   "@",
             tooltip:    "@"
         },
-        template: [     '<input  type="text" readonly class="wliuCommon-radiolist" value="{{ valueDesc() }}" ',
+        template: [     '<input  type="text" readonly class="wliuCommon-radiolist" value="{{ valueText() }}" ',
                                 'ng-click="change(row, name)" ',
                                 'diag-target="#{{targetid}}" diag-toggle="click" ',
                                 'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
@@ -2437,17 +2435,16 @@ wliu_table.directive("table.radio1", function () {
                         '/>'
                 ].join(''),
         controller: function ($scope) {
-            //$scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
-            $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.colMeta($scope.name).list ].keys || {};
+            $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
             $scope.change = function(row, name) {
                 $scope.table.colList(name).keys.guid = row.guid;
                 $scope.table.colList(name).keys.name = name;
             }
 
-            $scope.valueDesc = function() {
-                var val =  $scope.table.getCol($scope.row, $scope.name)?$scope.table.getCol($scope.row, $scope.name).value:"";
-                var valText = $scope.table.FCOLLECT.firstByKV( $scope.table.colList($scope.name).list, {key:val})?$scope.table.FCOLLECT.firstByKV( $scope.table.colList($scope.name).list, {key:val} ).value:"";
-                return valText;
+            $scope.valueText = function() {
+               var val =  $scope.table.getCol($scope.row, $scope.name)?$scope.table.getCol($scope.row, $scope.name).value:"";
+               var valText = FCOLLECT.firstByKV( $scope.table.colList($scope.name).list, {key:val})?FCOLLECT.firstByKV( $scope.table.colList($scope.name).list, {key:val} ).value:"";
+               return valText;
             }
         },
         link: function (sc, el, attr) {
@@ -2507,13 +2504,11 @@ wliu_table.directive("table.radiodiag1", function () {
                 ].join(''),
         controller: function ($scope) {
             $scope.table.lists[$scope.name].keys = $scope.table.lists[$scope.name].keys || {};
-
             $scope.valueText = function(guid, name) {
                 var val =  $scope.table.getColByGuid(guid, name)?$scope.table.getColByGuid(guid, name).value:"";
-                var valueText = $scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.name].list, {key:val} )?$scope.table.FCOLLECT.firstByKV( $scope.table.lists[$scope.name].list, {key:val} ).value:"";
+                var valueText = FCOLLECT.firstByKV($scope.table.lists[$scope.name].list, {key:val})?FCOLLECT.firstByKV($scope.table.lists[$scope.name].list, {key:val}).value:"";
                 return valueText;
             }
-            
         },
         link: function (sc, el, attr) {
             $(function(){
@@ -2606,6 +2601,7 @@ wliu_table.directive("table.radio2", function () {
                                 'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                                 common_scope,
                                 common_ng_class,
+                                common_ng_disabled,
                                 common_ng_hide,
                         '/>'
                 ].join(''),
@@ -2646,7 +2642,7 @@ wliu_table.directive("table.radiodiag2", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
+            name:       "@",  //listName
             targetid:   "@",
             colnum:     "@",
             colnum1:    "@",
@@ -2654,19 +2650,23 @@ wliu_table.directive("table.radiodiag2", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" wliu-diag movable maskable class="container" scope="{{ table.scope }}">',
+                    '<div id="{{targetid}}" wliu-diag movable maskable class="container" ',
+                        common_scope,
+                    '>',
                         '<div wliu-diag-head>{{ title }}</div>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
                                 '<ul class="wliu-selectlist-content">',
-                                    '<li ng-repeat="vObj in valueArr(table.lists[name].keys.row, table.lists[name].keys.name)">',
+                                    '<li ng-repeat="vObj in valueArr(table.lists[name].keys.guid, table.lists[name].keys.name)">',
                                     '{{ vObj.value }}',
                                     '</li>',
                                 '</ul>',
                             '</div>',
                         '</a>',
-                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
+                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-show="bar==1" ',
+                            common_ng_options,
+                        '/>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-body" style="font-size:14px;">',
                             '<span style="display:none;" ng-repeat-start="rdObj in table.lists[name].list|filter:search"></span>',
@@ -2677,16 +2677,15 @@ wliu_table.directive("table.radiodiag2", function () {
                                                 '<ul style="border-top:1px solid #cccccc;">',
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="radio">',
-                                                                    '<input type="radio" scope="{{ table.scope }}" name="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}" id="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{tdObj.key}}" ',
-                                                                        'ng-model="table.getCol( table.lists[name].keys.name, table.lists[name].keys.row ).value" ng-value="tdObj.key"  ',
-                                                                        'ng-change="table.changeCol(table.lists[name].keys.name, table.lists[name].keys.row)" ',
-                                                                        'ng-disabled="table.getCol( table.lists[name].keys.name, table.lists[name].keys.row )==undefined" ',
+                                                                    '<input type="radio" name="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}" id="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{tdObj.key}}" ',
+                                                                        'ng-model="table.getColByGuid( table.lists[name].keys.guid, table.lists[name].keys.name).value" ng-value="tdObj.key"  ',
+                                                                        'ng-change="table.changeColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name)" ',
+                                                                        'ng-disabled="table.getColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name)==undefined" ',
+                                                                        common_scope,
                                                                     '/>',
-
                                                                     '<label for="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
-
                                                             '</span>',
                                                             '<br ng-if="colnum1>0?(($index+1)%colnum1)==0:false" />',  
                                                         '</span>',                                                  
@@ -2702,13 +2701,13 @@ wliu_table.directive("table.radiodiag2", function () {
         controller: function ($scope) {
             $scope.table.lists[$scope.name].keys = $scope.table.lists[$scope.name].keys || {};
 
-            $scope.valueArr = function(row, name) {
+            $scope.valueArr = function(guid, name) {
                 var ret_arr = [];
                 for(var key in $scope.table.lists[$scope.name].list) {
                     var dList = $scope.table.lists[$scope.name].list[key].list;
                     var valueArr = $.map( dList , function(n) {
-                        if( $scope.table.getCol( name, row )!= undefined  ) {
-                                if( $scope.table.getCol( name, row ).value == n.key ) 
+                        if( $scope.table.getColByGuid(guid, name)!= undefined  ) {
+                                if( $scope.table.getColByGuid(guid, name).value == n.key ) 
                                         return n;
                                 else
                                         return null;
@@ -2736,15 +2735,18 @@ wliu_table.directive("table.radiolist2", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
-            row:      "=",
+            row:        "=",
+            name:       "@",  // col_name
             colnum:     "@",
             colnum1:    "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)">',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;"',
+                        common_scope,
+                        common_ng_hide,
+                    '>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
@@ -2755,10 +2757,12 @@ wliu_table.directive("table.radiolist2", function () {
                                 '</ul>',
                             '</div>',
                         '</a>',
-                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
+                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-show="bar==1" ',
+                            common_ng_options,
+                        '/>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="font-size:14px;">',
-                            '<span style="display:none;" ng-repeat-start="rdObj in table.lists[table.colMeta(name).list].list|filter:search"></span>',
+                            '<span style="display:none;" ng-repeat-start="rdObj in table.colList(name).list|filter:search"></span>',
                                     '<div class="col-md-{{colnum}} col-sm-{{colnum}} col-xs-12" ng-if="rdObj.list && rdObj.list.length>0">',
                                         '<ul>',
                                             '<li title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
@@ -2766,16 +2770,15 @@ wliu_table.directive("table.radiolist2", function () {
                                                 '<ul style="border-top:1px solid #cccccc;">',
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="radio">',
-                                                                    '<input type="radio" scope="{{ table.scope }}" name="{{table.scope}}_{{name}}_{{row}}" id="{{table.scope}}_{{name}}_{{row}}_{{tdObj.key}}" ',
+                                                                    '<input type="radio" name="{{table.scope}}_{{name}}_{{row}}" id="{{table.scope}}_{{name}}_{{row}}_{{tdObj.key}}" ',
                                                                         'ng-model="table.getCol( name, row ).value" ng-value="tdObj.key"  ',
-                                                                        'ng-change="table.changeCol(row, name)" ',
-                                                                        'ng-disabled="table.getCol( name, row )==undefined" ',
+                                                                        common_scope,
+                                                                        common_ng_change,
+                                                                        common_ng_disabled,
                                                                     '/>',
-
                                                                     '<label for="{{table.scope}}_{{name}}_{{row}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
-
                                                             '</span>',
                                                             '<br ng-if="colnum1>0?(($index+1)%colnum1)==0:false" />',  
                                                         '</span>',                                                  
@@ -2791,11 +2794,11 @@ wliu_table.directive("table.radiolist2", function () {
         controller: function ($scope) {
             $scope.valueArr = function() {
                 var ret_arr = [];
-                for(var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list) {
-                    var dList = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key].list;
-                    var valueArr = $.map( dList , function(n) {
-                        if( $scope.table.getCol( $scope.name, $scope.row  )!= undefined  ) {
-                                if( $scope.table.getCol( $scope.name, $scope.row  ).value == n.key ) 
+                for(var key in $scope.table.colList($scope.name).list) {
+                    var dList = $scope.table.colList($scope.name).list[key].list;
+                    var valueArr = $.map(dList , function(n) {
+                        if( $scope.table.getCol($scope.row, $scope.name)!= undefined  ) {
+                                if( $scope.table.getCol($scope.row, $scope.name).value == n.key ) 
                                         return n;
                                 else
                                         return null;
@@ -2885,7 +2888,9 @@ wliu_table.directive("table.radiodiag3", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" wliu-diag movable maskable class="container" scope="{{ table.scope }}">',
+                    '<div id="{{targetid}}" wliu-diag movable maskable class="container" ',
+                        common_scope,
+                    '>',
                         '<div wliu-diag-head>{{ title }}</div>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
@@ -2897,7 +2902,9 @@ wliu_table.directive("table.radiodiag3", function () {
                                 '</ul>',
                             '</div>',
                         '</a>',
-                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
+                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-show="bar==1" ',
+                            common_ng_options,
+                        '/>',
                         '<select class="wliuCommon-filter" ',
                                 'ng-model="listFilter.key" ',
                                 'ng-options="sObj.key as sObj.value for sObj in table.lists[name].list" ',                        
@@ -2915,10 +2922,11 @@ wliu_table.directive("table.radiodiag3", function () {
                                                 '<ul style="border-top:1px solid #cccccc;">',
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="radio">',
-                                                                    '<input type="radio" scope="{{ table.scope }}" name="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}" id="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{tdObj.key}}" ',
+                                                                    '<input type="radio" name="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}" id="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{tdObj.key}}" ',
                                                                         'ng-model="table.getColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name).value" ng-value="tdObj.key"  ',
                                                                         'ng-change="table.changeColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name)" ',
                                                                         'ng-disabled="table.getColByGuid(table.lists[name].keys.guid, table.lists[name].keys.name)==undefined" ',
+                                                                        common_scope,
                                                                     '/>',
                                                                     '<label for="{{table.scope}}_{{name}}_{{table.lists[name].keys.name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
@@ -2977,15 +2985,18 @@ wliu_table.directive("table.radiolist3", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
-            row:      "=",
+            row:        "=",
+            name:       "@", // col_name
             colnum:     "@",
             colnum1:    "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)">',
+                    '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" ',
+                        common_scope,
+                        common_ng_hide,
+                    '>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title">Selected Items</div>',
@@ -2996,16 +3007,18 @@ wliu_table.directive("table.radiolist3", function () {
                                 '</ul>',
                             '</div>',
                         '</a>',
-                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }"  ng-show="bar==1" />',
+                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-show="bar==1" ',
+                            common_ng_options,
+                        '/>',
                         '<select class="wliuCommon-filter" ',
                                 'ng-model="listFilter.key" ',
-                                'ng-options="sObj.key as sObj.value for sObj in table.lists[table.colMeta(name).list].list" ',                        
-                        ' ng-show="bar==1">',
+                                'ng-options="sObj.key as sObj.value for sObj in table.colList(name).list" ',                        
+                        'ng-show="bar==1">',
                         '<option value=""></option>',
                         '</select>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
                         '<div class="wliu-diag-content" style="font-size:14px;">',
-                            '<span style="display:none;" ng-repeat-start="bbObj in table.lists[table.colMeta(name).list].list|filter:getListFilter()"></span>',
+                            '<span style="display:none;" ng-repeat-start="bbObj in table.colList(name).list|filter:getListFilter()"></span>',
                             '<span style="display:none;" ng-repeat-start="rdObj in bbObj.list|filter:search"></span>',
                                     '<div class="col-md-{{colnum}} col-sm-{{colnum}} col-xs-12" ng-if="rdObj.list && rdObj.list.length>0">',
                                         '<ul>',
@@ -3014,16 +3027,15 @@ wliu_table.directive("table.radiolist3", function () {
                                                 '<ul style="border-top:1px solid #cccccc;">',
                                                         '<span ng-repeat="tdObj in rdObj.list|filter:search">',
                                                             '<span class="radio">',
-                                                                    '<input type="radio" scope="{{ table.scope }}" name="{{table.scope}}_{{name}}_{{row}}" id="{{table.scope}}_{{name}}_{{row}}_{{tdObj.key}}" ',
+                                                                    '<input type="radio" name="{{table.scope}}_{{name}}_{{row}}" id="{{table.scope}}_{{name}}_{{row}}_{{tdObj.key}}" ',
                                                                         'ng-model="table.getCol( name, row ).value" ng-value="tdObj.key"  ',
-                                                                        'ng-change="table.changeCol(row, name)" ',
-                                                                        'ng-disabled="table.getCol( name, row )==undefined" ',
+                                                                        common_scope,
+                                                                        common_ng_change,
+                                                                        common_ng_disabled,
                                                                     '/>',
-
                                                                     '<label for="{{table.scope}}_{{name}}_{{row}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
-
                                                             '</span>',
                                                             '<br ng-if="colnum1>0?(($index+1)%colnum1)==0:false" />',  
                                                         '</span>',                                                  
@@ -3038,7 +3050,7 @@ wliu_table.directive("table.radiolist3", function () {
             
                 ].join(''),
         controller: function ($scope) {
-            $scope.table.lists[$scope.table.colMeta($scope.name).list].keys = $scope.table.lists[$scope.table.colMeta($scope.name).list].keys || {};
+            $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
             $scope.listFilter = $scope.listFilter || {};
 
             $scope.getListFilter = function() {
@@ -3048,14 +3060,14 @@ wliu_table.directive("table.radiolist3", function () {
 
             $scope.valueArr = function() {
                 var ret_arr = [];
-                for(var key in $scope.table.lists[$scope.table.colMeta($scope.name).list].list) {
-                    var dList = $scope.table.lists[$scope.table.colMeta($scope.name).list].list[key].list;
-                    var valueArr = $.map( dList , function(n) {
-                        if( $scope.table.getCol( $scope.name, $scope.row  )!= undefined  ) {
-                                if( $scope.table.getCol( $scope.name, $scope.row  ).value == n.key ) 
-                                        return n;
+                for(var key in $scope.table.colList($scope.name).list) {
+                    var dList = $scope.table.colList($scope.name).list[key].list;
+                    var valueArr = $.map(dList , function(n) {
+                        if( $scope.table.getCol($scope.row, $scope.name)!= undefined  ) {
+                                if( $scope.table.getCol($scope.row, $scope.name).value == n.key ) 
+                                    return n;
                                 else
-                                        return null;
+                                    return null;
                         } else {
                             return null;
                         }
@@ -3078,14 +3090,15 @@ wliu_table.directive("table.bgroup", function () {
         transclude: true,           
         scope: {
             table:      "=",
-            row:      "=",
+            row:        "=",
             actname:    "@"
         },
         template: [
                     '<div class="dropdown" style="white-space:nowrap;">',
-                        '<button scope="{{ table.scope }} class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" ',
-                         'style="font-size:0.8em;" ',
-                         'ng-class="{\'btn-info\': table.getRow(row).rowstate==0, \'btn-warning\': table.getRow(row).rowstate!=0}"',
+                        '<button type="button" data-toggle="dropdown" ',
+                            'style="font-size:0.8em;" ',
+                            'ng-class="{\'btn-info\': table.getRow(row).rowstate==0, \'btn-warning\': table.getRow(row).rowstate!=0}" ',
+                            common_scope,
                          '>',
                             '{{actname}} ',
                             '<i class="fa fa-1 fa-caret-down"></i>',
@@ -3107,7 +3120,6 @@ wliu_table.directive("table.next", function (wliuTableService) {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
             actname:    "@",
             action:     "&"
         },
@@ -3115,7 +3127,7 @@ wliu_table.directive("table.next", function (wliuTableService) {
                     '<span>',
                         '<button class="btn btn-outline-primary waves-effect" ',
                             'ng-click="naviRecord()" ',
-                            'ng-if="table.rowno()<table.rows.length-1 && table.rows.length>0 && table.rowno()>=0"',
+                            'ng-if="table.leftState()"',
                         '>',
                             '{{actname?actname:name}}',
                         '</button>',
@@ -3124,7 +3136,7 @@ wliu_table.directive("table.next", function (wliuTableService) {
         controller: function ($scope) {
             $scope.naviRecord = function() {
                 // add you code here 
-                $scope.table.nextRecord();
+                $scope.table.naviLeft();
                 // end of code
                 $scope.action(); // trigger outside event
             }
@@ -3140,7 +3152,6 @@ wliu_table.directive("table.previous", function (wliuTableService) {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
             actname:    "@",
             action:     "&"
         },
@@ -3148,16 +3159,16 @@ wliu_table.directive("table.previous", function (wliuTableService) {
                     '<span>',
                         '<button class="btn btn-outline-primary waves-effect" ',
                             'ng-click="naviRecord()" ',
-                            'ng-if="table.rows.length>0 && table.rowno()>0"',
+                            'ng-if="table.rightState()"',
                         '>',
-                            '{{actname?actname:name}}',
+                            '{{actname}}',
                         '</button>',
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
             $scope.naviRecord = function() {
                 // add you code here 
-                $scope.table.previousRecord();
+                $scope.table.naviRight();
                 // end of code
                 $scope.action(); // trigger outside event
             }
@@ -3173,28 +3184,30 @@ wliu_table.directive("table.blink", function (wliuTableService) {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
+            row:        "=",
             name:       "@",
             actname:    "@",
             action:     "&"
         },
         template: [
-                    '<span><a href="javascript:void(0);" class="wliuCommon-table-btn16" scope="{{ table.scope }}" ',
-                        'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
-                        'ng-click="action1(table.getRow(row))" ',
-                         'ng-if="buttonState(name, table.getRow(row).rowstate)"',
-                    '>',
-                    '<i class="wliu-btn16 wliu-btn16-{{name}}"></i> ',
-                    '<span style="vertical-align:middle;">{{actname}}</span>',
-                    '</a></span>'
+                    '<span>',
+                        '<a href="javascript:void(0);" class="wliuCommon-table-btn16" ',
+                            'ng-click="action1(table.getRow(row))" ',
+                            'ng-if="buttonState(name, table.getRow(row).rowstate)" ',
+                            'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
+                             common_scope,
+                        '>',
+                            '<i class="wliu-btn16 wliu-btn16-{{name}}"></i> ',
+                            '<span style="vertical-align:middle;">{{actname}}</span>',
+                        '</a>',
+                    '</span>'
                 ].join(''),
         controller: function ($scope) {
             $scope.action1 = function(theRow) {
                 // add you code here 
                 switch( $scope.name.toLowerCase() ) {
                     case "detail":
-                        var ridx = $scope.table.indexByKeys(theRow.keys);
-                        $scope.table.rowno(ridx);
+                        $scope.table.current = theRow.guid;
                         break;
                     case "save":
                         $scope.table.saveRow(theRow);
@@ -3247,12 +3260,13 @@ wliu_table.directive("table.tablebutton", function (wliuTableService) {
         },
         template: [
                     '<span>',
-                        '<button class="btn btn{{ outline==1?\'-outline\':\'\'}}-{{ buttonStyle() }} waves-effect" scope="{{ table.scope }}" ',
+                        '<button class="btn btn{{ outline==1?\'-outline\':\'\'}}-{{ buttonStyle() }} waves-effect" ',
                             'style="min-width:60px;" ',
-                            'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
+                            'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                             'ng-click="action1()" ',
+                            common_scope,
                         '>',
-                        '{{actname}}',
+                            '{{actname}}',
                         '</button>',
                     '</span>'
                 ].join(''),
@@ -3325,7 +3339,7 @@ wliu_table.directive("table.singlebutton", function (wliuTableService) {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
+            row:        "=",
             name:       "@",
             actname:    "@",
             action:     "&",
@@ -3336,16 +3350,17 @@ wliu_table.directive("table.singlebutton", function (wliuTableService) {
         },
         template: [
                     '<span>',
-                        '<button class="btn btn{{ outline==1?\'-outline\':\'\'}}-{{ buttonStyle() }} waves-effect" scope="{{ table.scope }}" ',
+                        '<button class="btn btn{{ outline==1?\'-outline\':\'\'}}-{{ buttonStyle() }} waves-effect" ',
                             'style="min-width:60px;" ',
-                            'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
+                            'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                             'ng-disabled="!buttonState(name, table.getRow(row).rowstate)" ',
                             'ng-click="action1(table.getRow(row))" ',
-                            'title="{{ table.getRow(row).error.errorCode ? table.getRow(row).error.errorMessage : \'\' }}"',
+                            'title="{{ table.getRow(row).error.errorCode ? table.getRow(row).error.errorMessage : \'\' }}" ',
+                            common_scope,
                         '>',
-                        '<span style="vertical-align:middle;">',
-                            '{{actname}}',
-                        '</span>',
+                            '<span style="vertical-align:middle;">',
+                                '{{actname}}',
+                            '</span>',
                         '</button>',
                     '</span>'
                 ].join(''),
@@ -3405,7 +3420,7 @@ wliu_table.directive("table.rowbutton", function (wliuTableService) {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
+            row:        "=",
             name:       "@",
             actname:    "@",
             action:     "&",
@@ -3416,24 +3431,25 @@ wliu_table.directive("table.rowbutton", function (wliuTableService) {
         },
         template: [
                     '<span>',
-                        '<button class="btn btn{{ outline==1?\'-outline\':\'\'}}-{{ buttonStyle() }} waves-effect" scope="{{ table.scope }}" ',
+                        '<button class="btn btn{{ outline==1?\'-outline\':\'\'}}-{{ buttonStyle() }} waves-effect" ',
                             'style="min-width:60px;" ',
-                            'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
+                            'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                             'ng-click="action1(table.getRow(row))" ',
                             'ng-if="buttonState(name, table.getRow(row).rowstate)" ',
-                            'title="{{ table.getRow(row).error.errorCode ? table.getRow(row).error.errorMessage : \'\' }}"',
+                            'title="{{ table.getRow(row).error.errorCode ? table.getRow(row).error.errorMessage : \'\' }}" ',
+                            common_scope,
                         '>',
-                        '<span ng-if="icon==1" style="vertical-align:middle;">',
-                            '<i class="wliu-btn16 wliu-btn16-rowstate-error"    ng-if="table.getRow(row).error.errorCode" ',
-                                'title="{{ table.getRow(row).error.errorCode ? table.getRow(row).error.errorMessage : \'\' }}"',
-                            '></i> ',
-                            '<i class="wliu-btn16 wliu-btn16-rowstate-save"     ng-if="table.getRow(row).error.errorCode==0 && table.getRow(row).rowstate==1" title="Changed"></i> ',
-                            '<i class="wliu-btn16 wliu-btn16-rowstate-add"      ng-if="table.getRow(row).error.errorCode==0 && table.getRow(row).rowstate==2" title="New"></i> ',
-                            '<i class="wliu-btn16 wliu-btn16-rowstate-delete"   ng-if="table.getRow(row).error.errorCode==0 && table.getRow(row).rowstate==3" tilte="Deleted"></i> ',
-                        '</span>',
-                        '<span style="vertical-align:middle;">',
-                            '{{actname}}',
-                        '</span>',
+                            '<span ng-if="icon==1" style="vertical-align:middle;">',
+                                '<i class="wliu-btn16 wliu-btn16-rowstate-error"    ng-if="table.getRow(row).error.errorCode" ',
+                                    'title="{{ table.getRow(row).error.errorCode ? table.getRow(row).error.errorMessage : \'\' }}"',
+                                '></i> ',
+                                '<i class="wliu-btn16 wliu-btn16-rowstate-save"     ng-if="table.getRow(row).error.errorCode==0 && table.getRow(row).rowstate==1" title="Changed"></i> ',
+                                '<i class="wliu-btn16 wliu-btn16-rowstate-add"      ng-if="table.getRow(row).error.errorCode==0 && table.getRow(row).rowstate==2" title="New"></i> ',
+                                '<i class="wliu-btn16 wliu-btn16-rowstate-delete"   ng-if="table.getRow(row).error.errorCode==0 && table.getRow(row).rowstate==3" tilte="Deleted"></i> ',
+                            '</span>',
+                            '<span style="vertical-align:middle;">',
+                                '{{actname}}',
+                            '</span>',
                         '</button>',
                     '</span>'
                 ].join(''),
@@ -3465,8 +3481,7 @@ wliu_table.directive("table.rowbutton", function (wliuTableService) {
                 // add you code here 
                 switch( $scope.name.toLowerCase() ) {
                     case "detail":
-                        var ridx = $scope.table.indexByKeys(theRow.keys);
-                        $scope.table.rowno(ridx);
+                        $scope.table.current = theRow.guid;
                         break;
                     case "save":
                         $scope.table.saveRow(theRow);
@@ -3521,7 +3536,7 @@ wliu_table.directive("table.bicon", function (wliuTableService) {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
+            row:        "=",
             xsize:      "@",
             name:       "@",
             actname:    "@",
@@ -3530,13 +3545,14 @@ wliu_table.directive("table.bicon", function (wliuTableService) {
         },
         template: [
                     '<span>',
-                    '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" scope="{{ table.scope }}" ',
-                        'ng-click="action1(table.getRow(row))" ',
-                        'ng-if="buttonState(name, table.getRow(row).rowstate)"',
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" popup-placement="down" ',
-                        'title="{{tooltip?\'\':actname?actname:name}}" ',
-                    '>',
-                    '</a>',
+                        '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" ',
+                            'ng-click="action1(table.getRow(row))" ',
+                            'ng-if="buttonState(name, table.getRow(row).rowstate)" ',
+                            'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" popup-placement="down" ',
+                            'title="{{tooltip?\'\':actname?actname:name}}" ',
+                            common_scope,
+                        '>',
+                        '</a>',
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
@@ -3546,8 +3562,7 @@ wliu_table.directive("table.bicon", function (wliuTableService) {
                 // add you code here 
                  switch( $scope.name.toLowerCase() ) {
                     case "detail":
-                        var ridx = $scope.table.indexByKeys(theRow.keys);
-                        $scope.table.rowno(ridx);
+                        $scope.table.current = theRow.guid;
                         break;
                     case "save":
                         $scope.table.saveRow(theRow);
@@ -3590,20 +3605,21 @@ wliu_table.directive("table.btext", function (wliuTableService) {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
+            row:        "=",
             name:       "@",
             actname:    "@",
             action:     "&"
         },
         template: [
                     '<span>',
-                    '<a href="javascript:void(0)" class="wliu-table-button" scope="{{ table.scope }}" ',
-                        'title="{{actname?actname:name}}" ',
-                        'ng-click="action1(table.getRow(row))" ',
-                        'ng-if="buttonState(name, table.getRow(row).rowstate)" ',    
-                    '>',
-                    '{{actname?actname:name.capital()}}',
-                    '</a>',
+                        '<a href="javascript:void(0)" class="wliu-table-button" ',
+                            'title="{{actname?actname:name}}" ',
+                            'ng-click="action1(table.getRow(row))" ',
+                            'ng-if="buttonState(name, table.getRow(row).rowstate)" ',   
+                            common_scope, 
+                        '>',
+                            '{{actname?actname:name.capital()}}',
+                        '</a>',
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
@@ -3611,8 +3627,7 @@ wliu_table.directive("table.btext", function (wliuTableService) {
                 // add you code here 
                  switch( $scope.name.toLowerCase() ) {
                     case "detail":
-                        var ridx = $scope.table.indexByKeys(theRow.keys);
-                        $scope.table.rowno(ridx);
+                        $scope.table.current = theRow.guid;
                         break;
                     case "save":
                         $scope.table.saveRow(theRow);
@@ -3660,9 +3675,10 @@ wliu_table.directive("table.hgroup", function () {
         },
         template: [
                     '<div class="dropdown" style="white-space:nowrap;">',
-                        '<button scope="{{ table.scope }} class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ',
+                        '<button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ',
                              'style="font-size:0.8em;" ',
-                             'ng-class="{\'btn-info\':  rowstate()==0, \'btn-warning\':  rowstate()!=0}"',
+                             'ng-class="{\'btn-info\':  rowstate()==0, \'btn-warning\':  rowstate()!=0}" ',
+                             common_scope,
                          '>',
                             '{{actname}} ',
                             '<i class="fa fa-1 fa-caret-down"></i>',
@@ -3696,14 +3712,17 @@ wliu_table.directive("table.hlink", function (wliuTableService) {
             action:     "&"
         },
         template: [
-                    '<span><a href="javascript:void(0);" class="wliuCommon-table-btn16" scope="{{ table.scope }}" ',
-                        'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
-                        'ng-click="action1()" ',
-                        'ng-if="buttonState(name, rowstate())"',
-                    '>',
-                    '<i class="wliu-btn16 wliu-btn16-{{name}}"></i> ',
-                    '<span style="vertical-align:middle;">{{actname}}</span>',
-                    '</a></span>'
+                    '<span>',
+                        '<a href="javascript:void(0);" class="wliuCommon-table-btn16" ',
+                            'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                            'ng-click="action1()" ',
+                            'ng-if="buttonState(name, rowstate())" ',
+                            common_scope,
+                        '>',
+                            '<i class="wliu-btn16 wliu-btn16-{{name}}"></i> ',
+                            '<span style="vertical-align:middle;">{{actname}}</span>',
+                        '</a>',
+                    '</span>'
                 ].join(''),
         controller: function ($scope) {
             $scope.action1 = function() {
@@ -3759,13 +3778,14 @@ wliu_table.directive("table.hicon", function (wliuTableService) {
         },
         template: [
                     '<span>',
-                    '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" scope="{{ table.scope }}" ',
-                        'ng-click="action1()" ',
-                        'ng-if="buttonState(name, rowstate())"',
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" popup-placement="down" ',
-                        'title="{{tooltip?\'\':actname?actname:name}}" ',
-                    '>',
-                    '</a>',
+                        '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" ',
+                            'ng-click="action1()" ',
+                            'ng-if="buttonState(name, rowstate())" ',
+                            'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" popup-placement="down" ',
+                            'title="{{tooltip?\'\':actname?actname:name}}" ',
+                            common_scope,
+                        '>',
+                        '</a>',
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
@@ -3821,13 +3841,14 @@ wliu_table.directive("table.htext", function (wliuTableService) {
         },
         template: [
                     '<span>',
-                    '<a href="javascript:void(0)" class="wliu-table-hbutton" scope="{{ table.scope }}" ',
-                            'title="{{ actname?actname:name }}" ',
-                            'ng-click="action1()"',
-                            'ng-if="buttonState(name, rowstate())"',                     
-                    '>',
-                    '{{ actname?actname:name.capital() }}',
-                    '</a>',
+                        '<a href="javascript:void(0)" class="wliu-table-hbutton" ',
+                                'title="{{ actname?actname:name }}" ',
+                                'ng-click="action1()" ',
+                                'ng-if="buttonState(name, rowstate())" ',  
+                                common_scope,                   
+                        '>',
+                            '{{ actname?actname:name.capital() }}',
+                        '</a>',
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
@@ -3875,15 +3896,15 @@ wliu_table.directive("table.rowerror", function (wliuTableService) {
         replace: true,
         scope: {
             table:      "=",
-            targetid:   "@",
-            row:      "="
+            row:        "=",
+            targetid:   "@"
         },
         template: [
                     '<div id="{{targetid}}" wliu-diag movable maskable>',
                         '<div wliu-diag-head>Message</div>',
                         '<div wliu-diag-body style="font-size:16px;">',
-                        '<i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true" style="color:red;"></i> <span style="font-size:16px;">We can\'t process submitted data:</span>',
-                        '<div style="margin-top:12px;" ng-bind-html="getHTML()"></div>',
+                            '<i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true" style="color:red;"></i> <span style="font-size:16px;">We can\'t process submitted data:</span>',
+                            '<div style="margin-top:12px;" ng-bind-html="getHTML()"></div>',
                         '</div>',    
                     '</div>'
                 ].join(''),
@@ -3922,9 +3943,9 @@ wliu_table.directive("table.taberror", function (wliuTableService) {
         template: [
                     '<div id="{{targetid}}" wliu-diag movable maskable>',
                         '<div wliu-diag-head>Message</div>',
-                        '<div wliu-diag-body style="font-size:16px;">',
-                        '<i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true" style="color:red;"></i> <span style="font-size:16px;">We can\'t process submitted data:</span>',
-                        '<div style="margin-top:12px;" ng-bind-html="getHTML()"></div>',
+                            '<div wliu-diag-body style="font-size:16px;">',
+                            '<i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true" style="color:red;"></i> <span style="font-size:16px;">We can\'t process submitted data:</span>',
+                            '<div style="margin-top:12px;" ng-bind-html="getHTML()"></div>',
                         '</div>',    
                     '</div>'
                 ].join(''),
