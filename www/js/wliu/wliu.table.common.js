@@ -1128,6 +1128,14 @@ WLIU.TABLEACTION.prototype = {
 	getRowByGuid: function(theTable, guid) {
 		return FCOLLECT.objectByKV(theTable.rows, {guid: guid});
 	},
+	getCurrent: function(theTable) {
+		var rowidx = this.index(theTable, theTable.current);
+		if(rowidx>=0 && rowidx<theTable.rows.length) {
+			return theTable.rows[rowidx];
+		} else {
+			return undefined;
+		}
+	},
 	getCol: function(theTable, theRow, col_name) {
 		var t_row = this.getRow(theTable, theRow);
 		if( t_row != undefined ) {
@@ -1240,6 +1248,7 @@ WLIU.TABLEACTION.prototype = {
 			theTable.sc.$apply();
  		}
 	},
+	// client side remove the record from array and table rows
 	removeRow: function(theTable, theRow) {
 		if( theTable && theRow ) {
 			var ridx = this.index(theTable, theRow.guid);
@@ -1247,6 +1256,7 @@ WLIU.TABLEACTION.prototype = {
 		}
 		return theRow;
 	},
+	// client side mark deleted, record still there
 	detachRow: function(theTable, theRow) {
 		return FROW.detach(theRow);
 	},
@@ -1592,27 +1602,27 @@ WLIU.TABLEACTION.prototype = {
 			return this.index(theTable, theTable.current);
 		}
 	},
-	naviLeft: function(theTable) {
+	navLeft: function(theTable) {
 		var rowidx = this.rowno(theTable);
 		if(rowidx < 0) rowidx = 0;
 		if(rowidx > 0 && rowidx < theTable.rows.length) rowidx--;
 		theTable.current = theTable.rows[rowidx]?theTable.rows[rowidx].guid:""; 
 	},
-	leftState: function(theTable) {
+	navLeftState: function(theTable) {
 		var rowidx = this.rowno(theTable);
 		if(rowidx > 0 && table.rows.length > 0) 
 			return true;
 		else 
 			return false;
 	},
-	naviRight: function(theTable) {
+	navRight: function(theTable) {
 		var rowidx = this.rowno(theTable);
 		if(rowidx < 0) rowidx = 0;
 		if(rowidx >= theTable.rows.length - 1) rowidx = theTable.rows.length - 1;
 		if(rowidx >= 0 && rowidx < theTable.rows.length - 1) rowidx++;
 		theTable.current = theTable.rows[rowidx]?theTable.rows[rowidx].guid:""; 
 	},
-	rightState: function(theTable) {
+	navRightState: function(theTable) {
 		var rowidx = this.rowno(theTable);
 		if(rowidx >= 0 && rowidx < theTable.rows.length - 1 && table.rows.length > 0) 
 			return true;

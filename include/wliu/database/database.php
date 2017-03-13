@@ -529,16 +529,50 @@ class cMYSQL implements iSQL {
 		}
 	}
 	
-	public function phone($phone_col, $phone_str ) {
-		return "replace(replace(replace($phone_col,' ',''),'-',''),'.','') = '" . str_replace(array(" ","-","."), array("","",""), $phone_str ) . "'";
+	public function phone($phone_col, $oper, $phone_str) {
+		return $this->express($phone_col, $oper, $phone_str, array(",","-","."), "");
 	}
+	public function express( $p_col, $oper, $p_val, $searchArr, $replaceArr) {
+		$colName 	= $p_col;
+		$colVal 	= $this->quote($p_val);
+		$ret_str 	= $colName . " " . $oper . " '" . $colVal . "'";
 
-	
+		if(is_array($searchArr)) {
+			$colNameLevel 	= array();
+			$level 			= 0;
+			$colNameLevel[$level] = $p_col;
+			foreach($searchArr as $sidx=>$searchStr) {
+				$level++;
+				if( is_array($replaceArr) )
+					$colNameLevel[$level] = "replace(" . $colNameLevel[$level-1] . ", '" . $this->quote($searchStr) . "', '"  . $this->quote($replaceArr[$sidx]) . "')";
+				else 
+					$colNameLevel[$level] = "replace(" . $colNameLevel[$level-1] . ", '" . $this->quote($searchStr) . "', '"  . $this->quote($replaceArr) . "')";
+			}
+			$colName 	= $colNameLevel[count($colNameLevel)-1];
+			$colVal 	= str_replace($searchArr, $replaceArr, $p_val);
+		} else {
+			if( $searchArr!="" ) {
+				$colName 	= "replace($p_col, '" . $this->quote($searchArr) . "','" . $this->quote($replaceArr) . "')";	
+				$colVal 	= str_replace($searchArr, $replaceArr, $p_val);
+			}	
+		}
+
+		switch( strtolower($oper) ) {
+			case "=":
+				$ret_str = $colName . " = " . "'" . $this->quote($colVal) . "'";
+				break;
+			case "like":
+				$ret_str = $colName . " LIKE " . "'%" . $this->quote($colVal) . "%'";
+				break;
+		}
+		return $ret_str;
+	}
 	/*************** Relational Table Functions ***********************************/
 	public function one(&$table) {
 		$colMap 	= $table["colmap"];
 		$colMeta 	= $table["colmeta"];
 		
+
 		// join tables 
 		$ptable = $table["metadata"]["primary"];
 		$pname  = $ptable["name"];
@@ -878,16 +912,17 @@ class cMYSQL implements iSQL {
 					if( $table["rights"]["add"] ) {
 						$dbCols = cACTION::getSaveCols($table, "primary", $row);
 						if(	count($dbCols["fields"]) >0 ) {
+							foreach( $dbCols["keys"] as $keyName=>&$dbCol ) {
+								$dbCols["fields"][$keyName] = "";
+								$dbCol = "";
+							}
+							
 							$dbCols["fields"] = cARRAY::arrayMerge($dbCols["fields"], $ptable["insert"]);
 							$dbCols["fields"] = cARRAY::arrayMerge($dbCols["fields"], array("created_time"=>time()));
 							$insertID = $this->insert($pname, $dbCols["fields"]);
-							foreach( $row["cols"] as &$colObj ) {
-								if( $colObj["key"] && !$colObj["value"]) $colObj["value"] = $insertID;
-							}
-							
 							// update keys insert id
 							foreach( $dbCols["keys"] as &$dbCol ) {
-								$dbCol = $dbCol?$dbCol:$insertID;
+								$dbCol = $insertID;
 							}
 						}
 

@@ -11,6 +11,7 @@ WLIU.IMAGELIST = function( opts ) {
 	this.imgViewer  = opts.imgViewer?opts.imgViewer:"";
 	this.imgEditor  = opts.imgEditor?opts.imgEditor:"";
 	this.action		= "get";
+	// keys required by server side database config file
 	this.keys 		= {key1:"", key2:"", key3:""};
 	this.config     = {
 						mode: 		"",
@@ -69,7 +70,7 @@ WLIU.IMAGELIST.prototype = {
 	},
 	navLeftState: function() {
 		if(this.rows.length <= 1) return false; 
-		if(this.currentIndex() == 0) return false; 
+		if(this.currentIndex() <= 0) return false; 
 		return true;
 	},
 	navRight: function(callback) {

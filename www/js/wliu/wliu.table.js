@@ -102,6 +102,9 @@ WLIU.TABLE.prototype = {
 	getRowByGuid: function(guid) {
 		return FTABLE.getRowByGuid(this, guid);
 	},
+	getCurrent: function() {
+		return FTABLE.getCurrent(this);
+	},
 	// return rows[ridx].cols[index of col_name]
 	getCol: function(theRow, col_name) {
 		return FTABLE.getCol(this, theRow, col_name);
@@ -226,17 +229,17 @@ WLIU.TABLE.prototype = {
 	rowno: function(guid) {
 		return FTABLE.rowno(this, guid);
 	},
-	naviLeft: function() {
-		FTABLE.naviLeft(this);
+	navLeft: function() {
+		FTABLE.navLeft(this);
 	},
-	leftState: function() {
-		return FTABLE.leftState(this);
+	navLeftState: function() {
+		return FTABLE.navLeftState(this);
 	},
-	naviRight: function() {
-		FTABLE.naviRight(this);
+	navRight: function() {
+		FTABLE.navRight(this);
 	},
-	rightState: function() {
-		return FTABLE.rightState(this);
+	navRightState: function() {
+		return FTABLE.navRightState(this);
 	}
 	
 }

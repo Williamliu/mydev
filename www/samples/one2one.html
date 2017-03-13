@@ -59,7 +59,7 @@
 		   	var col1 = new WLIU.COL({key:1, coltype:"hidden", 		name:"id", 			colname:"User No.",  	coldesc:"User ID" });
 		   	var col2 = new WLIU.COL({key:0, coltype:"textbox", 		name:"uuu",			col:"user_name", colname:"User Name", 	coldesc:"Login User",  	sort:"ASC", need:1, notnull: 1});
 		   	var col3 = new WLIU.COL({key:0, coltype:"textbox", 		name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
-		   	var col4 = new WLIU.COL({key:0, coltype:"relation", 	name:"user_id",		col:"id", 				colname:"VIP?",  		coldesc:"is VIP?"});
+		   	var col4 = new WLIU.COL({key:0, coltype:"relation", 	name:"user_id",		col:"id", 				colname:"VIP?",  		coldesc:"is VIP?", defval:true});
 		   	var col5 = new WLIU.COL({key:0, coltype:"textbox", 		name:"horby", 		colname:"Horby",   		coldesc:"Horby of User", 		relation:"user_id",	sort:"ASC", need:1, notnull:1});
 			var col6 = new WLIU.COL({key:0, coltype:"select", 		name:"lang", 		colname:"LangISO", 		coldesc:"Language ISO Code",  	relation:"user_id", defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory"});
 		   	var col7 = new WLIU.COL({key:0, coltype:"radio2", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name",  			relation:"user_id", notnull:0, 	list:"colorCategory"});
@@ -140,6 +140,9 @@
 			<div style="margin-top:20px;">
 			<table.tablebutton table="table" name="search" actname="Search" outline=1 before=""></table.tablebutton>
 			<table.tablebutton table="table" name="match" actname="Match" 	outline=1 before=""></table.tablebutton>
+			
+			<table.previous table="table" actname="Previous"></table.previous>
+			<table.next table="table" actname="Next"></table.next>
 			</div>
 			<br>
 			<table.navi table="table" tooltip=""></table.navi>
@@ -234,6 +237,8 @@
 		<br>
 		<br>
 </div>
+
+
 <!-- container -->
 <table.taberror table="table" targetid="taberror"></table.taberror>
 

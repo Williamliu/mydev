@@ -3126,17 +3126,17 @@ wliu_table.directive("table.next", function (wliuTableService) {
         template: [
                     '<span>',
                         '<button class="btn btn-outline-primary waves-effect" ',
-                            'ng-click="naviRecord()" ',
-                            'ng-if="table.leftState()"',
+                            'ng-click="navRecord()" ',
+                            'ng-if="table.navRightState()"',
                         '>',
                             '{{actname?actname:name}}',
                         '</button>',
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.naviRecord = function() {
+            $scope.navRecord = function() {
                 // add you code here 
-                $scope.table.naviLeft();
+                $scope.table.navRight();
                 // end of code
                 $scope.action(); // trigger outside event
             }
@@ -3158,17 +3158,17 @@ wliu_table.directive("table.previous", function (wliuTableService) {
         template: [
                     '<span>',
                         '<button class="btn btn-outline-primary waves-effect" ',
-                            'ng-click="naviRecord()" ',
-                            'ng-if="table.rightState()"',
+                            'ng-click="navRecord()" ',
+                            'ng-if="table.navLeftState()"',
                         '>',
                             '{{actname}}',
                         '</button>',
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.naviRecord = function() {
+            $scope.navRecord = function() {
                 // add you code here 
-                $scope.table.naviRight();
+                $scope.table.navLeft();
                 // end of code
                 $scope.action(); // trigger outside event
             }
