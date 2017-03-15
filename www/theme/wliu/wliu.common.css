@@ -130,7 +130,7 @@ span.checkbox {
 	line-height:    20px;
 	*/
 	padding:     	0px;
-	margin: 	 	1px;
+	margin: 	 	0px 4px;
 }
 span.radio > label,
 span.checkbox > label,

@@ -43,27 +43,29 @@ try {
 
 	$tableMeta = array(
 		"type"=>"one2one",   
-		"primary"=>array(	
+		"p"=>array(	
+							"type"=>"p",
 							"name"=>"public_user", 
 							"keys"=>array("id"),  
 							"fkeys"=>array(), 
-							"cols"=>array("id","uuu", "full_name"), 
+							"cols"=>array("id","user_name", "full_name"), 
 							"insert"=>array(), 
 							"update"=>array() 
 					),
-		"second"=>array( 
+		"s"=>array( 
+							"type"=>"s",
 							"name"=>"public_user_vip", 
-							"keys"=>array("user_id"),  
-							"fkeys"=>array("user_id"), 
-							"cols"=>array("user_id","horby", "lang", "color",  "country", "memberdate","stime"), 
+							"keys"=>array("id"),  
+							"fkeys"=>array(), 
+							"cols"=>array("id","horby", "lang", "color",  "country", "memberdate","created_time"), 
 							"insert"=>array(), 
 							"update"=>array() 
 		),
-		"medium"=>array( ),  
+		"m"=>array( ),  
 	
 		//checkbox maping keys, fkeys using  database colname.  keys is value col,  fkeys is relational cols; 
 		//Javascript ,  don't need to define keys, fkeys for checkbox mapping 
-		"country"=>array("name"=>"website_admin_country", "keys"=>array("country_id"), "fkeys"=>array("admin_id") )  // checkbox values  id => admin_id ; country_id is values
+		"country"=>array("name"=>"website_admin_country", "value"=>"country_id", "keys"=>array("admin_id") )  // checkbox values  id => admin_id ; country_id is values
 	);
 	$table["metadata"] = $tableMeta; 	
 

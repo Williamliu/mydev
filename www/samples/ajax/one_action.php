@@ -3,7 +3,7 @@ session_start();
 ini_set("display_errors", 0);
 include_once("../../../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
-define("DEBUG", 0);
+define("DEBUG", 1);
 $response = array();
 try {
 	$rights = array("view"=>1, "save"=>1, "add"=>1, "delete"=>1);
@@ -43,19 +43,23 @@ try {
 
 	$tableMeta = array(
 		"type"=>"one",   
-		"primary"=>array(	
-							"name"=>"website_admin", 
-							"keys"=>array("id"),  
-							"fkeys"=>array(), 
-							"cols"=>array("id", "uuu", "full_name", "email", "bbb","img1","img2", "password","office", "lang", "color", "status","created_time", "country_id"), 
-							"insert"=>array(), 
-							"update"=>array()  
+		// p = primary table
+		"p"=>array(	
+				"type"=>"p",
+				"name"=>"website_admin", 
+				"keys"=>array("id"),  
+				"fkeys"=>array(), 
+				"cols"=>array("id", "user_name", "full_name", "email", "birth_date","img1","img2", "password","office", "lang", "color", "status","created_time", "aabb"), 
+				"insert"=>array(), 
+				"update"=>array()  
 					),
-		"second"=>array( ),
-		"medium"=>array( ),  
+		// s = secondary table
+		"s"=>array( ),
+		// m = medium table 
+		"m"=>array( ),  
 		//checkbox maping keys, fkeys using  database colname.  keys is value col,  fkeys is relational cols; 
 		//Javascript ,  don't need to define keys, fkeys for checkbox mapping 
-		"country_id"=>array("name"=>"website_admin_country", "keys"=>array("country_id"), "fkeys"=>array("admin_id") )  //checkbox values  id => admin_id ; country_id is values
+		"aabb"=>array("name"=>"website_admin_country", "value"=>"country_id", "keys"=>array("admin_id") )  //checkbox values  id => admin_id ; country_id is values
 	);
 	$table["metadata"] = $tableMeta; 	
 

@@ -240,6 +240,9 @@ WLIU.TABLE.prototype = {
 	},
 	navRightState: function() {
 		return FTABLE.navRightState(this);
+	},
+	orderState: function(name, sort) {
+		return FTABLE.orderState(this, name, sort);
 	}
 	
 }

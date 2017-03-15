@@ -209,7 +209,7 @@ WLIU.COLLECTION.prototype = {
 	},
 	firstByKV: function( collection, keyvalues) {
 		var ncollection = this.collectionByKV(collection, keyvalues);
-		return ncollection?(ncollection.length>0?ncollection[0]:{}):{};
+		return ncollection?(ncollection.length>0?ncollection[0]:undefined):undefined;
 	},
 
 	// CRUD collection object
@@ -277,6 +277,7 @@ WLIU.COL = function(opts) {
 		col:		"", // default same as name, col is database colname
 		colname:	"", // display name
 		coldesc:    "", // display description
+		table:		"", // P = primary; S=secondary, M=medium;  one: P;  one2one: P->S;  one2many: P->S;  many2many: P - M - S
 		coltype:	"textbox",  //hidden, textbox, checkbox,checkbox1,checkbox2,checkbox3, radio, select, textarea, datetime, date, time, intdate, upload ....
 		datatype:   "ALL",  // number, email, date, datetime, ....
 		need:		0,     // required  must include this col even if value not change.  other is must change
@@ -294,6 +295,7 @@ WLIU.COL = function(opts) {
 	
 	$.extend(this.col, opts);
 	this.col.col = this.col.col?this.col.col:this.col.name; // important for mapping js to database 
+	this.col.table = this.col.table?this.col.table.toLowerCase():"p";
 	return this.col;
 }
 WLIU.ROW = function( cols, nameValues, scope ) {
@@ -327,6 +329,7 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 		colObj.colname  	= cols[cidx].colname?cols[cidx].colname:colObj.name.capital();
 		colObj.coldesc  	= cols[cidx].coldesc?cols[cidx].coldesc:"";
 
+		colObj.table		= cols[cidx].table?cols[cidx].table:"p";
 		colObj.col			= cols[cidx].col?cols[cidx].col:cols[cidx].name;
 		colObj.coltype  	= cols[cidx].coltype?cols[cidx].coltype.toLowerCase():"textbox";
 		colObj.datatype  	= cols[cidx].datatype?cols[cidx].datatype.toUpperCase():"ALL";
@@ -589,6 +592,16 @@ WLIU.ROWACTION.prototype = {
 		}
 	},
 	relationHide: function(theRow, theCol) {
+		var relCol = FCOLLECT.objectByKV(theRow.cols, {coltype:"relation", table:theCol.table});
+		if(relCol) {
+			if( relCol.value )
+				return false;
+			else 
+				return true;
+		} else {
+			return false;
+		}
+		/*
 		if( theRow && theCol ) {
 				if( theCol.relation ) {
 					var relCol = this.relationCol(theRow);
@@ -606,6 +619,7 @@ WLIU.ROWACTION.prototype = {
 		} else {
 			return false;
 		}
+		*/
 	},
 	relationChange: function(theRow) {
 		if( theRow ) {
@@ -1319,11 +1333,7 @@ WLIU.TABLEACTION.prototype = {
 		ntable.lists = this.getLists(theTable);
 		ntable.rows = [];
 
-		if(callback) {
-			theTable.callback.before = callback.before && $.isFunction(callback.before)?callback.before:undefined;
-			theTable.callback.after = callback.after && $.isFunction(callback.after)?callback.after:undefined;
-		} 
-		this.ajaxCall(theTable, ntable);
+		this.ajaxCall(theTable, ntable, callback);
 	},
 	allRows: function(theTable, callback) {
 		theTable.navi.match = 0;
@@ -1345,12 +1355,7 @@ WLIU.TABLEACTION.prototype = {
 		ntable.lists = this.getLists(theTable);
 		ntable.rows = FROW.getChangeRow(theRow);
 
-		if(callback) {
-			this.callback.before = callback.before && $.isFunction(callback.before)?callback.before:undefined;
-			this.callback.after = callback.after && $.isFunction(callback.after)?callback.after:undefined;
-		} 
-
-		this.ajaxCall(theTable, ntable);
+		this.ajaxCall(theTable, ntable, callback);
 	},
 	saveRows: function(theTable, callback) {
 		var ntable = {};
@@ -1364,20 +1369,15 @@ WLIU.TABLEACTION.prototype = {
 		ntable.lists = this.getLists(theTable);
 		ntable.rows = this.getChangeRows(theTable);
 
-		if(callback) {
-			this.callback.before = callback.before && $.isFunction(callback.before)?callback.before:undefined;
-			this.callback.after = callback.after && $.isFunction(callback.after)?callback.after:undefined;
-		} 
-		this.ajaxCall(theTable, ntable);
+		this.ajaxCall(theTable, ntable, callback);
 	},
 	
 	/*** AJAX CALL and Sync Rows */
-	ajaxCall: function(theTable, ntable) {
+	ajaxCall: function(theTable, ntable, callback) {
 		var _self = theTable;
 		if( _self.wait ) $(_self.wait).trigger("show");
 		_self.navi.loading = 1;
-		if( _self.callback.ajaxBefore && $.isFunction(_self.callback.ajaxBefore) ) _self.callback.ajaxBefore(ntable);
-		if( _self.callback.before ) if( _self.callback.before && $.isFunction(_self.callback.before) ) _self.callback.before(ntable);
+		if(callback && callback.ajaxBefore && $.isFunction(callback.ajaxBefore) ) callback.ajaxBefore(ntable);
 		
 		$.ajax({
 			data: {
@@ -1391,7 +1391,8 @@ WLIU.TABLEACTION.prototype = {
 			success: function(req, tStatus) {
 				if( _self.wait ) $(_self.wait).trigger("hide");
 
-				if( _self.callback.ajaxAfter && $.isFunction(_self.callback.ajaxAfter) ) _self.callback.ajaxAfter(req.table);
+				if(callback && callback.ajaxAfter && $.isFunction(callback.ajaxAfter) ) callback.ajaxAfter(req.table);
+
 				FTABLE.setLists(_self, req.table.lists);
 				switch(req.table.action) {
 					case "init": 
@@ -1404,6 +1405,15 @@ WLIU.TABLEACTION.prototype = {
 					    FTABLE.updateRows(_self, req.table);
 						break;
 				}
+
+				if( parseInt(req.table.error.errorCode) == 0 ) {
+					if( callback && callback.ajaxSuccess && $.isFunction(callback.ajaxSuccess) ) callback.ajaxSuccess(_self);
+				} else {
+					if( callback && callback.ajaxError && $.isFunction(callback.ajaxError) ) callback.ajaxError(_self);
+				}
+				$(_self.taberror).trigger("ishow");
+				if( callback && callback.ajaxComplete && $.isFunction(callback.ajaxComplete) ) callback.ajaxComplete(_self);
+
 				_self.navi.loading = 0;
 				if(!_self.sc.$$phase) {
 					_self.sc.$apply();
@@ -1416,8 +1426,8 @@ WLIU.TABLEACTION.prototype = {
 	},
 	syncRows: function(theTable, ntable) {
 		theTable.tableError(ntable.error);
-		theTable.rows = [];
-		theTable.rowno(-1);
+		theTable.rows 		= [];
+		theTable.current 	= "";
 		theTable.navi = angular.copy(ntable.navi);
 		if( ntable.primary && $.isArray(ntable.primary) ) {
 			if( ntable.primary.length>0 ) {
@@ -1440,22 +1450,13 @@ WLIU.TABLEACTION.prototype = {
 			}
 			FTABLE.addRow(theTable, -1, nrow);
 		}
-
-		if(theTable.callback) if( theTable.callback.after && $.isFunction(theTable.callback.after) ) theTable.callback.after(theTable);
-		if( parseInt(theTable.error.errorCode) == 0 ) {
-			if( theTable.callback.ajaxSuccess && $.isFunction(theTable.callback.ajaxSuccess) ) theTable.callback.ajaxSuccess(theTable);
-		} else {
-			if( theTable.callback.ajaxError && $.isFunction(theTable.callback.ajaxError) ) theTable.callback.ajaxError(theTable);
-		}
-		$(theTable.taberror).trigger("errorshow");
-		if( theTable.callback.ajaxComplete && $.isFunction(theTable.callback.ajaxComplete) ) theTable.callback.ajaxComplete(theTable);
 	},
 	updateRows: function(theTable, ntable) {
-			theTable.rowno(-1);
+			theTable.current = "";
 			theTable.tableError(ntable.error);
 			for(var ridx in ntable.rows) {
 				var nRow 		= ntable.rows[ridx];
-				var tableRow 	= theTable.getRowByKeys(nRow.keys); 
+				var tableRow 	= theTable.getRowByGuid(nRow.guid); 
 				if( tableRow ) {
 					if( parseInt(nRow.error.errorCode) > 0 ) {
 						switch(parseInt(nRow.rowstate)) {
@@ -1520,14 +1521,7 @@ WLIU.TABLEACTION.prototype = {
 			}  // for
 			if(parseInt(ntable.success)) {
 				$(theTable.autotip).trigger("auto", ["Submitted Success.", "success"]);
-				if( theTable.callback.ajaxSuccess && $.isFunction(theTable.callback.ajaxSuccess) ) theTable.callback.ajaxSuccess(theTable);
-			} else {
-				if( theTable.callback.ajaxError && $.isFunction(theTable.callback.ajaxError) ) theTable.callback.ajaxError(theTable);
-			}
-		
-		if(theTable.callback) if( theTable.callback.after && $.isFunction(theTable.callback.after) ) theTable.callback.after(theTable);
-		$(theTable.taberror).trigger("errorshow");
-		if( theTable.callback.ajaxComplete && $.isFunction(theTable.callback.ajaxComplete) ) theTable.callback.ajaxComplete(theTable);
+			} 
 	},
 
 	// Navigation
@@ -1625,6 +1619,14 @@ WLIU.TABLEACTION.prototype = {
 	navRightState: function(theTable) {
 		var rowidx = this.rowno(theTable);
 		if(rowidx >= 0 && rowidx < theTable.rows.length - 1 && table.rows.length > 0) 
+			return true;
+		else 
+			return false;
+	},
+	orderState: function(theTable, name, sort) {
+		var colMeta = this.colMeta(theTable, name);
+		var colName = colMeta.table + "." + colMeta.col;
+		if( theTable.navi.orderby== colName && ( theTable.navi.sortby.toUpperCase()==sort.toUpperCase() || ( theTable.navi.sortby=="" && colMeta.sort.toUpperCase()==sort.toUpperCase() ) ) ) 
 			return true;
 		else 
 			return false;

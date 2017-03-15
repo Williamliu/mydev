@@ -569,80 +569,37 @@ class cMYSQL implements iSQL {
 	}
 	/*************** Relational Table Functions ***********************************/
 	public function one(&$table) {
-		$colMap 	= $table["colmap"];
-		$colMeta 	= $table["colmeta"];
-		
+		$ptable	= $table["metadata"]["p"];
 
-		// join tables 
-		$ptable = $table["metadata"]["primary"];
-		$pname  = $ptable["name"];
-		$pkeys  = $ptable["keys"];
-		$joinLink = "$pname a";
+		// 1. select cols 
+        $colstr = cACTION::buildSelect($ptable);
 
-		// select cols 
-        $colstr = "";
-		$pcols = cACTION::getCols($table, "primary", "get");			
-		foreach($pcols as $ff) {
-			$dbName = $colMap[$ff]?$colMap[$ff]:$ff;
-			cTYPE::join( $colstr, ",", "a.$dbName as $ff"); 
-		}
-
-		$pk_criteria = "";
-		//$primary_criteria = "1=1";
-		foreach($pkeys as $idx=>$pkey) {
-			$pk = $colMap[$pkey];
-			// if primary table key has defval,  only select defval record
-			$pv = trim($colMeta[$pkey]["defval"]);
+		// 2. join table 
+		$pk_criteria 	= "";
+		$joinLink 		= $ptable["name"] . " " . $ptable["type"];
+		foreach($ptable["keys"] as $pk) {
+			$pv = trim($ptable["colmeta"][$pk]["defval"]);
 			if( $pv ) {
-				//cTYPE::join($primary_criteria, " AND ", "a.$pk='" . $this->quote($pv) . "'");
-				cTYPE::join($pk_criteria, " AND ", "a.$pk='" . $this->quote($pv) . "'");
+				cTYPE::join($pk_criteria, " AND ",  $ptable["type"] . ".$pk='" . $this->quote($pv) . "'");
 			} else {
-				// no default value, primary rows should be none
-				//cTYPE::join($primary_criteria, " AND ", "1=0");
+				// if not select one,  then return all sets; cTYPE::join($pk_criteria, " AND ", "1=0");
 			}
 		}
 
-		/* don't need primary information
-		// get primary table info  for add new record		
-		$query_primary 		= "SELECT $colstr FROM $pname a WHERE $primary_criteria";
-		$result_primary 	= $this->query($query_primary);
-		$table["primary"] 	= $this->rows($result_primary);
-		*/
-
-		// criteria 
-		$criteria = "a.deleted=0";
+		// 3. create criteria  include  primary_key criteria
+		$criteria = $ptable["type"] . ".deleted=0";
 		cTYPE::join($criteria, " AND ", $pk_criteria);
 		cTYPE::join($criteria, " AND ", $table["criteria"]);
 
-		// update navi first 
+		// 4. update navi first, and create orderby and limitation string 
 		$query = "SELECT COUNT(1) AS CNT FROM $joinLink WHERE $criteria";
 		$this->navi($query, $table);
 		$navi = $table["navi"];
+		$orderByLimit = cACTION::orderByLimit($navi);
 
-
-		// order by 
-        $orderby 	= "";
-		$orderCol 	= $navi["orderby"]?($colMap[$navi["orderby"]]?$colMap[$navi["orderby"]]:$navi["orderby"]):"";
-		$sortBy   	= $navi["sortby"]?$navi["sortby"]:"";
-		if( $orderCol!="" && in_array($navi["orderby"], $pcols) )  $orderCol = "a.$orderCol";
-		
-		if( $orderCol!="" && $sortBy!="" )
-			$orderby = $orderCol . " " . $sortBy;
-		elseif($orderCol!="") 
-			$orderby = $orderCol . " ASC";
-
-		if($orderby!="") $orderby = " ORDER BY " . $orderby;
-
-		// Limit records 
-		$limit = "";
-		if( $navi["pageno"]>= 1) {
-			$limit = "LIMIT " . (($navi["pageno"]-1) * $navi["pagesize"]) . ", " . $navi["pagesize"];
-		} else {
-		 	cTYPE::join( $criteria, " AND ", "1=0" );
-		}
-
-		$query = "SELECT $colstr FROM $joinLink WHERE $criteria $orderby $limit";	
-
+		// 5.  completed  select query string 
+		$query = "SELECT $colstr FROM $joinLink WHERE $criteria $orderByLimit";	
+ 
 		//Debug Query 
 		if(DEBUG) { $table["query"] = $query; $table["criteria"] = $criteria; }
 
@@ -651,14 +608,11 @@ class cMYSQL implements iSQL {
 	}
 
 	public function saveone(&$table) {
-		$colMap 	= $table["colmap"];
-		$colMeta 	= $table["colmeta"];
-		
 		// join tables 
-		$ptable = $table["metadata"]["primary"];
-		$pname  = $ptable["name"];
-		$pkeys  = $ptable["keys"];
-		$errMsg = array();
+		$ptable 	= $table["metadata"]["p"];
+		$p_tabName  = $ptable["name"];
+		$p_keys  	= $ptable["keys"];
+		$errMsg 	= array();
 		foreach( $table["rows"] as &$row ) {
 			switch( $row["rowstate"] ) {
 				case 0:
@@ -739,99 +693,56 @@ class cMYSQL implements iSQL {
 	}
 
 	public function one2one(&$table) {
-		$colMap  = $table["colmap"];
-		$colMeta = $table["colmeta"];
+		$ptable = $table["metadata"]["p"];
+		$stable = $table["metadata"]["s"];
 
-		// join tables 
-		$ptable = $table["metadata"]["primary"];
-		$stable = $table["metadata"]["second"];
-		$pname  = $ptable["name"];
-		$sname  = $stable["name"];
-		$pkeys  = $ptable["keys"];
-		$sfkeys = $stable["fkeys"];
+		// 1. select cols
+		$colstr = cACTION::buildSelect($ptable);
+		cTYPE::join( $colstr, ", ", cACTION::buildSelect($stable) );
+
+		// 2. join table
 		$joinOn = "";
 		$pk_criteria = "";  // must have deleted column 
-		//$primary_criteria = "1=1";
-		foreach($pkeys as $idx=>$pkey) {
-			$pk = $colMap[$pkey];
-			$sk = $colMap[$sfkeys[$idx]];
-			cTYPE::join($joinOn, " AND ", "a.$pk=b.$sk");
+		foreach($ptable["keys"] as $pidx=>$pkey) {
+			$pkeyDBCol = $ptable["type"] . "." . $pkey;
+			$skeyDBCol = $stable["type"] . "." . $stable["keys"][$pidx];
+			cTYPE::join($joinOn, " AND ", "$pkeyDBCol=$skeyDBCol");
 
-			// if primary table key has defval,  only select defval record
-			$pv = trim($colMeta[$pkey]["defval"]);
-			if( $pv ) {
-				cTYPE::join($pk_criteria, " AND ", "a.$pk='" . $this->quote($pv) . "'");
-				//cTYPE::join($primary_criteria, " AND ", "a.$pk='" . $this->quote($pv) . "'");
+			//important: if primary table key has defval,  only select defval record
+			$pkeyVal = trim($ptable["colmeta"][$pkey]["defval"]);
+			if( $pkeyVal ) {
+				cTYPE::join($pk_criteria, " AND ", "$pkeyDBCol='" . $this->quote($pkeyVal) . "'");
 			} else {
-				// no default value, primary rows should be none
-				//cTYPE::join($primary_criteria, " AND ", "1=0");
+				// no default value, primary rows should be none: cTYPE::join($pk_criteria, " AND ", "1=0");
 			}
 		}
+		cTYPE::join($joinOn, " AND ", $stable["type"] . ".deleted=0"); // important: must have deleted column in second table
 
 
-		cTYPE::join($joinOn, " AND ", "b.deleted=0"); // important: must have deleted column in second table
 		// one to one using LEFT JOIN 
 		// if try to search by primary key. important to use LEFT JOIN, because master information already there.
 		// important for html one record form,  match=0,   set primary id to defval 
+		$pname = $ptable["name"] . " " . $ptable["type"];
+		$sname = $stable["name"] . " " . $stable["type"];
 		if( $table["navi"]["match"]=="1" ) 
-			$joinLink = "$pname a INNER JOIN $sname b ON ( $joinOn )";
+			$joinLink = "$pname INNER JOIN $sname ON ( $joinOn )";
 		else 
-			$joinLink = "$pname a LEFT JOIN $sname b ON ( $joinOn )";
+			$joinLink = "$pname LEFT JOIN $sname ON ( $joinOn )";
 		
-		// select cols 
-        $colstr = "";
-		$pcols = cACTION::getCols($table, "primary", "get");			
-		$scols = cACTION::getCols($table, "second", "get");	
-		foreach($pcols as $ff) {
-			$dbName = $colMap[$ff]?$colMap[$ff]:$ff;
-			cTYPE::join( $colstr, ",", "a.$dbName as $ff"); 
-		}
 
-		/*  don't need to return primary information,  add new means add blank new one.		
-		// get primary table info  for add new record		
-		$query_primary 		= "SELECT $colstr FROM $pname a WHERE $primary_criteria";
-		$result_primary 	= $this->query($query_primary);
-		$table["primary"] 	= $this->rows($result_primary);
-		*/
-
-		foreach($scols as $ff) {
-			$dbName = $colMap[$ff]?$colMap[$ff]:$ff;
-			cTYPE::join( $colstr, ",", "b.$dbName as $ff"); 
-		}
-
-		// criteria 
-		$criteria = "a.deleted=0";
+		// 3. create criteria 
+		$criteria = $ptable["type"] . ".deleted=0";
 		cTYPE::join($criteria, " AND ", $pk_criteria);
 		cTYPE::join($criteria, " AND ", $table["criteria"]);
 
-		//important: update navi first 
+
+		// 4. update navi first, and create orderby and limitation string 
 		$query = "SELECT COUNT(1) AS CNT FROM $joinLink WHERE $criteria";
 		$this->navi($query, $table);
 		$navi = $table["navi"];
+		$orderByLimit = cACTION::orderByLimit($navi);
 
-		// order by 
-        $orderby 	= "";
-		$orderCol 	= $navi["orderby"]?($colMap[$navi["orderby"]]?$colMap[$navi["orderby"]]:$navi["orderby"]):"";
-		$sortBy   	= $navi["sortby"]?$navi["sortby"]:"";
-		if( $orderCol!="" && in_array($navi["orderby"], $scols) )  $orderCol = "b.$orderCol";
-		if( $orderCol!="" && in_array($navi["orderby"], $pcols) )  $orderCol = "a.$orderCol";
-		
-		if( $orderCol!="" && $sortBy!="" )
-			$orderby = $orderCol . " " . $sortBy;
-		elseif($orderCol!="") 
-			$orderby = $orderCol . " ASC";
-
-		if($orderby!="") $orderby = " ORDER BY " . $orderby;
-
-		// Limit records 
-		$limit = "";
-		if( $navi["pageno"]>= 1) {
-			$limit = "LIMIT " . (($navi["pageno"]-1) * $navi["pagesize"]) . ", " . $navi["pagesize"];
-		} else {
-			cTYPE::join( $criteria, " AND ", "1=0" );
-		}
-
-		$query = "SELECT $colstr FROM $joinLink WHERE $criteria $orderby $limit";
+		$query = "SELECT $colstr FROM $joinLink WHERE $criteria $orderByLimit";
 
 		//Debug Query 
 		if(DEBUG) { $table["query"] = $query; $table["criteria"] = $criteria; }
@@ -987,104 +898,73 @@ class cMYSQL implements iSQL {
 	}
 
 	public function one2many(&$table) {
-		$colMap 	= $table["colmap"];
-		$colMeta 	= $table["colmeta"];
+		$ptable = $table["metadata"]["p"];
+		$stable = $table["metadata"]["s"];
+		
+		// 1. crreate primary information 
+		$pcolstr = cACTION::buildSelect($ptable);
+		$criteria_primary = "1=1";
+		foreach($ptable["keys"] as $pkey) {
+			$pkeyDBCol 	= $ptable["type"] . "." . $pkey;
+			$pkeyVal 	= trim($ptable["colmeta"][$pkey]["defval"]);
+			cTYPE::join($criteria_primary, " AND ", "$pkeyDBCol='" . $this->quote($pkeyVal) . "'");
+		}
+		$pname 				= $ptable["name"] . " " . $ptable["type"];
+		$query_primary 		= "SELECT $pcolstr FROM $pname WHERE $criteria_primary";
+		$result_primary 	= $this->query($query_primary);
+		$table["primary"] 	= $this->rows($result_primary);
+		//Debug Query 
+		if(DEBUG) { $table["query_primary"] = $query_primary; $table["criteria_prmiary"] = $criteria_primary; }
 
-		// join tables 
-		$ptable = $table["metadata"]["primary"];
-		$stable = $table["metadata"]["second"];
-		$pname  = $ptable["name"];
-		$sname  = $stable["name"];
-	
-		$pkeys  = $ptable["keys"];
-		$skeys  = $stable["keys"];
-		$sfkeys = $stable["fkeys"];
-	
+		// 2. select cols 
+		$colstr = cACTION::buildSelect($ptable);
+		cTYPE::join( $colstr, ", ", cACTION::buildSelect($stable) );
+
+		// 3. join table
+		$pname 			= $ptable["name"] . " " . $ptable["type"];
+		$sname 			= $stable["name"] . " " . $stable["type"];
 		$joinOn 		= "";
 		$pk_criteria 	= "";
-		$primary_criteria = "1=1";
-		foreach($pkeys as $idx=>$pkey) {
-			$pk = $colMap[$pkey];
-			$sk = $colMap[$sfkeys[$idx]];
-			cTYPE::join( $joinOn, " AND ", "a.$pk=b.$sk"); 
+		foreach($ptable["keys"] as $pidx=>$pkey) {
+			$pkeyDBCol = $ptable["type"] . "." . $pkey;
+			$skeyDBCol = $stable["type"] . "." . $stable["fkeys"][$pidx];
+			cTYPE::join($joinOn, " AND ", "$pkeyDBCol=$skeyDBCol");
 
-			// if primary table key has defval,  only select defval record
-			$pv = trim($colMeta[$pkey]["defval"]);
-			if( $pv ) {
-				cTYPE::join($pk_criteria, " AND ", "a.$pk='" . $this->quote($pv) . "'");
-				cTYPE::join($primary_criteria, " AND ", "a.$pk='" . $this->quote($pv) . "'");
+			//important: if primary table key has defval,  only select defval record
+			$pkeyVal = trim($ptable["colmeta"][$pkey]["defval"]);
+			if( $pkeyVal ) {
+				cTYPE::join($pk_criteria, " AND ", "$pkeyDBCol='" . $this->quote($pkeyVal) . "'");
 			} else {
-				//if defval is empty, rows of both primary and return should be none
+				// no default value, primary rows should be none
 				cTYPE::join($pk_criteria, " AND ", "1=0");
-				cTYPE::join($primary_criteria, " AND ", "1=0");
 			}
 		}
 
 		$sk_criteria = "";
-		foreach($skeys as $idx=>$skey) {
-			$sk = $colMap[$skey];
-			$sv = trim($colMeta[$skey]["defval"]);
-			if( $sv ) {
-				cTYPE::join($sk_criteria, " AND ", "b.$sk='" . $this->quote($sv) . "'");
+		foreach($stable["keys"] as $sidx=>$skey) {
+			$skeyDBCol 	= $stable["type"] . "." . $skey;
+			$skeyVal 	= trim($stable["colmeta"][$skey]["defval"]);
+			if( $skeyVal ) {
+				cTYPE::join($sk_criteria, " AND ", "$skeyDBCol='" . $this->quote($skeyVal) . "'");
 			}		
 		}
 
 		// one to many,  using inner join 
-		$joinLink = "$pname a INNER JOIN $sname b ON ( $joinOn )";
+		$joinLink = "$pname INNER JOIN $sname ON ( $joinOn )";
 
-		// select cols 
-        $colstr = "";
-		$pcols = cACTION::getCols($table, "primary", "get");			
-		$scols = cACTION::getCols($table, "second", "get");	
-		foreach($pcols as $ff) {
-			$dbName = $colMap[$ff]?$colMap[$ff]:$ff;
-			cTYPE::join($colstr, ",", "a.$dbName as $ff");
-		}
-		// get primary table info  for add new record		
-		$query_primary 		= "SELECT $colstr FROM $pname a WHERE $primary_criteria";
-		$result_primary 	= $this->query($query_primary);
-		$table["primary"] 	= $this->rows($result_primary);
-
-
-		foreach($scols as $ff) {
-			$dbName = $colMap[$ff]?$colMap[$ff]:$ff;
-			$colstr .= ($colstr==""?"":",") . "b.$dbName as $ff"; 
-		}
-
-		// criteria 
-		$criteria = "a.deleted=0 AND b.deleted=0";
+		// 4. create criteria 
+		$criteria = $ptable["type"] . ".deleted=0" . " AND " . $stable["type"] . ".deleted=0";
 		cTYPE::join($criteria, " AND ", $pk_criteria);
 		cTYPE::join($criteria, " AND ", $sk_criteria);
 		cTYPE::join($criteria, " AND ", $table["criteria"]);
 
-		//important: update navi first 
+		// 5. update navi first, and create orderby and limitation string 
 		$query = "SELECT COUNT(1) AS CNT FROM $joinLink WHERE $criteria";
 		$this->navi($query, $table);
 		$navi = $table["navi"];
+		$orderByLimit = cACTION::orderByLimit($navi);
 
-		// order by 
-        $orderby 	= "";
-		$orderCol 	= $navi["orderby"]?($colMap[$navi["orderby"]]?$colMap[$navi["orderby"]]:$navi["orderby"]):"";
-		$sortBy   	= $navi["sortby"]?$navi["sortby"]:"";
-		if( $orderCol!="" && in_array($navi["orderby"], $scols) )  $orderCol = "b.$orderCol";
-		if( $orderCol!="" && in_array($navi["orderby"], $pcols) )  $orderCol = "a.$orderCol";
-		
-		if( $orderCol!="" && $sortBy!="" )
-			$orderby = $orderCol . " " . $sortBy;
-		elseif($orderCol!="") 
-			$orderby = $orderCol . " ASC";
-
-		if($orderby!="") $orderby = " ORDER BY " . $orderby;
-
-		// Limit records 
-		$limit = "";
-		if( $navi["pageno"]>= 1) {
-			$limit = "LIMIT " . (($navi["pageno"]-1) * $navi["pagesize"]) . ", " . $navi["pagesize"];
-		} else {
-			cTYPE::join( $criteria, " AND ", "1=0" );
-		}
-
-		$query = "SELECT $colstr FROM $joinLink WHERE $criteria $orderby $limit";
+		$query = "SELECT $colstr FROM $joinLink WHERE $criteria $orderByLimit";
 
 		//Debug Query 
 		if(DEBUG) { $table["query"] = $query; $table["criteria"] = $criteria; }
@@ -1221,148 +1101,108 @@ class cMYSQL implements iSQL {
 	}
 
 	public function many2many(&$table) {
-		$colMap 	= $table["colmap"];
-		$colMeta 	= $table["colmeta"];
+		$ptable = $table["metadata"]["p"];
+		$stable = $table["metadata"]["s"];
+		$mtable = $table["metadata"]["m"];
 
-		// join tables 
-		$ptable = $table["metadata"]["primary"];
-		$stable = $table["metadata"]["second"];
-		$mtable = $table["metadata"]["medium"];
-		$pname  = $ptable["name"];
-		$sname  = $stable["name"];
-		$mname  = $mtable["name"];
-		
-		$pkeys  = $ptable["keys"];
-		$skeys 	= $stable["keys"];
-		$mpkeys = $mtable["keys"];
-		$mskeys = $mtable["fkeys"];
-
-
-		// join on 
-		$pjoinOn = "";
-		$primary_criteria = "1=1";
-		$pk_criteria = "";
-		foreach($pkeys as $idx=>$pkey) {
-			$pk = $colMap[$pkey];
-			$mk = $colMap[$mpkeys[$idx]];
-			cTYPE::join( $pjoinOn, " AND ", "a.$pk=m.$mk"); 
-			cTYPE::join( $pjoinOn, " AND ", "m.deleted=0"); // important: medium table, must have deleted column  
-
-			$pv = trim($colMeta[$pkey]["defval"]);
-			if( $pv ) {
-				cTYPE::join($pjoinOn, " AND " , "a.$pk='" . $this->quote($pv) . "'");
-				cTYPE::join($primary_criteria, " AND ", "a.$pk='" . $this->quote($pv) . "'");
-			} else {
-				//if defval is empty, rows of both primary and return should be none
-				cTYPE::join($pk_criteria, " AND " ,		"1=0");
-				cTYPE::join($primary_criteria, " AND ", "1=0");
-			}
+		// 1. crreate primary information 
+		$pcolstr = cACTION::buildSelect($ptable);
+		$criteria_primary = "1=1";
+		foreach($ptable["keys"] as $pkey) {
+			$pkeyDBCol 	= $ptable["type"] . "." . $pkey;
+			$pkeyVal 	= trim($ptable["colmeta"][$pkey]["defval"]);
+			cTYPE::join($criteria_primary, " AND ", "$pkeyDBCol='" . $this->quote($pkeyVal) . "'");
+			cTYPE::join($criteria_primary, " AND ", $ptable["type"] . ".deleted=0");
 		}
-		// cols 
-		$pcols = cACTION::getCols($table, "primary", "get");
-		$mcols = cACTION::getCols($table, "medium", "get");	
-        $pcolstr = "";
-		foreach($pcols as $ff) {
-			$dbName = $colMap[$ff]?$colMap[$ff]:$ff;
-			cTYPE::join( $pcolstr, ",", "a.$dbName as $ff"); 
-		}
-		// get primary table info  for add new record		
-		$query_primary 		= "SELECT $pcolstr FROM $pname a WHERE $primary_criteria";
+		$pname 				= $ptable["name"] . " " . $ptable["type"];
+		$query_primary 		= "SELECT $pcolstr FROM $pname WHERE $criteria_primary";
 		$result_primary 	= $this->query($query_primary);
 		$table["primary"] 	= $this->rows($result_primary);
-
+		//Debug Query 
+		if(DEBUG) { $table["query_primary"] = $query_primary; $table["criteria_prmiary"] = $criteria_primary; }
+		$pk_criteria = "";
 		//important for m2m:  if primary record not found,  return 0 rows
 		if( $this->row_nums($result_primary) <= 0 )  cTYPE::join($pk_criteria, " AND ", "1=0");
 
-		foreach($mcols as $ff) {
-			$dbName = $colMap[$ff]?$colMap[$ff]:$ff;
-			cTYPE::join( $pcolstr, ",", "m.$dbName as $ff"); 
+		// 2.1  handle  primary and medium table relation 
+		$mmjoinOn = "";
+		foreach($ptable["keys"] as $pidx=>$pkey) {
+			$pkeyDBCol = $ptable["type"] . "." . $pkey;
+			$mpkeyDBCol = "mm." . $mtable["keys"][$pidx];
+			cTYPE::join( $mmjoinOn, " AND ", "$pkeyDBCol=$mpkeyDBCol"); 
+			cTYPE::join( $mmjoinOn, " AND ", $ptable["type"] . ".deleted=0"); 	// important: primary table, must have deleted column  
+			cTYPE::join( $mmjoinOn, " AND ", "mm.deleted=0"); 					// important: medium table, must have deleted column  
+
+			$pkeyVal = trim($ptable["colmeta"][$pkey]["defval"]);
+			if( $pkeyVal ) {
+				cTYPE::join($mmjoinOn, " AND " , "$pkeyDBCol='" . $this->quote($pkeyVal) . "'");
+			} else {
+				//if defval is empty, rows of both primary and return should be none
+				cTYPE::join($pk_criteria, " AND " ,		"1=0");
+			}
 		}
 
-		// many to many,  b left join ( select * from a inner join m  ) c  
-		$pjoinLink = "SELECT $pcolstr FROM $pname a INNER JOIN $mname m ON ( $pjoinOn )";
+		// 2.2 p & m select cols 
+        $mmcolstr = cACTION::buildSelect($ptable);
+		cTYPE::join( $mmcolstr, ", ", cACTION::buildSelect($mtable, "mm") );
+		// many to many,  s left join ( select * from p inner join m  ) c  
+		$mmname = $mtable["name"] . " mm";
+		$mmjoinLink = "SELECT $mmcolstr FROM $pname INNER JOIN $mmname ON ( $mmjoinOn )";
 
-		// cols
-        $scolstr = "";
-		$scols = cACTION::getCols($table, "second", "get");	
-		foreach($scols as $ff) {
-			$dbName = $colMap[$ff]?$colMap[$ff]:$ff;
-			cTYPE::join($scolstr,",", "b.$dbName as $ff"); 
-		}
+		// 2.3 s table select cols
+        $scolstr = cACTION::buildSelect($stable);
 
-		// join on 
+		// 2.4 s join on 
 		$sjoinOn 		= "";
 		$sk_criteria 	= "";
-		foreach($skeys as $idx=>$skey) {
-			$s1 = $colMap[$skey];
+		foreach($stable["keys"] as $sidx=>$skey) {
+			$skeyDBCol 	= $stable["type"] . "." . $skey;
+			$mskeyDBCol = $mtable["type"] . "." . $mtable["colmeta"][$mtable["fkeys"][$sidx]]["name"];  // important to use  js colname 
 			// c.ctime  sub query keep the javascript colname 
-			$m1 = $mskeys[$idx];
-			$sjoinOn .= ($sjoinOn==""?"":" AND ") . "b.$s1=c.$m1"; 
+			cTYPE::join($sjoinOn, " AND ",  "$skeyDBCol=$mskeyDBCol"); 
+			cTYPE::join($sjoinOn, " AND ",  $stable["type"] . ".deleted=0"); 
+
+			$skeyVal = trim($stable["colmeta"][$skey]["defval"]);
+			if($skeyVal) {
+				cTYPE::join($sk_criteria, " AND ", "$skeyDBCol='" . $this->quote($skeyVal) . "'");
+			}
 		}
-		foreach($skeys as $idx=>$skey) {
-			$sk = $colMap[$skey];
-			$sv = trim($colMeta[$skey]["defval"]);
-			if( $sv ) {
-				cTYPE::join($sk_criteria, " AND ", "b.$sk='" . $this->quote($sv) . "'");
-			}		
-		}
-		// criteria 
-		$criteria = "b.deleted=0";
+
+		// 2.5 s criteria 
+		$criteria = "1=1";
 		cTYPE::join($criteria, " AND ", $pk_criteria);
 		cTYPE::join($criteria, " AND ", $sk_criteria);
+		// important:  medium table filter  must use   colObj.name  not  database column name.  because   (select dbcol as jscolname mtable mm) m ; finally convert dbCol to client side column name
 		cTYPE::join($criteria, " AND ", $table["criteria"]);
 
+		// 3.  join p, s , m  all tables 
 		// many to many,  b left join ( select * from a inner join m  ) c  
+		$mname = "(" . $mmjoinLink . ") " . $mtable["type"];
+		$sname = $stable["name"] . " " . $stable["type"];
 		if( $table["navi"]["match"]=="1" ) 
-			$sjoinLink = "SELECT $scolstr, c.* FROM $sname b INNER JOIN ($pjoinLink) c ON ( $sjoinOn ) WHERE $criteria";
+			$sjoinLink = "SELECT $scolstr, m.* FROM $sname  INNER JOIN $mname ON ( $sjoinOn ) WHERE $criteria";
 		else 
-			$sjoinLink = "SELECT $scolstr, c.* FROM $sname b LEFT JOIN ($pjoinLink) c ON ( $sjoinOn ) WHERE $criteria";
+			$sjoinLink = "SELECT $scolstr, m.* FROM $sname  LEFT JOIN  $mname ON ( $sjoinOn ) WHERE $criteria";
 
-		// final query 
+
+		// 4. final query 
 		$joinLink = $sjoinLink;
 
-		//important: update navi first 
+		// 5. update navi first, and create orderby and limitation string 
 		$query = "SELECT COUNT(1) AS CNT FROM ($joinLink) t";
-		//echo "query: " . $query;
 		$this->navi($query, $table);
 		$navi = $table["navi"];
+		$orderByLimit = cACTION::orderByLimit($navi);
 
-		// order by 
-        $orderby 	= "";
-		// c.ctime  sub query keep the javascript colname 
-		if( in_array($navi["orderby"], $mcols) )
-			$orderCol 	= $navi["orderby"]?$navi["orderby"]:"";
-		else 
-			$orderCol 	= $navi["orderby"]?($colMap[$navi["orderby"]]?$colMap[$navi["orderby"]]:$navi["orderby"]):"";
-		
-		$sortBy   	= $navi["sortby"]?$navi["sortby"]:"";
-		if( $orderCol!="" && in_array($navi["orderby"], $mcols) )  $orderCol = "c.$orderCol";
-		if( $orderCol!="" && in_array($navi["orderby"], $scols) )  $orderCol = "b.$orderCol";
-		
-		if( $orderCol!="" && $sortBy!="" )
-			$orderby = $orderCol . " " . $sortBy;
-		elseif($orderCol!="") 
-			$orderby = $orderCol . " ASC";
-
-		if($orderby!="") $orderby = " ORDER BY " . $orderby;
-
-		// Limit records 
-		$limit = "";
-		if( $navi["pageno"]>= 1) {
-			$limit = "LIMIT " . (($navi["pageno"]-1) * $navi["pagesize"]) . ", " . $navi["pagesize"];
-		} else {
-			cTYPE::join( $criteria, " AND ", "1=0");
-		}
-
-		$query = "$joinLink $orderby $limit";
-
+		// 6. final query
+		$query = "$joinLink $orderByLimit";
 		//Debug Query 
 		if(DEBUG) { $table["query"] = $query; $table["criteria"] = $criteria; }
 		
 		$result = $this->query($query);
 		$table["rows"] = $this->rows($result);
 
-		// add primary table info to every row. M2M ,  primary row must be one row 
+		//7. add primary table info to every row. M2M ,  primary row must be one row 
 		foreach( $table["primary"][0] as $pkey=>$pval) {
 			foreach($table["rows"] as &$trow ) {
 				$trow[$pkey] = $pval; 
@@ -1586,9 +1426,8 @@ class cMYSQL implements iSQL {
 /***********************************************************************************************/
 class cACTION {
 	static public function action($db, &$table ) {
-		$table["colmap"] 	= cACTION::colMap($table);
-		$table["colmeta"] 	= cACTION::colMeta($table);
-		$table["success"] = 1;
+		cACTION::buildColMeta($table); // important
+		$table["success"] 	= 1;
 		switch( $table["action"] ) {
 			case "init":
 				$table["rows"] = array();
@@ -1629,6 +1468,78 @@ class cACTION {
 		cACTION::getRowArray($table);
 		$table["success"] = $table["error"]["errorCode"]?0:$table["success"];
 	}
+	static public function buildColMeta(&$table) {
+		foreach($table["cols"] as $colMeta) {
+			$table["metadata"][$colMeta["table"]]["colmeta"][$colMeta["col"]]=$colMeta;
+			switch($colMeta["coltype"]) {
+				case "checkbox":
+				case "checkbox1":
+				case "checkbox2":
+				case "checkbox3":
+					$table["metadata"][$colMeta["table"]]["checkboxCols"][] = $colMeta["col"];
+					break;
+				default:
+					$table["metadata"][$colMeta["table"]]["selectCols"][] = $colMeta["col"];
+					break;
+			}
+		}
+	}
+	static public function buildSelect($otable, $otype="") {
+        $colstr = "";
+		foreach($otable["selectCols"] as $oCol) {
+			$dbColName 	= $otable["colmeta"][$oCol]["name"]?$otable["colmeta"][$oCol]["name"]:$oCol;
+			$dbCol 		= ($otype?$otype:$otable["type"]) . "." . $oCol;
+			cTYPE::join( $colstr, ", ", "$dbCol as $dbColName"); 
+		}
+		return $colstr;
+	}
+	static public function getChecks($db, &$table, $tableType) {
+		$otable = $table["metadata"][$tableType];
+		foreach( $table["rows"] as &$row ) {
+			foreach( $otable["checkboxCols"] as $dbCol ) {
+					$ckMeta = $table["metadata"][$dbCol];
+					if( $ckMeta["name"] ) {
+						$ccc = array();
+						switch($otable["type"]) {
+							case "m":
+								$fidx = 0;
+								$ptable = $table["metadata"]["p"];
+								foreach(  $ptable["keys"] as $pkey ) 
+								{
+									$pkeyDBCol = $ptable["colmeta"][$pkey]["name"]?$ptable["colmeta"][$pkey]["name"]:$pkey;
+									$ccc[ $ckMeta["keys"][$fidx] ] = $row[$pkeyDBCol];
+									$fidx++;
+								}
+								$stable = $table["metadata"]["s"];
+								foreach( $stable["keys"] as $skey ) 
+								{
+									$skeyDBCol = $stable["colmeta"][$skey]["name"]?$stable["colmeta"][$skey]["name"]:$skey;
+									$ccc[ $ckMeta["keys"][$fidx] ] = $row[$skeyDBCol];
+									$fidx++;
+								}
+								break;
+							default:
+								foreach( $ckMeta["keys"] as $kidx=>$ckey ) {
+									$ckeyDBCol = $otable["colmeta"][ $otable["keys"][$kidx] ]["name"]?$otable["colmeta"][ $otable["keys"][$kidx] ]["name"] : $otable["keys"][$kidx];
+									$ccc[$ckey] = $row[$ckeyDBCol];
+								}
+								break;
+						}
+						$fields 		= array();
+						$fields[] 		= $ckMeta["value"];
+						$ckResult 		= $db->select( $ckMeta["name"], $fields, $ccc );	
+						$ckRows  		= $db->rows($ckResult);
+						$dbColName 		= $otable["colmeta"][$dbCol]["name"]?$otable["colmeta"][$dbCol]["name"]:$dbCol;
+						$row[$dbColName] 	= array();
+						foreach( $ckRows as $ckRow ) {
+							$row[$dbColName][] = intval($ckRow[$ckMeta["value"]]);
+						}
+					} else {
+						$row[$dbColName] = array();
+					}
+			}
+		}
+	}
 
 	static public function saveRows($db, &$table) {
 		$tableMeta = $table["metadata"];
@@ -1660,51 +1571,50 @@ class cACTION {
 		switch( $tableMeta["type"] ) {
 			case "one":
 				$db->one($table);
-				cACTION::getChecks($db, $table, "primary");
+				cACTION::getChecks($db, $table, "p");
 				break;
 			case "one2one":
 				$db->one2one($table);
-				cACTION::getChecks($db, $table, "primary");
-				cACTION::getChecks($db, $table, "second");
+				cACTION::getChecks($db, $table, "p");
+				cACTION::getChecks($db, $table, "s");
 				break;
 			case "one2many":
 				$db->one2many($table);
-				cACTION::getChecks($db, $table, "primary");
-				cACTION::getChecks($db, $table, "second");
+				cACTION::getChecks($db, $table, "p");
+				cACTION::getChecks($db, $table, "s");
 				break;
 			case "many2many":
 				$db->many2many($table);
-				cACTION::getChecks($db, $table, "second");
-				cACTION::getChecks($db, $table, "medium");
+				cACTION::getChecks($db, $table, "s");
+				cACTION::getChecks($db, $table, "m");
 				break;
 		}
 	}
 
-	static public function colMeta(&$table) {
-		$arr = array();
-		foreach($table["cols"] as $colMeta) {
-			$arr[$colMeta["name"]]=$colMeta;
-		}
-		return $arr;
-	}
+	static public function orderByLimit($navi) {
+		// order by 
+        $orderby 	= "";
+		$orderCol 	= $navi["orderby"]?$navi["orderby"]:"";
+		$sortBy   	= $navi["sortby"]?$navi["sortby"]:"";
+		if( $orderCol!="" && $sortBy!="" )
+			$orderby = $orderCol . " " . $sortBy;
+		elseif($orderCol!="") 
+			$orderby = $orderCol . " ASC";
 
-	static public function colMap(&$table) {
-		$arr = array();
-		foreach($table["cols"] as $colMeta) {
-			$arr[$colMeta["name"]]=$colMeta["col"];
-		}
-		return $arr;
-	}
+		if($orderby!="") $orderby = " ORDER BY " . $orderby;
 
+		// Limit records 
+		$limit = "";
+		if( $navi["pageno"]>= 1) {
+			$limit = "LIMIT " . (($navi["pageno"]-1) * $navi["pagesize"]) . ", " . $navi["pagesize"];
+		} 
+		return $orderby . " " . $limit;
+	}
+	
 	static public function clearRows(&$table) {
 		foreach($table["rows"] as &$theRow) {
 				switch($table["action"]) {
 					case "get":
-						foreach($theRow as $colName=>$colValue) {
-							if( !in_array( $table["colmap"][$colName], $table["colmap"] ) ) {
-								unset($theRow[$colName]);
-							} 
-						}
 						break;
 					case "save":
 					case "custom":
@@ -1736,8 +1646,7 @@ class cACTION {
 		} //foreach
 
 		if(!DEBUG) unset($table["cols"]);
-		if(!DEBUG) unset($table["colmap"]);
-		if(!DEBUG) unset($table["colmeta"]);
+		if(!DEBUG) unset($table["jscols"]);
 		if(!DEBUG) unset($table["filters"]);
 		if(!DEBUG) unset($table["criteria"]);
 		if(!DEBUG) unset($table["rights"]);
@@ -1747,8 +1656,6 @@ class cACTION {
 	}
 
 	static public function getSaveCols($table, $tableLevel, &$row) {
-		$colMap 	= $table["colmap"];
-
 	    $dbCols = array();
 		$dbCols["keys"] = array();
 		$dbCols["fields"] = array();
@@ -1759,7 +1666,7 @@ class cACTION {
 				break;
 			case 1:
 				foreach( $tableMeta["keys"] as $keyName ) {
-					$dbCols["keys"][ $colMap[$keyName] ] = $row["keys"][$keyName];
+					$dbCols["keys"][ $keyName ] = $row["keys"][$keyName];
 				}
 				foreach( $row["cols"] as &$colObj ) {
 					if( $row["error"]["errorCode"] ) {
@@ -1770,7 +1677,7 @@ class cACTION {
 						$fieldName 	= $colObj["col"];
 						$colVal     = trim($colObj["value"]);
 						// update case:  shouldn't update key and relation fields,  col must in the list 
-						if( !$colObj["key"] && $colObj["coltype"]!="relation" && in_array($colName, $tableMeta["cols"]) ) {
+						if( !$colObj["key"] && $colObj["coltype"]!="relation" && in_array($fieldName, $tableMeta["cols"]) ) {
 							switch( $colObj["coltype"] ) {
 								case "checkbox":
 								case "checkbox1":
@@ -1790,7 +1697,7 @@ class cACTION {
 			case 2:
 				// insert case:  composed cols, must find out the empty value col.  
 				foreach( $tableMeta["keys"] as $keyName ) {
-					if( !$row["keys"][$keyName] ) $dbCols["keys"][ $colMap[$keyName] ] = "";
+					if( !$row["keys"][$keyName] ) $dbCols["keys"][$keyName] = "";
 					// below not support composed keys
 					//$dbCols["keys"][ $colMap[$keyName] ] = "";
 				}
@@ -1802,7 +1709,7 @@ class cACTION {
 						$colName 	= $colObj["name"];
 						$fieldName 	= $colObj["col"];
 						$colVal     = trim($colObj["value"]);
-						if( !$colObj["key"] && $colObj["coltype"]!="relation" && in_array($colName, $tableMeta["cols"]) ) {
+						if( !$colObj["key"] && $colObj["coltype"]!="relation" && in_array($fieldName, $tableMeta["cols"]) ) {
 							switch( $colObj["coltype"] ) {
 								case "checkbox":
 								case "checkbox1":
@@ -1813,7 +1720,7 @@ class cACTION {
 									$dbCols["fields"][$fieldName] = $colVal;
 									break;
 							}
-						} elseif ($colObj["key"] && $colVal && in_array($colName, $tableMeta["cols"]) ) {
+						} elseif ($colObj["key"] && $colVal && in_array($fieldName, $tableMeta["cols"]) ) {
 							// insert case: composed keys,  the key has value, must insert to table
 							// comment below -  not support composed keys ,  because single edit row, mess up
 							$dbCols["fields"][$fieldName] = $colVal;
@@ -1824,97 +1731,11 @@ class cACTION {
 				break;
 			case 3:
 				foreach( $tableMeta["keys"] as $keyName ) {
-					$dbCols["keys"][ $colMap[$keyName] ] = $row["keys"][$keyName];
+					$dbCols["keys"][$keyName] = $row["keys"][$keyName];
 				}
 				break;
 		}
 		return $dbCols;
-	}
-
-	static public function getCols($table, $tableLevel, $action) {
-	    $tableMeta = $table["metadata"][$tableLevel];
-		$cols = array();
-		switch( $action ) {
-			case "get":
-				/*** get ***/
-				foreach( $tableMeta["cols"] as $colName ) {
-					$colMeta = $table["colmeta"][$colName];
-					switch( $colMeta["coltype"] ) {
-						case "checkbox":
-						case "checkbox1":
-						case "checkbox2":
-						case "checkbox3":
-							break;
-						default:
-							$cols[] = $colName;
-							break;
-					}
-				}
-				/***********/
-
-				break;
-			case "save":
-				/*** save ***/
-				/***********/
-				break;
-		}
-		return $cols;
-	}
-
-	static public function getChecks($db, &$table, $tableLevel) {
-	    $tableMeta 	= $table["metadata"][$tableLevel];
-		$colMap 	= $table["colmap"];
-		foreach( $table["rows"] as &$row ) {
-			foreach( $tableMeta["cols"] as $colName ) {
-				$colMeta = $table["colmeta"][$colName];
-				switch( $colMeta["coltype"] ) {
-					case "checkbox":
-					case "checkbox1":
-					case "checkbox2":
-					case "checkbox3":
-						$cktable = $table["metadata"][$colName]["name"];
-						$ckfkeys =  $table["metadata"][$colName]["fkeys"];
-						if( $cktable ) {
-							$ccc = array();
-							switch($tableLevel) {
-								case "medium":
-									$fidx = 0;
-									foreach(  $table["metadata"]["primary"]["keys"] as $rkey ) 
-									{
-										$ccc[$ckfkeys[$fidx]] = $row[$rkey];
-										$fidx++;
-									}
-									foreach( $table["metadata"]["second"]["keys"] as $rkey ) 
-									{
-										$ccc[$ckfkeys[$fidx]] = $row[$rkey];
-										$fidx++;
-									}
-									break;
-								default:
-									foreach( $table["metadata"][$colName]["fkeys"] as $okey=>$rkey ) {
-										$pkey = $tableMeta["keys"][$okey];
-										$ccc[$rkey] = $row[$pkey];
-									}
-									break;
-							}
-							$fields 	= array();
-							$ckValCol 	= $table["metadata"][$colName]["keys"][0];
-							$fields[] 	= $ckValCol;
-							$ckresult 	= $db->select( $cktable, $fields, $ccc );	
-							$ckrows  	= $db->rows($ckresult);
-							$row[$colName] = array();
-							foreach( $ckrows as $ckrow ) {
-								$row[$colName][] = intval($ckrow[$ckValCol]);
-							}
-						} else {
-							$row[$colName] = array();
-						}
-						break;
-					default:
-						break;
-				}
-			}
-		}
 	}
 
 	static public function saveChecks($db, &$table, $tableLevel) {
@@ -1991,49 +1812,46 @@ class cACTION {
 		}
 	}
     static public function checkUnique($db, &$table, $tableLevel) {
-		$is_unique = true;
-		$colMap 		= cACTION::colMap($table);
-		$colMeta 		= cACTION::colMeta($table);
+		$is_unique 		= true;
 		$tableMeta 		= $table["metadata"][$tableLevel];
 		$tableName 		= $tableMeta["name"];
-		$tableColNames  = cACTION::getCols($table, $tableLevel, "get");
-		$uCols = cARRAY::arrayFilter($table["cols"], array("unique"=>1));
+		$tableColNames  = cACTION::getSelectCols($table, $tableLevel);
+		$jscols 		= $table["jscols"][$tableLevel];
+		$uCols = cARRAY::arrayFilter($jscols, array("unique"=>1));
 
 		foreach( $uCols as $uCol ) {
-			$uCol_name = $uCol["name"];
-			if( in_array( $uCol_name, $tableColNames ) ) {
+			if( in_array( $uCol["col"], $tableColNames ) ) {
 				foreach( $table["rows"] as &$theRow ) {
-					$cidx = cARRAY::arrayIndex( $theRow["cols"], array("name"=>$uCol_name) );
+					$cidx = cARRAY::arrayIndex( $theRow["cols"], array("col"=>$uCol["col"]) );
 					$theCol = $theRow["cols"][$cidx];
 					$valKV  = array( $uCol["col"]=>$theCol["value"] );
 					
 					$keyKV 	= array();
 					switch($tableLevel) {
-						case "primary":
-						case "second":
+						case "p":
+						case "s":
 							$rKeys 	=$tableMeta["keys"];
 							foreach( $rKeys as $rkey) {
-								$key_col = $colMap[$rkey];
-								$temp_cidx = cARRAY::arrayIndex( $theRow["cols"], array("name"=>$rkey)  );
+								$temp_cidx = cARRAY::arrayIndex( $theRow["cols"], array("col"=>$rkey)  );
 								$rCol = $theRow["cols"][$temp_cidx];
-								$keyKV[$key_col] = $rCol["value"];
+								$keyKV[$rkey] = $rCol["value"];
 							}
 							break;
-						case "medium":
+						case "m":
 							// create keys array() for database where clause
 							if( $tableLevel=="medium" ) {
 								foreach($tableMeta["keys"] as $fidx=>$rkey) {
-									$pkey_name = $colMap[$table["metadata"]["primary"]["keys"][$fidx]];
-									$temp_cidx = cARRAY::arrayIndex( $theRow["cols"], array("name"=>$pkey_name)  );
+									$pkey_name = $table["metadata"]["p"]["keys"][$fidx];
+									$temp_cidx = cARRAY::arrayIndex( $theRow["cols"], array("col"=>$pkey_name)  );
 									$rCol = $theRow["cols"][$temp_cidx];
-									$keyKV[$colMap[$rkey]] =  $rCol["value"];
+									$keyKV[$rkey] =  $rCol["value"];
 								}
 
 								foreach($tableMeta["fkeys"] as $fidx=>$rkey) {
-									$pkey_name = $colMap[$table["metadata"]["second"]["keys"][$fidx]];
-									$temp_cidx = cARRAY::arrayIndex( $theRow["cols"], array("name"=>$pkey_name)  );
+									$pkey_name = $table["metadata"]["s"]["keys"][$fidx];
+									$temp_cidx = cARRAY::arrayIndex( $theRow["cols"], array("col"=>$pkey_name)  );
 									$rCol = $theRow["cols"][$temp_cidx];
-									$keyKV[$colMap[$rkey]] =  $rCol["value"];
+									$keyKV[$rkey] =  $rCol["value"];
 								}
 							}
 							break;
@@ -2080,20 +1898,20 @@ class cACTION {
 	static public function checkUniques($db, &$table) {
 		switch( $table["metadata"]["type"] ) {
 			case "one":
-				cACTION::checkUnique($db, $table, "primary");
+				cACTION::checkUnique($db, $table, "p");
 				break;
 			case "one2one":
-				cACTION::checkUnique($db, $table, "primary");
-				cACTION::checkUnique($db, $table, "second");
+				cACTION::checkUnique($db, $table, "p");
+				cACTION::checkUnique($db, $table, "s");
 				break;
 			case "one2many":
-				cACTION::checkUnique($db, $table, "primary");
-				cACTION::checkUnique($db, $table, "second");
+				cACTION::checkUnique($db, $table, "p");
+				cACTION::checkUnique($db, $table, "s");
 				break;
 			case "many2many":
-				cACTION::checkUnique($db, $table, "primary");
-				cACTION::checkUnique($db, $table, "second");
-				cACTION::checkUnique($db, $table, "medium");
+				cACTION::checkUnique($db, $table, "p");
+				cACTION::checkUnique($db, $table, "s");
+				cACTION::checkUnique($db, $table, "m");
 				break;
 		}
 	}
@@ -2125,68 +1943,41 @@ class cACTION {
 	}
 	
 	static public function getFilters(&$table) {
-		$criteria = "";
-
-		$filters = $table["filters"];
-		$pcols = cACTION::getCols($table, "primary", "get");			
-		$scols = cACTION::getCols($table, "second", "get");			
-		$mcols = cACTION::getCols($table, "medium", "get");			
-
+		$criteria 	= "";
+		$filters 	= $table["filters"];
 		if( is_array($filters) ) {
 			foreach($filters as $filter) {
-				$temp_ccc = "";
-				$cols = explode(",", $filter["cols"]);
-				foreach($cols as $col) {
-					$tableCol 	= trim($col); 						
-					$checkMeta  = array();
-					$colIdx 	= cARRAY::arrayIndex($table["cols"], array("col"=>$col));
-					if($colIdx>=0) {
-						$colName 				= $table["cols"][$colIdx]["name"];
-						$checkMeta["meta"] 		= $table["metadata"][$colName];
-						$checkMeta["colmap"] 	= $table["colmap"];
-						if(in_array($colName, $mcols) ) {
-							$tableCol = "c.$col";
-							$checkMeta["reftable"] 	= $table["metadata"]["medium"];
-							$checkMeta["type"] 		= "medium";
-						}
-						if(in_array($colName, $scols) ) {
-							$tableCol = "b.$col";
-							$checkMeta["reftable"] = $table["metadata"]["second"];
-							$checkMeta["type"] 		= "second";
-						} 
-						if(in_array($colName, $pcols) ) {
-							$tableCol = "a.$col";
-							$checkMeta["reftable"] = $table["metadata"]["primary"];
-							$checkMeta["type"] 		= "primary";
-						} 
-					}
-					cTYPE::join($temp_ccc, " OR " , cACTION::getCriteria($filter, $tableCol, $checkMeta));
+				$temp_ccc 	= "";
+				$dbCols 	= explode(",", $filter["cols"]);
+				$only 		= 0;
+				foreach($dbCols as $dbCol) {
+					$dbCol 	= trim($dbCol); 						
+					cTYPE::join($temp_ccc, " OR " , cACTION::getCriteria($table, $filter, $dbCol));
+					$only++;
 				}
-				$temp_ccc = $temp_ccc!=""?"(" . $temp_ccc . ")":$temp_ccc;
+				if($only>1)	$temp_ccc = $temp_ccc!=""?"(" . $temp_ccc . ")":$temp_ccc;
 				cTYPE::join($criteria, " AND ", $temp_ccc);
 			}
 		}
 		//echo "criteria:  $criteria";
 		cTYPE::join($table["criteria"], " AND ",  $criteria);
 	}
-
-	static public function getCriteria($filter, $tableCol, $checkMeta) {
-		$ret_ccc = "";
+	static public function getCriteria($table, $filter, $dbCol) {
+		$ret_ccc 	= "";
 		$need = $filter["need"]?1:0;
-		
+		if( strpos($dbCol, ".") === false )	$dbCol = "p.$dbCol";
 		switch( $filter["coltype"] ) {
 			case "textbox":
 				$compare 	= $filter["compare"]?$filter["compare"]:"LIKE";
-
 				/*** common part ***/
 				$val 		= $filter["value"]?trim($filter["value"]):"";
 				if($need) {
 					if($val!="") 
-						$ret_ccc = cACTION::getOperation($tableCol, $compare, $val);
+						$ret_ccc = cACTION::getOperation($dbCol, $compare, $val);
 					else 
 						$ret_ccc = "1=0";
 				} else {
-					if($val!="") $ret_ccc = cACTION::getOperation($tableCol, $compare, $val);
+					if($val!="") $ret_ccc = cACTION::getOperation($dbCol, $compare, $val);
 				}
 				/*** end of common part ***/
 				break;
@@ -2200,11 +1991,11 @@ class cACTION {
 				$val 		= $filter["value"]?trim($filter["value"]):"";
 				if($need) {
 					if($val!="") 
-						$ret_ccc = cACTION::getOperation($tableCol, $compare, $val);
+						$ret_ccc = cACTION::getOperation($dbCol, $compare, $val);
 					else 
 						$ret_ccc = "1=0";
 				} else {
-					if($val!="") $ret_ccc = cACTION::getOperation($tableCol, $compare, $val);
+					if($val!="") $ret_ccc = cACTION::getOperation($dbCol, $compare, $val);
 				}
 				/*** end of common part ***/
 				break;
@@ -2216,7 +2007,7 @@ class cACTION {
 			case "select":
 				$compare = "=";
 				$val = $filter["value"]?trim($filter["value"]):"";
-				if($val!="") $ret_ccc = cACTION::getOperation($tableCol, $compare, $val);
+				if($val!="") $ret_ccc = cACTION::getOperation($dbCol, $compare, $val);
 				break;
 
 			case "datetimerange":
@@ -2227,9 +2018,9 @@ class cACTION {
 				$fromVal 	= $filter["value"]["from"]?trim($filter["value"]["from"]):"";
 				$toVal 		= $filter["value"]["to"]?trim($filter["value"]["to"]):"";
 				if( $fromVal!="" )
-					$ret_ccc = cACTION::getOperation($tableCol, ">=", $fromVal);
+					$ret_ccc = cACTION::getOperation($dbCol, ">=", $fromVal);
 				if( $toVal!="" )
-					cTYPE::join($ret_ccc, " AND ", cACTION::getOperation($tableCol, "<=", $toVal));
+					cTYPE::join($ret_ccc, " AND ", cACTION::getOperation($dbCol, "<=", $toVal));
 				
 				$ret_ccc = $ret_ccc!=""? "(" . $ret_ccc . ")": $ret_ccc;   
 				break;
@@ -2238,14 +2029,15 @@ class cACTION {
 			case "checkbox1":
 			case "checkbox2":
 			case "checkbox3":
-				$compare = strtoupper($filter["compare"])=="HAS"?strtoupper($filter["compare"]):"IN";
+			    //Importatnt:  if checkbox using "HAS" ,   if  radio in database, but client using checkbox , using "IN"
+				$compare 	= strtoupper($filter["compare"])=="HAS"?strtoupper($filter["compare"]):"IN";
 				if($need) {
 					if(is_array($filter["value"]) && count($filter["value"])>0) {
 						$val = array();
 						foreach($filter["value"] as $fval) {
 							$val[] = intval($fval);
 						}
-						$ret_ccc = cACTION::getOperation($tableCol, $compare, implode(",",$val), $checkMeta);
+						$ret_ccc = cACTION::getOperation($dbCol, $compare, implode(",",$val), $table);
 					} else {
 						$ret_ccc = "1=0";
 					}
@@ -2255,83 +2047,93 @@ class cACTION {
 						foreach($filter["value"] as $fval) {
 							$val[] = intval($fval);
 						}
-						$ret_ccc = cACTION::getOperation($tableCol, $compare, implode(",",$val), $checkMeta);
+						$ret_ccc = cACTION::getOperation($dbCol, $compare, implode(",",$val), $table);
 					}					
 				}
 				break;
 		}
 		return $ret_ccc;
 	}
-
-	static public function getOperation($tableCol, $compare, $val, $checkMeta) {
+	static public function getOperation($dbCol, $compare, $val, $table) {
 		$ret_ccc = "";
+		if( strpos($dbCol, ".") !== false ) {
+			$colPart 	= $dbCol.explode(".");
+			$tableType	= strtolower($colPart[0]);
+			$ssCol 		= trim($colPart[1]);
+		} else {
+			$tableType 	= "p";  // if not  s.colname or m.colname,  default set to primary table; p.xxxx
+			$ssCol 		= $dbCol;
+			$dbCol 		= "p." . $dbCol;
+		} 
+		
 		$compare = strtoupper($compare);
 		switch($compare) {
 			case "LIKE":
-				$ret_ccc = "$tableCol $compare '%" . cTYPE::quote($val) . "%'"; 
+				$ret_ccc = "$dbCol $compare '%" . cTYPE::quote($val) . "%'"; 
 				break;
 			case "=":
 			case "<":
 			case "<=":
 			case ">":
 			case ">=":
-				$ret_ccc = "$tableCol $compare '" . cTYPE::quote($val) . "'"; 
+				$ret_ccc = "$dbCol $compare '" . cTYPE::quote($val) . "'"; 
 				break;
 			case "IN":
-				$ret_ccc = "$tableCol $compare (" . $val . ")"; 
+				$ret_ccc = "$dbCol $compare (" . $val . ")"; 
 				break;
 			case "RANGE":
-				$ret_ccc = "$tableCol BETWEEN '" . cTYPE::quote($val["from"]) . "' AND '" . cTYPE::quote($val["to"]) . "'"; 
+				$ret_ccc = "$dbCol BETWEEN '" . cTYPE::quote($val["from"]) . "' AND '" . cTYPE::quote($val["to"]) . "'"; 
 				break;
 			case "HAS":
 				$ret_ccc = ""; 
-				if( is_array($checkMeta) && count($checkMeta)>0 ) {
-					$colMap  		= $checkMeta["colmap"];
-					$cktable 		= $checkMeta["meta"];
-					$type 			= $checkMeta["type"];
-					$rftable 		= $checkMeta["reftable"];
-					$cktable_name 	= $cktable["name"];
-					switch( $type ) {
-						case "primary":
+				$ckMeta = $table["metadata"][$ssCol];
+				if( is_array($ckMeta) && count($ckMeta["keys"])>0 ) {
+					switch( $tableType ) {
+						case "p":
+							$ptable = $table["metadata"]["p"];
 							$ckjoinon = "";
-							foreach( $cktable["fkeys"] as $cidx=>$ckey ) {
-							   $rkey = $colMap[$rftable["keys"][$cidx]];
-							   cTYPE::join($ckjoinon, " AND ", "$ckey=a.$rkey"); 
+							foreach( $ckMeta["keys"] as $cidx=>$ckey ) {
+							   $pkey = $ptable["type"] . "." . $ptable["keys"][$cidx];
+							   cTYPE::join($ckjoinon, " AND ", "$ckey=$pkey"); 
 							}
-							$vkey = $cktable["keys"][0];
-							cTYPE::join( $ckjoinon, " AND ", "$vkey IN (" . $val . ")" );
+							$ckValCol = $ckMeta["value"];
+							cTYPE::join( $ckjoinon, " AND ", "$ckValCol IN (" . $val . ")" );
 							break;
-						case "second":
+						case "s":
+							$stable = $table["metadata"]["s"];
 							$ckjoinon = "";
-							foreach( $cktable["fkeys"] as $cidx=>$ckey ) {
-							   $rkey = $colMap[$rftable["keys"][$cidx]];
-							   cTYPE::join( $ckjoinon, " AND ", "$ckey=b.$rkey"); 
+							foreach( $ckMeta["keys"] as $cidx=>$ckey ) {
+							   $skey = $stable["type"] . "." . $stable["keys"][$cidx];
+							   cTYPE::join( $ckjoinon, " AND ", "$ckey=$skey"); 
 							}
-							$vkey = $cktable["keys"][0];
-							cTYPE::join( $ckjoinon, " AND ", "$vkey IN (" . $val . ")" );
+							$ckValCol = $ckMeta["value"];
+							cTYPE::join( $ckjoinon, " AND ", "$ckValCol IN (" . $val . ")" );
 							break;
-						case "medium":
+						case "m":
+							$ptable = $table["metadata"]["p"];
 							$ckjoinon = "";
 							$fidx = 0;
-							foreach($rftable["keys"] as $ridx=>$rkey ) 
+							foreach($ptable["keys"] as $pidx=>$pkey ) 
 							{
-								$rkey = $colMap[$rkey]; 
-								$ckey = $cktable["fkeys"][$fidx];
-							    cTYPE::join( $ckjoinon, " AND ", "$ckey=c.$rkey"); 
+								$ckey 		= $ckMeta["keys"][$fidx];
+								$pkeyDBCol 	= $ptable["type"] . "." . $pkey;
+							    cTYPE::join( $ckjoinon, " AND ", "$ckey=$pkeyDBCol"); 
 								$fidx++;
 							}
-							foreach( $rftable["fkeys"] as  $ridx=>$rkey ) 
+							$stable = $table["metadata"]["s"];
+							foreach( $stable["keys"] as  $sidx=>$skey ) 
 							{
-								$rkey = $colMap[$rkey]; 
-								$ckey = $cktable["fkeys"][$fidx];
-							    cTYPE::join( $ckjoinon, " AND ", "$ckey=c.$rkey"); 
+								$ckey 		= $ckMeta["keys"][$fidx];
+								$skeyDBCol 	= $stable["type"] . "." . $skey;
+							    cTYPE::join( $ckjoinon, " AND ", "$ckey=$skeyDBCol"); 
 								$fidx++;
 							}
-							$vkey = $cktable["keys"][0];
-							cTYPE::join( $ckjoinon, " AND ", "$vkey IN (" . $val . ")" );
+							$ckValCol = $ckMeta["value"];
+							cTYPE::join( $ckjoinon, " AND ", "$ckValCol IN (" . $val . ")" );
 							break;
 					}
-					$ret_ccc = "EXISTS (SELECT 1 FROM $cktable_name WHERE $ckjoinon)";
+					$ckTable = $ckMeta["name"];
+					$ret_ccc = "EXISTS (SELECT 1 FROM $ckTable WHERE $ckjoinon)";
 				}
 				break;
 		}
@@ -3353,7 +3155,7 @@ class cLIST {
 			}
 			$listObj["loaded"] 			= 1;
 			$listObj["keys"] 			= array();
-			$listObj["keys"]["rowsn"] 	= -1;
+			$listObj["keys"]["guid"] 	= "";
 			$listObj["keys"]["name"] 	= "";
 			$listObj["list"] 			= $list;
 		}

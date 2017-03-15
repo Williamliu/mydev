@@ -43,7 +43,8 @@ try {
 
 	$tableMeta = array(
 		"type"=>"one2many",   
-		"primary"=>array(	
+		"p"=>array(	
+							"type"=>"p",
 							"name"=>"public_user", 
 							"keys"=>array("id"),  
 							"fkeys"=>array(), 
@@ -51,11 +52,12 @@ try {
 							"insert"=>array(), 
 							"update"=>array() 
 					),
-		"second"=>array( 
+		"s"=>array( 
+							"type"=>"s",
 							"name"=>"public_user_address", 
-							"keys"=>array("uid"),  
+							"keys"=>array("id"),  
 							"fkeys"=>array("user_id"), 
-							"cols"=>array("uid","user_id", "address", "lang", "color",  "country", "shipdate", "status", "ctime"), 
+							"cols"=>array("id","user_id", "address", "lang", "color",  "country", "shipdate", "status", "created_time"), 
 							"insert"=>array(), 
 							"update"=>array() 
 		),
@@ -63,7 +65,7 @@ try {
 
 		//checkbox maping keys, fkeys using  database colname.  keys is value col,  fkeys is relational cols; 
 		//Javascript ,  don't need to define keys, fkeys for checkbox mapping 
-		"country"=>array("name"=>"website_admin_country", "keys"=>array("country_id"), "fkeys"=>array("admin_id") )  // checkbox values  id => admin_id ; country_id is values
+		"country"=>array("name"=>"website_admin_country", "value"=>"country_id", "keys"=>array("admin_id") )  // checkbox values  id => admin_id ; country_id is values
 	);
 	$table["metadata"] = $tableMeta; 	
 

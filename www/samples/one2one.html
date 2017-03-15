@@ -56,16 +56,16 @@
 
 
         <script language="javascript" type="text/javascript">
-		   	var col1 = new WLIU.COL({key:1, coltype:"hidden", 		name:"id", 			colname:"User No.",  	coldesc:"User ID" });
-		   	var col2 = new WLIU.COL({key:0, coltype:"textbox", 		name:"uuu",			col:"user_name", colname:"User Name", 	coldesc:"Login User",  	sort:"ASC", need:1, notnull: 1});
-		   	var col3 = new WLIU.COL({key:0, coltype:"textbox", 		name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
-		   	var col4 = new WLIU.COL({key:0, coltype:"relation", 	name:"user_id",		col:"id", 				colname:"VIP?",  		coldesc:"is VIP?", defval:true});
-		   	var col5 = new WLIU.COL({key:0, coltype:"textbox", 		name:"horby", 		colname:"Horby",   		coldesc:"Horby of User", 		relation:"user_id",	sort:"ASC", need:1, notnull:1});
-			var col6 = new WLIU.COL({key:0, coltype:"select", 		name:"lang", 		colname:"LangISO", 		coldesc:"Language ISO Code",  	relation:"user_id", defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory"});
-		   	var col7 = new WLIU.COL({key:0, coltype:"radio2", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name",  			relation:"user_id", notnull:0, 	list:"colorCategory"});
-			var col8 = new WLIU.COL({key:0, coltype:"checkbox1", 	name:"country", 	colname:"Homeland", 	coldesc:"Nationality",  		relation:"user_id", sort:"DESC", need:1,  notnull:1, list:"countryCategory"});
-		   	var col9 = new WLIU.COL({key:0, coltype:"datetime", 	name:"memberdate", 	colname:"Enroll Date", 	coldesc:"Date of Enroll",  		relation:"user_id", 	sort:"DESC"});
-		   	var col10 = new WLIU.COL({key:0, coltype:"text", 		name:"stime", 		col:"created_time", 	colname:"Created Date", 	coldesc:"Date of Enroll",  		relation:"user_id", 	sort:"DESC"});
+		   	var col1 = new WLIU.COL({key:1, table:"p", 	coltype:"hidden", 		name:"id", 			colname:"User No.",  	coldesc:"User ID" });
+		   	var col2 = new WLIU.COL({key:0, table:"p",  coltype:"textbox", 		name:"uuu",			col:"user_name", colname:"User Name", 	coldesc:"Login User",  	sort:"ASC", need:1, notnull: 1});
+		   	var col3 = new WLIU.COL({key:0, table:"p",  coltype:"textbox", 		name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
+		   	var col4 = new WLIU.COL({key:0, table:"s",  coltype:"relation", 	name:"user_id",		col:"id", 				colname:"VIP?",  		coldesc:"is VIP?", defval:true});
+		   	var col5 = new WLIU.COL({key:0, table:"s",  coltype:"textbox", 		name:"horby", 		colname:"Horby",   		coldesc:"Horby of User", 		relation:"user_id",	sort:"ASC", need:1, notnull:1});
+			var col6 = new WLIU.COL({key:0, table:"s",  coltype:"select", 		name:"lang", 		colname:"LangISO", 		coldesc:"Language ISO Code",  	relation:"user_id", defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory"});
+		   	var col7 = new WLIU.COL({key:0, table:"s",  coltype:"radio2", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name",  			relation:"user_id", notnull:0, 	list:"colorCategory"});
+			var col8 = new WLIU.COL({key:0, table:"s",  coltype:"checkbox1", 	name:"country", 	colname:"Homeland", 	coldesc:"Nationality",  		relation:"user_id", sort:"DESC", need:1,  notnull:1, list:"countryCategory"});
+		   	var col9 = new WLIU.COL({key:0, table:"s",  coltype:"datetime", 	name:"memberdate", 	colname:"Enroll Date", 	coldesc:"Date of Enroll",  		relation:"user_id", 	sort:"DESC"});
+		   	var col10 = new WLIU.COL({key:0, table:"s",  coltype:"text", 		name:"stime", 		col:"created_time", 	colname:"Created Date", 	coldesc:"Date of Enroll",  		relation:"user_id", 	sort:"DESC"});
 
 		   	var cols = [];
 		   	cols.push(col1);
@@ -95,7 +95,7 @@
 				autotip: "#myauto",
 				tooltip: "#mytips",
 				rights: {detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
-				navi:   {pagesize:20, match: 0, orderby:"stime", sortby:"DESC", paging:1 },
+				navi:   {pagesize:20, match: 0, orderby:"p.created_time", sortby:"DESC", paging:1 },
 				filters:filters,
 				cols: 	cols,
 				lists: 	{
