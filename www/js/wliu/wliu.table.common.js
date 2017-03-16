@@ -601,25 +601,6 @@ WLIU.ROWACTION.prototype = {
 		} else {
 			return false;
 		}
-		/*
-		if( theRow && theCol ) {
-				if( theCol.relation ) {
-					var relCol = this.relationCol(theRow);
-					if(relCol!=undefined) {
-						if(relCol.value) 
-							return false;
-						else 
-							return true;
-					} else {
-						return false;
-					}
-				} else {
-					return false;
-				}
-		} else {
-			return false;
-		}
-		*/
 	},
 	relationChange: function(theRow) {
 		if( theRow ) {
@@ -628,18 +609,20 @@ WLIU.ROWACTION.prototype = {
 				if( relCol.value ) {
 					// true = check 
 					if( relCol.current ) {
-						var rCols = FCOLLECT.collectionByKV(theRow.cols, {relation: relCol.name});
+						var rCols = FCOLLECT.collectionByKV(theRow.cols, {table: relCol.table});
 						for(var cidx in rCols) {
-							this.colRestore(theRow, rCols[cidx]);
+							if(rCols[cidx].coltype!="relation")	this.colRestore(theRow, rCols[cidx]);
 						}
 					}
 				} else {
 					// false = uncheck 
-					var rCols = FCOLLECT.collectionByKV(theRow.cols, {relation: relCol.name});
+					var rCols = FCOLLECT.collectionByKV(theRow.cols, {table: relCol.table});
 					for(var cidx in rCols) {
-						var keyvalues = {};
-						keyvalues[rCols[cidx].name] = this.toColVal(rCols[cidx].coltype, "");
-						this.update(theRow, keyvalues);
+						if(rCols[cidx].coltype!="relation") {
+							var keyvalues = {};
+							keyvalues[rCols[cidx].name] = this.toColVal(rCols[cidx].coltype, "");
+							this.update(theRow, keyvalues);
+						}
 					}
 					
 				}
