@@ -52,10 +52,6 @@ WLIU.TABLE.prototype = {
 		return FROW.rowstate(theRow, p_rowstate);
 	},
 
-	indexByKeys:  function(p_keys) {
-		return FTABLE.indexByKeys(this, p_keys);
-	},
-
 	colMeta: function(col_name) {
 		return FTABLE.colMeta(this, col_name);
 	},
@@ -95,9 +91,6 @@ WLIU.TABLE.prototype = {
 	// get row object
 	getRow: function(theRow) {
 		return FTABLE.getRow(this, theRow);
-	},
-	getRowByKeys: function(p_keys) {
-		return FTABLE.getRowByKeys(this, p_keys);
 	},
 	getRowByGuid: function(guid) {
 		return FTABLE.getRowByGuid(this, guid);

@@ -300,20 +300,15 @@ WLIU.COL = function(opts) {
 }
 WLIU.ROW = function( cols, nameValues, scope ) {
 	if( scope == undefined ) scope = "";
-	this.guid			= guid();
+	if( nameValues == undefined ) nameValues = {};
+
+	this.guid			= nameValues.guid?nameValues.guid:guid();
 	this.scope			= scope;
-	this.keys 			= {};
 	this.rowstate 		= 2;  //default is new row;   0 - normal; 1 - changed;  2 - added;  3 - deleted
 	this.error			= { errorCode: 0, errorMessage: "" };  
 	this.cols			= [];
 	
-	if( nameValues == undefined ) nameValues = {};
-	// create keys : { id1 : "",  id2: "" }
-	var key_cols =  $.grep(cols, function(n,i) { return  n.key == 1;});
-	for(var kidx in key_cols) {
-		this.keys[key_cols[kidx].name] = nameValues[key_cols[kidx].name]?nameValues[key_cols[kidx].name]:"";
-	}
-	
+
 	// create cols:  []
 	for(cidx = 0; cidx < cols.length; cidx++) {
 		var colObj = {};
@@ -321,10 +316,6 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 		colObj.name  		= cols[cidx].name;
 		colObj.key  		= cols[cidx].key?cols[cidx].key:0;
 		colObj.defval  		= cols[cidx].defval?cols[cidx].defval:"";
-
-		if(colObj.key) {
-			this.keys[colObj.name] = this.keys[colObj.name]?this.keys[colObj.name]:colObj.defval;
-		}
 
 		colObj.colname  	= cols[cidx].colname?cols[cidx].colname:colObj.name.capital();
 		colObj.coldesc  	= cols[cidx].coldesc?cols[cidx].coldesc:"";
@@ -517,12 +508,6 @@ WLIU.ROWACTION.prototype = {
 				if(val != undefined) {
 					// write value
 					theCol.value = val;
-					
-					// if it is key col,  need to update row key value
-					var t_keys = theRow.keys;
-					for(var colName in t_keys) {
-						if(colName == theCol.name) theRow.keys[colName] = theCol.value; 	
-					}
 					
 					if( $.isPlainObject(theCol.value) ) {
 						// compare object {1:true, 2:true}
@@ -795,6 +780,12 @@ WLIU.ROWACTION.prototype = {
 				} // for	
 				break;
 			case 3:
+				for(var cidx in theRow.cols) {
+					if(theRow.cols[cidx].key==1 || theRow.cols[cidx].coltype=="relation") {
+						var ncol = this.getCol( theRow.cols[cidx] );
+						if(ncol) ncols.push(ncol);
+					} //if
+				} // for	
 				break;
 		}
 		return ncols;
@@ -806,7 +797,7 @@ WLIU.ROWACTION.prototype = {
 			var nrow = {};
 			nrow.scope 		= theRow.scope;
 			nrow.rowstate 	= theRow.rowstate;
-			nrow.keys 		= theRow.keys;
+			nrow.guid       = theRow.guid;
 			nrow.error      = { errorCode:0, errorMessage:"" };
 			nrow.cols		= this.getChangeCols(theRow);
 			nrows.push(nrow);
@@ -978,9 +969,6 @@ WLIU.TABLEACTION.prototype = {
 	indexByRow: function(theTable, theRow) {
 		return this.index(theTable, theRow.guid);
 	},
-	indexByKeys: function(theTable, p_keys) {
-		return FCOLLECT.indexByKeys(theTable.rows, p_keys);
-	},
 	clearKeysDefault: function(theTable) {
 		var keyCols = FCOLLECT.collectionByKV(theTable.cols, {key: 1});
 		for(var cidx in keyCols) {
@@ -1119,9 +1107,6 @@ WLIU.TABLEACTION.prototype = {
 			return FCOLLECT.objectByKV(theTable.rows, {guid: theRow.guid});
 		} 
 	},
-	getRowByKeys: function(theTable, p_keys) {
-		return FCOLLECT.objectByKeys(theTable.rows, p_keys);
-	},
 	getRowByGuid: function(theTable, guid) {
 		return FCOLLECT.objectByKV(theTable.rows, {guid: guid});
 	},
@@ -1237,14 +1222,6 @@ WLIU.TABLEACTION.prototype = {
 	},
 	// end of one2many & many2many
 
-	// init rows and keys
-	init: function(theTable) {
-		this.clearKeysDefault(theTable);
-		theTable.rows = [];
-		if(!theTable.sc.$$phase) {
-			theTable.sc.$apply();
- 		}
-	},
 	// client side remove the record from array and table rows
 	removeRow: function(theTable, theRow) {
 		if( theTable && theRow ) {
@@ -1292,8 +1269,8 @@ WLIU.TABLEACTION.prototype = {
 				if( true ) {
 					var nrow = {};
 					nrow.scope 		= theRow.scope;
+					nrow.guid  		= theRow.guid;
 					nrow.rowstate 	= theRow.rowstate;
-					nrow.keys 		= theRow.keys;
 					nrow.error      = { errorCode:0, errorMessage:"" };
 					nrow.cols		= FROW.getChangeCols(theRow);
 					nrows.push(nrow);
@@ -1304,6 +1281,19 @@ WLIU.TABLEACTION.prototype = {
 	},
 
 	/*** AJAX Method ****/
+	// init rows and keys
+	init: function(theTable, callback) {
+		this.clearKeysDefault(theTable);
+		theTable.rows = [];
+
+		var ntable = {};
+		ntable.scope = theTable.scope;
+		ntable.lang  = theTable.lang;
+		ntable.action = "init";
+		ntable.error  = {errorCode: 0, errorMessage:""};
+		ntable.lists = this.getLists(theTable);
+		this.ajaxCall(theTable, ntable, callback);
+	},
 	getRows: function(theTable, callback) {
 		var ntable = {};
 		ntable.scope = theTable.scope;
@@ -1376,11 +1366,13 @@ WLIU.TABLEACTION.prototype = {
 
 				if(callback && callback.ajaxAfter && $.isFunction(callback.ajaxAfter) ) callback.ajaxAfter(req.table);
 
-				FTABLE.setLists(_self, req.table.lists);
 				switch(req.table.action) {
-					case "init": 
+					case "init":
+						FTABLE.setLists(_self, req.table.lists);
+						break;
 					case "get": 
 						//console.log(req.table);
+						FTABLE.setLists(_self, req.table.lists);
 						FTABLE.syncRows(_self, req.table);
 						break;
 					case "save":
@@ -1412,6 +1404,8 @@ WLIU.TABLEACTION.prototype = {
 		theTable.rows 		= [];
 		theTable.current 	= "";
 		theTable.navi = angular.copy(ntable.navi);
+
+		// update primary table information: one2one, one2many, many2many 
 		if( ntable.primary && $.isArray(ntable.primary) ) {
 			if( ntable.primary.length>0 ) {
 				for(var pidx in ntable.primary) {
@@ -1422,6 +1416,7 @@ WLIU.TABLEACTION.prototype = {
 				}
 			}
 		}
+		// append row to table.rows
 		for(var ridx in ntable.rows) {
 			var theRow = ntable.rows[ridx];
 			var nrow = theTable.newRow( theRow );
@@ -1481,14 +1476,15 @@ WLIU.TABLEACTION.prototype = {
 									tableRow.cols[cidx].colstate 	= 0;
 									tableRow.cols[cidx].current 	= angular.copy(tableRow.cols[cidx].value);
 									theTable.colError(tableRow, tableRow.cols[cidx].name, {errorCode:0, errorMessage:""} );
+	
 									if(tableRow.cols[cidx].key) {
 										var keyColObj = FCOLLECT.firstByKV( nRow.cols, { name: tableRow.cols[cidx].name } );
 										if( keyColObj ) {
-											tableRow.cols[cidx].value 	= keyColObj.value?keyColObj.value:"";
+											tableRow.cols[cidx].value 	= tableRow.cols[cidx].value?tableRow.cols[cidx].value:keyColObj.value;
 											tableRow.cols[cidx].current = tableRow.cols[cidx].value;  
-											tableRow.keys[tableRow.cols[cidx].name] = tableRow.cols[cidx].value;
 										}
 									}
+									
 								}
 								theTable.navi.recordtotal++;
 								break;

@@ -75,10 +75,10 @@
 		   	var col6 = new WLIU.COL({key:0, 	table:"P", coltype:"text", 		name:"created_time",colname:"Created", 		coldesc:"Password for Login"});
 			var col7 = new WLIU.COL({key:0, 	table:"p", coltype:"select", 	name:"lang", 		colname:"LangISO", 		coldesc:"Language ISO Code", 	defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory"});
 		   	var col8 = new WLIU.COL({key:0, 	table:"p", coltype:"radio", 	name:"color", 	 	colname:"Color", 		coldesc:"Color Name", 			defval: 77, notnull:1, 			list:"colorCategory"});
-		   	var col9 = new WLIU.COL({key:0, 	table:"p", coltype:"checkbox1", name:"aabb",		colname:"Country ISO",  coldesc:"Country ID", list:"countryCategory"});
+		   	var col9 = new WLIU.COL({key:0, 	table:"p", coltype:"checkbox1", name:"countryiso",	colname:"Country ISO",  coldesc:"Country ID", list:"countryCategory"});
 		   	var col10 = new WLIU.COL({key:0, 	table:"p", coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status"});
-		   	var col11 = new WLIU.COL({key:0, 	table:"p", coltype:"upload", 	name:"img1", 		colname:"id copy", 		view: "large", notnull: 1 });
-		   	var col12 = new WLIU.COL({key:0, 	table:"p", coltype:"upload", 	name:"img2",  		colname:"Signature",   	coldesc:"ID Copy", notnull: 1 });
+		   	var col11 = new WLIU.COL({key:0, 	table:"p", coltype:"upload", 	name:"img1", 		colname:"id copy", 		view: "large", notnull: 0 });
+		   	var col12 = new WLIU.COL({key:0, 	table:"p", coltype:"upload", 	name:"img2",  		colname:"Signature",   	coldesc:"ID Copy", notnull: 0 });
 
 		   	var cols = [];
 		   	cols.push(col1);
@@ -112,7 +112,7 @@
 				wait:   "#mywait",
 				taberror:"#taberror",
 				tooltip:"#mytips",
-				tips: 	"#myauto",
+				autotip: "#myauto",
 				rights: {detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
 				navi:   {pagesize:20, match: 1, orderby:"created_time", sortby:"DESC"},
 				filters: filters,
@@ -250,7 +250,7 @@
 						<table.radio3 class="input-small" table="table" name="color" row="row" targetid="colorCategory_diag" tooltip="mytips"></table.radio3>
 					</td>
 					<td>
-						<table.checkbox1 class="input-small" table="table" name="aabb" row="row" targetid="countryCategory_diag" tooltip="mytips"></table.checkbox1>
+						<table.checkbox1 class="input-small" table="table" name="countryiso" row="row" targetid="countryCategory_diag" tooltip="mytips"></table.checkbox1>
 					</td>
 					<td>
 						<table.bool table="table" name="status" row="row" tooltip="mytips"></table.bool>
