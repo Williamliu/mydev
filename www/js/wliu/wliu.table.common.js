@@ -1478,13 +1478,12 @@ WLIU.TABLEACTION.prototype = {
 									theTable.colError(tableRow, tableRow.cols[cidx].name, {errorCode:0, errorMessage:""} );
 	
 									if(tableRow.cols[cidx].key) {
-										var keyColObj = FCOLLECT.firstByKV( nRow.cols, { name: tableRow.cols[cidx].name } );
+										var keyColObj = FCOLLECT.objectByKV( nRow.cols, { name: tableRow.cols[cidx].name } );
 										if( keyColObj ) {
-											tableRow.cols[cidx].value 	= tableRow.cols[cidx].value?tableRow.cols[cidx].value:keyColObj.value;
-											tableRow.cols[cidx].current = tableRow.cols[cidx].value;  
+											tableRow.cols[cidx].value 		= keyColObj.value?keyColObj.value:keyColObj.value;
+											tableRow.cols[cidx].current   	= tableRow.cols[cidx].value;  
 										}
 									}
-									
 								}
 								theTable.navi.recordtotal++;
 								break;

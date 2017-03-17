@@ -4,7 +4,8 @@
 var GCONFIG = {
 	max_upload_size: 	20 * 1024 * 1024,
 	image_allow_type: 	["BMP", "JPG", "JPEG", "PNG", "TIF", "GIF"],
-	file_allow_type:	["PDF", "XLS", "XLSX", "DOC", "DOCX", "PPT", "PPTX", "TXT", "BMP", "JPG", "JPEG", "PNG", "TIF", "GIF"]
+	file_allow_type:	["PDF", "XLS", "XLSX", "DOC", "DOCX", "PPT", "PPTX", "TXT", "BMP", "JPG", "JPEG", "PNG", "TIF", "GIF"],
+	lang: ("" + (navigator.language || navigator.userLanguage)).toLowerCase().substr(0,2) 
 };
 
 String.prototype.nl2br = function() {
@@ -90,7 +91,6 @@ String.prototype.shortName = function() {
 String.prototype.extName = function() {
 	return (this.toString().indexOf('.') !== -1)?this.toString().replace(/.*[.]/, '').toLowerCase() :'';
 }
-
 String.prototype.subName = function(n) {
 	n = n || 10;
 	var name = this.toString().fileName();
@@ -98,6 +98,13 @@ String.prototype.subName = function(n) {
 			name = name.slice(0, n - 6) + '...' + name.slice(-6);    
 	}
 	return name;
+}
+String.prototype.toDate = function() {
+	if( isNaN(this) || parseInt(this) <= 0  ) {
+		return new Date(0);
+	} else {
+		return new Date(parseInt(this)*1000);
+	}
 }
 
 Number.prototype.toSize = function() {
@@ -117,6 +124,14 @@ Number.prototype.toSize = function() {
 		}
 }
 
+Number.prototype.toDate = function() {
+	if( isNaN(this) || parseInt(this) <= 0  ) {
+		return new Date(0);
+	} else {
+		return new Date(parseInt(this)*1000);
+	}
+}
+
 Date.prototype.diff = function(d2) {
    		var t2 = this.getTime();
         var t1 = d2.getTime();
@@ -126,6 +141,9 @@ Date.prototype.timezone = function() {
 	return this.getTimezoneOffset()>=0?"+" + (this.getTimezoneOffset()/60)+":00":"-" + ( Math.abs(this.getTimezoneOffset())/60)+":00";
 };
 
+Date.prototype.ticks = function() {
+	return Date.UTC( this.getFullYear(), this.getMonth(), this.getDate(), this.getHours(), this.getMinutes(), this.getSeconds() ) /1000
+};
 
 Date.prototype.format = function(format) {
     var returnStr = '';

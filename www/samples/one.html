@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
 		<meta charset="utf8" />
 		<!-- JQuery3.1.1 -->
@@ -57,18 +56,8 @@
 
 
         <script language="javascript" type="text/javascript">
-			var dt = new Date();
-			console.log( dt.toString("YYYY-MM-DD THH:mm:ss") );
-			console.log( dt.toUTCString() );
-			console.log( dt.getTimezoneOffset() );
-
-			console.log( Date.UTC( dt.getFullYear(), dt.getMonth(), dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds() ) /1000 );	
-			var ts = Date.UTC( dt.getFullYear(), dt.getMonth(), dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds() );
-
-			console.log( Date.UTC(2016,11,8, 9, 53, 0)/1000 );
-
 		   	var col1 = new WLIU.COL({key:1, 	table:"P", coltype:"hidden", 	name:"id", 			colname:"Admin ID",  	coldesc:"Administrator ID", defval:0 });
-		   	var col2 = new WLIU.COL({key:0, 	table:"P", coltype:"textbox", 	name:"uuu",			col:"user_name", 		colname:"User Name", 	coldesc:"Login User", 	sort:"ASC", need:1, notnull: 1});
+		   	var col2 = new WLIU.COL({key:0, 	table:"P", coltype:"textbox", 	name:"uuu",			col:"user_name", 		colname:"User Name", unique:1,	coldesc:"Login User", 	sort:"ASC", need:1, notnull: 1});
 		   	var col3 = new WLIU.COL({key:0, 	table:"P", coltype:"textbox", 	name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
 		   	var col4 = new WLIU.COL({key:0, 	table:"P", coltype:"datetime", 	name:"bbb", 		col:"birth_date", 		colname:"Brith Date", 	coldesc:"Date of Birth",  sort:"DESC", notnull:1});
 		   	var col5 = new WLIU.COL({key:0, 	table:"P", coltype:"textbox", 	name:"email", 		colname:"Email",   		coldesc:"Email Address", sort:"ASC", need:1, datatype:"email", notnull:0});
