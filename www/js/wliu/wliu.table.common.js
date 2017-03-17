@@ -1432,6 +1432,19 @@ WLIU.TABLEACTION.prototype = {
 	updateRows: function(theTable, ntable) {
 			theTable.current = "";
 			theTable.tableError(ntable.error);
+		
+			// update primary table information: one2one, one2many, many2many 
+			if( ntable.primary && $.isArray(ntable.primary) ) {
+				if( ntable.primary.length>0 ) {
+					for(var pidx in ntable.primary) {
+						var colObj = ntable.primary[pidx];
+						for(var colName in colObj) {
+							theTable.colDefault(colName, colObj[colName]);
+						}
+					}
+				}
+			}
+		
 			for(var ridx in ntable.rows) {
 				var nRow 		= ntable.rows[ridx];
 				var tableRow 	= theTable.getRowByGuid(nRow.guid); 
