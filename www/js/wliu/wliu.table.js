@@ -133,8 +133,8 @@ WLIU.TABLE.prototype = {
 	},
 
 	// ; ridx;  nrow;  ridx nrow ;  default position=0  add to first
-	init: function() {
-		FTABLE.init(this);
+	init: function(IDKeyValues, callback) {
+		FTABLE.init(this, callback);
 	},
 	newRow: function(keyvalues) {
 		return FTABLE.newRow(this, keyvalues);
@@ -170,17 +170,32 @@ WLIU.TABLE.prototype = {
 	saveRows: function(callback) {
 		FTABLE.saveRows(this, callback);
 	},
+	
+	// for one2many & many2many 
 	getRows: function(callback) {
 		FTABLE.getRows(this, callback);
 	},
-
-	// for one2many & many2many 
 	allRows: function(callback) {
 		FTABLE.allRows(this, callback);
 	},
 	matchRows: function(callback) {
 		FTABLE.matchRows(this, callback);
 	},
+	/********************************/
+
+	/*** for form use ***/
+	formInit: function(IDKeyValues, callback) {
+		FTABLE.init(this, IDKeyValues, callback);
+	},
+	formNew: function(IDKeyValues, callback) {
+		FTABLE.formNew(this, IDKeyValues, callback);
+	},
+	formGet: function(IDKeyValues, callback) {
+		FTABLE.formGet(this, IDKeyValues, callback);
+	}, 
+	/********************/
+	
+	/*******************************/
 	getRecords: function(IDKeyValues, callback) {
 		FTABLE.getRecords(this, IDKeyValues, callback);
 	},

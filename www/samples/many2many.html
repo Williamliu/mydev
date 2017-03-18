@@ -63,7 +63,7 @@
 		   	var col4 = new WLIU.COL({key:1, table:"s", coltype:"hidden", 		name:"id", 			colname:"User No.",  	coldesc:"User ID" });
 		   	var col5 = new WLIU.COL({key:0, table:"s", coltype:"textbox", 		name:"uname",		col:"user_name", 		colname:"User Name", 	coldesc:"Login User",  	sort:"ASC", need:1, notnull: 1});
 		   	var col6 = new WLIU.COL({key:0, table:"s", coltype:"textbox", 		name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
-		   	var col7 = new WLIU.COL({key:0, table:"m", coltype:"relation", 		name:"rid",			col:"user_id", 			colname:"AddressID",  	coldesc:"AddressID"});
+		   	var col7 = new WLIU.COL({key:0, table:"m", coltype:"relation", 		name:"rid",			col:"user_id", 			colname:"Relation",  	coldesc:"AddressID"});
 		   	var col8 = new WLIU.COL({key:0, table:"m", coltype:"hidden", 		name:"depart_id",				 			colname:"Depart",  		coldesc:"AddressID"});
 			
 		   	var col9 = new WLIU.COL({key:0, table:"m", coltype:"textbox", 		name:"subject",  	col:"title",			colname:"Title",   		coldesc:"Address", 		unique:1,   sort:"ASC", need:1, notnull:1});
@@ -105,6 +105,7 @@
 				navi:   {pagesize:20, match: 0, orderby:"s.created_time", sortby:"DESC", paging:1 },
 				filters:filters,
 				cols: 	cols,
+				error: {errorCode:0, errorMessage:"Please find"},
 				lists: 	{
 							colorCategory: 		{ loaded: 0 },
 							countryCategory: 	{ loaded: 0 },
@@ -123,7 +124,12 @@
             var app = angular.module("myApp", ["wliuTable"]);
             app.controller("myForm", function ($scope) {
 				table.setScope( $scope );
-				table.getRecords({did:1});
+				
+				//table.getRecords({did:111, id:93});
+				
+				table.getRecords({did:1}, {
+				})
+				
 				$scope.searchAjax = function(table) {
 				}
 
@@ -139,9 +145,10 @@
 			});
 		</script>
 </head>
-<body ng-app="myApp" ng-controller="myForm" style="padding-top:80px;position:relative;">
+<body ng-app="myApp" ng-controller="myForm" style="padding-top:10px;position:relative;">
 <!-- container -->
 <div class="container">
+		<table.message table="table"></table.message>
 		<div class="row">
 		<div class="col-md-12">
 			<fieldset>

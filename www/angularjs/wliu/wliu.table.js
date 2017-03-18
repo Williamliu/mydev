@@ -3953,7 +3953,7 @@ wliu_table.directive("table.taberror", function (wliuTableService) {
         controller: function ($scope, $sce) {
             $scope.getHTML = function() {
                 if( $scope.table.error.errorCode )
-                    return $sce.trustAsHtml($scope.table.error.errorMessage.nl2br());
+                    return $sce.trustAsHtml($scope.table.error.errorMessage.nl2br1());
                 else 
                     return $sce.trustAsHtml("");
             }
@@ -3961,12 +3961,41 @@ wliu_table.directive("table.taberror", function (wliuTableService) {
         link: function (sc, el, attr) {
             $(function(){
                 $(el).wliuDiag();
-                $(el).unbind("errorshow").bind("errorshow", function(evt){
+                $(el).unbind("ishow").bind("ishow", function(evt){
                     if( parseInt(sc.table.error.errorCode) ) {
                         $(el).trigger("show");
                     }
                 });
             });
+        }
+    }
+});
+
+wliu_table.directive("table.message", function (wliuTableService) {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "="
+        },
+        template: [
+                    '<div ng-show="table.error.errorCode>0" class="card card-danger text-center z-depth-2 mb-1 white-text" style="padding:10px;">',
+                        '<div wliu-diag-body style="font-size:16px;">',
+                        '<i class="fa fa-exclamation-triangle fa-md" aria-hidden="true" style="color:white;"></i> <span style="font-size:16px;">We can\'t process submitted data:</span>',
+
+                        '<p class="white-text mb-0" ng-bind-html="getHTML()">',
+                        '</p>',
+                    '</div>'
+                ].join(''),
+        controller: function ($scope, $sce) {
+            $scope.getHTML = function() {
+                if( $scope.table.error.errorCode )
+                    return $sce.trustAsHtml($scope.table.error.errorMessage.nl2br1());
+                else 
+                    return $sce.trustAsHtml("");
+            }
+        },
+        link: function (sc, el, attr) {
         }
     }
 });

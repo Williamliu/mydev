@@ -70,6 +70,7 @@ try {
 	$table["metadata"] = $tableMeta; 	
 
 	// 4) action 
+	//cACTION::formFilter($table);
 	cACTION::action($db, $table);
 
 	// 5) return 

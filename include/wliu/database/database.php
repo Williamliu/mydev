@@ -758,7 +758,7 @@ class cMYSQL implements iSQL {
 				case 0:
 					break;
 				case 1: 
-					if( $table["rights"]["save"] ) {
+					if( $table["rights"]["save"] ) { 
 						$p_keyCols = cACTION::getKeys($table, "p", $row);
 						if($row["error"]["errorCode"] <= 0) {
 								$p_updCols = cACTION::getUpdateCols($table, "p", $row);
@@ -800,29 +800,27 @@ class cMYSQL implements iSQL {
 
 				case 2:
 					if( $table["rights"]["add"] ) {
-						$p_insCols = cACTION::getInsertCols($table, "p", $row);
-						if(	count($p_insCols["fields"]) >0 ) {
-							$p_insCols["fields"] = cARRAY::arrayMerge($p_insCols["fields"], $ptable["insert"]);
-							$p_insCols["fields"] = cARRAY::arrayMerge($p_insCols["fields"], array("created_time"=>time()));
-							$insertID = $this->insert($ptable["name"], $p_insCols["fields"]);
-							// update keys insert id
-							cACTION::setKeys($table, "p", $row, $insertID);
-						}
-
-						$relationCol = cACTION::getRelation($row);
-						if($relationCol) {
-							$s_keyCols = cACTION::getKeys($table, "s", $row);
-							$s_updCols = cACTION::getInsertCols($table, "s", $row);
-							if($relationCol["value"]) {
-								if(count($s_updCols)>0) {
-									$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], $stable["update"]);
-									$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], array("last_updated"=>time(),"deleted"=>0));
-									$this->modify($stable["name"], $s_keyCols["keys"], $s_updCols["fields"]);
-								}
-							} else {
-								$this->update($stable["name"], $s_keyCols["keys"], array("last_updated"=>time()));
-								$this->detach($stable["name"], $s_keyCols["keys"]);
+						if($row["error"]["errorCode"] <= 0) {
+							$p_insCols = cACTION::getInsertCols($table, "p", $row);
+							if(	count($p_insCols["fields"]) >0 ) {
+								$p_insCols["fields"] = cARRAY::arrayMerge($p_insCols["fields"], $ptable["insert"]);
+								$p_insCols["fields"] = cARRAY::arrayMerge($p_insCols["fields"], array("created_time"=>time()));
+								$insertID = $this->insert($ptable["name"], $p_insCols["fields"]);
 							}
+							$relationCol = cACTION::getRelation($row);
+							if($relationCol) {
+								if($relationCol["value"]) {
+									cACTION::setKeys($table, "p", $row, $insertID);
+									$s_keyCols = cACTION::getKeys($table, "s", $row);
+									$s_updCols = cACTION::getInsertCols($table, "s", $row);
+									if(count($s_updCols)>0) {
+										$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], $stable["update"]);
+										$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], array("last_updated"=>time(),"deleted"=>0));
+										$this->modify($stable["name"], $s_keyCols["keys"], $s_updCols["fields"]);
+									} 
+								} 
+							}
+							cACTION::setKeys($table, "p", $row, $insertID);
 						}
 
 					} else {
@@ -881,6 +879,16 @@ class cMYSQL implements iSQL {
 		$table["primary"] 	= $this->rows($result_primary);
 		//Debug Query 
 		if(DEBUG) { $table["query_primary"] = $query_primary; $table["criteria_prmiary"] = $criteria_primary; }
+		if( $this->row_nums($result_primary) <= 0 ) {
+			$table["success"] 					= 0;  // flag entire success
+			$table["error"]["errorCode"] 		= 1;  // flag entire table error 
+			$table["error"]["errorMessage"] 	= "Primary data is missing.";
+		} 
+
+		//important for m2m:  if primary record not found,  return 0 rows
+		$pk_criteria = "";
+		if( $this->row_nums($result_primary) <= 0 )  cTYPE::join($pk_criteria, " AND ", "1=0");
+
 
 		// 2. select cols 
 		$colstr = cACTION::buildSelect($ptable);
@@ -890,7 +898,6 @@ class cMYSQL implements iSQL {
 		$pname 			= $ptable["name"] . " " . $ptable["type"];
 		$sname 			= $stable["name"] . " " . $stable["type"];
 		$joinOn 		= "";
-		$pk_criteria 	= "";
 		foreach($ptable["keys"] as $pidx=>$pkey) {
 			$pkeyDBCol = $ptable["type"] . "." . $pkey;
 			$skeyDBCol = $stable["type"] . "." . $stable["fkeys"][$pidx];
@@ -942,111 +949,7 @@ class cMYSQL implements iSQL {
 	public function saveone2many(&$table) {
 		$ptable = $table["metadata"]["p"];
 		$stable = $table["metadata"]["s"];
-		$errMsg = array();
 
-		foreach( $table["rows"] as &$row ) {
-			switch( $row["rowstate"] ) {
-				case 0:
-					break;
-				case 1: 
-					if( $table["rights"]["save"] ) {
-						$p_keyCols = cACTION::getKeys($table, "p", $row);
-						if($row["error"]["errorCode"] <= 0) {
-								$p_updCols = cACTION::getUpdateCols($table, "p", $row);
-								if(	count($p_updCols["fields"]) >0 ) {
-									$p_updCols["fields"] = cARRAY::arrayMerge($p_updCols["fields"], $ptable["update"]);
-									$p_updCols["fields"] = cARRAY::arrayMerge($p_updCols["fields"], array("last_updated"=>time()));
-									$this->update($ptable["name"], $p_keyCols["keys"], $p_updCols["fields"]);
-								} 
-						}
-
-						$s_keyCols = cACTION::getKeys($table, "s", $row);
-						if($row["error"]["errorCode"] <= 0) {
-								$s_updCols = cACTION::getUpdateCols($table, "s", $row);
-								if(	count($s_updCols["fields"]) >0 ) {
-									$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], $stable["update"]);
-									$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], array("last_updated"=>time()));
-									$this->update($stable["name"], $s_keyCols["keys"], $s_updCols["fields"]);
-								} 
-						}
-
-					} else {
-						$errMsg["save"] 				= "You don't have right to change data.";
-						$table["success"] 				= 0;
-						$row["error"]["errorCode"] 		= 2;
-						$row["error"]["errorMessage"] 	= $errMsg["save"];
-
-						if( $errMsg["saveFlag"]!=1 ) {
-							$table["error"]["errorCode"] 	= 1;
-							cTYPE::join($table["error"]["errorMessage"],"\n", $errMsg["save"]);
-						}
-						$errMsg["saveFlag"] = 1;
-					}
-					break;
-				case 2:
-					if( $table["rights"]["add"] ) {
-						$p_keyCols = cACTION::getKeys($table, "p", $row);
-						if($row["error"]["errorCode"] <= 0) {
-								$p_updCols = cACTION::getUpdateCols($table, "p", $row);
-								if(	count($p_updCols["fields"]) >0 ) {
-									$p_updCols["fields"] = cARRAY::arrayMerge($p_updCols["fields"], $ptable["update"]);
-									$p_updCols["fields"] = cARRAY::arrayMerge($p_updCols["fields"], array("last_updated"=>time()));
-									$this->update($ptable["name"], $p_keyCols["keys"], $p_updCols["fields"]);
-								} 
-						}
-
-						if($row["error"]["errorCode"] <= 0) {
-								$s_insCols = cACTION::getInsertCols($table, "s", $row);
-								//print_r($s_insCols);
-								if(	count($s_insCols["fields"]) >0 ) {
-									$s_insCols["fields"] = cARRAY::arrayMerge($s_insCols["fields"], $stable["insert"]);
-									$s_insCols["fields"] = cARRAY::arrayMerge($s_insCols["fields"], array("created_time"=>time(),"deleted"=>0));
-									$insertID = $this->insert($stable["name"], $s_insCols["fields"]);
-									cACTION::setKeys($table, "s", $row, $insertID);
-								} 
-						}
-					} else {
-						$errMsg["add"] 					= "You don't have right to add new record.";
-						$table["success"] 				= 0;
-						$row["error"]["errorCode"] 		= 2;
-						$row["error"]["errorMessage"] 	= $errMsg["add"];;
-
-						if( $errMsg["addFlag"]!=1 ) {
-							$table["error"]["errorCode"] 	= 1;
-							cTYPE::join($table["error"]["errorMessage"],"\n", $errMsg["add"]);
-						}
-						$errMsg["addFlag"] = 1;
-					}
-					break;
-				case 3:
-					if( $table["rights"]["delete"] ) {
-						$s_keyCols = cACTION::getKeys($table, "s", $row);
-						if($row["error"]["errorCode"] <= 0) {
-							$this->update($stable["name"], $s_keyCols["keys"], array("last_updated"=>time()));
-							$this->detach($stable["name"], $s_keyCols["keys"]);
-						}
-					} else {
-						$errMsg["delete"] 				= "You don't have right to delete the record.";
-						$table["success"] 				= 0;
-						$row["error"]["errorCode"] 		= 2;
-						$row["error"]["errorMessage"] 	= $errMsg["delete"];
-
-						if( $errMsg["deleteFlag"]!=1 ) {
-							$table["error"]["errorCode"] 	= 1;
-							cTYPE::join($table["error"]["errorMessage"],"\n", $errMsg["delete"]);
-						}
-						$errMsg["deleteFlag"] = 1;
-					}
-					break;
-			}
-		}
-
-	}
-
-	public function many2many(&$table) {
-		$ptable = $table["metadata"]["p"];
-		$stable = $table["metadata"]["s"];
-		$mtable = $table["metadata"]["m"];
 		// 1. crreate primary information 
 		$pcolstr = cACTION::buildSelect($ptable);
 		$criteria_primary = "1=1";
@@ -1062,6 +965,145 @@ class cMYSQL implements iSQL {
 		$table["primary"] 	= $this->rows($result_primary);
 		//Debug Query 
 		if(DEBUG) { $table["query_primary"] = $query_primary; $table["criteria_prmiary"] = $criteria_primary; }
+		$pk_criteria = "";
+		//important for m2m:  if primary record not found,  return 0 rows
+		if( $this->row_nums($result_primary) <= 0 ) {
+			$table["success"] 					= 0;
+			$table["error"]["errorCode"] 		= 1;
+			$table["error"]["errorMessage"] 	= "Primary data is missing.";
+		} 
+
+		$errMsg = array();
+		foreach( $table["rows"] as &$row ) {
+			switch( $row["rowstate"] ) {
+				case 0:
+					break;
+				case 1: 
+					if( $table["rights"]["save"] ) {
+						if($table["error"]["errorCode"]<=0) {
+							$p_keyCols = cACTION::getKeys($table, "p", $row);
+							if($row["error"]["errorCode"] <= 0) {
+									$p_updCols = cACTION::getUpdateCols($table, "p", $row);
+									if(	count($p_updCols["fields"]) >0 ) {
+										$p_updCols["fields"] = cARRAY::arrayMerge($p_updCols["fields"], $ptable["update"]);
+										$p_updCols["fields"] = cARRAY::arrayMerge($p_updCols["fields"], array("last_updated"=>time()));
+										$this->update($ptable["name"], $p_keyCols["keys"], $p_updCols["fields"]);
+									} 
+							}
+
+							$s_keyCols = cACTION::getKeys($table, "s", $row);
+							if($row["error"]["errorCode"] <= 0) {
+									$s_updCols = cACTION::getUpdateCols($table, "s", $row);
+									if(	count($s_updCols["fields"]) >0 ) {
+										$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], $stable["update"]);
+										$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], array("last_updated"=>time()));
+										$this->update($stable["name"], $s_keyCols["keys"], $s_updCols["fields"]);
+									} 
+							}
+						}
+					} else {
+						$errMsg["save"] 				= "You don't have right to change data.";
+						$table["success"] 				= 0;
+						$row["error"]["errorCode"] 		= 2;
+						$row["error"]["errorMessage"] 	= $errMsg["save"];
+
+						if( $errMsg["saveFlag"]!=1 ) {
+							$table["error"]["errorCode"] = 1;
+							cTYPE::join($table["error"]["errorMessage"],"\n", $errMsg["save"]);
+						}
+						$errMsg["saveFlag"] = 1;
+					}
+					break;
+				case 2:
+					if( $table["rights"]["add"] ) {
+						if($table["error"]["errorCode"]<=0) {
+							$p_keyCols = cACTION::getKeys($table, "p", $row);
+							if($row["error"]["errorCode"] <= 0) {
+									$p_updCols = cACTION::getUpdateCols($table, "p", $row);
+									if(	count($p_updCols["fields"]) >0 ) {
+										$p_updCols["fields"] = cARRAY::arrayMerge($p_updCols["fields"], $ptable["update"]);
+										$p_updCols["fields"] = cARRAY::arrayMerge($p_updCols["fields"], array("last_updated"=>time()));
+										$this->update($ptable["name"], $p_keyCols["keys"], $p_updCols["fields"]);
+									} 
+							}
+
+							if($row["error"]["errorCode"] <= 0) {
+									$s_insCols = cACTION::getInsertCols($table, "s", $row);
+									//print_r($s_insCols);
+									if(	count($s_insCols["fields"]) >0 ) {
+										$s_insCols["fields"] = cARRAY::arrayMerge($s_insCols["fields"], $stable["insert"]);
+										$s_insCols["fields"] = cARRAY::arrayMerge($s_insCols["fields"], array("created_time"=>time(),"deleted"=>0));
+										$insertID = $this->insert($stable["name"], $s_insCols["fields"]);
+										cACTION::setKeys($table, "s", $row, $insertID);
+									} 
+							}
+						}
+					} else {
+						$errMsg["add"] 					= "You don't have right to add new record.";
+						$table["success"] 				= 0;
+						$row["error"]["errorCode"] 		= 2;
+						$row["error"]["errorMessage"] 	= $errMsg["add"];;
+
+						if( $errMsg["addFlag"]!=1 ) {
+							$table["error"]["errorCode"] = 1;
+							cTYPE::join($table["error"]["errorMessage"],"\n", $errMsg["add"]);
+						}
+						$errMsg["addFlag"] = 1;
+					}
+					break;
+				case 3:
+					if( $table["rights"]["delete"] ) {
+						if($table["error"]["errorCode"]<=0) {
+							$s_keyCols = cACTION::getKeys($table, "s", $row);
+							if($row["error"]["errorCode"] <= 0) {
+								$this->update($stable["name"], $s_keyCols["keys"], array("last_updated"=>time()));
+								$this->detach($stable["name"], $s_keyCols["keys"]);
+							}
+						}
+					} else {
+						$errMsg["delete"] 				= "You don't have right to delete the record.";
+						$table["success"] 				= 0;
+						$row["error"]["errorCode"] 		= 2;
+						$row["error"]["errorMessage"] 	= $errMsg["delete"];
+
+						if( $errMsg["deleteFlag"]!=1 ) {
+							$table["error"]["errorCode"] = 1;
+							cTYPE::join($table["error"]["errorMessage"],"\n", $errMsg["delete"]);
+						}
+						$errMsg["deleteFlag"] = 1;
+					}
+					break;
+			}
+		}
+
+	}
+
+	public function many2many(&$table) {
+		$ptable = $table["metadata"]["p"];
+		$stable = $table["metadata"]["s"];
+		$mtable = $table["metadata"]["m"];
+
+		// 1. crreate primary information 
+		$pcolstr = cACTION::buildSelect($ptable);
+		$criteria_primary = "1=1";
+		foreach($ptable["keys"] as $pkey) {
+			$pkeyDBCol 	= $ptable["type"] . "." . $pkey;
+			$pkeyVal 	= trim($ptable["colmeta"][$pkey]["defval"]);
+			cTYPE::join($criteria_primary, " AND ", "$pkeyDBCol='" . $this->quote($pkeyVal) . "'");
+			cTYPE::join($criteria_primary, " AND ", $ptable["type"] . ".deleted=0");
+		}
+		$pname 				= $ptable["name"] . " " . $ptable["type"];
+		$query_primary 		= "SELECT $pcolstr FROM $pname WHERE $criteria_primary";
+		$result_primary 	= $this->query($query_primary);
+		$table["primary"] 	= $this->rows($result_primary);
+		//Debug Query 
+		if(DEBUG) { $table["query_primary"] = $query_primary; $table["criteria_prmiary"] = $criteria_primary; }
+		if( $this->row_nums($result_primary) <= 0 ) {
+			$table["success"] 					= 0;  // flag entire success
+			$table["error"]["errorCode"] 		= 1;  // flag entire table error 
+			$table["error"]["errorMessage"] 	= "Primary data is missing.";
+		} 
+
 		$pk_criteria = "";
 		//important for m2m:  if primary record not found,  return 0 rows
 		if( $this->row_nums($result_primary) <= 0 )  cTYPE::join($pk_criteria, " AND ", "1=0");
@@ -1156,6 +1198,31 @@ class cMYSQL implements iSQL {
 		$ptable = $table["metadata"]["p"];
 		$stable = $table["metadata"]["s"];
 		$mtable = $table["metadata"]["m"];
+
+		// 1. crreate primary information 
+		$pcolstr = cACTION::buildSelect($ptable);
+		$criteria_primary = "1=1";
+		foreach($ptable["keys"] as $pkey) {
+			$pkeyDBCol 	= $ptable["type"] . "." . $pkey;
+			$pkeyVal 	= trim($ptable["colmeta"][$pkey]["defval"]);
+			cTYPE::join($criteria_primary, " AND ", "$pkeyDBCol='" . $this->quote($pkeyVal) . "'");
+			cTYPE::join($criteria_primary, " AND ", $ptable["type"] . ".deleted=0");
+		}
+		$pname 				= $ptable["name"] . " " . $ptable["type"];
+		$query_primary 		= "SELECT $pcolstr FROM $pname WHERE $criteria_primary";
+		$result_primary 	= $this->query($query_primary);
+		$table["primary"] 	= $this->rows($result_primary);
+		//Debug Query 
+		if(DEBUG) { $table["query_primary"] = $query_primary; $table["criteria_prmiary"] = $criteria_primary; }
+		$pk_criteria = "";
+		//important for m2m:  if primary record not found,  return 0 rows
+		if( $this->row_nums($result_primary) <= 0 ) {
+			$table["success"] 					= 0;  // flag entire success
+			$table["error"]["errorCode"] 		= 1;  // flag entire table error 
+			$table["error"]["errorMessage"] 	= "Primary data is missing.";
+		} 
+
+
 		$errMsg = array();
 		foreach( $table["rows"] as &$row ) {
 			switch( $row["rowstate"] ) {
@@ -1163,48 +1230,41 @@ class cMYSQL implements iSQL {
 					break;
 				case 1: 
 					if( $table["rights"]["save"] ) {
-						$p_keyCols = cACTION::getKeys($table, "p", $row);
-						if($row["error"]["errorCode"] <= 0) {
-								$p_updCols = cACTION::getUpdateCols($table, "p", $row);
-								//print_r($p_keyCols);
-								//print_r($p_updCols);
+						if($table["error"]["errorCode"]<=0) {
+							$p_keyCols = cACTION::getKeys($table, "p", $row);
+							if($row["error"]["errorCode"] <= 0) {
+									$p_updCols = cACTION::getUpdateCols($table, "p", $row);
+									if(	count($p_updCols["fields"]) >0 ) {
+										$p_updCols["fields"] = cARRAY::arrayMerge($p_updCols["fields"], $ptable["update"]);
+										$p_updCols["fields"] = cARRAY::arrayMerge($p_updCols["fields"], array("last_updated"=>time()));
+										$this->update($ptable["name"], $p_keyCols["keys"], $p_updCols["fields"]);
+									} 
+							}
 
-								if(	count($p_updCols["fields"]) >0 ) {
-									$p_updCols["fields"] = cARRAY::arrayMerge($p_updCols["fields"], $ptable["update"]);
-									$p_updCols["fields"] = cARRAY::arrayMerge($p_updCols["fields"], array("last_updated"=>time()));
-									$this->update($ptable["name"], $p_keyCols["keys"], $p_updCols["fields"]);
-								} 
-						}
-
-						$s_keyCols = cACTION::getKeys($table, "s", $row);
-						if($row["error"]["errorCode"] <= 0) {
-								$s_updCols = cACTION::getUpdateCols($table, "s", $row);
-								//print_r($s_keyCols);
-								//print_r($s_updCols);
-								
-								if(	count($s_updCols["fields"]) >0 ) {
-									$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], $stable["update"]);
-									$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], array("last_updated"=>time()));
-									$this->update($stable["name"], $s_keyCols["keys"], $s_updCols["fields"]);
-								} 
-						}
-						if($row["error"]["errorCode"] <= 0) {
-							$relationCol = cACTION::getRelation($row);
-							if($relationCol) {
-								$m_keyCols = cACTION::getKeys($table, "m", $row);
-								$m_updCols = cACTION::getUpdateCols($table, "m", $row);
-								//print_r($m_keyCols);
-								//print_r($m_updCols);
-								
-								if($relationCol["value"]) {
-									if(count($m_updCols)>0) {
-										$m_updCols["fields"] = cARRAY::arrayMerge($m_updCols["fields"], $mtable["update"]);
-										$m_updCols["fields"] = cARRAY::arrayMerge($m_updCols["fields"], array("last_updated"=>time(),"deleted"=>0));
-										$this->modify($mtable["name"], $m_keyCols["keys"], $m_updCols["fields"]);
+							$s_keyCols = cACTION::getKeys($table, "s", $row);
+							if($row["error"]["errorCode"] <= 0) {
+									$s_updCols = cACTION::getUpdateCols($table, "s", $row);
+									if(	count($s_updCols["fields"]) >0 ) {
+										$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], $stable["update"]);
+										$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], array("last_updated"=>time()));
+										$this->update($stable["name"], $s_keyCols["keys"], $s_updCols["fields"]);
+									} 
+							}
+							if($row["error"]["errorCode"] <= 0) {
+								$relationCol = cACTION::getRelation($row);
+								if($relationCol) {
+									$m_keyCols = cACTION::getKeys($table, "m", $row);
+									$m_updCols = cACTION::getUpdateCols($table, "m", $row);
+									if($relationCol["value"]) {
+										if(count($m_updCols)>0) {
+											$m_updCols["fields"] = cARRAY::arrayMerge($m_updCols["fields"], $mtable["update"]);
+											$m_updCols["fields"] = cARRAY::arrayMerge($m_updCols["fields"], array("last_updated"=>time(),"deleted"=>0));
+											$this->modify($mtable["name"], $m_keyCols["keys"], $m_updCols["fields"]);
+										}
+									} else {
+										$this->update($mtable["name"], $m_keyCols["keys"], array("last_updated"=>time()));
+										$this->detach($mtable["name"], $m_keyCols["keys"]);
 									}
-								} else {
-									$this->update($mtable["name"], $m_keyCols["keys"], array("last_updated"=>time()));
-									$this->detach($mtable["name"], $m_keyCols["keys"]);
 								}
 							}
 						}
@@ -1215,7 +1275,7 @@ class cMYSQL implements iSQL {
 						$row["error"]["errorMessage"] 	= $errMsg["save"];
 
 						if( $errMsg["saveFlag"]!=1 ) {
-							$table["error"]["errorCode"] 	= 1;
+							$table["error"]["errorCode"] = 1;
 							cTYPE::join($table["error"]["errorMessage"],"\n", $errMsg["save"]);
 						}
 						$errMsg["saveFlag"] = 1;
@@ -1223,44 +1283,43 @@ class cMYSQL implements iSQL {
 					break;
 				case 2:
 					if( $table["rights"]["add"] ) {
-						$p_keyCols = cACTION::getKeys($table, "p", $row);
-						if($row["error"]["errorCode"] <= 0) {
-								$p_updCols = cACTION::getUpdateCols($table, "p", $row);
-								if(	count($p_updCols["fields"]) >0 ) {
-									$p_updCols["fields"] = cARRAY::arrayMerge($p_updCols["fields"], $ptable["update"]);
-									$p_updCols["fields"] = cARRAY::arrayMerge($p_updCols["fields"], array("last_updated"=>time()));
-									$this->update($ptable["name"], $p_keyCols["keys"], $p_updCols["fields"]);
-								} 
-						}
+						if($table["error"]["errorCode"]<=0) {
+							$p_keyCols = cACTION::getKeys($table, "p", $row);
+							if($row["error"]["errorCode"] <= 0) {
+									$p_updCols = cACTION::getUpdateCols($table, "p", $row);
+									if(	count($p_updCols["fields"]) >0 ) {
+										$p_updCols["fields"] = cARRAY::arrayMerge($p_updCols["fields"], $ptable["update"]);
+										$p_updCols["fields"] = cARRAY::arrayMerge($p_updCols["fields"], array("last_updated"=>time()));
+										$this->update($ptable["name"], $p_keyCols["keys"], $p_updCols["fields"]);
+									} 
+							}
 
-						if($row["error"]["errorCode"] <= 0) {
-								$s_insCols = cACTION::getInsertCols($table, "s", $row);
-								//print_r($s_insCols);
-								if(	count($s_insCols["fields"]) >0 ) {
-									$s_insCols["fields"] = cARRAY::arrayMerge($s_insCols["fields"], $stable["insert"]);
-									$s_insCols["fields"] = cARRAY::arrayMerge($s_insCols["fields"], array("created_time"=>time(),"deleted"=>0));
-									$insertID = $this->insert($stable["name"], $s_insCols["fields"]);
-								} 
-						}
+							if($row["error"]["errorCode"] <= 0) {
+									$s_insCols = cACTION::getInsertCols($table, "s", $row);
+									if(	count($s_insCols["fields"]) >0 ) {
+										$s_insCols["fields"] = cARRAY::arrayMerge($s_insCols["fields"], $stable["insert"]);
+										$s_insCols["fields"] = cARRAY::arrayMerge($s_insCols["fields"], array("created_time"=>time(),"deleted"=>0));
+										$insertID = $this->insert($stable["name"], $s_insCols["fields"]);
+									} 
+							}
 
-						if($row["error"]["errorCode"] <= 0) {
-							$relationCol = cACTION::getRelation($row);
-							if($relationCol) {
-								if($relationCol["value"]) {
-									cACTION::setKeys($table, "s", $row, $insertID); // important : if  relation col
-									$m_keyCols = cACTION::getKeys($table, "m", $row);
-									$m_updCols = cACTION::getUpdateCols($table, "m", $row);
-									if(count($m_updCols)>0) {
-										$m_updCols["fields"] = cARRAY::arrayMerge($m_updCols["fields"], $mtable["update"]);
-										$m_updCols["fields"] = cARRAY::arrayMerge($m_updCols["fields"], array("last_updated"=>time(),"deleted"=>0));
-										$this->modify($mtable["name"], $m_keyCols["keys"], $m_updCols["fields"]);
+							if($row["error"]["errorCode"] <= 0) {
+								$relationCol = cACTION::getRelation($row);
+								if($relationCol) {
+									if($relationCol["value"]) {
+										cACTION::setKeys($table, "s", $row, $insertID); // important : if  relation col
+										$m_keyCols = cACTION::getKeys($table, "m", $row);
+										$m_updCols = cACTION::getUpdateCols($table, "m", $row);
+										if(count($m_updCols)>0) {
+											$m_updCols["fields"] = cARRAY::arrayMerge($m_updCols["fields"], $mtable["update"]);
+											$m_updCols["fields"] = cARRAY::arrayMerge($m_updCols["fields"], array("last_updated"=>time(),"deleted"=>0));
+											$this->modify($mtable["name"], $m_keyCols["keys"], $m_updCols["fields"]);
+										}
 									}
-								} else {
-									cACTION::setKeys($table, "s", $row, ""); // important : if  relation col
 								}
 							}
+							cACTION::setKeys($table, "s", $row, $insertID); // important : if  relation col
 						}
-
 					} else {
 						$errMsg["add"] 					= "You don't have right to add new record.";
 						$table["success"] 				= 0;
@@ -1268,7 +1327,7 @@ class cMYSQL implements iSQL {
 						$row["error"]["errorMessage"] 	= $errMsg["add"];;
 
 						if( $errMsg["addFlag"]!=1 ) {
-							$table["error"]["errorCode"] 	= 1;
+							$table["error"]["errorCode"] = 1;
 							cTYPE::join($table["error"]["errorMessage"],"\n", $errMsg["add"]);
 						}
 						$errMsg["addFlag"] = 1;
@@ -1276,17 +1335,18 @@ class cMYSQL implements iSQL {
 					break;
 				case 3:
 					if( $table["rights"]["delete"] ) {
-						$m_keyCols = cACTION::getKeys($table, "m", $row);
-						if($row["error"]["errorCode"] <= 0) {
-							$this->update($mtable["name"], $m_keyCols["keys"], array("last_updated"=>time()));
-							$this->detach($mtable["name"], $m_keyCols["keys"]);
+						if($table["error"]["errorCode"]<=0) {
+							$m_keyCols = cACTION::getKeys($table, "m", $row);
+							if($row["error"]["errorCode"] <= 0) {
+								$this->update($mtable["name"], $m_keyCols["keys"], array("last_updated"=>time()));
+								$this->detach($mtable["name"], $m_keyCols["keys"]);
+							}
+							$s_keyCols = cACTION::getKeys($table, "s", $row);
+							if($row["error"]["errorCode"] <= 0) {
+								$this->update($stable["name"], $s_keyCols["keys"], array("last_updated"=>time()));
+								$this->detach($stable["name"], $s_keyCols["keys"]);
+							}
 						}
-						$s_keyCols = cACTION::getKeys($table, "s", $row);
-						if($row["error"]["errorCode"] <= 0) {
-							$this->update($stable["name"], $s_keyCols["keys"], array("last_updated"=>time()));
-							$this->detach($stable["name"], $s_keyCols["keys"]);
-						}
-
 					} else {
 						$errMsg["delete"] 				= "You don't have right to delete the record.";
 						$table["success"] 				= 0;
@@ -1294,7 +1354,7 @@ class cMYSQL implements iSQL {
 						$row["error"]["errorMessage"] 	= $errMsg["delete"];
 
 						if( $errMsg["deleteFlag"]!=1 ) {
-							$table["error"]["errorCode"] 	= 1;
+							$table["error"]["errorCode"] = 1;
 							cTYPE::join($table["error"]["errorMessage"],"\n", $errMsg["delete"]);
 						}
 						$errMsg["deleteFlag"] = 1;
@@ -1302,7 +1362,6 @@ class cMYSQL implements iSQL {
 					break;
 			}
 		}
-
 	}
 
 	// (tableName, criteriaArray, navi(paging, orderby..) )	
@@ -1317,6 +1376,30 @@ class cMYSQL implements iSQL {
 
         if( $table["navi"]["pageno"] > $table["navi"]["pagetotal"] ) $table["navi"]["pageno"] = $table["navi"]["pagetotal"];
 		$table["navi"]["loading"] = 0;
+	}
+
+	public function init4table(&$table) {
+		$ptable = $table["metadata"]["p"];
+
+		// 1. crreate primary information 
+		$pcolstr = cACTION::buildSelect($ptable);
+		$criteria_primary = "1=1";
+		foreach($ptable["keys"] as $pkey) {
+			$pkeyDBCol 	= $ptable["type"] . "." . $pkey;
+			$pkeyVal 	= trim($ptable["colmeta"][$pkey]["defval"]);
+			cTYPE::join($criteria_primary, " AND ", "$pkeyDBCol='" . $this->quote($pkeyVal) . "'");
+		}
+		$pname 				= $ptable["name"] . " " . $ptable["type"];
+		$query_primary 		= "SELECT $pcolstr FROM $pname WHERE $criteria_primary";
+		$result_primary 	= $this->query($query_primary);
+		$table["primary"] 	= $this->rows($result_primary);
+		//Debug Query 
+		if(DEBUG) { $table["query_primary"] = $query_primary; $table["criteria_prmiary"] = $criteria_primary; }
+		if( $this->row_nums($result_primary) <= 0 ) {
+			$table["success"] 					= 0;  // flag entire success
+			$table["error"]["errorCode"] 		= 1;  // flag entire table error 
+			$table["error"]["errorMessage"] 	= "Primary data is missing.";
+		} 
 	}
 	/*************** end of Relational Table Functions ***********************************/
 	
@@ -1334,6 +1417,7 @@ class cACTION {
 				$table["rows"] = array();
 				if( $table["rights"]["view"] ) {
 					cLIST::getList($db, $table);
+					cACTION::initTable($db, $table);
 				} else {
 					$table["success"] = 0;
 					$table["error"]["errorCode"]=1;
@@ -1393,6 +1477,18 @@ class cACTION {
 			cTYPE::join( $colstr, ", ", "$dbCol as $dbColName"); 
 		}
 		return $colstr;
+	}
+	static public function initTable($db, &$table) {
+		$tableMeta = $table["metadata"];
+		switch( $tableMeta["type"] ) {
+			case "one":
+			case "one2one":
+				break;
+			case "one2many":
+			case "many2many":
+				$db->init4table($table);
+				break;
+		}
 	}
 	static public function getRows($db, &$table) {
 		$tableMeta = $table["metadata"];
@@ -1496,6 +1592,7 @@ class cACTION {
 			if( ($row["rowstate"]==1 || $row["rowstate"]==2) && $row["error"]["errorCode"]==0 ) {
 				foreach( $otable["checkboxCols"] as $dbCol) {
 					$ckColIdx = cARRAY::arrayIndex($row["cols"], array("col"=>$dbCol, "table"=>$otable["type"]) );
+					$flag = true;
 					if( $ckColIdx>=0) {
 							$ckCol 		= $row["cols"][$ckColIdx];
 							$ckValue 	= $ckCol["value"];
@@ -1509,12 +1606,29 @@ class cACTION {
 										{
 											$tmpIdx = cARRAY::arrayIndex($row["cols"], array("col"=>$pkey, "table"=>"p") );
 											$ccc[$ckMeta["keys"][$fidx]] = $row["cols"][$tmpIdx]["value"];
+											if($row["cols"][$tmpIdx]["value"]) {
+												$ccc[$ckMeta["keys"][$fidx]] = $row["cols"][$tmpIdx]["value"];
+											} else {
+												$flag=false;
+												//$table["success"] 						= 0; 												
+												//$row["error"]["errorCode"] 				= 1;
+												//$row["cols"][$ckColIdx]["errorCode"] 		= 1;
+												//$row["cols"][$ckColIdx]["errorMessage"] 	= "Checkbox key is missing.";
+											}
 											$fidx++;
 										}
 										foreach( $table["metadata"]["s"]["keys"] as $sidx=>$skey ) 
 										{
 											$tmpIdx = cARRAY::arrayIndex($row["cols"], array("col"=>$skey, "table"=>"s") );
-											$ccc[$ckMeta["keys"][$fidx]] = $row["cols"][$tmpIdx]["value"];
+											if($row["cols"][$tmpIdx]["value"]) {
+												$ccc[$ckMeta["keys"][$fidx]] = $row["cols"][$tmpIdx]["value"];
+											} else {
+												$flag=false;
+												//$table["success"] 						= 0; 												
+												//$row["error"]["errorCode"] 				= 1;
+												//$row["cols"][$ckColIdx]["errorCode"] 		= 1;
+												//$row["cols"][$ckColIdx]["errorMessage"] 	= "Checkbox key is missing.";
+											}
 											$fidx++;
 										}
 										//print_r($ccc);
@@ -1523,20 +1637,31 @@ class cACTION {
 										foreach( $otable["keys"] as $oIdx=>$oKey ) {
 											$tmpIdx = cARRAY::arrayIndex($row["cols"], array("col"=>$oKey, "table"=>$otable["type"]) );
 											$cKey 	= $ckMeta["keys"][$oIdx];
-											$ccc[$cKey] = $row["cols"][$tmpIdx]["value"];
+											if($row["cols"][$tmpIdx]["value"]) {
+												$ccc[$cKey] = $row["cols"][$tmpIdx]["value"];
+											} else {
+												$flag=false;
+												//$table["success"] 						= 0; 												
+												//$row["error"]["errorCode"] 				= 1;
+												//$row["cols"][$ckColIdx]["errorCode"] 		= 1;
+												//$row["cols"][$ckColIdx]["errorMessage"] 	= "Checkbox key is missing.";
+											}
+											
 										}
 										//print_r($ccc);
 										break;
 								}
 
-								$db->delete($ckMeta["name"], $ccc);
-								$ckValCol = $ckMeta["value"];
-								//echo "value Col: $ckValCol\n";
-								if( is_array($ckValue) ) {
-									foreach( $ckValue as $ckVal ) {
-										$ccc[$ckValCol] = $ckVal;
-										//print_r($ccc);
-										$db->insert($ckMeta["name"], $ccc);
+								if( $flag ) {
+									$db->delete($ckMeta["name"], $ccc);
+									$ckValCol = $ckMeta["value"];
+									//echo "value Col: $ckValCol\n";
+									if( is_array($ckValue) ) {
+										foreach( $ckValue as $ckVal ) {
+											$ccc[$ckValCol] = $ckVal;
+											//print_r($ccc);
+											$db->insert($ckMeta["name"], $ccc);
+										}
 									}
 								}
 							} // if( $cktable )
@@ -2162,27 +2287,49 @@ class cACTION {
 	}
 
 	static public function formFilter(&$table) {
-		$colMap 	= cACTION::colMap($table);
-		$colMeta 	= cACTION::colMeta($table);
-
-		// join tables 
-		$ptable = $table["metadata"]["primary"];
-		$pname  = $ptable["name"];
-		$pkeys  = $ptable["keys"];
-
-		//$primary_criteria = "1=1";
-		foreach($pkeys as $idx=>$pkey) {
-			$pk = $colMap[$pkey];
-			$pv = trim($colMeta[$pkey]["defval"]);
-			if( $pv ) {
-				cTYPE::join($table["criteria"], " AND ", "a.$pk='" . cTYPE::quote($pv) . "'");				
-			} else {
-				// load data for form.
-				cTYPE::join($table["criteria"], " AND ", "1=0");				
-			}
+		switch($table["metadata"]["type"]) {
+			case "one":
+			case "one2one":
+				$ptable = $table["metadata"]["p"];
+				foreach($ptable["keys"] as $pidx=>$pkey) {
+					$tmpIdx 	= cARRAY::arrayIndex($table["cols"], array("col"=>$pkey, "table"=>"p"));
+					$pkeyVal 	= trim($table["cols"][$tmpIdx]["defval"]);
+					if( $pkeyVal=="" ) {
+						cTYPE::join($table["criteria"], " AND ", "1=0");	
+					}
+				}
+				break;
+			case "one2many":
+			case "many2many":
+				$ptable = $table["metadata"]["p"];
+				foreach($ptable["keys"] as $pidx=>$pkey) {
+					$tmpIdx 	= cARRAY::arrayIndex($table["cols"], array("col"=>$pkey, "table"=>"p"));
+					$pkeyVal 	= trim($table["cols"][$tmpIdx]["defval"]);
+					if($pkeyVal=="") {
+						cTYPE::join($table["criteria"], " AND ", "1=0");	
+						$table["success"] 					= 0;  // flag entire success
+						$table["error"]["errorCode"] 		= 1;  // flag entire table error 
+						$table["error"]["errorMessage"] 	= "Primary data is missing.";
+					}		
+				}
+				$stable = $table["metadata"]["s"];
+				foreach($stable["keys"] as $sidx=>$skey) {
+					$tmpIdx 	= cARRAY::arrayIndex($table["cols"], array("col"=>$skey, "table"=>"s"));
+					$skeyVal 	= trim($table["cols"][$tmpIdx]["defval"]);
+					if($skeyVal=="") cTYPE::join($table["criteria"], " AND ", "1=0");				
+				}
+				break;
 		}
+		if($table["error"]["errorCode"]<=0) {
+			$table["navi"]["pageno"] 	= 0;
+			$table["navi"]["pagesize"] 	= 1;
+		} else {
+			$table["navi"]["pageno"] = 0;
+		}
+		
 	}
 	
+	// important: many2many medium table filter cols  must use js colObj name.  because (SELECT dbcol AS jsColName FROM mm) m
 	static public function getFilters(&$table) {
 		$criteria 	= "";
 		$filters 	= $table["filters"];

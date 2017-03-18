@@ -969,10 +969,11 @@ WLIU.TABLEACTION.prototype = {
 	indexByRow: function(theTable, theRow) {
 		return this.index(theTable, theRow.guid);
 	},
-	clearKeysDefault: function(theTable) {
-		var keyCols = FCOLLECT.collectionByKV(theTable.cols, {key: 1});
-		for(var cidx in keyCols) {
-			this.colDefault(theTable, keyCols[cidx].name, "");
+	setColsDefault: function(theTable, IDKeyValues) {
+		if( $.isPlainObject(IDKeyValues) ) {
+			for(var key in IDKeyValues) {
+				this.colDefault(theTable, key, IDKeyValues[key] );
+			}
 		}
 	},
 	tableError: function(theTable, p_error) {
@@ -992,6 +993,9 @@ WLIU.TABLEACTION.prototype = {
 		} else {
 			return undefined;
 		}
+	},
+	colRelation: function(theTable) {
+		return FCOLLECT.objectByKV(theTable.cols, {coltype: "relation"});
 	},
 	colList: function(theTable, col_name) {
 		var ret_list = {};
@@ -1167,60 +1171,43 @@ WLIU.TABLEACTION.prototype = {
 
 
 	// for form use
-	addRecord: function(theTable, ridx, nrow) {
-		this.clearKeysDefault(theTable);
-		theTable.rows = [];
-		var theRow = this.addRow(theTable, ridx, nrow);
-		if(!theTable.sc.$$phase) {
-			theTable.sc.$apply();
- 		}
-		return theRow;
+	formInit: function(theTable, IDKeyValues, callback) {
+		this.init(theTable, IDKeyValues, callback);
 	},
-	setRecord: function(theTable, nrow) {
-		this.clearKeysDefault(theTable);
-		theTable.rows = [];
-		theTable.rows.push(nrow);
-		if(!theTable.sc.$$phase) {
-			theTable.sc.$apply();
- 		}
-		return nrow;
-	},
-	getRecord: function(theTable, IDKeyValues, callback) {
-		if( $.isPlainObject(IDKeyValues) ) {
-			for(var key in IDKeyValues) {
-				this.colDefault(theTable, key, IDKeyValues[key] );
+	formNew: function(theTable, IDKeyValues, callback) {
+		if( this.colRelation(theTable) ) this.colRelation(theTable).defval = true; 
+		this.init(theTable, IDKeyValues, {
+			ajaxSuccess: function(){
+				theTable.addRow();
+				if(!theTable.sc.$$phase) {
+					theTable.sc.$apply();
+				}
+				if(callback) if($.isFunction(callback)) callback(theTable);
 			}
-		}
+		});
+	},
+	formGet: function(theTable, IDKeyValues, callback) {
+		if( this.colRelation(theTable) ) this.colRelation(theTable).defval = true; 
+		this.setColsDefault(theTable, IDKeyValues);
 		this.getRows(theTable, callback);
 	},
 	// end of form use
     
 	// for one2many & many2many
 	getRecords: function(theTable, IDKeyValues, callback) {
-		if( $.isPlainObject(IDKeyValues) ) {
-			for(var key in IDKeyValues) {
-				this.colDefault(theTable, key, IDKeyValues[key] );
-			}
-		}
+		this.setColsDefault(theTable, IDKeyValues);
 		this.getRows(theTable, callback);
 	},
 	getAllRecords: function(theTable, IDKeyValues, callback) {
-		if( $.isPlainObject(IDKeyValues) ) {
-			for(var key in IDKeyValues) {
-				this.colDefault(theTable, key, IDKeyValues[key] );
-			}
-		}
+		this.setColsDefault(theTable, IDKeyValues);
 		this.allRows(theTable, callback);
 	},
 	getMatchRecords: function(theTable, IDKeyValues, callback) {
-		if( $.isPlainObject(IDKeyValues) ) {
-			for(var key in IDKeyValues) {
-				this.colDefault(theTable, key, IDKeyValues[key] );
-			}
-		}
+		this.setColsDefault(theTable, IDKeyValues);
 		this.matchRows(theTable, callback);
 	},
 	// end of one2many & many2many
+
 
 	// client side remove the record from array and table rows
 	removeRow: function(theTable, theRow) {
@@ -1282,8 +1269,9 @@ WLIU.TABLEACTION.prototype = {
 
 	/*** AJAX Method ****/
 	// init rows and keys
-	init: function(theTable, callback) {
-		this.clearKeysDefault(theTable);
+	// Notes: colsDefault not required :  one, one2one,   colsDefault of primary table is required by one2many, many2many
+	init: function(theTable, IDKeyValues, callback) {
+		this.setColsDefault(theTable, IDKeyValues);
 		theTable.rows = [];
 
 		var ntable = {};
@@ -1291,6 +1279,8 @@ WLIU.TABLEACTION.prototype = {
 		ntable.lang  = theTable.lang;
 		ntable.action = "init";
 		ntable.error  = {errorCode: 0, errorMessage:""};
+		ntable.cols = theTable.cols; // must provide cols meta to get data from database;
+		ntable.navi = theTable.navi;
 		ntable.lists = this.getLists(theTable);
 		this.ajaxCall(theTable, ntable, callback);
 	},
@@ -1368,8 +1358,6 @@ WLIU.TABLEACTION.prototype = {
 
 				switch(req.table.action) {
 					case "init":
-						FTABLE.setLists(_self, req.table.lists);
-						break;
 					case "get": 
 						//console.log(req.table);
 						FTABLE.setLists(_self, req.table.lists);
@@ -1428,11 +1416,14 @@ WLIU.TABLEACTION.prototype = {
 			}
 			FTABLE.addRow(theTable, -1, nrow);
 		}
+
+		// set first row as current row;
+		if(theTable.rows.length>0) theTable.current = theTable.rows[0].guid;
 	},
 	updateRows: function(theTable, ntable) {
 			theTable.current = "";
 			theTable.tableError(ntable.error);
-		
+			//if(ntable.success <= 0 || ntable.error.errorCode > 0) return;
 			// update primary table information: one2one, one2many, many2many 
 			if( ntable.primary && $.isArray(ntable.primary) ) {
 				if( ntable.primary.length>0 ) {
@@ -1444,7 +1435,7 @@ WLIU.TABLEACTION.prototype = {
 					}
 				}
 			}
-		
+			
 			for(var ridx in ntable.rows) {
 				var nRow 		= ntable.rows[ridx];
 				var tableRow 	= theTable.getRowByGuid(nRow.guid); 
@@ -1475,18 +1466,18 @@ WLIU.TABLEACTION.prototype = {
 								break;
 							case 1:
 								theTable.rowError(tableRow, nRow.error);
-								tableRow.rowstate = 0;
+								tableRow.rowstate = parseInt(ntable.error.errorCode)?tableRow.rowstate:0;
 								for(var cidx in tableRow.cols) {
-									tableRow.cols[cidx].colstate 	= 0;
+									tableRow.cols[cidx].colstate 	= parseInt(ntable.error.errorCode)?tableRow.cols[cidx].colstate:0;
 									tableRow.cols[cidx].current 	= angular.copy(tableRow.cols[cidx].value);
 									theTable.colError(tableRow, tableRow.cols[cidx].name, {errorCode:0, errorMessage:""} );
 								}
 								break;
 							case 2:
 								theTable.rowError(tableRow, nRow.error);
-								tableRow.rowstate = 0;
+								tableRow.rowstate = parseInt(ntable.error.errorCode)?tableRow.rowstate:0;
 								for(var cidx in tableRow.cols) {
-									tableRow.cols[cidx].colstate 	= 0;
+									tableRow.cols[cidx].colstate 	= parseInt(ntable.error.errorCode)?tableRow.cols[cidx].colstate:0;
 									tableRow.cols[cidx].current 	= angular.copy(tableRow.cols[cidx].value);
 									theTable.colError(tableRow, tableRow.cols[cidx].name, {errorCode:0, errorMessage:""} );
 	
@@ -1502,14 +1493,17 @@ WLIU.TABLEACTION.prototype = {
 								break;
 							case 3:
 								theTable.rowError(tableRow, nRow.error);
-								tableRow.rowstate = 0;
-								theTable.removeRow(tableRow);
-								theTable.navi.recordtotal--;
+								tableRow.rowstate = parseInt(ntable.error.errorCode)?tableRow.rowstate:0;
+								if( parseInt(ntable.error.errorCode)<=0 ) {
+									theTable.removeRow(tableRow);
+									theTable.navi.recordtotal--;
+								}
 								break;
 						}
 					}
 				} // if(tableRow)
 			}  // for
+
 			if(parseInt(ntable.success)) {
 				$(theTable.autotip).trigger("auto", ["Submitted Success.", "success"]);
 			} 

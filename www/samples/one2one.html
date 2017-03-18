@@ -59,7 +59,7 @@
 		   	var col1 = new WLIU.COL({key:1, 	table:"p", 	coltype:"hidden", 		name:"id", 			colname:"User No.",  	coldesc:"User ID" });
 		   	var col2 = new WLIU.COL({key:0, 	table:"p",  coltype:"textbox", 		name:"uuu",			col:"user_name", colname:"User Name", 	coldesc:"Login User",  	sort:"ASC", need:1, notnull: 1});
 		   	var col3 = new WLIU.COL({key:0, 	table:"p",  coltype:"textbox", 		name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
-		   	var col4 = new WLIU.COL({key:0, 	table:"s",  coltype:"relation", 	name:"user_id",		col:"id", 				colname:"VIP?",  		coldesc:"is VIP?", defval:true});
+		   	var col4 = new WLIU.COL({key:0, 	table:"s",  coltype:"relation", 	name:"user_id",		col:"id", 				colname:"VIP?",  		coldesc:"is VIP?"});
 		   	var col5 = new WLIU.COL({key:0, 	table:"s",  coltype:"textbox", 		name:"horby", 		colname:"Horby",   		coldesc:"Horby of User", 		sort:"ASC", need:1, notnull:1});
 			var col6 = new WLIU.COL({key:0, 	table:"s",  coltype:"select", 		name:"lang", 		colname:"LangISO", 		coldesc:"Language ISO Code",  	defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory"});
 		   	var col7 = new WLIU.COL({key:0, 	table:"s",  coltype:"radio2", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name",  			notnull:0, 	list:"colorCategory"});
@@ -116,7 +116,7 @@
             var app = angular.module("myApp", ["wliuTable"]);
             app.controller("myForm", function ($scope) {
 				table.setScope( $scope );
-				table.getRecords();
+				table.formGet();
 
 				$scope.detail = function(theRow) {
 					console.log(theRow);
@@ -124,9 +124,10 @@
 		    });
 		</script>
 </head>
-<body ng-app="myApp" ng-controller="myForm" style="padding-top:80px;position:relative;">
+<body ng-app="myApp" ng-controller="myForm" style="padding-top:10px;position:relative;">
 <!-- container -->
 <div class="container">
+		<table.message table="table"></table.message>
 		<div class="row">
 		<div class="col-md-12">
 			<fieldset>

@@ -737,12 +737,7 @@ div.wliu-image-crop + img[src=''] {
 	display:	none;
 }
 
-
 /*** File upload and list ****/
-
-
-
-
 /*** overwrite resize handle ***/
 div.ui-resizable-se {
 	background-image: url("wliu.common/wliu-resize.png");
