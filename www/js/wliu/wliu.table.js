@@ -72,6 +72,12 @@ WLIU.TABLE.prototype = {
 	relationChange: function(theRow) {
 		return FTABLE.relationChange(this, theRow); 
 	},
+	relationHideCurrent: function(col_name) {
+		return FTABLE.relationHideCurrent(this, col_name);
+	},
+	relationChangeCurrent: function() {
+		return FTABLE.relationChangeCurrent(this); 
+	},
 	/******************/
 
 	filterMeta: function(col_name) {
@@ -102,6 +108,9 @@ WLIU.TABLE.prototype = {
 	getCol: function(theRow, col_name) {
 		return FTABLE.getCol(this, theRow, col_name);
 	},
+	getColCurrent: function(col_name) {
+		return FTABLE.getColCurrent(this, col_name);
+	},
 	getColByGuid: function(guid, col_name) {
 		return FTABLE.getColByGuid(this, guid, col_name);
 	},
@@ -123,6 +132,9 @@ WLIU.TABLE.prototype = {
 	/*** event for external call ***/
 	changeCol: function(theRow, col_name) {
 		return FTABLE.changeCol(this, theRow, col_name);
+	},
+	changeColCurrent: function(col_name) {
+		return FTABLE.changeColCurrent(this, col_name);
 	},
 	changeColByGuid: function(guid, col_name) {
 		return FTABLE.changeColByGuid(this, guid, col_name);

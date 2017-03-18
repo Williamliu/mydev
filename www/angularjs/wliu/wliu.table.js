@@ -3217,12 +3217,14 @@ wliu_table.directive("table.blink", function (wliuTableService) {
                         $scope.table.cancelRow(theRow);
 
                         // ckeditor  reset value to old value;  due to single way sync 
+                        /*
                         for(var cidx in $scope.table.cols) {
                             if( $scope.table.cols[cidx].coltype.toLowerCase() == "ckeditor" )
                                 if(CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name]) {
                                     CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name].setData( $scope.table.getCol($scope.table.cols[cidx].name, $scope.row).value?$scope.table.getCol($scope.table.cols[cidx].name, $scope.row).value:"" );
                                 }
                         }
+                        */
                         break;
                     case "add":
                         // none 

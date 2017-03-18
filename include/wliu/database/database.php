@@ -456,12 +456,12 @@ class cMYSQL implements iSQL {
 			}	
 			$query = "UPDATE " . $table . " SET " . $fields_update . " WHERE " . $criteria . ";";
 			//print_r($params[1]);
-			//echo "\nquery:" . $query . "\n";
+			//echo "\nupdate query:" . $query . "\n";
 			$this->query($query);
 		} else {
 			// insert case 
 			$field_array = cARRAY::arrayMerge($field_array, $append_array);
-			//echo "modify:\n";
+			//echo "Insert:\n";
 			//print_r($field_array);
 			$this->insert($table, $field_array);
 		}
@@ -1144,8 +1144,6 @@ class cMYSQL implements iSQL {
 			$mskeyDBCol = $mtable["type"] . "." . $mtable["colmeta"][$mtable["fkeys"][$sidx]]["name"];  // important to use  js colname 
 			// c.ctime  sub query keep the javascript colname 
 			cTYPE::join($sjoinOn, " AND ",  "$skeyDBCol=$mskeyDBCol"); 
-			cTYPE::join($sjoinOn, " AND ",  $stable["type"] . ".deleted=0"); 
-
 			$skeyVal = trim($stable["colmeta"][$skey]["defval"]);
 			if($skeyVal) {
 				cTYPE::join($sk_criteria, " AND ", "$skeyDBCol='" . $this->quote($skeyVal) . "'");
@@ -1154,6 +1152,7 @@ class cMYSQL implements iSQL {
 
 		// 2.5 s criteria 
 		$criteria = "1=1";
+		cTYPE::join($sk_criteria, " AND ", "s.deleted=0");
 		cTYPE::join($criteria, " AND ", $pk_criteria);
 		cTYPE::join($criteria, " AND ", $sk_criteria);
 		// important:  medium table filter  must use   colObj.name  not  database column name.  because   (select dbcol as jscolname mtable mm) m ; finally convert dbCol to client side column name
@@ -1256,7 +1255,7 @@ class cMYSQL implements iSQL {
 									$m_keyCols = cACTION::getKeys($table, "m", $row);
 									$m_updCols = cACTION::getUpdateCols($table, "m", $row);
 									if($relationCol["value"]) {
-										if(count($m_updCols)>0) {
+										if(count($m_updCols["fields"])>0) {
 											$m_updCols["fields"] = cARRAY::arrayMerge($m_updCols["fields"], $mtable["update"]);
 											$m_updCols["fields"] = cARRAY::arrayMerge($m_updCols["fields"], array("last_updated"=>time(),"deleted"=>0));
 											$this->modify($mtable["name"], $m_keyCols["keys"], $m_updCols["fields"]);

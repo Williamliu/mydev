@@ -577,14 +577,16 @@ WLIU.ROWACTION.prototype = {
 		}
 	},
 	relationHide: function(theRow, theCol) {
-		var relCol = FCOLLECT.objectByKV(theRow.cols, {coltype:"relation", table:theCol.table});
-		if(relCol) {
-			if( relCol.value )
+		if(theRow) {
+			var relCol = FCOLLECT.objectByKV(theRow.cols, {coltype:"relation", table:theCol.table});
+			if(relCol) {
+				if( relCol.value )
+					return false;
+				else 
+					return true;
+			} else {
 				return false;
-			else 
-				return true;
-		} else {
-			return false;
+			}
 		}
 	},
 	relationChange: function(theRow) {
@@ -632,9 +634,9 @@ WLIU.ROWACTION.prototype = {
 		}
 	},
 	cancel: function(theRow) {
-		var errorCode 		= 0;
-		var errorMessage 	= "";
-		theRow.error.errorCode 	= errorCode;
+		var errorCode 				= 0;
+		var errorMessage 			= "";
+		theRow.error.errorCode 		= errorCode;
 		theRow.error.errorMessage 	= errorMessage;
 		theRow.rowstate = 0;
 		for(var colName in theRow.cols) {
@@ -1011,12 +1013,21 @@ WLIU.TABLEACTION.prototype = {
 		return ret_list;
 	},
 	relationHide: function(theTable, theRow, col_name) {
-		var theRow = this.getRow(theTable, theRow);
+		var t_row = this.getRow(theTable, theRow);
+		var theCol = this.getCol(theTable, t_row, col_name);
+		return FROW.relationHide(t_row, theCol);
+	},
+	relationChange: function(theTable, theRow) {
+		var t_row = this.getRow(theTable, theRow);
+		return FROW.relationChange(t_row);
+	},
+	relationHideCurrent: function(theTable, col_name) {
+		var theRow = this.getCurrent(theTable);
 		var theCol = this.getCol(theTable, theRow, col_name);
 		return FROW.relationHide(theRow, theCol);
 	},
-	relationChange: function(theTable, theRow) {
-		var theRow = this.getRow(theTable, theRow);
+	relationChangeCurrent: function(theTable) {
+		var theRow = this.getCurrent(theTable);
 		return FROW.relationChange(theRow);
 	},
 	getList: function(theTable, list_name) {
@@ -1130,6 +1141,14 @@ WLIU.TABLEACTION.prototype = {
 			return undefined;
 		}
 	},
+	getColCurrent: function(theTable, col_name) {
+		var t_row = this.getCurrent(theTable);
+		if( t_row != undefined ) {
+			return FCOLLECT.objectByKV(t_row.cols, {name:col_name});
+		} else {
+			return undefined;
+		}
+	},
 	getColByGuid: function(theTable, guid, col_name) {
 		var t_row = this.getRowByGuid(theTable, guid);
 		if( t_row != undefined ) {
@@ -1140,7 +1159,12 @@ WLIU.TABLEACTION.prototype = {
 	},
 	changeCol: function(theTable, theRow, col_name) {
 		var t_row = this.getRow(theTable, theRow);
-		var t_col = this.getCol(theTable, theRow, col_name);
+		var t_col = this.getCol(theTable, t_row, col_name);
+		return FROW.colChange(t_row, t_col);
+	},
+	changeColCurrent: function(theTable, col_name) {
+		var t_row = this.getCurrent(theTable);
+		var t_col = this.getCol(theTable, t_row, col_name);
 		return FROW.colChange(t_row, t_col);
 	},
 	changeColByGuid: function(theTable, guid, col_name) {
@@ -1421,7 +1445,7 @@ WLIU.TABLEACTION.prototype = {
 		if(theTable.rows.length>0) theTable.current = theTable.rows[0].guid;
 	},
 	updateRows: function(theTable, ntable) {
-			theTable.current = "";
+			//theTable.current = "";
 			theTable.tableError(ntable.error);
 			//if(ntable.success <= 0 || ntable.error.errorCode > 0) return;
 			// update primary table information: one2one, one2many, many2many 
