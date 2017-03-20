@@ -167,24 +167,6 @@
 			<table.tablebutton table="table" name="match" actname="Match" outline=1 before="searchAjax(table)"></table.tablebutton>
 			<button onclick="init()">Init</button>
 			</div>
-
-			<form.message table="table"></form.message>
-			<form.rowstatus table="table" tooltip="mytips"></form.rowstatus>
-			<br>
-			<form.label table="table" name="img1" tooltip="mytips"></form.label>: 
-			<form.textarea table="table" name="full_name" tooltip="mytips"></form.textarea>
-			<br>
-			<form.radiolist3 table="table" name="mcolor" label="Good" targetid="colorCategory_diag"  colnum=4 bar=1 tooltip="mytips"></form.radiolist3>
-			<br>
-			<form.ckeditor class="input-small" table="table" name="img1" firstname="uname" actname="Upload" filename="ID Copy" view="large" tooltip="mytips"></form.ckeditor>
-			
-			
-			<form.linkbutton table="table" name="add" actname="Add"></form.linkbutton>
-			<form.linkbutton table="table" name="save" actname="Save"></form.linkbutton>
-			<form.linkbutton table="table" name="cancel" actname="Cancel"></form.linkbutton>
-			<form.linkbutton table="table" name="delete" actname="Delete"></form.linkbutton>
-			
-			
 			<br>
 			<table.navi table="table" tooltip=""></table.navi>
 			<table class="table table-condensed">
@@ -241,7 +223,7 @@
 				<tr ng-repeat="row in table.rows">
 					<td style="white-space:nowrap; width:20px;padding-right:10px;">
 						<table.bgroup table="table" actname="Action" row="row">
-						<table.blink table="table" name="detail" 	actname="Detail" 	row="row" 	action="detail(row)" wliu-diag diag-toggle="click" diag-target="#frm"></table.blink>
+						<table.blink table="table" name="detail" 	actname="Detail" 	row="row" 	diag-toggle="click" diag-target="#userDetail"></table.blink>
 						<table.blink table="table" name="save"  	actname="Save" 		row="row" 	action=""></table.blink>
 						<table.blink table="table" name="cancel"	actname="Cancel" 	row="row" 	action=""></table.blink>
 						<table.blink table="table" name="output" 	actname="Output" 	row="row" 	action=""></table.blink>
@@ -297,16 +279,69 @@
 </div>
 <!-- container -->
 <table.taberror table="table" targetid="taberror"></table.taberror>
-
-
 <form.checkdiag1 table="table" targetid="countryCategory_diag" name="countryCategory" colnum="4" colnum1="0" bar="1" title="Please Select"></form.checkdiag1>
-
 <table.radiodiag3 table="table" targetid="colorCategory_diag" name="colorCategory" colnum="3" colnum1="0" bar="1" title="Please Select"></table.radiodiag3>
-
 
 <div id="mytips" wliu-popup></div>
 <div id="mywait" wliu-load></div>
 <div id="myauto" wliu-tips></div>
+
+
+<div id="userDetail" wliu-diag fade maskable movable>
+    <div wliu-diag-head>
+        User Detail
+    </div>
+	<div wliu-diag-body>
+			<form.message table="table"></form.message>
+			<form.rowstatus table="table" tooltip="mytips"></form.rowstatus>
+			<br>
+			<div class="row">
+				<div class="col-md-4">
+					<form.label table="table" name="depart"></form.label>
+				</div>
+				<div class="col-md-8">
+					<form.textbox table="table" name="depart"></form.textbox>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<form.label table="table" name="uname"></form.label>
+				</div>
+				<div class="col-md-8">
+					<form.textbox table="table" name="uname"></form.textbox>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<form.label table="table" name="mcolor"></form.label>
+				</div>
+				<div class="col-md-8">
+					<form.radiolist3 table="table" name="mcolor" targetid="colorCategory_diag" colnum=4 bar=1 tooltip="mytips"></form.radiolist3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<form.label table="table" name="img1"></form.label>
+				</div>
+				<div class="col-md-8">
+					<form.ckeditor table="table" name="img1" firstname="uname" actname="Upload" filename="ID Copy" view="large" tooltip="mytips"></form.ckeditor>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12 text-md-center">
+					<!--
+					<form.linkbutton table="table" name="add" actname="Add"></form.linkbutton>
+					<form.linkbutton table="table" name="delete" actname="Delete"></form.linkbutton>
+					-->
+					<form.linkbutton table="table" name="save" actname="Save"></form.linkbutton>
+					<form.linkbutton table="table" name="cancel" actname="Cancel"></form.linkbutton>
+					<button wliu-diag-close class="btn btn-info">Close</button>
+				</div>
+			</div>
+    </div>
+</div>    
+
+
 
 <!-- MD Bootstrap 4.0 js -- must place at the end of body -->
 <script type="text/javascript" src="/theme/mdb4.0/js/mdb.min.js"></script>
