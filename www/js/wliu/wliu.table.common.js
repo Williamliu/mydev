@@ -823,6 +823,7 @@ WLIU.ROWACTION.prototype = {
 		}
 	},
 	setColVal: function(theCol, p_val) {
+		if(theCol==undefined) return;
 		var ret_val = "";
 		switch( theCol.coltype ) {
 			case "hidden":
@@ -874,7 +875,7 @@ WLIU.ROWACTION.prototype = {
 			case "relation":
 			case "bool":
 				if( theCol.value	!= undefined ) theCol.value 	= parseInt(p_val)?true:false;
-				if( theCol.current!= undefined ) theCol.current = parseInt(p_val)?true:false;
+				if( theCol.current!= undefined ) theCol.current 	= parseInt(p_val)?true:false;
 				ret_val = p_val=="1"?true:false;
 				break;
 			case "passpair":
@@ -1180,6 +1181,15 @@ WLIU.TABLEACTION.prototype = {
 			t_col.value = oImg.resize[view].data;
 		}
 	},
+	setImageCurrent: function(theTable, col_name, oImg) {
+		var t_row = this.getCurrent(theTable);
+		var t_col = this.getCol(theTable, t_row, col_name);
+		if( t_col ) {
+			var view = "medium";
+			if(this.colMeta(theTable, col_name) && this.colMeta(theTable,col_name).view ) view = this.colMeta(theTable,col_name).view; 
+			t_col.value = oImg.resize[view].data;
+		}
+	},
 	newRow: function(theTable, keyvalues) {
 		var t_row = new  WLIU.ROW(theTable.cols, keyvalues, theTable.scope);
 		return t_row;
@@ -1190,6 +1200,8 @@ WLIU.TABLEACTION.prototype = {
 			nrow = this.newRow(theTable);
 		}
 		FCOLLECT.insert(theTable.rows, ridx, nrow );
+		theTable.current = nrow.guid;
+		//theTable.sc.$apply();
 		return nrow;
 	},
 
@@ -1269,6 +1281,8 @@ WLIU.TABLEACTION.prototype = {
 		for(var i = theTable.rows.length-1; i>=0; i--) {
 			this.cancelRow(theTable, theTable.rows[i]);
 		}
+		theTable.error.errorCode 	= 0;
+		theTable.error.errorMessage = "";
 		return theTable.rows;
 	},
 	getChangeRows: function(theTable) {
@@ -1490,26 +1504,25 @@ WLIU.TABLEACTION.prototype = {
 								break;
 							case 1:
 								theTable.rowError(tableRow, nRow.error);
-								tableRow.rowstate = parseInt(ntable.error.errorCode)?tableRow.rowstate:0;
+								tableRow.rowstate = 0;
 								for(var cidx in tableRow.cols) {
-									tableRow.cols[cidx].colstate 	= parseInt(ntable.error.errorCode)?tableRow.cols[cidx].colstate:0;
+									tableRow.cols[cidx].colstate 	= 0;
 									tableRow.cols[cidx].current 	= angular.copy(tableRow.cols[cidx].value);
 									theTable.colError(tableRow, tableRow.cols[cidx].name, {errorCode:0, errorMessage:""} );
 								}
 								break;
 							case 2:
 								theTable.rowError(tableRow, nRow.error);
-								tableRow.rowstate = parseInt(ntable.error.errorCode)?tableRow.rowstate:0;
+								tableRow.rowstate = 0;
 								for(var cidx in tableRow.cols) {
-									tableRow.cols[cidx].colstate 	= parseInt(ntable.error.errorCode)?tableRow.cols[cidx].colstate:0;
+									tableRow.cols[cidx].colstate 	= 0;
 									tableRow.cols[cidx].current 	= angular.copy(tableRow.cols[cidx].value);
 									theTable.colError(tableRow, tableRow.cols[cidx].name, {errorCode:0, errorMessage:""} );
 	
 									if(tableRow.cols[cidx].key) {
 										var keyColObj = FCOLLECT.objectByKV( nRow.cols, { name: tableRow.cols[cidx].name } );
 										if( keyColObj ) {
-											tableRow.cols[cidx].value 		= keyColObj.value?keyColObj.value:keyColObj.value;
-											tableRow.cols[cidx].current   	= tableRow.cols[cidx].value;  
+											FROW.setColVal(tableRow.cols[cidx], keyColObj.value);
 										}
 									}
 								}
@@ -1517,8 +1530,8 @@ WLIU.TABLEACTION.prototype = {
 								break;
 							case 3:
 								theTable.rowError(tableRow, nRow.error);
-								tableRow.rowstate = parseInt(ntable.error.errorCode)?tableRow.rowstate:0;
-								if( parseInt(ntable.error.errorCode)<=0 ) {
+								tableRow.rowstate = 0;
+								if( parseInt(tableRow.error.errorCode)<=0 ) {
 									theTable.removeRow(tableRow);
 									theTable.navi.recordtotal--;
 								}

@@ -6,7 +6,7 @@ include_once($CFG["include_path"] . "/wliu/database/database.php");
 define("DEBUG", 1);
 $response = array();
 try {
-	$rights = array("view"=>1, "save"=>1, "add"=>1, "delete"=>1);
+	$rights = array("view"=>1, "save"=>0, "add"=>1, "delete"=>1);
 
 	/*** common secure : prevent url hack from hack tool ***/
 	$db = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
@@ -70,7 +70,7 @@ try {
 	$table["metadata"] = $tableMeta; 	
 
 	// 4) action 
-	cACTION::formFilter($table);
+	//cACTION::formFilter($table);
 	cACTION::action($db, $table);
 
 	// 5) return 

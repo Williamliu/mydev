@@ -57,7 +57,7 @@ try {
 							"name"=>"public_user", 
 							"keys"=>array("id"),  
 							"fkeys"=>array(), 
-							"cols"=>array("id", "user_name", "full_name"), 
+							"cols"=>array("id", "user_name", "full_name", "img1"), 
 							"insert"=>array("created_time"=>time(), deleted=>0), 
 							"update"=>array("last_updated"=>time() ) 
 					),

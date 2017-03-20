@@ -143,7 +143,9 @@ WLIU.TABLE.prototype = {
 	setImage: function(theRow, col_name, oImg) {
 		return FTABLE.setImage(this, theRow, col_name, oImg);
 	},
-
+	setImageCurrent: function(col_name, oImg) {
+		return FTABLE.setImageCurrent(this, col_name, oImg);
+	},
 	// ; ridx;  nrow;  ridx nrow ;  default position=0  add to first
 	init: function(IDKeyValues, callback) {
 		FTABLE.init(this, callback);

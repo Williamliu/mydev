@@ -587,7 +587,8 @@ class cMYSQL implements iSQL {
 		}
 
 		// 3. create criteria  include  primary_key criteria
-		$criteria = $ptable["type"] . ".deleted=0";
+		$criteria = "";
+		cTYPE::join($criteria, " AND ", $ptable["type"] . ".deleted=0");
 		cTYPE::join($criteria, " AND ", $pk_criteria);
 		cTYPE::join($criteria, " AND ", $table["criteria"]);
 
@@ -645,12 +646,8 @@ class cMYSQL implements iSQL {
 						if(	count($dbCols["fields"]) >0 ) {
 							$dbCols["fields"] = cARRAY::arrayMerge($dbCols["fields"], $ptable["insert"]);
 							$dbCols["fields"] = cARRAY::arrayMerge($dbCols["fields"], array("created_time"=>time(), "deleted"=>0));
-							//print_r($dbCols);
 							$insertID = $this->insert($ptable["name"], $dbCols["fields"]);
-							// update keys insert id
 							cACTION::setKeys($table, "p", $row, $insertID);
-							//print_r($row);
-							// end of update insert key
 						}
 					} else {
 						$errMsg["add"] 					= "You don't have right to add new record.";
@@ -711,11 +708,9 @@ class cMYSQL implements iSQL {
 			if( $pkeyVal ) {
 				cTYPE::join($pk_criteria, " AND ", "$pkeyDBCol='" . $this->quote($pkeyVal) . "'");
 			} else {
-				// no default value, primary rows should be none: cTYPE::join($pk_criteria, " AND ", "1=0");
+				// no default value, list all primary table rows
 			}
 		}
-		cTYPE::join($joinOn, " AND ", $stable["type"] . ".deleted=0"); // important: must have deleted column in second table
-
 
 		// one to one using LEFT JOIN 
 		// if try to search by primary key. important to use LEFT JOIN, because master information already there.
@@ -729,7 +724,9 @@ class cMYSQL implements iSQL {
 		
 
 		// 3. create criteria 
-		$criteria = $ptable["type"] . ".deleted=0";
+		$criteria = "";
+		cTYPE::join($criteria, " AND ", $ptable["type"] . ".deleted=0");
+		cTYPE::join($criteria, " AND ", $stable["type"] . ".deleted=0");
 		cTYPE::join($criteria, " AND ", $pk_criteria);
 		cTYPE::join($criteria, " AND ", $table["criteria"]);
 
@@ -770,15 +767,19 @@ class cMYSQL implements iSQL {
 								
 								$relationCol = cACTION::getRelation($row);
 								if($relationCol) {
-									$s_keyCols = cACTION::getKeys($table, "s", $row);
-									$s_updCols = cACTION::getUpdateCols($table, "s", $row);
 									if($relationCol["value"]) {
+										cACTION::syncKeys($table, "s", $row);
+										$s_keyCols = cACTION::getKeys($table, "s", $row);
+										$s_updCols = cACTION::getUpdateCols($table, "s", $row);
 										if(count($s_updCols)>0) {
 											$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], $stable["update"]);
 											$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], array("last_updated"=>time(),"deleted"=>0));
 											$this->modify($stable["name"], $s_keyCols["keys"], $s_updCols["fields"]);
 										}
 									} else {
+										//in case of update:  js will not update value if success, so relation key will not updated the value.
+										cACTION::syncKeys($table, "s", $row);   
+										$s_keyCols = cACTION::getKeys($table, "s", $row);
 										$this->update($stable["name"], $s_keyCols["keys"], array("last_updated"=>time()));
 										$this->detach($stable["name"], $s_keyCols["keys"]);
 									}
@@ -806,21 +807,27 @@ class cMYSQL implements iSQL {
 								$p_insCols["fields"] = cARRAY::arrayMerge($p_insCols["fields"], $ptable["insert"]);
 								$p_insCols["fields"] = cARRAY::arrayMerge($p_insCols["fields"], array("created_time"=>time()));
 								$insertID = $this->insert($ptable["name"], $p_insCols["fields"]);
+								cACTION::setKeys($table, "p", $row, $insertID);
 							}
+
 							$relationCol = cACTION::getRelation($row);
+							//print_r($relationCol);
 							if($relationCol) {
 								if($relationCol["value"]) {
-									cACTION::setKeys($table, "p", $row, $insertID);
+									cACTION::syncKeys($table, "s", $row);
 									$s_keyCols = cACTION::getKeys($table, "s", $row);
 									$s_updCols = cACTION::getInsertCols($table, "s", $row);
-									if(count($s_updCols)>0) {
+									//print_r($s_keyCols);
+									//print_r($s_updCols);
+									if(count($s_updCols["fields"])>0) {
 										$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], $stable["update"]);
 										$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], array("last_updated"=>time(),"deleted"=>0));
 										$this->modify($stable["name"], $s_keyCols["keys"], $s_updCols["fields"]);
 									} 
-								} 
+								} else {
+									// insert case of uncheck relation:  we don't syncKeys to second table, js will update value with sent value.
+								}
 							}
-							cACTION::setKeys($table, "p", $row, $insertID);
 						}
 
 					} else {
@@ -840,8 +847,8 @@ class cMYSQL implements iSQL {
 					if( $table["rights"]["delete"] ) {
 						$p_keyCols = cACTION::getKeys($table, "p", $row);
 						if($row["error"]["errorCode"] <= 0) {
-							$this->update($pname, $p_keyCols["keys"], array("last_updated"=>time()));
-							$this->detach($pname, $p_keyCols["keys"]);
+							$this->update($ptable["name"], $p_keyCols["keys"], array("last_updated"=>time()));
+							$this->detach($ptable["name"], $p_keyCols["keys"]);
 						}
 					} else {
 						$errMsg["delete"] 				= "You don't have right to delete the record.";
@@ -926,7 +933,9 @@ class cMYSQL implements iSQL {
 		$joinLink = "$pname INNER JOIN $sname ON ( $joinOn )";
 
 		// 4. create criteria 
-		$criteria = $ptable["type"] . ".deleted=0" . " AND " . $stable["type"] . ".deleted=0";
+		$criteria = "";
+		cTYPE::join($criteria, " AND ", $ptable["type"] . ".deleted=0");
+		cTYPE::join($criteria, " AND ", $stable["type"] . ".deleted=0");
 		cTYPE::join($criteria, " AND ", $pk_criteria);
 		cTYPE::join($criteria, " AND ", $sk_criteria);
 		cTYPE::join($criteria, " AND ", $table["criteria"]);
@@ -965,7 +974,7 @@ class cMYSQL implements iSQL {
 		$table["primary"] 	= $this->rows($result_primary);
 		//Debug Query 
 		if(DEBUG) { $table["query_primary"] = $query_primary; $table["criteria_prmiary"] = $criteria_primary; }
-		$pk_criteria = "";
+
 		//important for m2m:  if primary record not found,  return 0 rows
 		if( $this->row_nums($result_primary) <= 0 ) {
 			$table["success"] 					= 0;
@@ -993,6 +1002,7 @@ class cMYSQL implements iSQL {
 
 							$s_keyCols = cACTION::getKeys($table, "s", $row);
 							if($row["error"]["errorCode"] <= 0) {
+									cACTION::syncKeys($table, "s", $row);  // update second table fkeys, fkeys not passed from client side 
 									$s_updCols = cACTION::getUpdateCols($table, "s", $row);
 									if(	count($s_updCols["fields"]) >0 ) {
 										$s_updCols["fields"] = cARRAY::arrayMerge($s_updCols["fields"], $stable["update"]);
@@ -1028,8 +1038,8 @@ class cMYSQL implements iSQL {
 							}
 
 							if($row["error"]["errorCode"] <= 0) {
+									cACTION::syncKeys($table, "s", $row); // update second table fkeys 
 									$s_insCols = cACTION::getInsertCols($table, "s", $row);
-									//print_r($s_insCols);
 									if(	count($s_insCols["fields"]) >0 ) {
 										$s_insCols["fields"] = cARRAY::arrayMerge($s_insCols["fields"], $stable["insert"]);
 										$s_insCols["fields"] = cARRAY::arrayMerge($s_insCols["fields"], array("created_time"=>time(),"deleted"=>0));
@@ -1053,7 +1063,7 @@ class cMYSQL implements iSQL {
 					break;
 				case 3:
 					if( $table["rights"]["delete"] ) {
-						if($table["error"]["errorCode"]<=0) {
+						if($row["error"]["errorCode"]<=0) {
 							$s_keyCols = cACTION::getKeys($table, "s", $row);
 							if($row["error"]["errorCode"] <= 0) {
 								$this->update($stable["name"], $s_keyCols["keys"], array("last_updated"=>time()));
@@ -1141,7 +1151,7 @@ class cMYSQL implements iSQL {
 		$sk_criteria 	= "";
 		foreach($stable["keys"] as $sidx=>$skey) {
 			$skeyDBCol 	= $stable["type"] . "." . $skey;
-			$mskeyDBCol = $mtable["type"] . "." . $mtable["colmeta"][$mtable["fkeys"][$sidx]]["name"];  // important to use  js colname 
+			$mskeyDBCol = $mtable["type"] . "." . $mtable["colmeta"][$mtable["fkeys"][$sidx]]["name"];  // very important to use  js colname 
 			// c.ctime  sub query keep the javascript colname 
 			cTYPE::join($sjoinOn, " AND ",  "$skeyDBCol=$mskeyDBCol"); 
 			$skeyVal = trim($stable["colmeta"][$skey]["defval"]);
@@ -1151,8 +1161,8 @@ class cMYSQL implements iSQL {
 		}
 
 		// 2.5 s criteria 
-		$criteria = "1=1";
-		cTYPE::join($sk_criteria, " AND ", "s.deleted=0");
+		$criteria = "";
+		cTYPE::join($criteria, " AND ", $stable["type"] . ".deleted=0");
 		cTYPE::join($criteria, " AND ", $pk_criteria);
 		cTYPE::join($criteria, " AND ", $sk_criteria);
 		// important:  medium table filter  must use   colObj.name  not  database column name.  because   (select dbcol as jscolname mtable mm) m ; finally convert dbCol to client side column name
@@ -1252,6 +1262,7 @@ class cMYSQL implements iSQL {
 							if($row["error"]["errorCode"] <= 0) {
 								$relationCol = cACTION::getRelation($row);
 								if($relationCol) {
+									cACTION::syncKeys($table, "m", $row);  //ok: need or not need;  update medium table keys fkeys,  
 									$m_keyCols = cACTION::getKeys($table, "m", $row);
 									$m_updCols = cACTION::getUpdateCols($table, "m", $row);
 									if($relationCol["value"]) {
@@ -1299,6 +1310,7 @@ class cMYSQL implements iSQL {
 										$s_insCols["fields"] = cARRAY::arrayMerge($s_insCols["fields"], $stable["insert"]);
 										$s_insCols["fields"] = cARRAY::arrayMerge($s_insCols["fields"], array("created_time"=>time(),"deleted"=>0));
 										$insertID = $this->insert($stable["name"], $s_insCols["fields"]);
+										cACTION::setKeys($table, "s", $row, $insertID); 
 									} 
 							}
 
@@ -1306,8 +1318,8 @@ class cMYSQL implements iSQL {
 								$relationCol = cACTION::getRelation($row);
 								if($relationCol) {
 									if($relationCol["value"]) {
-										cACTION::setKeys($table, "s", $row, $insertID); // important : if  relation col
-										$m_keyCols = cACTION::getKeys($table, "m", $row);
+										cACTION::syncKeys($table, "m", $row);  //ok: need or not need;  update medium table keys fkeys,  
+										$m_keyCols = cACTION::getKeys($table, "m", $row); // directly take value from p & s keys 
 										$m_updCols = cACTION::getUpdateCols($table, "m", $row);
 										if(count($m_updCols)>0) {
 											$m_updCols["fields"] = cARRAY::arrayMerge($m_updCols["fields"], $mtable["update"]);
@@ -1317,7 +1329,6 @@ class cMYSQL implements iSQL {
 									}
 								}
 							}
-							cACTION::setKeys($table, "s", $row, $insertID); // important : if  relation col
 						}
 					} else {
 						$errMsg["add"] 					= "You don't have right to add new record.";
@@ -1376,7 +1387,8 @@ class cMYSQL implements iSQL {
         if( $table["navi"]["pageno"] > $table["navi"]["pagetotal"] ) $table["navi"]["pageno"] = $table["navi"]["pagetotal"];
 		$table["navi"]["loading"] = 0;
 	}
-
+	
+	// one2many, many2many:  we must provide primary table information, if not exists, set error
 	public function init4table(&$table) {
 		$ptable = $table["metadata"]["p"];
 
@@ -1446,7 +1458,7 @@ class cACTION {
 			case "custom":
 				cLIST::getList($db, $table);
 				cVALIDATE::validate($table);
-				cACTION::checkUniques($db, $table);
+				//cACTION::checkUniques($db, $table);
 				break;
 		}
 		cACTION::getRowArray($table);
@@ -1693,6 +1705,7 @@ class cACTION {
 	static public function clearRows(&$table) {
 		foreach($table["rows"] as &$theRow) {
 				switch($table["action"]) {
+					case "init":
 					case "get":
 						break;
 					case "save":
@@ -1755,37 +1768,17 @@ class cACTION {
 				}
 				break;
 			case "s":
-				$ptable = $table["metadata"]["p"];
 				$stable = $table["metadata"]["s"];
-				switch($table["metadata"]["type"]) {
-					case "one2one":
-						foreach( $stable["keys"] as $sidx=>$skey ) {
-							$pkey 		= $ptable["keys"][$sidx];
-							$tmpIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$pkey, "table"=>"p"));
-							$pcolObj 	= $row["cols"][$tmpIdx];
-							if($pcolObj["value"]) {
-								$dbCols["keys"][$skey] = $pcolObj["value"];
-							} else {
-								$table["success"] 				= 0;
-								$row["error"]["errorCode"] 		= 9;
-								$row["error"]["errorMessage"] 	= "Secondary Key is empty.";
-							} 
-						}
-						break;
-					case "one2many":
-					case "many2many":
-						foreach( $stable["keys"] as $skey ) {
-							$tmpIdx = cARRAY::arrayIndex($row["cols"], array("col"=>$skey, "table"=>"s"));
-							$scolObj = $row["cols"][$tmpIdx];
-							if($scolObj["value"]) {
-								$dbCols["keys"][$skey] = $scolObj["value"];
-							} else {
-								$table["success"] 				= 0;
-								$row["error"]["errorCode"] 		= 9;
-								$row["error"]["errorMessage"] 	= "Secondary Key is empty.";
-							} 
-						}
-						break;
+				foreach( $stable["keys"] as $skey ) {
+					$tmpIdx = cARRAY::arrayIndex($row["cols"], array("col"=>$skey, "table"=>"s"));
+					$scolObj = $row["cols"][$tmpIdx];
+					if($scolObj["value"]) {
+						$dbCols["keys"][$skey] = $scolObj["value"];
+					} else {
+						$table["success"] 				= 0;
+						$row["error"]["errorCode"] 		= 9;
+						$row["error"]["errorMessage"] 	= "Secondary Key is empty.";
+					} 
 				}
 				break;
 			case "m":
@@ -1828,183 +1821,71 @@ class cACTION {
 				//first key is auto-increase 
 				$tmpIdx = cARRAY::arrayIndex($row["cols"], array("col"=>$ptable["keys"][0], "table"=>"p"));
 				$row["cols"][$tmpIdx]["value"]=$insertID;
-
-				switch($table["metadata"]["type"]) {
-					case "one2one":
-						$stable = $table["metadata"]["s"]; 
-						foreach( $stable["keys"] as $sidx=>$skey ) {
-							$scolIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$skey, "table"=>"s"));
-							$pcolIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$ptable["colmeta"][$ptable["keys"][$sidx]]["col"], "table"=>"p"));							
-							$row["cols"][$scolIdx]["value"] = $row["cols"][$pcolIdx]["value"];
-						}
-						break;
-					case "one2many":
-						$stable = $table["metadata"]["s"]; 
-						foreach( $stable["fkeys"] as $sidx=>$skey ) {
-							$scolIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$skey, "table"=>"s"));
-							$pcolIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$ptable["colmeta"][$ptable["keys"][$sidx]]["col"], "table"=>"p"));							
-							$row["cols"][$scolIdx]["value"] = $row["cols"][$pcolIdx]["value"];
-						}
-						break;
-					case "many2many":
-						$mtable = $table["metadata"]["m"]; 
-						foreach( $mtable["keys"] as $midx=>$mkey ) {
-							$mcolIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$mkey, "table"=>"m"));
-							$pcolIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$ptable["colmeta"][$ptable["keys"][$midx]]["col"], "table"=>"p"));							
-							$row["cols"][$mcolIdx]["value"] = $row["cols"][$pcolIdx]["value"];
-						}
-						break;
-				}
 				break;
 			case "s":
 				$stable = $table["metadata"]["s"]; 
 				// first key is auto-increase key
 				$tmpIdx = cARRAY::arrayIndex($row["cols"], array("col"=>$stable["keys"][0], "table"=>"s"));
 				$row["cols"][$tmpIdx]["value"]=$insertID;
-				switch($table["metadata"]["type"]) {
-					case "many2many":
-						$mtable = $table["metadata"]["m"]; 
-						foreach( $mtable["fkeys"] as $midx=>$mkey ) {
-							$mcolIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$mkey, "table"=>"m"));
-							$scolIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$stable["colmeta"][$stable["keys"][$midx]]["col"], "table"=>"s"));							
-							$row["cols"][$mcolIdx]["value"] = $row["cols"][$scolIdx]["value"];
-						}
-						break;
-				}
 				break;
 			case "m":  // don't need to set getKeys, set keys by p, s
 				break;
 		}
 	}
+	// syncKeys : update  second and medium table foreign keys  replace with primary keys value
+	static public function syncKeys(&$table, $tableLevel, &$row) {
+		switch($tableLevel) {
+			case "p":
+				break;
+			case "s":
+				$ptable = $table["metadata"]["p"];
+				$stable = $table["metadata"]["s"]; 
+				foreach( $stable["fkeys"] as $sidx=>$skey ) {
+					$scolIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$skey, "table"=>"s"));
+					$pcolIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$ptable["colmeta"][$ptable["keys"][$sidx]]["col"], "table"=>"p"));							
+					$row["cols"][$scolIdx]["value"] = $row["cols"][$pcolIdx]["value"];
+				}
+				break;
+			case "m":
+				$ptable = $table["metadata"]["p"];
+				$stable = $table["metadata"]["s"]; 
+				$mtable = $table["metadata"]["m"]; 
+				foreach( $mtable["keys"] as $midx=>$mkey ) {
+					$mcolIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$mkey, "table"=>"m"));
+					$pcolIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$ptable["colmeta"][$ptable["keys"][$midx]]["col"], "table"=>"p"));							
+					$row["cols"][$mcolIdx]["value"] = $row["cols"][$pcolIdx]["value"];
+				}
+				foreach( $mtable["fkeys"] as $midx=>$mkey ) {
+					$mcolIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$mkey, "table"=>"m"));
+					$scolIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$stable["colmeta"][$stable["keys"][$midx]]["col"], "table"=>"s"));							
+					$row["cols"][$mcolIdx]["value"] = $row["cols"][$scolIdx]["value"];
+				}
+				break;
+		}
+	}	
 	static public function getUpdateCols(&$table, $tableLevel, &$row) {
 	    $dbCols = array();
 		$dbCols["fields"] = array();
-		switch($tableLevel) {
-			case "p":
-				$ptable = $table["metadata"]["p"];
-				foreach( $row["cols"] as &$colObj ) {
-					if( $row["error"]["errorCode"] ) {
-						// if error,  only return key col value , other col value set to empty to avoid trafic 
-					} else {
-						$fieldName 	= $colObj["col"];
-						if( in_array($fieldName, $ptable["cols"]) && !in_array($fieldName, $ptable["keys"]) ) {
-							$colVal     = trim($colObj["value"]);
-							switch( $colObj["coltype"] ) {
-								case "checkbox":
-								case "checkbox1":
-								case "checkbox2":
-								case "checkbox3":
-									break;
-								default:
-									$dbCols["fields"][$fieldName] = $colVal;
-									// only return key col value , other col value set to empty to avoid trafic 
-									break;
-							}
-						}
+		$otable = $table["metadata"][$tableLevel];
+		foreach( $row["cols"] as &$colObj ) {
+			if($colObj["table"]==$otable["type"]) {
+				$fieldName 	= $colObj["col"];
+				if( in_array($fieldName, $otable["cols"]) && !in_array($fieldName, $otable["keys"]) && !in_array($fieldName, $otable["fkeys"]) ) {
+					$colVal     = trim($colObj["value"]);
+					switch( $colObj["coltype"] ) {
+						case "checkbox":
+						case "checkbox1":
+						case "checkbox2":
+						case "checkbox3":
+							break;
+						default:
+							$dbCols["fields"][$fieldName] = $colVal;
+							// only return key col value , other col value set to empty to avoid trafic 
+							break;
 					}
-				}				
-				break;
-			case "s":  // not include keys
-				$stable = $table["metadata"]["s"];
-				switch($table["metadata"]["type"]) {
-					case "one2one":
-						foreach( $row["cols"] as &$colObj ) {
-							if( $row["error"]["errorCode"] ) {
-								// if error,  only return key col value , other col value set to empty to avoid trafic 
-							} else {
-								$fieldName 	= $colObj["col"];
-								if( in_array($fieldName, $stable["cols"]) &&  !in_array($fieldName, $stable["keys"]) ) {
-									$colVal     = trim($colObj["value"]);
-									switch( $colObj["coltype"] ) {
-										case "checkbox":
-										case "checkbox1":
-										case "checkbox2":
-										case "checkbox3":
-											break;
-										default:
-											$dbCols["fields"][$fieldName] = $colVal;
-											break;
-									}
-								} 
-							}
-						}
-						break;
-					case "one2many":
-						$ptable = $table["metadata"]["p"];
-						foreach( $row["cols"] as &$colObj ) {
-							if( $row["error"]["errorCode"] ) {
-							} else {
-								$fieldName 	= $colObj["col"];
-								if( in_array($fieldName, $stable["cols"]) && !in_array($fieldName, $stable["keys"]) && !in_array($fieldName, $stable["fkeys"]) ) {
-									$colVal     = trim($colObj["value"]);
-									switch( $colObj["coltype"] ) {
-										case "checkbox":
-										case "checkbox1":
-										case "checkbox2":
-										case "checkbox3":
-											break;
-										default:
-											$dbCols["fields"][$fieldName] = $colVal;
-											break;
-									}
-								} 
-							}
-						}	
-						// create stable fkeys=>fkeysValue
-						foreach($stable["fkeys"] as $sidx=>$skey ) {
-							$pkey 	= $ptable["keys"][$sidx];
-							$tmpIdx = cARRAY::arrayIndex($row["cols"], array("col"=>$pkey, "table"=>"p"));
-							$dbCols["fields"][$skey] = $row["cols"][$tmpIdx]["value"];
-						}
-						break;
-					case "many2many":
-						foreach( $row["cols"] as &$colObj ) {
-							if( $row["error"]["errorCode"] ) {
-							} else {
-								$fieldName 	= $colObj["col"];
-								if( in_array($fieldName, $stable["cols"]) && !in_array($fieldName, $stable["keys"]) && !in_array($fieldName, $stable["fkeys"]) ) {
-									$colVal     = trim($colObj["value"]);
-									switch( $colObj["coltype"] ) {
-										case "checkbox":
-										case "checkbox1":
-										case "checkbox2":
-										case "checkbox3":
-											break;
-										default:
-											$dbCols["fields"][$fieldName] = $colVal;
-											break;
-									}
-								} 
-							}
-						}	
-						break;
 				}
-				break;
-			case "m":  // not include keys = p.keys + s.keys
-				$mtable = $table["metadata"]["m"];
-				foreach( $row["cols"] as &$colObj ) {
-					if( $row["error"]["errorCode"] ) {
-						// if error,  only return key col value , other col value set to empty to avoid trafic 
-					} else {
-						$fieldName 	= $colObj["col"];
-						if( in_array($fieldName, $mtable["cols"]) && !in_array($fieldName, $mtable["keys"]) && !in_array($fieldName, $mtable["fkeys"]) ) {
-							$colVal     = trim($colObj["value"]);
-							switch( $colObj["coltype"] ) {
-								case "checkbox":
-								case "checkbox1":
-								case "checkbox2":
-								case "checkbox3":
-									break;
-								default:
-									$dbCols["fields"][$fieldName] = $colVal;
-									// only return key col value , other col value set to empty to avoid trafic 
-									break;
-							}
-						}
-					}
-				}				
-				break;
-		}
+			}
+		}				
 		return $dbCols;
 	}
 	static public function getInsertCols(&$table, $tableLevel, &$row) {
@@ -2014,13 +1895,11 @@ class cACTION {
 			case "p": // insertCols include  key with value,  not include key without value
 				$ptable = $table["metadata"]["p"];
 				foreach( $row["cols"] as &$colObj ) {
-					if( $row["error"]["errorCode"] ) {
-						// if error,  only return key col value , other col value set to empty to avoid trafic 
-					} else {
+					if($colObj["table"]==$ptable["type"]) {
 						$fieldName 	= $colObj["col"];
 						$colVal     = trim($colObj["value"]);
 						if( in_array($fieldName, $ptable["cols"]) ) {
-							if( !in_array($fieldName, $ptable["keys"]) ) {
+							if( !in_array($fieldName, $ptable["keys"]) && !in_array($fieldName, $ptable["fkeys"]) ) {
 								switch( $colObj["coltype"] ) {
 									case "checkbox":
 									case "checkbox1":
@@ -2044,117 +1923,41 @@ class cACTION {
 				}				
 				break;
 			case "s":
-				$ptable = $table["metadata"]["p"];
 				$stable = $table["metadata"]["s"];
-				switch($table["metadata"]["type"]) {
-					case "one2one":  // insertCols include keys
-						foreach( $row["cols"] as &$colObj ) {
-							if( $row["error"]["errorCode"] ) {
-							} else {
-								$fieldName 	= $colObj["col"];
-								$colVal     = trim($colObj["value"]);
-								if( in_array($fieldName, $stable["cols"]) && !in_array($fieldName,$stable["keys"])  ) {
-									switch( $colObj["coltype"] ) {
-										case "checkbox":
-										case "checkbox1":
-										case "checkbox2":
-										case "checkbox3":
-											break;
-										default:
-											$dbCols["fields"][$fieldName] = $colVal;
-											// only return key col value , other col value set to empty to avoid trafic 
-											break;
-									}
+				// one2one, one2many stable includes keys + fkeys;   many2many stable includes keys 
+				foreach( $row["cols"] as &$colObj ) {
+					if($colObj["table"]==$stable["type"]) {
+						$fieldName 	= $colObj["col"];
+						$colVal     = trim($colObj["value"]);
+						if( in_array($fieldName, $stable["cols"]) ) {
+							if( !in_array($fieldName, $stable["keys"]) && !in_array($fieldName, $stable["fkeys"]) ) {
+								switch( $colObj["coltype"] ) {
+									case "checkbox":
+									case "checkbox1":
+									case "checkbox2":
+									case "checkbox3":
+										break;
+									default:
+										$dbCols["fields"][$fieldName] = $colVal;
+										// only return key col value , other col value set to empty to avoid trafic 
+										break;
 								}
-							}
-						}	
-
-						// one2one,  stable keys must set value from keys
-						foreach($stable["keys"] as $sidx=>$skey) {
-							$pkey = $ptable["keys"][$sidx];
-							$tmpIdx = cARRAY::arrayIndex($row["cols"], array("col"=>$pkey, "table"=>"p"));
-							$dbCols["fields"][$skey] = $row["cols"][$tmpIdx]["value"];
-						}			
-						break;
-					case "one2many":
-						foreach( $row["cols"] as &$colObj ) {
-							if( $row["error"]["errorCode"] ) {
-								// if error,  only return key col value , other col value set to empty to avoid trafic 
 							} else {
-								$fieldName 	= $colObj["col"];
-								$colVal     = trim($colObj["value"]);
-								if( in_array($fieldName, $stable["cols"]) ) {
-									if( !in_array($fieldName, $stable["keys"]) && !in_array($fieldName, $stable["fkeys"]) ) {
-										switch( $colObj["coltype"] ) {
-											case "checkbox":
-											case "checkbox1":
-											case "checkbox2":
-											case "checkbox3":
-												break;
-											default:
-												$dbCols["fields"][$fieldName] = $colVal;
-												// only return key col value , other col value set to empty to avoid trafic 
-												break;
-										}
-									} else {
-										//if composed keys,  first key is auto-increase,  the rest of keys should has fixed value;
-										//if only first key set to empty,
-										$first_pkey = $stable["keys"][0];
-										if($first_pkey!=$fieldName)
-											$dbCols["fields"][$fieldName] = $colVal;  
-									}
-								}
+								//if composed keys,  first key is auto-increase,  the rest of keys should has fixed value;
+								//if only first key set to empty,
+								//notes: includes keys + fkeys , but not includes first key: keys[0]
+								$first_pkey = $stable["keys"][0];
+								if($first_pkey!=$fieldName)
+									$dbCols["fields"][$fieldName] = $colVal;  
 							}
-						}	
-						
-						// one2many,  stable fkeys must set value from ptable keys
-						foreach($stable["fkeys"] as $sidx=>$skey) {
-							$pkey = $ptable["keys"][$sidx];
-							$tmpIdx = cARRAY::arrayIndex($row["cols"], array("col"=>$pkey, "table"=>"p"));
-							$dbCols["fields"][$skey] = $row["cols"][$tmpIdx]["value"];
-							//echo "fkeys($skey)= " . $dbCols["fields"][$skey] . "\n";
-						}			
-						break;
-					case "many2many": 
-						//one2many, many2many:  insertCols include fkeys,  keys with value
-						foreach( $row["cols"] as &$colObj ) {
-							if( $row["error"]["errorCode"] ) {
-								// if error,  only return key col value , other col value set to empty to avoid trafic 
-							} else {
-								$fieldName 	= $colObj["col"];
-								$colVal     = trim($colObj["value"]);
-								if( in_array($fieldName, $stable["cols"]) ) {
-									if( !in_array($fieldName, $stable["keys"]) ) {
-										switch( $colObj["coltype"] ) {
-											case "checkbox":
-											case "checkbox1":
-											case "checkbox2":
-											case "checkbox3":
-												break;
-											default:
-												$dbCols["fields"][$fieldName] = $colVal;
-												// only return key col value , other col value set to empty to avoid trafic 
-												break;
-										}
-									} else {
-										//if composed keys,  first key is auto-increase,  the rest of keys should has fixed value;
-										//if only first key set to empty,
-										$first_pkey = $stable["keys"][0];
-										if($first_pkey!=$fieldName)
-											$dbCols["fields"][$fieldName] = $colVal;  
-									}
-								}
-							}
-						}				
-						break;
-				}
+						}
+					}
+				}	
 				break;
 			case "m":  // insertCols include full set 
 				$mtable = $table["metadata"]["m"];
 				foreach( $row["cols"] as &$colObj ) {
-					if( $row["error"]["errorCode"] ) {
-						// if error,  only return key col value , other col value set to empty to avoid trafic 
-					} else {
+					if($colObj["table"]==$mtable["type"]) {
 						$fieldName 	= $colObj["col"];
 						$colVal     = trim($colObj["value"]);
 						// all cols include keys and fkeys

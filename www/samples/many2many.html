@@ -63,14 +63,15 @@
 
 		   	var col4 = new WLIU.COL({key:1, table:"s", coltype:"hidden", 		name:"id", 			colname:"User No.",  	coldesc:"User ID" });
 		   	var col5 = new WLIU.COL({key:0, table:"s", coltype:"textbox", 		name:"uname",		col:"user_name", 		colname:"User Name", 	coldesc:"Login User",  	sort:"ASC", need:1, notnull: 1});
-		   	var col6 = new WLIU.COL({key:0, table:"s", coltype:"textbox", 		name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
-		   	var col7 = new WLIU.COL({key:0, table:"m", coltype:"relation", 		name:"rid",			col:"user_id", 			colname:"Relation",  	coldesc:"AddressID"});
+		   	var col6 = new WLIU.COL({key:0, table:"s", coltype:"upload", 		name:"img1", 		colname:"File", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
+		   	var col61 = new WLIU.COL({key:0, table:"s", coltype:"textarea", 	name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
+		   	var col7 = new WLIU.COL({key:0, table:"m", coltype:"relation", 		name:"rid",			col:"user_id", 			colname:"Relation",  defval:true,	coldesc:"AddressID"});
 		   	var col8 = new WLIU.COL({key:0, table:"m", coltype:"hidden", 		name:"depart_id",				 			colname:"Depart",  		coldesc:"AddressID"});
 			
 		   	var col9 = new WLIU.COL({key:0, table:"m", coltype:"textbox", 		name:"subject",  	col:"title",			colname:"Title",   		coldesc:"Address", 		unique:1,   sort:"ASC", need:1, notnull:1});
 			var col10 = new WLIU.COL({key:0,table:"m",  coltype:"select", 		name:"mlang", 		col:"lang", 			colname:"LangISO", 		coldesc:"Language ISO Code",defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory"});
-		   	var col11 = new WLIU.COL({key:0,table:"m",  coltype:"radio3", 		name:"mcolor", 	 	col:"color",			colname:"Color", 		coldesc:"Color Name",   notnull:1, 	list:"colorCategory"});
-			var col12 = new WLIU.COL({key:0,table:"m",  coltype:"checkbox1", 	name:"country", 	colname:"Homeland", 	coldesc:"Nationality", 	sort:"DESC", need:1,  notnull:1, list:"countryCategory"});
+		   	var col11 = new WLIU.COL({key:0,table:"m",  coltype:"radio3", 		name:"mcolor", 	 	col:"color",			colname:"Color", 		coldesc:"Color Name",   notnull:1, need: 1, 	list:"colorCategory"});
+			var col12 = new WLIU.COL({key:0,table:"m",  coltype:"checkbox3", 	name:"country", 	colname:"Homeland", 	coldesc:"Nationality", 	sort:"DESC", need:1,  notnull:1, list:"countryCategory"});
 		   	var col13 = new WLIU.COL({key:0,table:"m",  coltype:"bool", 	    name:"status", 	    colname:"Acitve?", 	    coldesc:"is Active?",   sort:"DESC"});
 
 		   	var cols = [];
@@ -80,6 +81,7 @@
 		   	cols.push(col4);
 		   	cols.push(col5);
 		   	cols.push(col6);
+		   	cols.push(col61);
 		   	cols.push(col7);
 		   	cols.push(col8);
 		   	cols.push(col9);
@@ -166,9 +168,21 @@
 			<button onclick="init()">Init</button>
 			</div>
 
-
+			<form.message table="table"></form.message>
 			<form.rowstatus table="table" tooltip="mytips"></form.rowstatus>
-			<form.fileupload class="input-small" table="table" name="subject" tooltip="mytips"></form.fileupload>
+			<br>
+			<form.label table="table" name="img1" tooltip="mytips"></form.label>: 
+			<form.textarea table="table" name="full_name" tooltip="mytips"></form.textarea>
+			<br>
+			<form.radiolist3 table="table" name="mcolor" label="Good" targetid="colorCategory_diag"  colnum=4 bar=1 tooltip="mytips"></form.radiolist3>
+			<br>
+			<form.ckeditor class="input-small" table="table" name="img1" firstname="uname" actname="Upload" filename="ID Copy" view="large" tooltip="mytips"></form.ckeditor>
+			
+			
+			<form.linkbutton table="table" name="add" actname="Add"></form.linkbutton>
+			<form.linkbutton table="table" name="save" actname="Save"></form.linkbutton>
+			<form.linkbutton table="table" name="cancel" actname="Cancel"></form.linkbutton>
+			<form.linkbutton table="table" name="delete" actname="Delete"></form.linkbutton>
 			
 			
 			<br>
@@ -201,6 +215,9 @@
 					</td>
 					<td>
 						<table.head table="table" name="full_name" tooltip="mytips"></table.head>
+					</td>
+					<td>
+						<table.head table="table" name="img1" tooltip="mytips"></table.head>
 					</td>
 					<td>
 						<table.head table="table"  name="rid" tooltip="1"></table.head>
@@ -248,7 +265,10 @@
 						<table.textbox class="input-small" table="table" name="uname" row="row" tooltip="mytips"></table.textbox>
 					</td>
 					<td>
-						<table.textbox class="input-small" table="table" name="full_name" row="row" tooltip="mytips"></table.textbox>
+						<table.textarea class="input-small" table="table" name="full_name" row="row" tooltip="mytips"></table.textarea>
+					</td>
+					<td>
+						<table.textarea table="table" row="row" name="img1" firstname="uname" actname="Upload" view="large" tooltip="mytips"></table.textarea>
 					</td>
 					<td>
 						<table.relation table="table" name="rid" row="row" tooltip="mytips"></table.relation>
@@ -260,10 +280,10 @@
 						<table.select class="input-small" table="table" name="mlang" row="row" tooltip="mytips"></table.select>
 					</td>
 					<td>
-						<table.radio3 class="input-tiny" table="table" name="mcolor" row="row" targetid="colorCategory_diag" tooltip="mytips"></table.radio3>
+						<table.radio3 class="input-tiny" table="table" name="mcolor" row="row" bar=1 colnum=12 targetid="colorCategory_diag" tooltip="mytips"></table.radio3>
 					</td>
 					<td>
-						<table.checkbox1 class="input-small" table="table" name="country" row="row" tooltip="mytips" targetid="countryCategory_diag"></table.checkbox1>
+						<table.checkbox1 class="input-small" table="table" name="country" row="row" bar=1 tooltip="mytips" targetid="countryCategory_diag"></table.checkbox1>
 					</td>
 					<td>
 						<table.bool class="input-small" table="table" name="status" row="row" tooltip="mytips"></table.bool>
@@ -279,8 +299,10 @@
 <table.taberror table="table" targetid="taberror"></table.taberror>
 
 
-<table.checkdiag1 table="table" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></table.checkdiag1>
+<form.checkdiag1 table="table" targetid="countryCategory_diag" name="countryCategory" colnum="4" colnum1="0" bar="1" title="Please Select"></form.checkdiag1>
+
 <table.radiodiag3 table="table" targetid="colorCategory_diag" name="colorCategory" colnum="3" colnum1="0" bar="1" title="Please Select"></table.radiodiag3>
+
 
 <div id="mytips" wliu-popup></div>
 <div id="mywait" wliu-load></div>

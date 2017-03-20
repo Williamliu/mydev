@@ -40,6 +40,7 @@
 		<script src="/js/wliu/wliu.table.js" type="text/javascript"></script>
 		<script src="/js/wliu/wliu.table.common.js" type="text/javascript"></script>
 		<script	src="/angularjs/wliu/wliu.table.js" type="text/javascript"></script>
+		<script	src="/angularjs/wliu/wliu.table.form.js" type="text/javascript"></script>
 		<script	src="/angularjs/wliu/wliu.table.filter.js" type="text/javascript"></script>
 		<script	src="/angularjs/wliu/wliu.table.list.js" type="text/javascript"></script>
 		
@@ -59,13 +60,13 @@
 		   	var col1 = new WLIU.COL({key:1, 	table:"p", 	coltype:"hidden", 		name:"id", 			colname:"User No.",  	coldesc:"User ID" });
 		   	var col2 = new WLIU.COL({key:0, 	table:"p",  coltype:"textbox", 		name:"uuu",			col:"user_name", colname:"User Name", 	coldesc:"Login User",  	sort:"ASC", need:1, notnull: 1});
 		   	var col3 = new WLIU.COL({key:0, 	table:"p",  coltype:"textbox", 		name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
-		   	var col4 = new WLIU.COL({key:0, 	table:"s",  coltype:"relation", 	name:"user_id",		col:"id", 				colname:"VIP?",  		coldesc:"is VIP?"});
+		   	var col4 = new WLIU.COL({key:1, 	table:"s",  coltype:"relation", 	name:"user_id",		col:"id", 				colname:"VIP?",  		coldesc:"is VIP?"});
 		   	var col5 = new WLIU.COL({key:0, 	table:"s",  coltype:"textbox", 		name:"horby", 		colname:"Horby",   		coldesc:"Horby of User", 		sort:"ASC", need:1, notnull:1});
 			var col6 = new WLIU.COL({key:0, 	table:"s",  coltype:"select", 		name:"lang", 		colname:"LangISO", 		coldesc:"Language ISO Code",  	defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory"});
 		   	var col7 = new WLIU.COL({key:0, 	table:"s",  coltype:"radio2", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name",  			notnull:0, 	list:"colorCategory"});
 			var col8 = new WLIU.COL({key:0, 	table:"s",  coltype:"checkbox1", 	name:"country", 	colname:"Homeland", 	coldesc:"Nationality",  		sort:"DESC", need:1,  notnull:1, list:"countryCategory"});
-		   	var col9 = new WLIU.COL({key:0, 	table:"s",  coltype:"datetime", 	name:"memberdate", 	colname:"Enroll Date", 	coldesc:"Date of Enroll",  		sort:"DESC"});
-		   	var col10 = new WLIU.COL({key:0, 	table:"s",  coltype:"text", 		name:"stime", 		col:"created_time", 	colname:"Created Date", 	coldesc:"Date of Enroll",  	sort:"DESC"});
+		   	var col9 = new WLIU.COL({key:0, 	table:"s",  coltype:"time", 	name:"memberdate", 	colname:"Enroll Date", 	coldesc:"Date of Enroll",  		sort:"DESC"});
+		   	var col10 = new WLIU.COL({key:0, 	table:"s",  coltype:"text", 		name:"stime", 		col:"last_updated", 	colname:"Created Date", 	coldesc:"Date of Enroll",  	sort:"DESC"});
 
 		   	var cols = [];
 		   	cols.push(col1);
@@ -137,6 +138,8 @@
 				<filter.label table="table" name="color"></filter.label> : <filter.textbox class="input-medium" table="table" name="color" colnum="3" targetid="#color_filter1" bar="1"  tooltip="mytips"></filter.textbox><br />
 				<filter.label table="table" name="email"></filter.label> : <filter.textbox class="input-medium" table="table" name="country"  tooltip="mytips"></filter.textbox><br />
 				-->
+			<form.intdate table="table" name="stime" tooltip="mytips"></form.intdate>
+				
 			</feildset>
 			<div style="margin-top:20px;">
 			<table.tablebutton table="table" name="search" actname="Search" outline=1 before=""></table.tablebutton>
@@ -229,7 +232,7 @@
 						<table.checkbox1 class="input-small" table="table" name="country" row="row" tooltip="mytips" targetid="countryCategory_diag"></table.checkbox1>
 					</td>
 					<td>
-						<table.datetime class="input-small" table="table" name="memberdate" row="row" tooltip="mytips"></table.datetime>
+						<table.text class="input-small" table="table" name="stime" row="row" tooltip="mytips"></table.text>
 					</td>
 				</tr>
 			</table>

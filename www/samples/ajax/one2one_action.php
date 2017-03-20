@@ -56,7 +56,7 @@ try {
 							"type"=>"s",
 							"name"=>"public_user_vip", 
 							"keys"=>array("id"),  
-							"fkeys"=>array(), 
+							"fkeys"=>array("id"), 
 							"cols"=>array("id","horby", "lang", "color",  "country", "memberdate","created_time"), 
 							"insert"=>array(), 
 							"update"=>array() 
