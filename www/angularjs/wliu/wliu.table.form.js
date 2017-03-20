@@ -42,8 +42,8 @@ wliu_table.directive("form.rowstatus", function () {
                             'title="{{ tooltip?\'\':(table.getCurrent().error.errorCode? table.getCurrent().error.errorMessage : \'\') }}"',
                         '>',
                         */
-                        '<span style="color:red;" ng-if="table.getCurrent()==undefined">No record found!</span>',
-                        '<span style="color:red;" ng-if="table.getCurrent().error.errorCode">Error : </span>',
+                        '<span ng-if="table.getCurrent()==undefined" style="color:red;vertical-align:middle;">No record found!</span>',
+                        '<span ng-if="table.getCurrent().error.errorCode" style="color:red;vertical-align:middle;font-size:20px;">Error : </span>',
                         '<a class="wliu-btn24 wliu-btn24-error-help" ',
                             'ng-if="table.getCurrent().error.errorCode" ',
                             'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" ',
@@ -97,10 +97,10 @@ wliu_table.directive("form.ckeditor", function () {
         controller: function ($scope) {
             //  model change ,  it will not sync to ckeditor
             //  only sync to ckeditor when initialize the model.
-            $scope.initLoad = true;
-            $scope.changeByCK = false;
+            //$scope.initLoad = true;
+            //$scope.changeByCK = false;
             $scope.modelChange = function() {
-                if($scope.changeByCK) return;
+                //if($scope.changeByCK) return;
                 if( $scope.table.getColCurrent($scope.name) )  {
                     if(CKEDITOR.instances[$scope.table.scope+"_"+$scope.name])
                         if( $scope.table.getColCurrent($scope.name).value != CKEDITOR.instances[$scope.table.scope+"_"+$scope.name].getData() )
@@ -117,12 +117,12 @@ wliu_table.directive("form.ckeditor", function () {
                 htmlObj_cn = CKEDITOR.replace(sc.table.scope + "_" + sc.name,{height:sc.hh});
                 // The "change" event is fired whenever a change is made in the editor.
                 htmlObj_cn.on('change', function (evt) {
-                    sc.changeByCK = true;
+                    //sc.changeByCK = true;
                     if( !sc.$root.$$phase ) {  // very important 
-                        if(sc.initLoad) {
-                            sc.initLoad=false;
-                            return;
-                        } 
+                        //if(sc.initLoad) {
+                        //    sc.initLoad=false;
+                        //    return;
+                        //} 
 
                         if( sc.table.getColCurrent(sc.name) ) {
                             if( sc.table.getColCurrent(sc.name).value != CKEDITOR.instances[sc.table.scope+"_"+sc.name].getData() ) {
@@ -133,7 +133,7 @@ wliu_table.directive("form.ckeditor", function () {
                             }
                         }
                     }
-                    sc.changeByCK = false;
+                    //sc.changeByCK = false;
                 });
             });
         }

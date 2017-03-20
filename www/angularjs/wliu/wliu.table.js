@@ -258,7 +258,7 @@ wliu_table.directive("table.rowno", function () {
                         'popup-body="{{row.error.errorCode?row.error.errorMessage.nl2br():\'\'}}"',
                         'title="{{ tooltip?\'\':(row.error.errorCode ? row.error.errorMessage : \'\') }}"',
                     '>',
-                        '<a class="wliu-btn16 wliu-btn16-rowstate-error"    ng-if="row.error.errorCode" ',
+                        '<a class="wliu-btn16 wliu-btn16-error-help"    ng-if="row.error.errorCode" ',
                             'title="{{ tooltip?\'\':( row.error.errorCode? row.error.errorMessage : \'\') }}"',
                         '>',
                         '</a>',
@@ -3966,9 +3966,9 @@ wliu_table.directive("table.message", function (wliuTableService) {
                 ].join(''),
         controller: function ($scope, $sce) {
             $scope.getHTML = function() {
-                if( $scope.table.error.errorCode || $scope.table.getCurrent().error.errorCode ) {
+                if( $scope.table.error.errorCode || ( $scope.table.getCurrent() && $scope.table.getCurrent().error.errorCode ) ) {
                     var errMsg = $scope.table.error.errorMessage.nl2br1();
-                    errMsg += "\n" + $scope.table.getCurrent().error.errorMessage.nl2br1();
+                    if( $scope.table.getCurrent() ) errMsg += "\n" + $scope.table.getCurrent().error.errorMessage.nl2br1();
                     return $sce.trustAsHtml(errMsg);
                 } else { 
                     return $sce.trustAsHtml("");
