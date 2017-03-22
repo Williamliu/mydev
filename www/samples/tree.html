@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+		<meta charset="utf8" />
+		<!-- JQuery3.1.1 -->
+		<script type="text/javascript" src="/jquery/min/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+		<link href='/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
+		<!-- //JQuery -->
+		
+		<!-- Bootstrap3.3 -->
+		<link 	href='/theme/bootstrap4.0/css/bootstrap.min.css' type='text/css' rel='stylesheet' />
+		<script src="/theme/mdb4.0/js/tether.js" type="text/javascript"></script>
+		<script src="/theme/bootstrap4.0/js/bootstrap.min.js" type="text/javascript"></script>    
+		<!-- //Bootstrap -->
+		
+		<!-- MD Bootstrap 4.0 -->
+		<link href='/theme/mdb4.0/css/mdb.wliu.css' type='text/css' rel='stylesheet' />
+		<link href='/theme/font-awesome-4.6.3/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
+		<!--
+		<link href='theme/mdb_pro/css/woocommerce.css' rel='stylesheet' type='text/css'>
+		<link href='theme/mdb_pro/css/woocommerce-layout.css' rel='stylesheet' type='text/css'>
+		<link href='theme/mdb_pro/css/woocommerce-smallscreen.css' rel='stylesheet' type='text/css'>
+		-->
+		<!-- //MD Bootstrap -->
+
+		<!-- 3rd Party Component -->
+        <script src="/jquery/plugin/ckeditor_full/ckeditor.js" type="text/javascript"></script>
+		<!-- //3rd Party Component -->
+
+
+		<!-- AngularJS 1.3.15 -->
+		<script	src="/angularjs/angular-1.3.15/angular.js" type="text/javascript"></script>
+		<script	src="/angularjs/angular-1.3.15/angular-cookies.js" type="text/javascript"></script>
+		<script src="/angularjs/angular-1.3.15/angular-sanitize.min.js" type="text/javascript"></script>
+		<!-- //AngularJS -->
+
+		<!-- wliu components -->
+		<script src="/js/wliu/wliu.common.js" type="text/javascript"></script>
+		<script src="/js/wliu/wliu.table.common.js" type="text/javascript"></script>
+		<script src="/js/wliu/wliu.table.js" type="text/javascript"></script>
+		<script src="/js/wliu/wliu.tree.js" type="text/javascript"></script>
+		<script	src="/angularjs/wliu/wliu.table.js" type="text/javascript"></script>
+		<script	src="/angularjs/wliu/wliu.table.filter.js" type="text/javascript"></script>
+		<script	src="/angularjs/wliu/wliu.table.list.js" type="text/javascript"></script>
+	
+		<script src="/jquery/wliu/diag/wliu.jquery.diag.js" type="text/javascript"></script>
+		<link 	href='/jquery/wliu/diag/wliu.jquery.diag.css' type='text/css' rel='stylesheet' />
+		<script src="/jquery/wliu/popup/wliu.jquery.popup.js" type="text/javascript"></script>
+		<link 	href='/jquery/wliu/popup/wliu.jquery.popup.css' type='text/css' rel='stylesheet' />
+		<script src="/jquery/wliu/load/wliu.jquery.load.js" type="text/javascript"></script>
+		<link 	href="/jquery/wliu/load/wliu.jquery.load.css" type='text/css' rel='stylesheet' />
+
+		<link href='/theme/wliu/wliu.common.css' type='text/css' rel='stylesheet' />
+		<link href='/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
+		<!-- //wliu components -->
+
+
+        <script language="javascript" type="text/javascript">
+		   	
+			var col11 = new WLIU.COL({key:1, table:"p",		coltype:"hidden", 		name:"id", 			colname:"Menu ID"});
+		   	var col12 = new WLIU.COL({key:0, table:"p", 	coltype:"hidden", 		name:"parent_id",	colname:"Menu Parent ID", need:1, notnull: 1});
+		   	var col13 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	notnull:1});
+		   	var col14 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",	notnull:1});
+		   	var col15 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", 	notnull:1});
+
+			var col21 = new WLIU.COL({key:1, table:"s",		coltype:"hidden", 		name:"id", 			colname:"Menu ID"});
+		   	var col22 = new WLIU.COL({key:0, table:"s", 	coltype:"hidden", 		name:"parent_id",	colname:"Menu Parent ID", need:1, notnull: 1});
+		   	var col23 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	notnull:1});
+		   	var col24 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",	notnull:1});
+		   	var col25 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", 	notnull:1});
+
+			var col31 = new WLIU.COL({key:1, table:"m",		coltype:"hidden", 		name:"id", 			colname:"Menu ID"});
+		   	var col32 = new WLIU.COL({key:0, table:"m", 	coltype:"hidden", 		name:"ref_id",		colname:"Menu Parent ID", 	need:1, notnull: 1});
+		   	var col33 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",			notnull:1});
+		   	var col34 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",		notnull:1});
+		   	var col35 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", 		notnull:1});
+
+
+		   	var cols = {};
+		   	cols.p = [];
+			cols.p.push(col11);
+		   	cols.p.push(col12);
+		   	cols.p.push(col13);
+		   	cols.p.push(col14);
+		   	cols.p.push(col15);
+		   	
+			   cols.s = [];
+			cols.s.push(col21);
+		   	cols.s.push(col22);
+		   	cols.s.push(col23);
+		   	cols.s.push(col24);
+		   	cols.s.push(col25);
+			
+			cols.m = [];
+		   	cols.m.push(col31);
+		   	cols.m.push(col32);
+		   	cols.m.push(col33);
+		   	cols.m.push(col34);
+		   	cols.m.push(col35);
+
+			/*
+			var filter1 = new WLIU.FILTER({name:"adminname", 	coltype:"textbox", 		cols:"user_name,full_name,address", 		colname:"Name", 	coldesc:"Search by Name"});
+			var filters = [];
+			filters.push(filter1);
+			*/
+
+		    var table = new WLIU.TREE({
+				scope: 	"mytab",
+				url:   	"ajax/tree_action.php",
+				wait:   "#mywait",
+				autotip: "#myauto",
+				taberror:"#taberror",
+				rights: {detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
+				//filters:filters,
+				cols: 	cols,
+				lists: 	{
+							colorCategory: 		{ loaded: 0, keys:{guid:"", name:""}, list:[] },
+							countryCategory: 	{ loaded: 0, keys:{guid:"", name:""}, list:[] },
+							langCategory: 	{ 
+											loaded: 2, 
+											keys: {guid:"", name:""}, 
+											list:[
+													{key: "cn", value:"China PRC", 		desc:"China MainLand"},
+													{key: "us", value:"United State", 	desc:"United State of America"},
+													{key: "ca", value:"Candada", 		desc:"O Canada"}
+											]
+						}
+				}
+			});
+
+            var app = angular.module("myApp", ["wliuTable"]);
+            app.controller("myForm", function ($scope) {
+				table.setScope( $scope, "table" );
+				table.getRows();
+		    });
+
+			$(function(){
+			});
+		</script>
+</head>
+<body ng-app="myApp" ng-controller="myForm" style="padding-top:10px;position:relative;">
+<!-- container -->
+<div class="container">
+		<table.message table="table"></table.message>
+
+		<div class="row">
+		<div class="col-md-12">
+			<fieldset>
+				<legend>Search</legend>
+				<filter.label table="table" name="user_name"></filter.label> : <filter.textbox class="input-medium" table="table" name="adminname" tooltip="mytips"></filter.textbox><br /><br />
+				<!--
+				<filter.label table="table" name="color"></filter.label> : <filter.textbox class="input-medium" table="table" name="color" colnum="3" targetid="#color_filter1" bar="1"  tooltip="mytips"></filter.textbox><br />
+				<filter.label table="table" name="email"></filter.label> : <filter.textbox class="input-medium" table="table" name="country"  tooltip="mytips"></filter.textbox><br />
+				-->
+			</feildset>
+			<div style="margin-top:20px;">
+			<table.tablebutton table="table" name="search" actname="Search" outline=1 before="searchAjax(table)"></table.tablebutton>
+			<button onclick="init()">Init</button>
+			</div>
+			<br>
+			<table.navi table="table" tooltip=""></table.navi>
+			<table class="table table-condensed">
+				<tr style="background-color:#efefef;"> 
+					<td width=20>
+						<table.hgroup table="table" actname="DO All">
+							<table.hlink table="table" name="add" 		actname="Add"  	action=""></table.hlink>
+							<table.hlink table="table" name="save" 		actname="Save" 	action=""></table.hlink>
+							<table.hlink table="table" name="cancel" 	actname="Undo" 	action=""></table.hlink>
+							<table.hlink table="table" name="output" 	actname="Excel" action=""></table.hlink>
+							<table.hlink table="table" name="print" 	actname="Print" action=""></table.hlink>
+						</table.hgroup>
+					</td>
+					<td width=30 align="center">
+						<table.head table="table" name="SN" tooltip="mytips"></table.head>
+					</td>
+					<td>
+						<table.head table="table" name="id" tooltip="mytips"></table.head>
+					</td>
+					<td>
+						<table.head table="table" name="user_name" tooltip="mytips"></table.head>
+					</td>
+					<td>
+						<table.head table="table" name="full_name" tooltip="mytips"></table.head>
+					</td>
+					
+					<td>
+						<table.head table="table"  name="uid" tooltip="1"></table.head>
+					</td>
+					<td>
+						<table.head table="table"  name="address" tooltip="1"></table.head>
+					</td>
+					<td>
+						<table.head table="table"  name="lang" tooltip="1"></table.head>
+					</td>
+					<td>
+						<table.head table="table"  name="color" tooltip="1"></table.head>
+					</td>
+					<td>
+						<table.head table="table" name="country" tooltip="mytips"></table.head>
+					</td>
+					<td>
+						<table.head table="table" name="memberdate" tooltip="1"></table.head>
+					</td>
+					<td>
+						<table.head table="table" name="status" tooltip="1"></table.head>
+					</td>
+					<td>
+						<table.head table="table" name="ctime" tooltip="1"></table.head>
+					</td>
+				</tr>	
+				<tr ng-repeat="row in table.rows">
+					<td style="white-space:nowrap; width:20px;padding-right:10px;">
+						<table.bgroup table="table" actname="Action" row="row">
+						<table.blink table="table" name="detail" 	actname="Detail" 	row="row" 	action="detail(row)" wliu-diag diag-toggle="click" diag-target="#frm"></table.blink>
+						<table.blink table="table" name="save"  	actname="Save" 		row="row" 	action=""></table.blink>
+						<table.blink table="table" name="cancel"	actname="Cancel" 	row="row" 	action=""></table.blink>
+						<table.blink table="table" name="output" 	actname="Output" 	row="row" 	action=""></table.blink>
+						<table.blink table="table" name="print"		actname="Print" 	row="row" 	action=""></table.blink>
+						<table.blink table="table" name="delete" 	actname="Delete" 	row="row" 	action=""></table.blink>
+						</table.bgroup>
+					</td>
+					<td width=30 align="center">
+						<table.rowno table="table"  row="row" tooltip="mytips"></table.rowno>
+					</td>
+					<td align="center">
+						<table.text table="table" name="id" row="row" tooltip="mytips"></table.text> 
+					</td>
+					<td>
+						<table.textbox class="input-small" table="table" name="user_name" row="row" tooltip="mytips"></table.textbox>
+					</td>
+					<td>
+						<table.textbox class="input-small" table="table" name="full_name" row="row" tooltip="mytips"></table.textbox>
+					</td>
+					<td>
+						<table.text table="table" name="uid" row="row" tooltip="mytips"></table.text>
+					</td>
+					<td>
+						<table.textbox table="table" name="address" row="row" style="width:200px;" hh=300 tooltip="mytips"></table.textbox>
+					</td>
+					<td>
+						<table.select class="input-small" table="table" name="lang" row="row" tooltip="mytips"></table.select>
+					</td>
+					<td>
+						<table.radio3 class="input-tiny" table="table" name="color" row="row" targetid="colorCategory_diag" tooltip="mytips"></table.radio3>
+					</td>
+					<td>
+						<table.checkbox1 class="input-small" table="table" name="country" row="row" tooltip="mytips" targetid="countryCategory_diag"></table.checkbox1>
+					</td>
+					<td>
+						<table.datetime class="input-small" table="table" name="shipdate" row="row" tooltip="mytips"></table.datetime>
+					</td>
+					<td>
+						<table.bool class="input-small" table="table" name="status" row="row" tooltip="mytips"></table.bool>
+					</td>
+					<td>
+						<table.intdate class="input-small" table="table" name="ctime" row="row" tooltip="mytips"></table.intdate>
+					</td>
+				</tr>
+			</table>
+		</div>		
+
+		<br>
+		<br>
+</div>
+<!-- container -->
+<table.taberror table="table" targetid="taberror"></table.taberror>
+
+
+<table.checkdiag1 table="table" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></table.checkdiag1>
+<table.radiodiag3 table="table" targetid="colorCategory_diag" name="colorCategory" colnum="3" colnum1="0" bar="1" title="Please Select"></table.radiodiag3>
+
+<div id="mytips" wliu-popup></div>
+<div id="mywait" wliu-load></div>
+<div id="myauto" wliu-tips></div>
+
+<!-- MD Bootstrap 4.0 js -- must place at the end of body -->
+<script type="text/javascript" src="/theme/mdb4.0/js/mdb.min.js"></script>
+<!-- <script type="text/javascript" src="theme/mdb_pro/js/woocommerce.min.js"></script> -->
+<!-- //MD Bootstrap 4.0 js -->
+</body>
+</html>

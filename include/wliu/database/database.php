@@ -568,6 +568,86 @@ class cMYSQL implements iSQL {
 		return $ret_str;
 	}
 	/*************** Relational Table Functions ***********************************/
+	public function tree(&$table) {
+		switch( $table["metadata"]["type"] ) {
+			case 2: 
+				break;
+			case 3:
+				break;
+			case 4:
+				break;
+		}
+		$otable	= $table["metadata"][$tableLevel];
+		// 1. select cols 
+        $colstr = cACTION::buildSelect($otable);
+	
+		// 2. join table 
+		$joinLink 		= $otable["name"] . " " . $otable["type"];
+	
+		$fk_criteria = "";
+		foreach($otable["fkeys"] as $pk) {
+			if( $parent_id ) {
+				cTYPE::join($fk_criteria, " AND ",  $otable["type"] . ".$pk='" . $this->quote($parent_id) . "'");
+			} else {
+				cTYPE::join($fk_criteria, " AND ",  $otable["type"] . ".$pk='0'");
+			}
+		}
+
+		// 3. create criteria  include  primary_key criteria
+		$criteria = "";
+		cTYPE::join($criteria, " AND ", $otable["type"] . ".deleted=0");
+		cTYPE::join($criteria, " AND ", $fk_criteria);
+		cTYPE::join($criteria, " AND ", $table["criteria"]);
+
+		// 4. update navi first, and create orderby and limitation string 
+		$orderByLimit = "ORDER BY orderno DESC";
+
+		// 5.  completed  select query string 
+		$query = "SELECT $colstr FROM $joinLink WHERE $criteria $orderByLimit";	
+ 
+		//Debug Query 
+		if(DEBUG) { $table["query"] = $query; $table["criteria"] = $criteria; }
+
+		$result = $this->query($query);
+		$table["rows"] = $this->rows($result);
+	}
+	
+	public function treeNodes(&$table, $tableLevel, $parent_id) {
+		$otable	= $table["metadata"][$tableLevel];
+		// 1. select cols 
+        $colstr = cACTION::buildSelect($otable);
+	
+		// 2. join table 
+		$joinLink 		= $otable["name"] . " " . $otable["type"];
+	
+		$fk_criteria = "";
+		foreach($otable["fkeys"] as $pk) {
+			if( $parent_id ) {
+				cTYPE::join($fk_criteria, " AND ",  $otable["type"] . ".$pk='" . $this->quote($parent_id) . "'");
+			} else {
+				cTYPE::join($fk_criteria, " AND ",  $otable["type"] . ".$pk='0'");
+			}
+		}
+
+		// 3. create criteria  include  primary_key criteria
+		$criteria = "";
+		cTYPE::join($criteria, " AND ", $otable["type"] . ".deleted=0");
+		cTYPE::join($criteria, " AND ", $fk_criteria);
+		cTYPE::join($criteria, " AND ", $table["criteria"]);
+
+		// 4. update navi first, and create orderby and limitation string 
+		$orderByLimit = "ORDER BY orderno DESC";
+
+		// 5.  completed  select query string 
+		$query = "SELECT $colstr FROM $joinLink WHERE $criteria $orderByLimit";	
+ 
+		//Debug Query 
+		if(DEBUG) { $table["query"] = $query; $table["criteria"] = $criteria; }
+
+		$result = $this->query($query);
+		$table["rows"] = $this->rows($result);
+	}
+
 	public function one(&$table) {
 		$ptable	= $table["metadata"]["p"];
 
@@ -2665,6 +2745,85 @@ class cVALIDATE {
 			"TIME"		=> "/^((2[0-3]|[01]?[0-9])(:[0-5]?[0-9](:[0-5]?[0-9])?)?[ ]*(am|pm)?)$/i",
 			"DATETIME"	=> "/^(?:19|20)[0-9]{2}(?:-|\/)(?:1[0-2]|0?[1-9])(?:-|\/)(?:3[01]|[0-2]?[0-9])[ ]+((2[0-3]|[01]?[0-9])(:[0-5][0-9](:[0-5][0-9])?)?[ ]*(am|pm)?)$/i"
 	);
+}
+
+class cTREE {
+	static public function action($db, &$table ) {
+		cTREE::buildColMeta($table); // important
+		$table["success"] 	= 1;
+		switch( $table["action"] ) {
+			case "init":
+				$table["rows"] = array();
+				if( $table["rights"]["view"] ) {
+					cLIST::getList($db, $table);
+					cACTION::initTable($db, $table);
+				} else {
+					$table["success"] = 0;
+					$table["error"]["errorCode"]=1;
+					$table["error"]["errorMessage"]="You don't have right to view data.";
+				}
+				break;
+			case "get":
+				$table["rows"] = array();
+				if( $table["rights"]["view"] ) {
+					cLIST::getList($db, $table);
+					//cACTION::getFilters($table);
+					cTREE::getRows($db, $table);
+				} else {
+					$table["success"] = 0;
+					$table["error"]["errorCode"]=1;
+					$table["error"]["errorMessage"]="You don't have right to view data.";
+				}
+
+				break;
+			case "save":
+				cLIST::getList($db, $table);
+				cVALIDATE::validate($table);
+				cACTION::checkUniques($db, $table);
+				
+				cACTION::saveRows($db, $table);
+				break;
+		}
+		//cACTION::getRowArray($table);
+		$table["success"] = $table["error"]["errorCode"]?0:$table["success"];
+	}
+
+	static public function getRows($db, &$table) {
+		$tableMeta = $table["metadata"];
+		switch( $tableMeta["type"] ) {
+			case "2":
+				$db->treeNodes($table, "p", 0);
+				break;
+			case "3":
+				$db->treeNodes($table, "p", 0);
+				break;
+			case "4":
+				$db->one2many($table);
+				cACTION::getChecks($db, $table, "p");
+				cACTION::getChecks($db, $table, "s");
+				break;
+		}
+	}
+
+	static public function buildColMeta(&$table) {
+		foreach($table["cols"] as $tableType=>$tableCols) {
+			foreach($tableCols as $colMeta ) {
+				$table["metadata"][$tableType]["colmeta"][$colMeta["col"]]=$colMeta;
+				switch($colMeta["coltype"]) {
+					case "checkbox":
+					case "checkbox1":
+					case "checkbox2":
+					case "checkbox3":
+						$table["metadata"][$tableType]["checkboxCols"][] 	= $colMeta["col"];
+						break;
+					default:
+						$table["metadata"][$tableType]["selectCols"][] 		= $colMeta["col"];
+						break;
+				}
+			}
+		}
+	}
+	
 }
 
 class cIMAGE {
