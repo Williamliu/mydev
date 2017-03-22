@@ -114,3 +114,6 @@ ul[wliu-tree] > li[nodes][open] > ul[wliu-tree] {
 	display: 				block;
 }
 
+ul[wliu-tree][root] {
+	padding-left:			0px;
+}

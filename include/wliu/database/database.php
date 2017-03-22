@@ -571,45 +571,36 @@ class cMYSQL implements iSQL {
 	public function tree(&$table) {
 		switch( $table["metadata"]["type"] ) {
 			case 2: 
+				$ptable = $table["metadata"]["p"];
+				$stable = $table["metadata"]["s"];
+
+				$ptable["rows"] = $this->treeNodes($table, "p", 0);
+				foreach($ptable["rows"] as &$prow) {
+					$pkeyDBCol = $ptable["colmeta"][ $ptable["keys"][0] ]["name"];
+					$prow["rows"] = $this->treeNodes($table, "s", $prow[$pkeyDBCol]);
+				}
+				$table["rows"] = $ptable["rows"];
 				break;
 			case 3:
+				$ptable = $table["metadata"]["p"];
+				$stable = $table["metadata"]["s"];
+				$mtable = $table["metadata"]["m"];
+
+				$ptable["rows"] = $this->treeNodes($table, "p", 0);
+				foreach($ptable["rows"] as &$prow) {
+					$pkeyDBCol = $ptable["colmeta"][ $ptable["keys"][0] ]["name"];
+					$prow["rows"] = $this->treeNodes($table, "s", $prow[$pkeyDBCol]);
+
+					foreach($prow["rows"] as &$srow) {
+						$skeyDBCol = $stable["colmeta"][$stable["keys"][0]]["name"];
+						$srow["rows"] = $this->treeNodes($table, "m", $srow[$skeyDBCol]);
+					}
+				}
+				$table["rows"] = $ptable["rows"];
 				break;
 			case 4:
 				break;
 		}
-		$otable	= $table["metadata"][$tableLevel];
-		// 1. select cols 
-        $colstr = cACTION::buildSelect($otable);
-	
-		// 2. join table 
-		$joinLink 		= $otable["name"] . " " . $otable["type"];
-	
-		$fk_criteria = "";
-		foreach($otable["fkeys"] as $pk) {
-			if( $parent_id ) {
-				cTYPE::join($fk_criteria, " AND ",  $otable["type"] . ".$pk='" . $this->quote($parent_id) . "'");
-			} else {
-				cTYPE::join($fk_criteria, " AND ",  $otable["type"] . ".$pk='0'");
-			}
-		}
-
-		// 3. create criteria  include  primary_key criteria
-		$criteria = "";
-		cTYPE::join($criteria, " AND ", $otable["type"] . ".deleted=0");
-		cTYPE::join($criteria, " AND ", $fk_criteria);
-		cTYPE::join($criteria, " AND ", $table["criteria"]);
-
-		// 4. update navi first, and create orderby and limitation string 
-		$orderByLimit = "ORDER BY orderno DESC";
-
-		// 5.  completed  select query string 
-		$query = "SELECT $colstr FROM $joinLink WHERE $criteria $orderByLimit";	
- 
-		//Debug Query 
-		if(DEBUG) { $table["query"] = $query; $table["criteria"] = $criteria; }
-
-		$result = $this->query($query);
-		$table["rows"] = $this->rows($result);
 	}
 	
 	public function treeNodes(&$table, $tableLevel, $parent_id) {
@@ -633,7 +624,7 @@ class cMYSQL implements iSQL {
 		$criteria = "";
 		cTYPE::join($criteria, " AND ", $otable["type"] . ".deleted=0");
 		cTYPE::join($criteria, " AND ", $fk_criteria);
-		cTYPE::join($criteria, " AND ", $table["criteria"]);
+		//cTYPE::join($criteria, " AND ", $table["criteria"]);
 
 		// 4. update navi first, and create orderby and limitation string 
 		$orderByLimit = "ORDER BY orderno DESC";
@@ -645,7 +636,8 @@ class cMYSQL implements iSQL {
 		if(DEBUG) { $table["query"] = $query; $table["criteria"] = $criteria; }
 
 		$result = $this->query($query);
-		$table["rows"] = $this->rows($result);
+		$rows 	= $this->rows($result);
+		return $rows;
 	}
 
 	public function one(&$table) {
@@ -2789,20 +2781,7 @@ class cTREE {
 	}
 
 	static public function getRows($db, &$table) {
-		$tableMeta = $table["metadata"];
-		switch( $tableMeta["type"] ) {
-			case "2":
-				$db->treeNodes($table, "p", 0);
-				break;
-			case "3":
-				$db->treeNodes($table, "p", 0);
-				break;
-			case "4":
-				$db->one2many($table);
-				cACTION::getChecks($db, $table, "p");
-				cACTION::getChecks($db, $table, "s");
-				break;
-		}
+		$db->tree($table);
 	}
 
 	static public function buildColMeta(&$table) {

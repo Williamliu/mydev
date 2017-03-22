@@ -104,7 +104,7 @@ WLIU.TREE.prototype = {
 	},
 	// return rows[ridx].cols[index of col_name]
 	getCol: function(theRow, col_name) {
-		return FTABLE.getCol(this, theRow, col_name);
+		return FCOLLECT.objectByKV(theRow.cols, {name:col_name});
 	},
 	getColCurrent: function(col_name) {
 		return FTABLE.getColCurrent(this, col_name);
@@ -259,7 +259,7 @@ WLIU.TREE.prototype = {
 				}
 				if(!_self.sc.$$phase) _self.sc.$apply();
 
-				if( parseInt(req.table.errorCode) == 0 ) {
+				if( parseInt(req.table.error.errorCode) == 0 ) {
 					if(callback && callback.ajaxSuccess && $.isFunction(callback.ajaxSuccess) ) callback.ajaxSuccess(req.table);
 				} else {
 					if(callback && callback.ajaxError && $.isFunction(callback.ajaxError) ) callback.ajaxError(req.table);
@@ -272,17 +272,31 @@ WLIU.TREE.prototype = {
 		});
 	},
 	syncRows: function(table) {
-        /*
-		this.errorCode 		= nimages.errorCode;
-		this.errorMessage 	= nimages.errorMessage;
-		this.config = angular.copy(nimages.config);
+		this.tableError(table.error);
 		this.rows = [];
-		for(var ridx in nimages.rows) {
-			var theRow 		= nimages.rows[ridx];
-			theRow.sn  		= parseInt(nimages.rows[ridx].orderno);
-			this.rows.push( new WLIU.IMAGE(theRow) );	
+		
+		for(var pidx in table.rows) {
+			var _p_row 	= table.rows[pidx];
+			
+			var prow 	= new WLIU.ROW(this.cols.p, _p_row, this.scope);
+			prow.rows 	= [];
+			for(var sidx in _p_row.rows) {
+				var _s_row 	= _p_row.rows[sidx];
+				var srow 	= new WLIU.ROW(this.cols.s, _s_row, this.scope);
+				
+				srow.rows 	= [];
+				for(var midx in _s_row.rows) {
+					var _m_row = _s_row.rows[midx];
+					var mrow   = new WLIU.ROW(this.cols.m, _m_row, this.scope);
+					srow.rows.push(mrow);
+				}
+				prow.rows.push(srow);
+			}
+
+			this.rows.push(prow);	
 		}
-        */
+       
+	   console.log(this.rows);
 	}
     
 	
