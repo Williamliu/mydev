@@ -48,7 +48,7 @@ try {
 							"name"=>"website_menu", 
 							"keys"=>array("id"),  
 							"fkeys"=>array("parent_id"), 
-							"cols"=>array("id","parent_id", "menu_key", "title_en", "desc_en"), 
+							"cols"=>array("id","parent_id", "menu_key", "title_en", "desc_en", "status"), 
 							"insert"=>array(), 
 							"update"=>array() 
 					),
@@ -57,7 +57,7 @@ try {
 							"name"=>"website_menu", 
 							"keys"=>array("id"),  
 							"fkeys"=>array("parent_id"), 
-							"cols"=>array("id","parent_id", "menu_key", "title_en", "desc_en"), 
+							"cols"=>array("id","parent_id", "menu_key", "title_en", "desc_en", "status"), 
 							"insert"=>array(), 
 							"update"=>array() 
 		),
@@ -66,7 +66,7 @@ try {
 							"name"=>"website_template", 
 							"keys"=>array("id"),  
 							"fkeys"=>array("ref_id"), 
-							"cols"=>array("id","ref_id", "menu_key", "title_en", "desc_en"), 
+							"cols"=>array("id","ref_id", "menu_key", "title_en", "desc_en", "status"), 
 							"insert"=>array(), 
 							"update"=>array() 
 		 ),

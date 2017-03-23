@@ -49,34 +49,32 @@ WLIU.TREE.prototype = {
 	rowstate: function(theRow, p_rowstate) {
 		return FROW.rowstate(theRow, p_rowstate);
 	},
-
-	colMeta: function(col_name) {
-		return FTABLE.colMeta(this, col_name);
+	keyValue: function(theRow) {
+		var keyCol = FCOLLECT.objectByKV(theRow.cols, {key:1});
+		return keyCol.value;
+	},
+	colMeta: function(theRow, col_name) {
+		var theCol = this.getCol(theRow, col_name);
+		if(theCol) {
+			return FCOLLECT.objectByKV(this.cols[theCol.table], {name: col_name});
+		} else {
+			return undefined;
+		}
 	},
 	colDefault: function(col_name, p_value) {
 		return FTABLE.colDefault(this, col_name, p_value);
 	},
-	colList: function(col_name) {
-		return FTABLE.colList(this, col_name);
+	colList: function(theRow, col_name) {
+		var theCol = this.colMeta(theRow, col_name);
+		if( theCol ) {
+			return this.lists[theCol.list];
+		} else {
+			return undefined;
+		}
 	},
 	getList: function(list_name) {
 		return FTABLE.getList(this, list_name);
 	},
-
-	/*** relationship */
-	relationHide: function(theRow, col_name) {
-		return FTABLE.relationHide(this, theRow, col_name);
-	},
-	relationChange: function(theRow) {
-		return FTABLE.relationChange(this, theRow); 
-	},
-	relationHideCurrent: function(col_name) {
-		return FTABLE.relationHideCurrent(this, col_name);
-	},
-	relationChangeCurrent: function() {
-		return FTABLE.relationChangeCurrent(this); 
-	},
-	/******************/
 
 	filterMeta: function(col_name) {
 		return FTABLE.filterMeta(this, col_name);
@@ -94,23 +92,11 @@ WLIU.TREE.prototype = {
 
 	// get row object
 	getRow: function(theRow) {
-		return FTABLE.getRow(this, theRow);
-	},
-	getRowByGuid: function(guid) {
-		return FTABLE.getRowByGuid(this, guid);
-	},
-	getCurrent: function() {
-		return FTABLE.getCurrent(this);
+		return theRow;
 	},
 	// return rows[ridx].cols[index of col_name]
 	getCol: function(theRow, col_name) {
 		return FCOLLECT.objectByKV(theRow.cols, {name:col_name});
-	},
-	getColCurrent: function(col_name) {
-		return FTABLE.getColCurrent(this, col_name);
-	},
-	getColByGuid: function(guid, col_name) {
-		return FTABLE.getColByGuid(this, guid, col_name);
 	},
 	/********************************************** */
 
@@ -138,12 +124,6 @@ WLIU.TREE.prototype = {
 		return FTABLE.changeColByGuid(this, guid, col_name);
 	},
 		
-	setImage: function(theRow, col_name, oImg) {
-		return FTABLE.setImage(this, theRow, col_name, oImg);
-	},
-	setImageCurrent: function(col_name, oImg) {
-		return FTABLE.setImageCurrent(this, col_name, oImg);
-	},
 	// ; ridx;  nrow;  ridx nrow ;  default position=0  add to first
 	init: function(IDKeyValues, callback) {
 		FTABLE.init(this, callback);
@@ -153,7 +133,32 @@ WLIU.TREE.prototype = {
 	},
 	addRow: function(ridx, t_row) {
 		return FTABLE.addRow(this, ridx, t_row);
-	},	
+	},
+	addChild: function(theRow) {
+		var tableLevel = theRow.cols[0].table;
+		switch(tableLevel) {
+			case "p":
+				var newRow = new WLIU.ROW(this.cols.s);
+				var keyVal = this.keyValue(theRow);
+				newRow.rowstate     = 2;
+				newRow.parent    = keyVal;
+
+				theRow.rows = theRow.rows?theRow.rows:[]; 
+				theRow.rows.unshift(newRow);
+				break;
+			case "s":
+				var newRow = new WLIU.ROW(this.cols.m);
+				var keyVal = this.keyValue(theRow);
+				newRow.rowstate     = 2;
+				newRow.parent    = keyVal;
+
+				theRow.rows = theRow.rows?theRow.rows:[]; 
+				theRow.rows.unshift(newRow);
+				break;
+			case "m":
+				break;
+		}
+	}, 
 	cancelRow: function( theRow ) {
 		return FTABLE.cancelRow(this, theRow);
 	},
@@ -248,6 +253,7 @@ WLIU.TREE.prototype = {
 
 				switch( req.table.action ) {
 					case "get":
+						FTABLE.setLists(_self, req.table.lists);
 						_self.syncRows(req.table);
 						break;
 					case "add":
@@ -275,29 +281,37 @@ WLIU.TREE.prototype = {
 		this.tableError(table.error);
 		this.rows = [];
 		
-		for(var pidx in table.rows) {
-			var _p_row 	= table.rows[pidx];
-			
-			var prow 	= new WLIU.ROW(this.cols.p, _p_row, this.scope);
-			prow.rows 	= [];
-			for(var sidx in _p_row.rows) {
-				var _s_row 	= _p_row.rows[sidx];
-				var srow 	= new WLIU.ROW(this.cols.s, _s_row, this.scope);
-				
-				srow.rows 	= [];
-				for(var midx in _s_row.rows) {
-					var _m_row = _s_row.rows[midx];
-					var mrow   = new WLIU.ROW(this.cols.m, _m_row, this.scope);
-					srow.rows.push(mrow);
+		if(this.cols.p && this.cols.p.length>0) {
+			for(var pidx in table.rows) {
+				var _p_row 		= table.rows[pidx];
+				var prow 		= new WLIU.ROW(this.cols.p, _p_row, this.scope);
+				var p_keyvalue  = this.keyValue(prow);
+				prow.rowstate 	= 0;
+				if(this.cols.s && this.cols.s.length>0) {
+					prow.rows 	= [];
+					for(var sidx in _p_row.rows) {
+						var _s_row 		= _p_row.rows[sidx];
+						var srow 		= new WLIU.ROW(this.cols.s, _s_row, this.scope);
+						var s_keyvalue 	= this.keyValue(srow);
+						srow.rowstate 	= 0;
+						srow.parent 	= p_keyvalue;
+						if(this.cols.m && this.cols.m.length >0) {
+							srow.rows 	= [];
+							for(var midx in _s_row.rows) {
+								var _m_row 		= _s_row.rows[midx];
+								var mrow   		= new WLIU.ROW(this.cols.m, _m_row, this.scope);
+								mrow.rowstate 	= 0;
+								mrow.parent 	= s_keyvalue;
+								srow.rows.push(mrow);
+							}
+						}
+						prow.rows.push(srow);
+					}
 				}
-				prow.rows.push(srow);
+				this.rows.push(prow);	
 			}
-
-			this.rows.push(prow);	
 		}
-       
-	   console.log(this.rows);
+
+		console.log(this);
 	}
-    
-	
 }

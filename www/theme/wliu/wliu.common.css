@@ -148,8 +148,8 @@ span.checkbox > label,
 
 span.radio > input[type="radio"],
 span.checkbox > input[type="checkbox"],
-[type="checkbox"],
-[type="radio"]
+span.checkbox > [type="checkbox"],
+span.checkbox > [type="radio"]
 {
 	display: 		none;
 	position: 		absolute;

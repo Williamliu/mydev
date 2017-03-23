@@ -303,6 +303,7 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 	if( nameValues == undefined ) nameValues = {};
 
 	this.guid			= nameValues.guid?nameValues.guid:guid();
+	this.parent			= 0;  // parent used for tree:  multiple dimension rows
 	this.scope			= scope;
 	this.rowstate 		= 2;  //default is new row;   0 - normal; 1 - changed;  2 - added;  3 - deleted
 	this.error			= { errorCode: 0, errorMessage: "" };  
@@ -339,6 +340,8 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 		colObj.colstate		= 0;   // only  0 - nochange ;  1 - changed
 		colObj.original 	= "";  // server side 
 		colObj.current 		= "";  // client side
+		colObj.value 		= "";
+		var colValue 		= nameValues[colObj.name]?nameValues[colObj.name]:colObj.defval;
 		switch( colObj.coltype ) {
 			case "checkbox":
 			case "checkbox1":
@@ -346,12 +349,14 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 			case "checkbox3":
 			case "datetime":
 			case "passpair":
-				colObj.value = nameValues[colObj.name]?nameValues[colObj.name]:( $.isPlainObject(colObj.defval)?colObj.defval:{} );  // input updateds
+				colValue 	= nameValues[colObj.name]?nameValues[colObj.name]:( $.isPlainObject(colObj.defval)?colObj.defval:{} );
 				break;
 			default:
-				colObj.value = nameValues[colObj.name]?nameValues[colObj.name]:colObj.defval;  // input updateds
+				colValue  	= nameValues[colObj.name]?nameValues[colObj.name]:colObj.defval;  // input updateds
 				break;
 		}
+		FROW.setColVal(colObj, colValue);
+		
 		colObj.errorCode 	= 0;
 		colObj.errorMessage	= "";
 		this.cols.push(colObj);
@@ -1120,7 +1125,8 @@ WLIU.TABLEACTION.prototype = {
 	
 	getRow: function(theTable, theRow) {
 		if(theRow) {
-			return FCOLLECT.objectByKV(theTable.rows, {guid: theRow.guid});
+			return theRow;
+			//return FCOLLECT.objectByKV(theTable.rows, {guid: theRow.guid});
 		} 
 	},
 	getRowByGuid: function(theTable, guid) {

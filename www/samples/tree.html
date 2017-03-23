@@ -43,6 +43,7 @@
 		<script	src="/angularjs/wliu/wliu.table.js" type="text/javascript"></script>
 		<script	src="/angularjs/wliu/wliu.table.filter.js" type="text/javascript"></script>
 		<script	src="/angularjs/wliu/wliu.table.list.js" type="text/javascript"></script>
+		<script	src="/angularjs/wliu/wliu.table.tree.js" type="text/javascript"></script>
 	
 		<script src="/jquery/wliu/diag/wliu.jquery.diag.js" type="text/javascript"></script>
 		<link 	href='/jquery/wliu/diag/wliu.jquery.diag.css' type='text/css' rel='stylesheet' />
@@ -63,21 +64,24 @@
 		   	
 			var col11 = new WLIU.COL({key:1, table:"p",		coltype:"hidden", 		name:"id", 			colname:"Menu ID"});
 		   	var col12 = new WLIU.COL({key:0, table:"p", 	coltype:"hidden", 		name:"parent_id",	colname:"Menu Parent ID", need:1, notnull: 1});
-		   	var col13 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	notnull:1});
+		   	var col13 = new WLIU.COL({key:0, table:"p", 	coltype:"raido1", 		name:"menu_key", 	list:"countryCategory", colname:"Menu Key",	notnull:1});
 		   	var col14 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",	notnull:1});
 		   	var col15 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", 	notnull:1});
+		   	var col16 = new WLIU.COL({key:0, table:"p", 	coltype:"bool", 		name:"status", 		colname:"Status", 		notnull:1});
 
 			var col21 = new WLIU.COL({key:1, table:"s",		coltype:"hidden", 		name:"id", 			colname:"Menu ID"});
 		   	var col22 = new WLIU.COL({key:0, table:"s", 	coltype:"hidden", 		name:"parent_id",	colname:"Menu Parent ID", need:1, notnull: 1});
-		   	var col23 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	notnull:1});
+		   	var col23 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",		notnull:1});
 		   	var col24 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",	notnull:1});
 		   	var col25 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", 	notnull:1});
+		   	var col26 = new WLIU.COL({key:0, table:"s", 	coltype:"bool", 		name:"status", 		colname:"Status", 		notnull:1});
 
 			var col31 = new WLIU.COL({key:1, table:"m",		coltype:"hidden", 		name:"id", 			colname:"Menu ID"});
 		   	var col32 = new WLIU.COL({key:0, table:"m", 	coltype:"hidden", 		name:"ref_id",		colname:"Menu Parent ID", 	need:1, notnull: 1});
 		   	var col33 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",			notnull:1});
 		   	var col34 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",		notnull:1});
 		   	var col35 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", 		notnull:1});
+		   	var col36 = new WLIU.COL({key:0, table:"m", 	coltype:"bool", 		name:"status", 		colname:"Status", 			notnull:1});
 
 
 		   	var cols = {};
@@ -87,6 +91,7 @@
 		   	cols.p.push(col13);
 		   	cols.p.push(col14);
 		   	cols.p.push(col15);
+		   	cols.p.push(col16);
 		   	
 			   cols.s = [];
 			cols.s.push(col21);
@@ -94,6 +99,7 @@
 		   	cols.s.push(col23);
 		   	cols.s.push(col24);
 		   	cols.s.push(col25);
+		   	cols.s.push(col26);
 			
 			cols.m = [];
 		   	cols.m.push(col31);
@@ -101,6 +107,7 @@
 		   	cols.m.push(col33);
 		   	cols.m.push(col34);
 		   	cols.m.push(col35);
+		   	cols.m.push(col36);
 
 			/*
 			var filter1 = new WLIU.FILTER({name:"adminname", 	coltype:"textbox", 		cols:"user_name,full_name,address", 		colname:"Name", 	coldesc:"Search by Name"});
@@ -114,6 +121,7 @@
 				wait:   "#mywait",
 				autotip: "#myauto",
 				taberror:"#taberror",
+				tooltip: "#mytips",
 				rights: {detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
 				//filters:filters,
 				cols: 	cols,
@@ -150,19 +158,38 @@
 </head>
 <body ng-app="myApp" ng-controller="myForm" style="padding-top:10px;position:relative;">
 <!-- container -->
-<div class="container">
+<div class="container-fluid">
 	<br>
     <ul wliu-tree root id="good_world">
         <li nodes open>Lemon Tree
 			<ul wliu-tree>
-				<li nodes open ng-repeat="prow in table.rows">
-					{{table.getCol(prow, "menu_key").value}} - {{table.getCol(prow, "title_en").value}}
+				<li nodes open ng-repeat="prow in table.rows"><s folder></s>
+					<tree.rowstatus table="table" row="prow" tooltip="mytips"></tree.rowstatus>					
+					<tree.textbox table="table" row="prow" name="menu_key"></tree.textbox> 
+					<tree.label table="table" row="prow" name="menu_key"></tree.label>: <tree.radio1 table="table" row="prow" name="menu_key" targetid="countryCategory_diag" tooltip="mytips"></tree.radio1>
+					<tree.label table="table" row="prow" name="status"></tree.label>: <tree.bool table="table" row="prow" name="status" tooltip="mytips"></tree.bool>
+					<tree.hicon table="table" row="prow" name="add" actname="Save"></tree.hicon>
+					<tree.btext table="table" row="prow" name="save" actname="Save"></tree.btext>
+					<tree.btext table="table" row="prow" name="cancel" actname="Cancel"></tree.btext>
+					<tree.btext table="table" row="prow" name="delete" actname="Delete"></tree.btext>
 					<ul wliu-tree>
-						<li nodes open ng-repeat="srow in prow.rows">
-							{{table.getCol(srow, "menu_key").value}} - {{table.getCol(srow, "title_en").value}}
+						<li nodes open ng-repeat="srow in prow.rows"><s folder></s>
+							<tree.rowstatus table="table" row="srow" tooltip="mytips"></tree.rowstatus>					
+							<tree.textbox table="table" row="srow" name="menu_key"></tree.textbox> 
+							<tree.label table="table" row="srow" name="menu_key"></tree.label>: <tree.textbox table="table" row="srow" name="menu_key" tooltip="mytips"></tree.textbox>
+							<tree.label table="table" row="srow" name="status"></tree.label>: <tree.bool table="table" row="srow" name="status" tooltip="mytips"></tree.bool>
+							<tree.hicon table="table" row="srow" name="add" actname="Save"></tree.hicon>
+							<tree.btext table="table" row="srow" name="save" actname="Save"></tree.btext>
+							<tree.btext table="table" row="srow" name="cancel" actname="Cancel"></tree.btext>
+							<tree.btext table="table" rows="prow.rows" row="srow" name="delete" actname="Delete"></tree.btext>
 							<ul wliu-tree>
-								<li node ng-repeat="mrow in srow.rows">
-								{{table.getCol(mrow, "menu_key").value}} - {{table.getCol(mrow, "title_en").value}}
+								<li node ng-repeat="mrow in srow.rows"><s folder></s>
+								<tree.rowstatus table="table" row="mrow" tooltip="mytips"></tree.rowstatus>					
+								<tree.textbox table="table" row="mrow" name="menu_key" tooltip="mytips"></tree.textbox>
+								<tree.bool table="table" row="mrow" name="status" tooltip="mytips"></tree.bool>
+								<tree.btext table="table" row="mrow" name="save" actname="Save"></tree.btext>
+								<tree.btext table="table" row="mrow" name="cancel" actname="Cancel"></tree.btext>
+								<tree.btext table="table" rows="srow.rows" row="mrow" name="delete" actname="Delete"></tree.btext>
 								</li>
 							</ul>
 						</li>
@@ -174,6 +201,14 @@
 
 
 </div>
+
+<div id="myauto" wliu-tips></div>
+<div id="mywait" wliu-load></div>
+<div id="mytips" wliu-popup></div>
+
+<tree.radiodiag1 table="table" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></tree.radiodiag1>
+
+
 <!-- container -->
 <!-- MD Bootstrap 4.0 js -- must place at the end of body -->
 <script type="text/javascript" src="/theme/mdb4.0/js/mdb.min.js"></script>
