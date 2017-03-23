@@ -5,6 +5,10 @@ WLIU.TREE = function( opts ) {
 	this.sc			= null;
 
 	this.lang       = opts.lang?opts.lan:"cn";
+	this.title  	= opts.title?opts.title:"";
+	this.targetid	= opts.targetid?opts.targetid:"";
+	this.rootid		= opts.rootid?opts.rootid:0;  // tree root id
+	this.refid		= opts.refid?opts.refid:0;    // refid = refer to other table for checkbox1, multiple select
 	this.scope  	= opts.scope?opts.scope:"";
 	this.url		= opts.url?opts.url:"";
 	
@@ -12,6 +16,10 @@ WLIU.TREE = function( opts ) {
 	this.rowerror   = opts.rowerror?opts.rowerror:"";
 	this.taberror 	= opts.taberror?opts.taberror:"";
 	this.autotip 	= opts.autotip?opts.autotip:"";
+
+	this.pbutton 	= opts.pbutton?opts.pbutton:["add", "save", "cancel", "delete"],
+	this.sbutton	= opts.sbutton?opts.sbutton:["add", "save", "cancel", "delete"],
+	this.mbutton	= opts.mbutton?opts.mbutton:["save", "cancel", "delete"],
 	
 	this.current    = ""; // row guid
 	this.action		= "get";
@@ -28,12 +36,13 @@ WLIU.TREE = function( opts ) {
 	$.extend(this.filters, opts.filters);
 	$.extend(this.lists, opts.lists);
 
-    console.log(this.cols);
+	this._treeName = "tree";
 }
 
 WLIU.TREE.prototype = {
 	setScope: function(p_scope, treeName) {
 		if( treeName ) {
+			this._treeName = treeName;
 			p_scope[treeName] = this;
 		} else {
 			p_scope.tree = this;
@@ -117,83 +126,93 @@ WLIU.TREE.prototype = {
 	changeCol: function(theRow, col_name) {
 		return FTABLE.changeCol(this, theRow, col_name);
 	},
-	changeColCurrent: function(col_name) {
-		return FTABLE.changeColCurrent(this, col_name);
-	},
-	changeColByGuid: function(guid, col_name) {
-		return FTABLE.changeColByGuid(this, guid, col_name);
-	},
-		
+
 	// ; ridx;  nrow;  ridx nrow ;  default position=0  add to first
-	init: function(IDKeyValues, callback) {
-		FTABLE.init(this, callback);
-	},
 	newRow: function(keyvalues) {
 		return FTABLE.newRow(this, keyvalues);
 	},
 	addRow: function(ridx, t_row) {
 		return FTABLE.addRow(this, ridx, t_row);
 	},
-	addChild: function(theRow) {
-		var tableLevel = theRow.cols[0].table;
-		switch(tableLevel) {
-			case "p":
-				var newRow = new WLIU.ROW(this.cols.s);
-				var keyVal = this.keyValue(theRow);
-				newRow.rowstate     = 2;
-				newRow.parent    = keyVal;
+	addChild: function(theRows, theRow) {
+		if( theRow == "root" ) {
+			var newRow = new WLIU.ROW(this.cols.p);
+			var keyVal = this.rootid;
+			newRow.rowstate = 2;
+			newRow.parent   = keyVal;
+			newRow.type		= "p";
+			this.rows = this.rows?this.rows:[]; 
+			this.rows.unshift(newRow);
+		} else {
+			var tableLevel = theRow.type;
+			switch(tableLevel) {
+				case "p":
+					var newRow = new WLIU.ROW(this.cols.s);
+					var keyVal = this.keyValue(theRow);
+					newRow.rowstate = 2;
+					newRow.parent   = keyVal;
+					newRow.type		= "s";
+					theRow.rows = theRow.rows?theRow.rows:[]; 
+					theRow.rows.unshift(newRow);
+					break;
+				case "s":
+					var newRow = new WLIU.ROW(this.cols.m);
+					var keyVal = this.keyValue(theRow);
+					newRow.rowstate	= 2;
+					newRow.parent   = keyVal;
+					newRow.type   	= "m";
 
-				theRow.rows = theRow.rows?theRow.rows:[]; 
-				theRow.rows.unshift(newRow);
-				break;
-			case "s":
-				var newRow = new WLIU.ROW(this.cols.m);
-				var keyVal = this.keyValue(theRow);
-				newRow.rowstate     = 2;
-				newRow.parent    = keyVal;
-
-				theRow.rows = theRow.rows?theRow.rows:[]; 
-				theRow.rows.unshift(newRow);
-				break;
-			case "m":
-				break;
+					theRow.rows = theRow.rows?theRow.rows:[]; 
+					theRow.rows.unshift(newRow);
+					break;
+				case "m":
+					break;
+			}
 		}
 	}, 
-	cancelRow: function( theRow ) {
-		return FTABLE.cancelRow(this, theRow);
-	},
-	cancelRows: function() {
-		return FTABLE.cancelRows(this);
+	cancelRow: function(theRows, theRow ) {
+		if( theRow ) {
+			switch( theRow.rowstate ) {
+				case 0: 
+					break;
+				case 1:
+					FROW.cancel(theRow);
+				    break;
+				case 2:
+					this.removeRow(theRows, theRow);
+					break;
+				case 3:
+					FROW.cancel(theRow);
+					break;
+			}
+			return theRow;
+		} else {
+			return undefined;
+		}
 	},
 
 	// set row col value to empty or defval if it has default value
-	resetRow: function(theRow) {
-		return FROW.resetRow(theRow);
+	removeRow: function(theRows, theRow) {
+		var ridx = FCOLLECT.indexByKV(theRows, {guid: theRow.guid});
+		FCOLLECT.delete(theRows, ridx);
 	},
-	removeRow: function(theRow) {
-		return FTABLE.removeRow(this, theRow);
-	},
-	deleteRow: function(theRow) {
-		return FTABLE.detachRow(this, theRow);
-	},
-	deleteRows: function() {
-		// none - to danger
+	deleteRow: function(theRows, theRow) {
+		return FROW.detach(theRow);
 	},
 	
 	/*** ajax method ***/
 	saveRow: function(theRow, callback) {
 		FTABLE.saveRow(this, theRow, callback);
 	},
-	saveRows: function(callback) {
-		FTABLE.saveRows(this, callback);
-	},
 	
 	// for one2many & many2many 
 	getRows: function(callback) {
 		var ntable = {};
-		ntable.scope = this.scope;
-		ntable.lang  = this.lang;
-		ntable.action = "get";
+		ntable.scope 	= this.scope;
+		ntable.lang  	= this.lang;
+		ntable.rootid  	= this.rootid;
+		ntable.refid  	= this.refid;
+		ntable.action	= "get";
 		ntable.error    = {errorCode: 0, errorMessage:""};
 		ntable.cols     = this.cols; // must provide cols meta to get data from database;
 		ntable.filters  = FTABLE.getFilters(this);
@@ -201,37 +220,11 @@ WLIU.TREE.prototype = {
 		ntable.rows = [];
 		this.ajaxCall(ntable, callback);
 	},
-	allRows: function(callback) {
-		FTABLE.allRows(this, callback);
-	},
-	matchRows: function(callback) {
-		FTABLE.matchRows(this, callback);
-	},
-	/********************************/
 
-	/*** for form use ***/
-	formInit: function(IDKeyValues, callback) {
-		FTABLE.init(this, IDKeyValues, callback);
-	},
-	formNew: function(IDKeyValues, callback) {
-		FTABLE.formNew(this, IDKeyValues, callback);
-	},
-	formGet: function(IDKeyValues, callback) {
-		FTABLE.formGet(this, IDKeyValues, callback);
-	}, 
-	/********************/
-	
-	/*******************************/
 	getRecords: function(IDKeyValues, callback) {
 		FTABLE.getRecords(this, IDKeyValues, callback);
 	},
-	getAgetAllRecords: function(IDKeyValues, callback) {
-		FTABLE.getAllRecords(this, IDKeyValues, callback);
-	},
-	getMatchRecords: function(IDKeyValues, callback) {
-		FTABLE.getMatchRecords(this, IDKeyValues, callback);
-	},
-	// end of one2many & many2many
+	/********************************/
 
 	ajaxCall: function(ntable, callback) {
 		var _self = this;
@@ -287,6 +280,9 @@ WLIU.TREE.prototype = {
 				var prow 		= new WLIU.ROW(this.cols.p, _p_row, this.scope);
 				var p_keyvalue  = this.keyValue(prow);
 				prow.rowstate 	= 0;
+				prow.parent 	= this.rootid;
+				prow.type 		= "p";
+
 				if(this.cols.s && this.cols.s.length>0) {
 					prow.rows 	= [];
 					for(var sidx in _p_row.rows) {
@@ -295,6 +291,7 @@ WLIU.TREE.prototype = {
 						var s_keyvalue 	= this.keyValue(srow);
 						srow.rowstate 	= 0;
 						srow.parent 	= p_keyvalue;
+						srow.type		= "s";
 						if(this.cols.m && this.cols.m.length >0) {
 							srow.rows 	= [];
 							for(var midx in _s_row.rows) {
@@ -302,6 +299,7 @@ WLIU.TREE.prototype = {
 								var mrow   		= new WLIU.ROW(this.cols.m, _m_row, this.scope);
 								mrow.rowstate 	= 0;
 								mrow.parent 	= s_keyvalue;
+								mrow.type		= "m";
 								srow.rows.push(mrow);
 							}
 						}
@@ -311,7 +309,21 @@ WLIU.TREE.prototype = {
 				this.rows.push(prow);	
 			}
 		}
-
 		console.log(this);
+	},
+	_toHTML: function() {
+		var html = '<ul id="' + 'tree_' + this.targetid + '" wliu-tree root>';
+		html += '<li nodes open><s folder></s>';
+
+			html += this.title?this.title:'Tree Root';
+			html += '<ul wliu-tree>';
+			if(this.cols.p && this.cols.p.length>0) {
+
+			}
+			html += '</ul>';
+
+		html += '</ul>';
+		html += '</li>';
+		html += '</ul>';
 	}
 }

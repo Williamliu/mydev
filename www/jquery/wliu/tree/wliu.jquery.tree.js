@@ -44,13 +44,14 @@ $.fn.extend({
 					eidx++;
 				});
 
-
+				
 				$(document).off("click.wliuTree", "ul[wliu-tree]>li *").on("click.wliuTree", "ul[wliu-tree]>li *", function(evt){
 				    evt.preventDefault();
 	                evt.stopPropagation();
     	            return false;
 				});
-
+				
+				
 				$(document).off("click.wliuTree", "ul[wliu-tree]>li, ul[wliu-tree]>li>s").on("click.wliuTree", "ul[wliu-tree]>li, ul[wliu-tree]>li>s", function(evt){
 				//$(document).off("click.wliuTree", "ul[wliu-tree]>li>s").on("click.wliuTree", "ul[wliu-tree]>li>s", function(evt){
 					if( $(this).prop("tagName").toUpperCase() == "LI" ) {
@@ -89,7 +90,6 @@ $.fn.extend({
 							}
 						}						
 					}
-	                console.log("click me");
 					evt.preventDefault();
 	               	evt.stopPropagation();
     	        	return false;

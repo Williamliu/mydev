@@ -19,6 +19,114 @@ var tree_tooltip = [  'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" ',
 
 var wliu_table = angular.module("wliuTable",[]);
 
+wliu_table.directive("table.tree", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            tooltip:    "@"
+        },
+        template: [
+                    '<ul id="' + 'tree_' + this.targetid + '" wliu-tree root>',
+                        '<li nodes open><s folder></s>',
+                            '{{table.title?table.title:\'Tree Root\'}} ',
+                            '<tree.hicon table="table" rows="table.rows" row="root" name="add" actname="Add"></tree.hicon>',
+                            /*** ptable ***/
+                            '<ul wliu-tree>',
+                                '<li nodes open ng-repeat="prow in table.rows"><s folder></s>',
+                                    '<tree.rowstatus table="table" row="prow" tooltip="{{tooltip}}"></tree.rowstatus>',
+                                    '<span style="display:none;" ng-repeat-start="pcol in prow.cols"></span>',
+                                            '<span ng-switch on="pcol.coltype">',
+                                                '<tree.text ng-switch-when="text"       table="table" row="prow" name="{{pcol.name}}"></tree.text>',
+
+                                                '<tree.label ng-switch-when="textbox"   table="table" row="prow" name="{{pcol.name}}" tooltip="{{tooltip}}"></tree.label>',
+                                                '<tree.textbox ng-switch-when="textbox" table="table" row="prow" name="{{pcol.name}}" tooltip="{{tooltip}}"></tree.textbox>',
+
+                                                '<tree.label ng-switch-when="select"   table="table" row="prow" name="{{pcol.name}}" tooltip="{{tooltip}}"></tree.label>',
+                                                '<tree.select ng-switch-when="select" table="table" row="prow" name="{{pcol.name}}" tooltip="{{tooltip}}"></tree.select>',
+
+                                                '<tree.label ng-switch-when="bool"   table="table" row="prow" name="{{pcol.name}}" tooltip="{{tooltip}}"></tree.label>',
+                                                '<tree.bool ng-switch-when="bool" table="table" row="prow" name="{{pcol.name}}" tooltip="{{tooltip}}"></tree.bool>',
+
+                                                '<tree.label ng-switch-when="checkbox1"   table="table" row="prow" name="{{pcol.name}}" tooltip="{{tooltip}}"></tree.label>',
+                                                '<tree.checkbox1 ng-switch-when="checkbox1" table="table" row="prow" name="{{pcol.name}}" tooltip="{{tooltip}}" targetid="{{pcol.targetid}}"></tree.checkbox1>',
+
+                                                '<tree.label   ng-switch-when="radio1"  table="table" row="prow" name="{{pcol.name}}" tooltip="{{tooltip}}"></tree.label>',
+                                                '<tree.radio1  ng-switch-when="radio1"  table="table" row="prow" name="{{pcol.name}}" tooltip="{{tooltip}}" targetid="{{pcol.targetid}}"></tree.radio1>',
+                                            '</span>',
+                                    '<span style="display:none;" ng-repeat-end></span>',
+                                    '<tree.bicon ng-repeat="actname in table.pbutton" table="table" rows="table.rows" row="prow" name="{{actname}}"></tree.bicon>',
+                                    /*** stable ***/
+                                    '<ul wliu-tree>',
+                                            '<li nodes open ng-repeat="srow in prow.rows"><s folder></s>',
+                                                '<tree.rowstatus table="table" row="srow" tooltip="{{tooltip}}"></tree.rowstatus>',
+                                                '<span style="display:none;" ng-repeat-start="scol in srow.cols"></span>',
+                                                        '<span ng-switch on="scol.coltype">',
+                                                            '<tree.text ng-switch-when="text"       table="table" row="srow" name="{{scol.name}}"></tree.text>',
+
+                                                            '<tree.label ng-switch-when="textbox"   table="table" row="srow" name="{{scol.name}}" tooltip="{{tooltip}}"></tree.label>',
+                                                            '<tree.textbox ng-switch-when="textbox" table="table" row="srow" name="{{scol.name}}" tooltip="{{tooltip}}"></tree.textbox>',
+
+                                                            '<tree.label ng-switch-when="select"    table="table" row="srow" name="{{scol.name}}" tooltip="{{tooltip}}"></tree.label>',
+                                                            '<tree.select ng-switch-when="select"   table="table" row="srow" name="{{scol.name}}" tooltip="{{tooltip}}"></tree.select>',
+
+                                                            '<tree.label ng-switch-when="bool"      table="table" row="srow" name="{{scol.name}}" tooltip="{{tooltip}}"></tree.label>',
+                                                            '<tree.bool ng-switch-when="bool"       table="table" row="srow" name="{{scol.name}}" tooltip="{{tooltip}}"></tree.bool>',
+
+                                                            '<tree.label ng-switch-when="checkbox1"     table="table" row="srow" name="{{scol.name}}" tooltip="{{tooltip}}"></tree.label>',
+                                                            '<tree.checkbox1 ng-switch-when="checkbox1" table="table" row="srow" name="{{scol.name}}" tooltip="{{tooltip}}" targetid="{{scol.targetid}}"></tree.checkbox1>',
+
+                                                            '<tree.label   ng-switch-when="radio1"  table="table" row="srow" name="{{scol.name}}" tooltip="{{tooltip}}"></tree.label>',
+                                                            '<tree.radio1  ng-switch-when="radio1"  table="table" row="srow" name="{{scol.name}}" tooltip="{{tooltip}}" targetid="{{scol.targetid}}"></tree.radio1>',
+                                                        '</span>',
+                                                '<span style="display:none;" ng-repeat-end></span>',
+                                                '<tree.bicon ng-repeat="actname in table.sbutton" table="table" rows="prow.rows" row="srow" name="{{actname}}"></tree.bicon>',
+                                                /*** mtable ***/
+                                                '<ul wliu-tree>',
+                                                    '<li node ng-repeat="mrow in srow.rows"><s folder></s>',
+                                                        '<tree.rowstatus table="table" row="mrow" tooltip="{{tooltip}}"></tree.rowstatus>',
+                                                        '<span style="display:none;" ng-repeat-start="mcol in mrow.cols"></span>',
+                                                                '<span ng-switch on="mcol.coltype">',
+                                                                    '<tree.text ng-switch-when="text"       table="table" row="mrow" name="{{mcol.name}}"></tree.text>',
+
+                                                                    '<tree.label ng-switch-when="textbox"   table="table" row="mrow" name="{{mcol.name}}" tooltip="{{tooltip}}"></tree.label>',
+                                                                    '<tree.textbox ng-switch-when="textbox" table="table" row="mrow" name="{{mcol.name}}" tooltip="{{tooltip}}"></tree.textbox>',
+
+                                                                    '<tree.label ng-switch-when="select"    table="table" row="mrow" name="{{mcol.name}}" tooltip="{{tooltip}}"></tree.label>',
+                                                                    '<tree.select ng-switch-when="select"   table="table" row="mrow" name="{{mcol.name}}" tooltip="{{tooltip}}"></tree.select>',
+
+                                                                    '<tree.label ng-switch-when="bool"      table="table" row="mrow" name="{{mcol.name}}" tooltip="{{tooltip}}"></tree.label>',
+                                                                    '<tree.bool ng-switch-when="bool"       table="table" row="mrow" name="{{mcol.name}}" tooltip="{{tooltip}}"></tree.bool>',
+
+                                                                    '<tree.label ng-switch-when="checkbox1"     table="table" row="mrow" name="{{mcol.name}}" tooltip="{{tooltip}}"></tree.label>',
+                                                                    '<tree.checkbox1 ng-switch-when="checkbox1" table="table" row="mrow" name="{{mcol.name}}" tooltip="{{tooltip}}" targetid="{{mcol.targetid}}"></tree.checkbox1>',
+
+                                                                    '<tree.label   ng-switch-when="radio1"  table="table" row="mrow" name="{{mcol.name}}" tooltip="{{tooltip}}"></tree.label>',
+                                                                    '<tree.radio1  ng-switch-when="radio1"  table="table" row="mrow" name="{{mcol.name}}" tooltip="{{tooltip}}" targetid="{{mcol.targetid}}"></tree.radio1>',
+                                                                '</span>',
+                                                        '<span style="display:none;" ng-repeat-end></span>',
+                                                        '<tree.bicon ng-repeat="actname in table.mbutton" table="table" rows="srow.rows" row="mrow" name="{{actname}}"></tree.bicon>',
+                                                    '</li>',
+                                                '</ul>',
+                                                /***\\mtable ***/
+                                            '</li>',
+                                    '</ul>',
+                                    /*** \\stable ***/
+                                '</li>',
+                            '</ul>',
+                            /*** \\ptable ***/
+                        '</li>',
+                    '</ul>'
+                ].join(''),
+        controller: function ($scope) {
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
+
 wliu_table.directive("tree.rowstatus", function () {
     return {
         restrict: "E",
@@ -32,7 +140,7 @@ wliu_table.directive("tree.rowstatus", function () {
                         'ng-disabled="row==undefined" ',
                         tree_scope,
                     '>',
-                        '{{ row.parent }} - {{row.rowstate}}',
+                        //'{{ row.parent }}',
                         '<a class="wliu-btn16 wliu-btn16-rowstate-save"     ng-if="row.error.errorCode==0 && row.rowstate==1"   title="Changed"></a>',
                         '<a class="wliu-btn16 wliu-btn16-rowstate-add"      ng-if="row.error.errorCode==0 && row.rowstate==2"   title="New"></a>',
                         '<a class="wliu-btn16 wliu-btn16-rowstate-delete"   ng-if="row.error.errorCode==0 && row.rowstate==3"   title="Deleted"></a>',
@@ -62,7 +170,7 @@ wliu_table.directive("tree.label", function () {
                         tree_scope,
                     '>',
                         '<span style="vertival-align:middle;">{{ table.colMeta(row, name).colname?table.colMeta(row, name).colname:name }}</span>',
-                        '<span style="vertival-align:middle;" class="wliuCommon-text-error" ng-if="table.colMeta(row, name).notnull"> <b>*</b></span>',
+                        '<span style="vertival-align:middle;" class="wliuCommon-text-error" ng-if="table.colMeta(row, name).notnull"></span> ',
                     '</label>'
                 ].join(''),
         controller: function ($scope) {
@@ -472,12 +580,56 @@ wliu_table.directive("tree.radiodiag1", function () {
     }
 });
 
+wliu_table.directive("tree.hicon", function (wliuTableService) {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            rows:       "=",
+            row:        "@",
+            name:       "@",
+            xsize:      "@",
+            actname:    "@",
+            action:     "&",
+            tooltip:    "@"
+        },
+        template: [
+                    '<span>',
+                        '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" ',
+                            'ng-click="action1()" ',
+                            'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" popup-placement="down" ',
+                            'title="{{tooltip?\'\':actname?actname:name}}" ',
+                            tree_scope,
+                        '>',
+                        '</a>',
+                    '</span>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.xsize = $scope.xsize?$scope.xsize:16;
+            $scope.action1 = function() {
+                // add you code here 
+                 switch( $scope.name.toLowerCase() ) {
+                    case "add":
+                        $scope.table.addChild($scope.rows, $scope.row);
+                        break;
+                }                
+               //
+                $scope.action();
+            };
+       },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
 wliu_table.directive("tree.blink", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
             table:      "=",
+            rows:       "=",
             row:        "=",
             name:       "@",
             actname:    "@",
@@ -486,7 +638,7 @@ wliu_table.directive("tree.blink", function (wliuTableService) {
         template: [
                     '<span>',
                         '<a href="javascript:void(0);" class="wliuCommon-table-btn16" ',
-                            'ng-click="action1(table.getRow(row))" ',
+                            'ng-click="action1()" ',
                             'ng-if="buttonState(name, table.getRow(row).rowstate)" ',
                             'title="{{table.colMeta(row, name).coldesc?table.colMeta(row, name).coldesc:table.colMeta(row, name).colname}}"',
                              tree_scope,
@@ -497,33 +649,23 @@ wliu_table.directive("tree.blink", function (wliuTableService) {
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.action1 = function(theRow) {
+            $scope.action1 = function() {
                 // add you code here 
                 switch( $scope.name.toLowerCase() ) {
                     case "detail":
-                        $scope.table.current = theRow.guid;
+                        $scope.table.current = theRow;
                         break;
                     case "save":
-                        $scope.table.saveRow(theRow);
+                        $scope.table.saveRow($scope.rows, $scope.row);
                         break;
                     case "cancel":
-                        $scope.table.cancelRow(theRow);
-
-                        // ckeditor  reset value to old value;  due to single way sync 
-                        /*
-                        for(var cidx in $scope.table.cols) {
-                            if( $scope.table.cols[cidx].coltype.toLowerCase() == "ckeditor" )
-                                if(CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name]) {
-                                    CKEDITOR.instances[$scope.table.scope + "_" + $scope.table.cols[cidx].name].setData( $scope.table.getCol($scope.table.cols[cidx].name, $scope.row).value?$scope.table.getCol($scope.table.cols[cidx].name, $scope.row).value:"" );
-                                }
-                        }
-                        */
+                        $scope.table.cancelRow($scope.rows, $scope.row);
                         break;
                     case "add":
-                        // none 
+                        $scope.table.addChild($scope.rows, $scope.row);
                         break;
                     case "delete":
-                        $scope.table.deleteRow(theRow);
+                        $scope.table.deleteRow($scope.rows, $scope.row);
                         break;
                 }                
                 // end of code
@@ -543,75 +685,13 @@ wliu_table.directive("tree.blink", function (wliuTableService) {
     }
 });
 
-wliu_table.directive("tree.hicon", function (wliuTableService) {
-    return {
-        restrict: "E",
-        replace: true,
-        scope: {
-            table:      "=",
-            row:        "=",
-            name:       "@",
-            xsize:      "@",
-            actname:    "@",
-            action:     "&",
-            tooltip:    "@"
-        },
-        template: [
-                    '<span>',
-                        '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" ',
-                            'ng-click="action1(table.getRow(row))" ',
-                            'ng-if="buttonState(name, table.getRow(row).rowstate)" ',
-                            'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" popup-placement="down" ',
-                            'title="{{tooltip?\'\':actname?actname:name}}" ',
-                            tree_scope,
-                        '>',
-                        '</a>',
-                    '</span>'
-                ].join(''),
-        controller: function ($scope) {
-            $scope.xsize = $scope.xsize?$scope.xsize:16;
-
-            $scope.action1 = function(theRow) {
-                // add you code here 
-                 switch( $scope.name.toLowerCase() ) {
-                    case "detail":
-                        $scope.table.current = theRow.guid;
-                        break;
-                    case "save":
-                        $scope.table.saveRow(theRow);
-                        break;
-                    case "cancel":
-                        $scope.table.cancelRow(theRow);
-                        break;
-                    case "add":
-                        $scope.table.addChild(theRow);
-                        break;
-                    case "delete":
-                        $scope.table.deleteRow(theRow);
-                        break;
-                }                
-               //
-                $scope.action();
-            };
-
-            $scope.buttonState = function(name, rowstate) {
-                var right = $scope.table.rights?(parseInt($scope.table.rights[name])?true:false):false;
-                var rightDelete = $scope.name.toLowerCase()=="delete"?($scope.row.rows?($scope.row.rows.length>0?false:true):true):true; 
-                right = right && rightDelete;
-                return  wliuTableService.buttonState(name, rowstate) && right;
-            };
-       },
-        link: function (sc, el, attr) {
-        }
-    }
-});
-
 wliu_table.directive("tree.bicon", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
             table:      "=",
+            rows:       "=",
             row:        "=",
             name:       "@",
             xsize:      "@",
@@ -622,7 +702,7 @@ wliu_table.directive("tree.bicon", function (wliuTableService) {
         template: [
                     '<span>',
                         '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" ',
-                            'ng-click="action1(table.getRow(row))" ',
+                            'ng-click="action1()" ',
                             'ng-if="buttonState(name, table.getRow(row).rowstate)" ',
                             'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" popup-placement="down" ',
                             'title="{{tooltip?\'\':actname?actname:name}}" ',
@@ -634,23 +714,23 @@ wliu_table.directive("tree.bicon", function (wliuTableService) {
         controller: function ($scope) {
             $scope.xsize = $scope.xsize?$scope.xsize:16;
 
-            $scope.action1 = function(theRow) {
+            $scope.action1 = function() {
                 // add you code here 
                  switch( $scope.name.toLowerCase() ) {
                     case "detail":
-                        $scope.table.current = theRow.guid;
+                        $scope.table.current = $scope.row;
                         break;
                     case "save":
-                        $scope.table.saveRow(theRow);
+                        $scope.table.saveRow($scope.rows, $scope.row);
                         break;
                     case "cancel":
-                        $scope.table.cancelRow(theRow);
+                        $scope.table.cancelRow($scope.rows, $scope.row);
                         break;
                     case "add":
-                        // none 
+                        $scope.table.addChild($scope.rows, $scope.row);
                         break;
                     case "delete":
-                        $scope.table.deleteRow(theRow);
+                        $scope.table.deleteRow($scope.rows, $scope.row);
                         break;
                 }                
                //
@@ -675,6 +755,7 @@ wliu_table.directive("tree.btext", function (wliuTableService) {
         replace: true,
         scope: {
             table:      "=",
+            rows:       "=",
             row:        "=",
             name:       "@",
             actname:    "@",
@@ -684,7 +765,7 @@ wliu_table.directive("tree.btext", function (wliuTableService) {
                     '<span>',
                         '<a href="javascript:void(0)" class="wliu-table-button" ',
                             'title="{{actname?actname:name}}" ',
-                            'ng-click="action1(table.getRow(row))" ',
+                            'ng-click="action1()" ',
                             'ng-if="buttonState(name, table.getRow(row).rowstate)" ',   
                             tree_scope, 
                         '>',
@@ -693,24 +774,23 @@ wliu_table.directive("tree.btext", function (wliuTableService) {
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
-            $scope.action1 = function(theRow) {
+            $scope.action1 = function() {
                 // add you code here 
                  switch( $scope.name.toLowerCase() ) {
                     case "detail":
-                        $scope.table.current = theRow.guid;
+                        $scope.table.current = $scope.row;
                         break;
                     case "save":
-                        $scope.table.saveRow(theRow);
+                        $scope.table.saveRow($scope.rows, $scope.row);
                         break;
                     case "cancel":
-                        $scope.table.cancelRow(theRow);
+                        $scope.table.cancelRow($scope.rows, $scope.row);
                         break;
                     case "add":
-                        // none 
+                        $scope.table.addChild($scope.rows, $scope.row);
                         break;
                     case "delete":
-                        theRow = null;
-                        //$scope.table.deleteRow(theRow);
+                        $scope.table.deleteRow($scope.rows, $scope.row);
                         break;
                 }                
                //

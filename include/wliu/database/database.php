@@ -574,7 +574,7 @@ class cMYSQL implements iSQL {
 				$ptable = $table["metadata"]["p"];
 				$stable = $table["metadata"]["s"];
 
-				$ptable["rows"] = $this->treeNodes($table, "p", 0);
+				$ptable["rows"] = $this->treeNodes($table, "p", $table["rootid"]);
 				foreach($ptable["rows"] as &$prow) {
 					$pkeyDBCol = $ptable["colmeta"][ $ptable["keys"][0] ]["name"];
 					$prow["rows"] = $this->treeNodes($table, "s", $prow[$pkeyDBCol]);
@@ -586,7 +586,7 @@ class cMYSQL implements iSQL {
 				$stable = $table["metadata"]["s"];
 				$mtable = $table["metadata"]["m"];
 
-				$ptable["rows"] = $this->treeNodes($table, "p", 0);
+				$ptable["rows"] = $this->treeNodes($table, "p",  $table["rootid"]);
 				foreach($ptable["rows"] as &$prow) {
 					$pkeyDBCol = $ptable["colmeta"][ $ptable["keys"][0] ]["name"];
 					$prow["rows"] = $this->treeNodes($table, "s", $prow[$pkeyDBCol]);

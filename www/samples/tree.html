@@ -4,6 +4,7 @@
 		<meta charset="utf8" />
 		<!-- JQuery3.1.1 -->
 		<script type="text/javascript" src="/jquery/min/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="/jquery/min/jquery.cookie.1.4.1.js"></script>
 		<script type="text/javascript" src="/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
 		<link href='/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
 		<!-- //JQuery -->
@@ -64,7 +65,7 @@
 		   	
 			var col11 = new WLIU.COL({key:1, table:"p",		coltype:"hidden", 		name:"id", 			colname:"Menu ID"});
 		   	var col12 = new WLIU.COL({key:0, table:"p", 	coltype:"hidden", 		name:"parent_id",	colname:"Menu Parent ID", need:1, notnull: 1});
-		   	var col13 = new WLIU.COL({key:0, table:"p", 	coltype:"raido1", 		name:"menu_key", 	list:"countryCategory", colname:"Menu Key",	notnull:1});
+		   	var col13 = new WLIU.COL({key:0, table:"p", 	coltype:"checkbox1", 	name:"menu_key", 	list:"countryCategory", targetid:"countryCategory_diag", colname:"Menu Key",	notnull:1});
 		   	var col14 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",	notnull:1});
 		   	var col15 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", 	notnull:1});
 		   	var col16 = new WLIU.COL({key:0, table:"p", 	coltype:"bool", 		name:"status", 		colname:"Status", 		notnull:1});
@@ -93,7 +94,7 @@
 		   	cols.p.push(col15);
 		   	cols.p.push(col16);
 		   	
-			   cols.s = [];
+			cols.s = [];
 			cols.s.push(col21);
 		   	cols.s.push(col22);
 		   	cols.s.push(col23);
@@ -116,6 +117,9 @@
 			*/
 
 		    var table = new WLIU.TREE({
+				rootid: 0,
+				targetid: "#good_tree",
+				title: "Menus",
 				scope: 	"mytab",
 				url:   	"ajax/tree_action.php",
 				wait:   "#mywait",
@@ -125,6 +129,9 @@
 				rights: {detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
 				//filters:filters,
 				cols: 	cols,
+				pbutton: ["add", "save", "cancel", "delete"],
+				sbutton: ["add", "save", "cancel", "delete"],
+				mbutton: ["save", "cancel", "delete"],
 				lists: 	{
 							colorCategory: 		{ loaded: 0, keys:{guid:"", name:""}, list:[] },
 							countryCategory: 	{ loaded: 0, keys:{guid:"", name:""}, list:[] },
@@ -146,7 +153,7 @@
 				table.getRows(
 					{
 						ajaxSuccess: function(){
-							$("ul[wliu-tree][root]").wliuTree();
+							//$("ul[wliu-tree][root]").wliuTree();
 						}
 					}
 				);
@@ -160,53 +167,16 @@
 <!-- container -->
 <div class="container-fluid">
 	<br>
-    <ul wliu-tree root id="good_world">
-        <li nodes open>Lemon Tree
-			<ul wliu-tree>
-				<li nodes open ng-repeat="prow in table.rows"><s folder></s>
-					<tree.rowstatus table="table" row="prow" tooltip="mytips"></tree.rowstatus>					
-					<tree.textbox table="table" row="prow" name="menu_key"></tree.textbox> 
-					<tree.label table="table" row="prow" name="menu_key"></tree.label>: <tree.radio1 table="table" row="prow" name="menu_key" targetid="countryCategory_diag" tooltip="mytips"></tree.radio1>
-					<tree.label table="table" row="prow" name="status"></tree.label>: <tree.bool table="table" row="prow" name="status" tooltip="mytips"></tree.bool>
-					<tree.hicon table="table" row="prow" name="add" actname="Save"></tree.hicon>
-					<tree.btext table="table" row="prow" name="save" actname="Save"></tree.btext>
-					<tree.btext table="table" row="prow" name="cancel" actname="Cancel"></tree.btext>
-					<tree.btext table="table" row="prow" name="delete" actname="Delete"></tree.btext>
-					<ul wliu-tree>
-						<li nodes open ng-repeat="srow in prow.rows"><s folder></s>
-							<tree.rowstatus table="table" row="srow" tooltip="mytips"></tree.rowstatus>					
-							<tree.textbox table="table" row="srow" name="menu_key"></tree.textbox> 
-							<tree.label table="table" row="srow" name="menu_key"></tree.label>: <tree.textbox table="table" row="srow" name="menu_key" tooltip="mytips"></tree.textbox>
-							<tree.label table="table" row="srow" name="status"></tree.label>: <tree.bool table="table" row="srow" name="status" tooltip="mytips"></tree.bool>
-							<tree.hicon table="table" row="srow" name="add" actname="Save"></tree.hicon>
-							<tree.btext table="table" row="srow" name="save" actname="Save"></tree.btext>
-							<tree.btext table="table" row="srow" name="cancel" actname="Cancel"></tree.btext>
-							<tree.btext table="table" rows="prow.rows" row="srow" name="delete" actname="Delete"></tree.btext>
-							<ul wliu-tree>
-								<li node ng-repeat="mrow in srow.rows"><s folder></s>
-								<tree.rowstatus table="table" row="mrow" tooltip="mytips"></tree.rowstatus>					
-								<tree.textbox table="table" row="mrow" name="menu_key" tooltip="mytips"></tree.textbox>
-								<tree.bool table="table" row="mrow" name="status" tooltip="mytips"></tree.bool>
-								<tree.btext table="table" row="mrow" name="save" actname="Save"></tree.btext>
-								<tree.btext table="table" row="mrow" name="cancel" actname="Cancel"></tree.btext>
-								<tree.btext table="table" rows="srow.rows" row="mrow" name="delete" actname="Delete"></tree.btext>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</li>
-			</ul>
-		</li>
-    </ul>
-
-
+	<div id="good_tree">
+		<table.tree table="table"></table.tree>
+	</div>
 </div>
 
 <div id="myauto" wliu-tips></div>
 <div id="mywait" wliu-load></div>
 <div id="mytips" wliu-popup></div>
 
-<tree.radiodiag1 table="table" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></tree.radiodiag1>
+<tree.checkdiag1 table="table" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></tree.checkdiag1>
 
 
 <!-- container -->

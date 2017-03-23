@@ -290,6 +290,7 @@ WLIU.COL = function(opts) {
 		sort:		"",
 		relation:   "",
 		list:       "",    // select , checkbox, radio base on list
+		targetid:   "",    //  for raido and checkbox diag id  
 		defval:		""     // default value for add case
 	};
 	
@@ -303,6 +304,7 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 	if( nameValues == undefined ) nameValues = {};
 
 	this.guid			= nameValues.guid?nameValues.guid:guid();
+	this.type			= "p";  // type used for tree:  "p" = primary, "s" = secondary,  "m" = "third"
 	this.parent			= 0;  // parent used for tree:  multiple dimension rows
 	this.scope			= scope;
 	this.rowstate 		= 2;  //default is new row;   0 - normal; 1 - changed;  2 - added;  3 - deleted
@@ -336,6 +338,7 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 		colObj.relation  	= cols[cidx].relation?cols[cidx].relation:"";
 		colObj.sort  		= cols[cidx].sort?cols[cidx].sort:"";
 		colObj.list  		= cols[cidx].list?cols[cidx].list:"";
+		colObj.targetid  	= cols[cidx].targetid?cols[cidx].targetid:"";
 
 		colObj.colstate		= 0;   // only  0 - nochange ;  1 - changed
 		colObj.original 	= "";  // server side 
