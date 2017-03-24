@@ -291,6 +291,9 @@ WLIU.COL = function(opts) {
 		relation:   "",
 		list:       "",    // select , checkbox, radio base on list
 		targetid:   "",    //  for raido and checkbox diag id  
+		tooltip:	"",    // for tooltip
+		css:		"input-short",    // for tree use
+		style:		"",    // for tree use 
 		defval:		""     // default value for add case
 	};
 	
@@ -339,12 +342,16 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 		colObj.sort  		= cols[cidx].sort?cols[cidx].sort:"";
 		colObj.list  		= cols[cidx].list?cols[cidx].list:"";
 		colObj.targetid  	= cols[cidx].targetid?cols[cidx].targetid:"";
+		colObj.tooltip  	= cols[cidx].tooltip?cols[cidx].tooltip:"";
+		colObj.css  		= cols[cidx].css?cols[cidx].css:"input-short";
+		colObj.style  		= cols[cidx].style?cols[cidx].style:"";
 
 		colObj.colstate		= 0;   // only  0 - nochange ;  1 - changed
 		colObj.original 	= "";  // server side 
 		colObj.current 		= "";  // client side
 		colObj.value 		= "";
-		var colValue 		= nameValues[colObj.name]?nameValues[colObj.name]:colObj.defval;
+		var colValue 		= nameValues[colObj.name]?nameValues[colObj.name]:(colObj.defval?colObj.defval:"");
+		/*
 		switch( colObj.coltype ) {
 			case "checkbox":
 			case "checkbox1":
@@ -358,6 +365,7 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 				colValue  	= nameValues[colObj.name]?nameValues[colObj.name]:colObj.defval;  // input updateds
 				break;
 		}
+		*/
 		FROW.setColVal(colObj, colValue);
 		
 		colObj.errorCode 	= 0;
@@ -808,6 +816,8 @@ WLIU.ROWACTION.prototype = {
 			nrow.scope 		= theRow.scope;
 			nrow.rowstate 	= theRow.rowstate;
 			nrow.guid       = theRow.guid;
+			nrow.type		= theRow.type;
+			nrow.parent		= theRow.parent;
 			nrow.error      = { errorCode:0, errorMessage:"" };
 			nrow.cols		= this.getChangeCols(theRow);
 			nrows.push(nrow);
@@ -850,7 +860,7 @@ WLIU.ROWACTION.prototype = {
 			case "checkbox2":
 			case "checkbox3":
 				if( !$.isArray(p_val) ) p_val = []; 
-				if( theCol.value	!= undefined ) theCol.value 	= FCOM.array2Check(p_val);
+				if( theCol.value	!= undefined ) theCol.value = FCOM.array2Check(p_val);
 				if( theCol.current!= undefined ) theCol.current = FCOM.array2Check(p_val);
 				ret_val = FCOM.array2Check(p_val);
 				break;
@@ -877,7 +887,7 @@ WLIU.ROWACTION.prototype = {
 			case "radio2":
 			case "radio3":
 				if( theCol.value	!= undefined ) theCol.value 	= parseInt(p_val)?parseInt(p_val):0;
-				if( theCol.current!= undefined ) theCol.current = parseInt(p_val)?parseInt(p_val):0;
+				if( theCol.current!= undefined ) theCol.current 	= parseInt(p_val)?parseInt(p_val):0;
 				ret_val = parseInt(p_val)?parseInt(p_val):0;
 				break;
 			case "relation":
@@ -1304,6 +1314,8 @@ WLIU.TABLEACTION.prototype = {
 					var nrow = {};
 					nrow.scope 		= theRow.scope;
 					nrow.guid  		= theRow.guid;
+					nrow.type		= theRow.type;
+					nrow.parent		= theRow.parent;
 					nrow.rowstate 	= theRow.rowstate;
 					nrow.error      = { errorCode:0, errorMessage:"" };
 					nrow.cols		= FROW.getChangeCols(theRow);
@@ -1385,7 +1397,7 @@ WLIU.TABLEACTION.prototype = {
 	/*** AJAX CALL and Sync Rows */
 	ajaxCall: function(theTable, ntable, callback) {
 		var _self = theTable;
-		if( _self.wait ) $(_self.wait).trigger("show");
+		if(_self.wait ) $("#" + _self.wait).trigger("show");
 		_self.navi.loading = 1;
 		if(callback && callback.ajaxBefore && $.isFunction(callback.ajaxBefore) ) callback.ajaxBefore(ntable);
 		
@@ -1396,10 +1408,10 @@ WLIU.TABLEACTION.prototype = {
 			dataType: "json",  
 			contentType:"application/x-www-form-urlencoded",
 			error: function(xhr, tStatus, errorTh ) {
-				if( _self.wait ) $(_self.wait).trigger("hide");
+				if(_self.wait ) $("#" + _self.wait).trigger("hide");
 			},
 			success: function(req, tStatus) {
-				if( _self.wait ) $(_self.wait).trigger("hide");
+				if(_self.wait ) $("#" + _self.wait).trigger("hide");
 
 				if(callback && callback.ajaxAfter && $.isFunction(callback.ajaxAfter) ) callback.ajaxAfter(req.table);
 
@@ -1421,7 +1433,7 @@ WLIU.TABLEACTION.prototype = {
 				} else {
 					if( callback && callback.ajaxError && $.isFunction(callback.ajaxError) ) callback.ajaxError(_self);
 				}
-				$(_self.taberror).trigger("ishow");
+				$("#" + _self.taberror).trigger("ishow");
 				if( callback && callback.ajaxComplete && $.isFunction(callback.ajaxComplete) ) callback.ajaxComplete(_self);
 
 				_self.navi.loading = 0;
@@ -1524,16 +1536,16 @@ WLIU.TABLEACTION.prototype = {
 								theTable.rowError(tableRow, nRow.error);
 								tableRow.rowstate = 0;
 								for(var cidx in tableRow.cols) {
-									tableRow.cols[cidx].colstate 	= 0;
-									tableRow.cols[cidx].current 	= angular.copy(tableRow.cols[cidx].value);
-									theTable.colError(tableRow, tableRow.cols[cidx].name, {errorCode:0, errorMessage:""} );
-	
 									if(tableRow.cols[cidx].key) {
 										var keyColObj = FCOLLECT.objectByKV( nRow.cols, { name: tableRow.cols[cidx].name } );
 										if( keyColObj ) {
 											FROW.setColVal(tableRow.cols[cidx], keyColObj.value);
 										}
 									}
+
+									tableRow.cols[cidx].colstate 	= 0;
+									tableRow.cols[cidx].current 	= angular.copy(tableRow.cols[cidx].value);
+									theTable.colError(tableRow, tableRow.cols[cidx].name, {errorCode:0, errorMessage:""} );
 								}
 								theTable.navi.recordtotal++;
 								break;
@@ -1551,7 +1563,7 @@ WLIU.TABLEACTION.prototype = {
 			}  // for
 
 			if(parseInt(ntable.success)) {
-				$(theTable.autotip).trigger("auto", ["Submitted Success.", "success"]);
+				$("#" + theTable.autotip).trigger("auto", ["Submitted Success.", "success"]);
 			} 
 	},
 

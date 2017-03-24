@@ -56,15 +56,15 @@
 
 
         <script language="javascript" type="text/javascript">
-		   	var col1 = new WLIU.COL({key:1, 	table:"P", coltype:"hidden", 	name:"id", 			colname:"Admin ID",  	coldesc:"Administrator ID", defval:0 });
-		   	var col2 = new WLIU.COL({key:0, 	table:"P", coltype:"textbox", 	name:"uuu",			col:"user_name", 		colname:"User Name", unique:1,	coldesc:"Login User", 	sort:"ASC", need:1, notnull: 1});
-		   	var col3 = new WLIU.COL({key:0, 	table:"P", coltype:"textbox", 	name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
+		   	var col1 = new WLIU.COL({key:1, 	table:"P", coltype:"hidden", 	name:"id", 			colname:"Admin ID",  	coldesc:"Administrator ID", defval:0, tooltip:"mytips"});
+		   	var col2 = new WLIU.COL({key:0, 	table:"P", coltype:"textbox", 	name:"uuu",			col:"user_name", 		colname:"User Name", unique:1,	coldesc:"Login User", 	sort:"ASC", need:1, notnull: 1, tooltip:"mytips"});
+		   	var col3 = new WLIU.COL({key:0, 	table:"P", coltype:"textbox", 	name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1, tooltip:"mytips"});
 		   	var col4 = new WLIU.COL({key:0, 	table:"P", coltype:"datetime", 	name:"bbb", 		col:"birth_date", 		colname:"Brith Date", 	coldesc:"Date of Birth",  sort:"DESC", notnull:1});
 		   	var col5 = new WLIU.COL({key:0, 	table:"P", coltype:"textbox", 	name:"email", 		colname:"Email",   		coldesc:"Email Address", sort:"ASC", need:1, datatype:"email", notnull:0});
 		   	var col6 = new WLIU.COL({key:0, 	table:"P", coltype:"text", 		name:"created_time",colname:"Created", 		coldesc:"Password for Login"});
 			var col7 = new WLIU.COL({key:0, 	table:"p", coltype:"select", 	name:"lang", 		colname:"LangISO", 		coldesc:"Language ISO Code", 	defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory"});
-		   	var col8 = new WLIU.COL({key:0, 	table:"p", coltype:"radio", 	name:"color", 	 	colname:"Color", 		coldesc:"Color Name", 			defval: 77, notnull:1, 			list:"colorCategory"});
-		   	var col9 = new WLIU.COL({key:0, 	table:"p", coltype:"checkbox1", name:"countryiso",	colname:"Country ISO",  coldesc:"Country ID", list:"countryCategory"});
+		   	var col8 = new WLIU.COL({key:0, 	table:"p", coltype:"radio", 	name:"color", 	 	colname:"Color", 		coldesc:"Color Name", 			defval: 77, notnull:1, list:"colorCategory", targetid:"colorCategory_diag"});
+		   	var col9 = new WLIU.COL({key:0, 	table:"p", coltype:"checkbox1", name:"countryiso",	colname:"Country ISO",  coldesc:"Country ID", list:"countryCategory", targetid:"countryCategory_diag"});
 		   	var col10 = new WLIU.COL({key:0, 	table:"p", coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status"});
 		   	var col11 = new WLIU.COL({key:0, 	table:"p", coltype:"upload", 	name:"img1", 		colname:"id copy", 		view: "large", notnull: 0 });
 		   	var col12 = new WLIU.COL({key:0, 	table:"p", coltype:"upload", 	name:"img2",  		colname:"Signature",   	coldesc:"ID Copy", notnull: 0 });
@@ -98,12 +98,12 @@
 		    var table = new WLIU.TABLE({
 				scope: 	"mytab",
 				url:   	"ajax/one_action.php",
-				wait:   "#mywait",
-				taberror:"#taberror",
-				tooltip:"#mytips",
-				autotip: "#myauto",
+				wait:   	"mywait",
+				taberror:	"taberror",
+				tooltip:	"mytips",
+				autotip: 	"myauto",
 				rights: {detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
-				navi:   {pagesize:20, match: 1, orderby:"created_time", sortby:"DESC"},
+				navi:   {pagesize:20, match: 1, orderby:"created_time", sortby:"DESC", tooltip: "mytips"},
 				filters: filters,
 				cols: 	cols,
 				lists: 	{
@@ -140,7 +140,7 @@
 <body ng-app="myApp" ng-controller="myForm" style="padding-top:80px;position:relative;">
 <!-- container -->
 <div class="container">
-		<div class="row">
+	<div class="row">
 		<div class="col-md-12">
 			<fieldset>
 				<legend>Search</legend>
@@ -151,7 +151,7 @@
 				<filter.label table="table" name="bcccc"></filter.label> : <filter.select  table="table" name="bcccc"></filter.select><br />
 			</feildset>
 			<div style="margin-top:20px;">
-			<table.tablebutton table="table" name="search" actname="Search" outline=1 before="searchAjax(table)"></table.tablebutton>
+				<table.tablebutton table="table" name="search" actname="Search" outline=1 before="searchAjax(table)"></table.tablebutton>
 			</div>
 			<br>
 			<table.navi table="table" tooltip=""></table.navi>
@@ -236,10 +236,10 @@
 						<table.select class="input-small" table="table" name="lang" row="row" tooltip="mytips"></table.select>
 					</td>
 					<td>
-						<table.radio3 class="input-small" table="table" name="color" row="row" targetid="colorCategory_diag" tooltip="mytips"></table.radio3>
+						<table.radio3 class="input-small" table="table" name="color" row="row" tooltip="mytips"></table.radio3>
 					</td>
 					<td>
-						<table.checkbox1 class="input-small" table="table" name="countryiso" row="row" targetid="countryCategory_diag" tooltip="mytips"></table.checkbox1>
+						<table.checkbox1 class="input-small" table="table" name="countryiso" row="row"  tooltip="mytips"></table.checkbox1>
 					</td>
 					<td>
 						<table.bool table="table" name="status" row="row" tooltip="mytips"></table.bool>
@@ -247,19 +247,19 @@
 				</tr>
 			</table>
 		</div>		
-
-		<br>
-		<br>
+	</div>
 </div>
 <!-- container -->
+
+
+<table.checkdiag1 table="table" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></table.checkdiag1>
+
+<table.radiodiag3 table="table" targetid="colorCategory_diag" name="colorCategory" colnum="3" colnum1="0" bar="1" title="Please Select"></table.radiodiag3>
 
 <div id="taberror" wliu-diag movable maskable></div>
 <div id="myauto" wliu-tips></div>
 <div id="mywait" wliu-load></div>
 <div id="mytips" wliu-popup></div>
-
-<table.checkdiag1 table="table" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></table.checkdiag1>
-<table.radiodiag3 table="table" targetid="colorCategory_diag" name="colorCategory" colnum="3" colnum1="0" bar="1" title="Please Select"></table.radiodiag3>
 
 <!-- MD Bootstrap 4.0 js -- must place at the end of body -->
 <script type="text/javascript" src="/theme/mdb4.0/js/mdb.min.js"></script>

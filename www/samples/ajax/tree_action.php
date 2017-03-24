@@ -6,7 +6,7 @@ include_once($CFG["include_path"] . "/wliu/database/database.php");
 define("DEBUG", 1);
 $response = array();
 try {
-	$rights = array("view"=>1, "save"=>0, "add"=>1, "delete"=>1);
+	$rights = array("view"=>1, "save"=>1, "add"=>1, "delete"=>1);
 
 	/*** common secure : prevent url hack from hack tool ***/
 	$db = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
@@ -18,20 +18,13 @@ try {
 	// 2) list table : list1, list2, list3, cate1, cate2, cate3
 	//  table1.name == table2.name ;  fkey is parent_id started from 0  as tree root 
 	$listTable = array();
-	$colorCategory = array(
-		"type"=>"cate3",
-		"table1"=>array("name"=>"abb", 	"key"=>"id", "fkey"=>"parent_id", 	"value"=>"title_cn", "desc"=>"desc_en"),
-		"table2"=>array("name"=>"abb", 	"key"=>"id", "fkey"=>"parent_id", 	"value"=>"title_cn", "desc"=>"desc_en"),
-		"table3"=>array("name"=>"abb",  "key"=>"id", "fkey"=>"parent_id", 	"value"=>"title_cn", "desc"=>"desc_en")
-	);
-	$listTable["colorCategory"] = $colorCategory;
-	$countryCategory = array(
+	$rightCategory = array(
 		"type"=>"list1",
-		"table1"=>array("name"=>"website_country", 	"key"=>"id", "fkey"=>"", "value"=>"country_cn", "desc"=>"country_en"),
+		"table1"=>array("name"=>"website_right", "key"=>"id", "fkey"=>"", "value"=>"title_en", "desc"=>"desc_en"),
 		"table2"=>array(),
 		"table3"=>array()
 	);
-	$listTable["countryCategory"] = $countryCategory;
+	$listTable["rightCategory"] = $rightCategory;
 	
 	$table["listTable"] = $listTable;
 
@@ -48,32 +41,31 @@ try {
 							"name"=>"website_menu", 
 							"keys"=>array("id"),  
 							"fkeys"=>array("parent_id"), 
-							"cols"=>array("id","parent_id", "menu_key", "title_en", "desc_en", "status"), 
+							"cols"=>array("id","parent_id", "menu_key", "title_en", "desc_en", "right", "orderno", "status"), 
 							"insert"=>array(), 
-							"update"=>array() 
+							"update"=>array(),
+							"right"=>array("name"=>"website_menu_right", "value"=>"menu_right_id", "keys"=>array("menu_id", "admin_id"))
 					),
 		"s"=>array( 
 							"type"=>"s",
 							"name"=>"website_menu", 
 							"keys"=>array("id"),  
 							"fkeys"=>array("parent_id"), 
-							"cols"=>array("id","parent_id", "menu_key", "title_en", "desc_en", "status"), 
+							"cols"=>array("id","parent_id", "menu_key", "title_en", "desc_en", "right", "orderno", "status"), 
 							"insert"=>array(), 
-							"update"=>array() 
+							"update"=>array(),
+							"right"=>array("name"=>"website_menu_right", "value"=>"menu_right_id", "keys"=>array("menu_id", "admin_id"))
 		),
 		"m"=>array(
 							"type"=>"m",
 							"name"=>"website_template", 
 							"keys"=>array("id"),  
 							"fkeys"=>array("ref_id"), 
-							"cols"=>array("id","ref_id", "menu_key", "title_en", "desc_en", "status"), 
+							"cols"=>array("id","ref_id", "menu_key", "title_en", "desc_en", "status", "right", "orderno"), 
 							"insert"=>array(), 
-							"update"=>array() 
+							"update"=>array(),
+							"right"=>array("name"=>"website_template_right", "value"=>"temp_right_id", "keys"=>array("temp_id", "admin_id"))
 		 ),
-
-		//checkbox maping keys, fkeys using  database colname.  keys is value col,  fkeys is relational cols; 
-		//Javascript ,  don't need to define keys, fkeys for checkbox mapping 
-		"country"=>array("name"=>"website_admin_country", "value"=>"country_id", "keys"=>array("admin_id") )  // checkbox values  id => admin_id ; country_id is values
 	);
 	$table["metadata"] = $tableMeta; 	
 

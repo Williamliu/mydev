@@ -50,7 +50,7 @@ try {
 							"fkeys"=>array(), 
 							"cols"=>array("id","user_name", "full_name"), 
 							"insert"=>array(), 
-							"update"=>array() 
+							"update"=>array()
 					),
 		"s"=>array( 
 							"type"=>"s",
@@ -59,13 +59,10 @@ try {
 							"fkeys"=>array("id"), 
 							"cols"=>array("id","horby", "lang", "color",  "country", "memberdate","created_time"), 
 							"insert"=>array(), 
-							"update"=>array() 
+							"update"=>array(),
+							"country"=>array("name"=>"website_admin_country", "value"=>"country_id", "keys"=>array("admin_id") )  // checkbox values  id => admin_id ; country_id is values
 		),
-		"m"=>array( ),  
-	
-		//checkbox maping keys, fkeys using  database colname.  keys is value col,  fkeys is relational cols; 
-		//Javascript ,  don't need to define keys, fkeys for checkbox mapping 
-		"country"=>array("name"=>"website_admin_country", "value"=>"country_id", "keys"=>array("admin_id") )  // checkbox values  id => admin_id ; country_id is values
+		"m"=>array( )
 	);
 	$table["metadata"] = $tableMeta; 	
 

@@ -637,7 +637,90 @@ class cMYSQL implements iSQL {
 
 		$result = $this->query($query);
 		$rows 	= $this->rows($result);
+		cTREE::getChecks($this, $table, $tableLevel, $rows);
 		return $rows;
+	}
+
+	public function treeSave(&$table) {
+		foreach( $table["rows"] as &$row ) {
+			$tableLevel = $row["type"];
+			$otable	= $table["metadata"][$tableLevel];
+			switch($row["rowstate"]) {
+				case 0:
+					break;
+				case 1: 
+					//print_r($table);
+					if( $table["rights"]["save"] ) {
+						$keyCols = cTREE::getKeys($table, $row);
+						//print_r($keyCols);
+						if($row["error"]["errorCode"] <= 0) {
+							$updCols = cTREE::getUpdateCols($table, $row);
+							//print_r($updCols);
+							if(	count($updCols["fields"]) >0 ) {
+								$updCols["fields"] = cARRAY::arrayMerge($updCols["fields"], $otable["update"]);
+								$updCols["fields"] = cARRAY::arrayMerge($updCols["fields"], array("last_updated"=>time()));
+								$this->update($otable["name"], $keyCols["keys"], $updCols["fields"]);
+							} 
+						} 
+					} else {
+						$errMsg["save"] 				= "You don't have right to change data.";
+						$table["success"] 				= 0;
+						$row["error"]["errorCode"] 		= 2;
+						$row["error"]["errorMessage"] 	= $errMsg["save"];
+
+						if( $errMsg["saveFlag"]!=1 ) {
+							$table["error"]["errorCode"] 	= 1;
+							cTYPE::join($table["error"]["errorMessage"],"\n", $errMsg["save"]);
+						}
+						$errMsg["saveFlag"] = 1;
+					}
+					break;
+				case 2:
+					if( $table["rights"]["add"] ) {
+						if($row["error"]["errorCode"] <= 0) {
+							$dbCols = cTREE::getInsertCols($table, $row);
+							if(	count($dbCols["fields"]) >0 ) {
+								$dbCols["fields"] = cARRAY::arrayMerge($dbCols["fields"], $otable["insert"]);
+								$dbCols["fields"] = cARRAY::arrayMerge($dbCols["fields"], array("created_time"=>time(), "deleted"=>0));
+								$insertID = $this->insert($otable["name"], $dbCols["fields"]);
+								cTREE::setKeys($table, $row, $insertID);
+							}
+						}
+					} else {
+						$errMsg["add"] 					= "You don't have right to add new record.";
+						$table["success"] 				= 0;
+						$row["error"]["errorCode"] 		= 2;
+						$row["error"]["errorMessage"] 	= $errMsg["add"];
+
+						if( $errMsg["addFlag"]!=1 ) {
+							$table["error"]["errorCode"] 	= 1;
+							cTYPE::join($table["error"]["errorMessage"],"\n", $errMsg["add"]);
+						}
+						$errMsg["addFlag"] = 1;
+					}
+					break;
+				case 3:
+					if( $table["rights"]["delete"] ) {
+						$keyCols = cTREE::getKeys($table, $row);
+						if($row["error"]["errorCode"] <= 0) {
+							$this->update($otable["name"], $keyCols["keys"], array("last_updated"=>time()));
+							$this->detach($otable["name"], $keyCols["keys"]);
+						}
+					} else {
+						$errMsg["delete"] 				= "You don't have right to delete the record.";
+						$table["success"] 				= 0;
+						$row["error"]["errorCode"] 		= 2;
+						$row["error"]["errorMessage"] 	= $errMsg["delete"];
+
+						if( $errMsg["deleteFlag"]!=1 ) {
+							$table["error"]["errorCode"] 	= 1;
+							cTYPE::join($table["error"]["errorMessage"],"\n", $errMsg["delete"]);
+						}
+						$errMsg["deleteFlag"] = 1;
+					}
+					break;
+			}
+		}
 	}
 
 	public function one(&$table) {
@@ -714,12 +797,14 @@ class cMYSQL implements iSQL {
 					break;
 				case 2:
 					if( $table["rights"]["add"] ) {
-						$dbCols = cACTION::getInsertCols($table, "p", $row);
-						if(	count($dbCols["fields"]) >0 ) {
-							$dbCols["fields"] = cARRAY::arrayMerge($dbCols["fields"], $ptable["insert"]);
-							$dbCols["fields"] = cARRAY::arrayMerge($dbCols["fields"], array("created_time"=>time(), "deleted"=>0));
-							$insertID = $this->insert($ptable["name"], $dbCols["fields"]);
-							cACTION::setKeys($table, "p", $row, $insertID);
+						if($row["error"]["errorCode"] <= 0) {
+							$dbCols = cACTION::getInsertCols($table, "p", $row);
+							if(	count($dbCols["fields"]) >0 ) {
+								$dbCols["fields"] = cARRAY::arrayMerge($dbCols["fields"], $ptable["insert"]);
+								$dbCols["fields"] = cARRAY::arrayMerge($dbCols["fields"], array("created_time"=>time(), "deleted"=>0));
+								$insertID = $this->insert($ptable["name"], $dbCols["fields"]);
+								cACTION::setKeys($table, "p", $row, $insertID);
+							}
 						}
 					} else {
 						$errMsg["add"] 					= "You don't have right to add new record.";
@@ -1625,7 +1710,7 @@ class cACTION {
 		$otable = $table["metadata"][$tableType];
 		foreach( $table["rows"] as &$row ) {
 			foreach( $otable["checkboxCols"] as $dbCol ) {
-					$ckMeta = $table["metadata"][$dbCol];
+					$ckMeta = $table["metadata"][$tableType][$dbCol];
 					if( $ckMeta["name"] ) {
 						$ccc = array();
 						switch($otable["type"]) {
@@ -1660,7 +1745,7 @@ class cACTION {
 						$dbColName 		= $otable["colmeta"][$dbCol]["name"]?$otable["colmeta"][$dbCol]["name"]:$dbCol;
 						$row[$dbColName] 	= array();
 						foreach( $ckRows as $ckRow ) {
-							$row[$dbColName][] = intval($ckRow[$ckMeta["value"]]);
+							$row[$dbColName][] = $ckRow[$ckMeta["value"]];
 						}
 					} else {
 						$row[$dbColName] = array();
@@ -1679,7 +1764,7 @@ class cACTION {
 					if( $ckColIdx>=0) {
 							$ckCol 		= $row["cols"][$ckColIdx];
 							$ckValue 	= $ckCol["value"];
-							$ckMeta 	= $table["metadata"][$dbCol];
+							$ckMeta 	= $table["metadata"][$tableLevel][$dbCol];
 							if( $ckMeta["name"] ) {
 								$ccc = array();
 								switch($tableLevel) {
@@ -1800,6 +1885,9 @@ class cACTION {
 							unset($theCol["max"]);
 							unset($theCol["sort"]);
 							unset($theCol["list"]);
+
+							unset($theCol["targetid"]);
+							unset($theCol["tooltip"]);
 
 							unset($theCol["relation"]);
 							unset($theCol["original"]);
@@ -2709,7 +2797,7 @@ class cVALIDATE {
 										$table["success"] 				= 0;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= $theCol["coldesc"];  
+										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
 									}
 								}
 								break;
@@ -2769,11 +2857,9 @@ class cTREE {
 
 				break;
 			case "save":
-				cLIST::getList($db, $table);
 				cVALIDATE::validate($table);
-				cACTION::checkUniques($db, $table);
-				
-				cACTION::saveRows($db, $table);
+				cTREE::checkUniques($db, $table);
+				cTREE::saveRows($db, $table);
 				break;
 		}
 		//cACTION::getRowArray($table);
@@ -2783,7 +2869,96 @@ class cTREE {
 	static public function getRows($db, &$table) {
 		$db->tree($table);
 	}
-
+	static public function saveRows($db, &$table) {
+		$db->treeSave($table);
+		cTREE::saveChecks($db, $table);
+	}
+	static public function getKeys(&$table, &$row) {
+	    $dbCols = array();
+		$dbCols["keys"] = array();
+		$tableLevel 	= $row["type"];
+		$otable 		= $table["metadata"][$tableLevel];
+		foreach( $otable["keys"] as $oidx=>$okey ) {
+			$tmpIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$okey, "table"=>$tableLevel));
+			$colObj 	= $row["cols"][$tmpIdx];
+			if($colObj["value"]) {
+				$dbCols["keys"][$okey] = $colObj["value"];
+			} else {
+				$table["success"] 				= 0;
+				$row["error"]["errorCode"] 		= 9;
+				$row["error"]["errorMessage"] 	= "Primary Key is empty.";
+			} 
+		}
+		return $dbCols;
+	}
+	static public function setKeys(&$table, &$row, $insertID) {
+		$tableLevel = $row["type"];
+		$otable = $table["metadata"][$tableLevel];
+		//first key is auto-increase 
+		$tmpIdx = cARRAY::arrayIndex($row["cols"], array("col"=>$otable["keys"][0], "table"=>$tableLevel));
+		$row["cols"][$tmpIdx]["value"]=$insertID;
+	}
+	static public function getUpdateCols(&$table, &$row) {
+	    $dbCols = array();
+		$dbCols["fields"] 	= array();
+		$tableLevel 		= $row["type"];
+		$otable 			= $table["metadata"][$tableLevel];
+		foreach( $row["cols"] as &$colObj ) {
+			if($colObj["table"]==$otable["type"]) {
+				$fieldName 	= $colObj["col"];
+				if( in_array($fieldName, $otable["cols"]) && !in_array($fieldName, $otable["keys"]) && !in_array($fieldName, $otable["fkeys"]) ) {
+					$colVal     = trim($colObj["value"]);
+					switch( $colObj["coltype"] ) {
+						case "checkbox":
+						case "checkbox1":
+						case "checkbox2":
+						case "checkbox3":
+							break;
+						default:
+							$dbCols["fields"][$fieldName] = $colVal;
+							// only return key col value , other col value set to empty to avoid trafic 
+							break;
+					}
+				}
+			}
+		}				
+		return $dbCols;
+	}
+	static public function getInsertCols(&$table, &$row) {
+	    $dbCols = array();
+		$dbCols["fields"] 	= array();
+		$tableLevel 		= $row["type"];
+		$otable 			= $table["metadata"][$tableLevel];
+		foreach( $row["cols"] as &$colObj ) {
+			if($colObj["table"]==$otable["type"]) {
+				$fieldName 	= $colObj["col"];
+				$colVal     = trim($colObj["value"]);
+				if( in_array($fieldName, $otable["cols"]) ) {
+					if( !in_array($fieldName, $otable["keys"]) && !in_array($fieldName, $otable["fkeys"]) ) {
+						switch( $colObj["coltype"] ) {
+							case "checkbox":
+							case "checkbox1":
+							case "checkbox2":
+							case "checkbox3":
+								break;
+							default:
+								$dbCols["fields"][$fieldName] = $colVal;
+								// only return key col value , other col value set to empty to avoid trafic 
+								break;
+						}
+					} else {
+						//if composed keys,  first key is auto-increase,  the rest of keys should has fixed value;
+						//if only first key set to empty,
+						$first_pkey = $otable["keys"][0];
+						if($first_pkey!=$fieldName)
+							$dbCols["fields"][$fieldName] = $colVal;  
+					}
+				}
+			}
+		}				
+		$dbCols["fields"][$otable["fkeys"][0]] = $row["parent"];
+		return $dbCols;
+	}
 	static public function buildColMeta(&$table) {
 		foreach($table["cols"] as $tableType=>$tableCols) {
 			foreach($tableCols as $colMeta ) {
@@ -2802,7 +2977,135 @@ class cTREE {
 			}
 		}
 	}
-	
+    static public function checkUniques($db, &$table) {
+		$is_unique 		= true;
+		foreach($table["rows"] as &$theRow ) {
+			$tableLevel 	= $theRow["type"];
+			$otable 		= $table["metadata"][$tableLevel];
+			$uCols 			= cARRAY::arrayFilter($otable["colmeta"], array("unique"=>1));
+			//print_r($uCols);
+			foreach( $uCols as $uCol ) {
+				if( in_array( $uCol["col"], $otable["selectCols"] ) ) {
+						$cidx = cARRAY::arrayIndex( $theRow["cols"], array("col"=>$uCol["col"], "table"=>$tableLevel) );
+						$theCol = $theRow["cols"][$cidx];
+						$valKV  = array( $uCol["col"]=>$theCol["value"] );
+						
+						$keyKV 	= array();
+
+						$rKeys = $otable["keys"];
+						foreach( $rKeys as $rkey) {
+							$temp_cidx = cARRAY::arrayIndex( $theRow["cols"], array("col"=>$rkey, "table"=>$tableLevel)  );
+							$rCol = $theRow["cols"][$temp_cidx];
+							$keyKV[$rkey] = $rCol["value"];
+						}
+		
+						/*
+						print_r($keyKV);
+						echo "-------\n";
+						print_r($valKV);
+						echo "-------\n";
+						echo "-------\n";
+						*/
+
+						switch($theRow["rowstate"]) {
+							case 0:
+								break;
+							case 1:
+								$is_unique = $db->checkUnique($otable["name"], $valKV, $keyKV);
+								if(!$is_unique) {
+									$table["success"] 				= 0;
+									$theRow["error"]["errorCode"] 	= 1;
+									$theRow["cols"][$cidx]["errorCode"] 		= 1;  
+									$theRow["cols"][$cidx]["errorMessage"] 		= "'" . $uCol["colname"] . "' already in used.";  
+								}
+								break;
+							case 2:
+								$is_unique = $db->checkUnique($otable["name"], $valKV);
+								if(!$is_unique) {
+									$table["success"] 				= 0;
+									$theRow["error"]["errorCode"] 	= 1;
+									$theRow["cols"][$cidx]["errorCode"] 		= 1;  
+									$theRow["cols"][$cidx]["errorMessage"] 		= "'" . $uCol["colname"] . "' already in used.";  
+								}
+								break;
+							case 3:
+								break;
+						}
+
+				}
+			} // foreach
+		}
+		return $is_unique;
+	}
+	static public function getChecks($db, &$table, $tableLevel, &$rows) {
+		foreach($rows as &$theRow) {
+		    $otable 	= $table["metadata"][$tableLevel];
+			//print_r($otable);
+			foreach( $otable["checkboxCols"] as $dbCol ) {
+					$ckMeta = $otable[$dbCol];
+					
+					if( $ckMeta["name"] ) {
+						$ccc = array();
+						$okey 		= $otable["keys"][0];
+						$okeyDBCol  = $otable["colmeta"][$okey]["name"];
+
+						$ccc[$ckMeta["keys"][0]] = $theRow[$okeyDBCol];
+						$ccc[$ckMeta["keys"][1]] = $table["refid"];
+						$fields 		= array();
+						$fields[] 		= $ckMeta["value"];
+						$ckResult 		= $db->select( $ckMeta["name"], $fields, $ccc );	
+						$ckRows  		= $db->rows($ckResult);
+						$dbColName 		= $otable["colmeta"][$dbCol]["name"]?$otable["colmeta"][$dbCol]["name"]:$dbCol;
+						$theRow[$dbColName] 	= array();
+						foreach( $ckRows as $ckRow ) {
+							$theRow[$dbColName][] = $ckRow[$ckMeta["value"]];
+						}
+					} else {
+						$theRow[$dbColName] = array();
+					}
+			}
+		}
+	}
+	static public function saveChecks($db, &$table) {
+		foreach( $table["rows"] as &$row ) {
+			$tableLevel = $row["type"];
+		    $otable 	= $table["metadata"][$tableLevel];
+			if( ($row["rowstate"]==1 || $row["rowstate"]==2) && $row["error"]["errorCode"]==0 ) {
+				foreach( $otable["checkboxCols"] as $dbCol) {
+					$ckColIdx = cARRAY::arrayIndex($row["cols"], array("col"=>$dbCol, "table"=>$tableLevel) );
+					$flag = true;
+					if($ckColIdx>=0) {
+							$ckCol 		= $row["cols"][$ckColIdx];
+							$ckValue 	= $ckCol["value"];
+							$ckMeta 	= $otable[$dbCol];
+							
+							$okey 		= $otable["keys"][0];
+							$okeyIdx 	= cARRAY::arrayIndex($row["cols"], array("col"=>$okey, "table"=>$tableLevel));
+
+							$ccc[$ckMeta["keys"][0]] = $row["cols"][$okeyIdx]["value"];
+							if($ccc[$ckMeta["keys"][0]]=="") $flag=false;
+							$ccc[$ckMeta["keys"][1]] = $table["refid"];
+							if($ccc[$ckMeta["keys"][1]]=="") $flag=false;
+
+							if( $flag ) {
+								$db->delete($ckMeta["name"], $ccc);
+								$ckValCol = $ckMeta["value"];
+								//echo "value Col: $ckValCol\n";
+								if( is_array($ckValue) ) {
+									foreach( $ckValue as $ckVal ) {
+										$ccc[$ckValCol] = $ckVal;
+										//print_r($ccc);
+										$db->insert($ckMeta["name"], $ccc);
+									}
+								}
+							}
+					}
+				} // foreach
+			}	
+		} // foreach
+	}
+
+
 }
 
 class cIMAGE {

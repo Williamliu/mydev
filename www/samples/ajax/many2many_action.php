@@ -68,12 +68,9 @@ try {
 							"fkeys"=>array("user_id"), 
 							"cols"=>array("user_id","depart_id", "title", "lang", "color",  "country", "status"), 
 							"insert"=>array("created_time"=>time(), "deleted"=>0), 
-							"update"=>array("last_updated"=>time()) 
-		),
-
-		//checkbox maping keys, fkeys using  database colname.  keys is value col,  fkeys is relational cols; 
-		//Javascript ,  don't need to define keys, fkeys for checkbox mapping 
-		"country"=>array("name"=>"website_admin_country", "value"=>"country_id", "keys"=>array("depart_id", "admin_id") )  // checkbox values  id => admin_id ; country_id is values
+							"update"=>array("last_updated"=>time()),
+							"country"=>array("name"=>"website_admin_country", "value"=>"country_id", "keys"=>array("depart_id", "admin_id") )  // checkbox values  id => admin_id ; country_id is values
+		)
 	);
 	$table["metadata"] = $tableMeta; 	
 

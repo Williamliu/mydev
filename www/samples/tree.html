@@ -63,26 +63,32 @@
 
         <script language="javascript" type="text/javascript">
 		   	
-			var col11 = new WLIU.COL({key:1, table:"p",		coltype:"hidden", 		name:"id", 			colname:"Menu ID"});
-		   	var col12 = new WLIU.COL({key:0, table:"p", 	coltype:"hidden", 		name:"parent_id",	colname:"Menu Parent ID", need:1, notnull: 1});
-		   	var col13 = new WLIU.COL({key:0, table:"p", 	coltype:"checkbox1", 	name:"menu_key", 	list:"countryCategory", targetid:"countryCategory_diag", colname:"Menu Key",	notnull:1});
-		   	var col14 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",	notnull:1});
-		   	var col15 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", 	notnull:1});
-		   	var col16 = new WLIU.COL({key:0, table:"p", 	coltype:"bool", 		name:"status", 		colname:"Status", 		notnull:1});
+			var col11 = new WLIU.COL({key:1, table:"p",		coltype:"hidden", 		name:"id", 			colname:"Menu ID", coldesc:"Menu's ID"});
+		   	var col12 = new WLIU.COL({key:0, table:"p", 	coltype:"hidden", 		name:"parent_id",	colname:"Menu Parent ID", tooltip:"mytips"});
+		   	var col13 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"menu_key", 	list:"countryCategory", tooltip:"mytips", targetid:"countryCategory_diag", datatype:"EMAIL", colname:"Menu Key",	notnull:1});
+		   	var col14 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)", coldesc:"Title For English", tooltip:"mytips",	notnull:1});
+		   	var col15 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", tooltip:"mytips", 	notnull:1});
+		   	var col16 = new WLIU.COL({key:0, table:"p", 	coltype:"bool", 		name:"status", 		colname:"Status",  tooltip:"mytips",		notnull:1});
+		   	var col17 = new WLIU.COL({key:0, table:"p", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",   tooltip:"mytips", list:"rightCategory",  targetid:"rightDiag1",	notnull:1});
+		   	var col18 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"orderno", 	css:"input-tiny text-md-center", style:"color:red;", colname:"Sort",   tooltip:"mytips", datatype:"NUMBER",	notnull:1});
 
 			var col21 = new WLIU.COL({key:1, table:"s",		coltype:"hidden", 		name:"id", 			colname:"Menu ID"});
-		   	var col22 = new WLIU.COL({key:0, table:"s", 	coltype:"hidden", 		name:"parent_id",	colname:"Menu Parent ID", need:1, notnull: 1});
-		   	var col23 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",		notnull:1});
+		   	var col22 = new WLIU.COL({key:0, table:"s", 	coltype:"hidden", 		name:"parent_id",	colname:"Menu Parent ID"});
+		   	var col23 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	 unique:1,	notnull:1});
 		   	var col24 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",	notnull:1});
 		   	var col25 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", 	notnull:1});
 		   	var col26 = new WLIU.COL({key:0, table:"s", 	coltype:"bool", 		name:"status", 		colname:"Status", 		notnull:1});
+		   	var col27 = new WLIU.COL({key:0, table:"s", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",   tooltip:"mytips", list:"rightCategory",  targetid:"rightDiag1",	notnull:1});
+		   	var col28 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"orderno", 	colname:"Sort", datatype:"NUMBER",   tooltip:"mytips",	notnull:1});
 
 			var col31 = new WLIU.COL({key:1, table:"m",		coltype:"hidden", 		name:"id", 			colname:"Menu ID"});
-		   	var col32 = new WLIU.COL({key:0, table:"m", 	coltype:"hidden", 		name:"ref_id",		colname:"Menu Parent ID", 	need:1, notnull: 1});
-		   	var col33 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",			notnull:1});
+		   	var col32 = new WLIU.COL({key:0, table:"m", 	coltype:"hidden", 		name:"ref_id",		colname:"Menu Parent ID"});
+		   	var col33 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"menu_key",  css:"input-tiny", style:"color:red",	colname:"Menu Key",			tooltip:"mytips",	unique:1,	notnull:1});
 		   	var col34 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",		notnull:1});
 		   	var col35 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", 		notnull:1});
-		   	var col36 = new WLIU.COL({key:0, table:"m", 	coltype:"bool", 		name:"status", 		colname:"Status", 			notnull:1});
+		   	var col36 = new WLIU.COL({key:0, table:"m", 	coltype:"bool", 		name:"status", 		colname:"Status", 			tooltip:"mytips", notnull:1});
+		   	var col37 = new WLIU.COL({key:0, table:"m", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",   tooltip:"mytips", list:"rightCategory",  targetid:"rightDiag1",	notnull:1});
+		   	var col38 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"orderno", 	colname:"Sort", datatype:"NUMBER",   tooltip:"mytips",	notnull:1});
 
 
 		   	var cols = {};
@@ -93,6 +99,8 @@
 		   	cols.p.push(col14);
 		   	cols.p.push(col15);
 		   	cols.p.push(col16);
+		   	cols.p.push(col17);
+		   	cols.p.push(col18);
 		   	
 			cols.s = [];
 			cols.s.push(col21);
@@ -101,6 +109,8 @@
 		   	cols.s.push(col24);
 		   	cols.s.push(col25);
 		   	cols.s.push(col26);
+		   	cols.s.push(col27);
+		   	cols.s.push(col28);
 			
 			cols.m = [];
 		   	cols.m.push(col31);
@@ -109,6 +119,8 @@
 		   	cols.m.push(col34);
 		   	cols.m.push(col35);
 		   	cols.m.push(col36);
+		   	cols.m.push(col37);
+		   	cols.m.push(col38);
 
 			/*
 			var filter1 = new WLIU.FILTER({name:"adminname", 	coltype:"textbox", 		cols:"user_name,full_name,address", 		colname:"Name", 	coldesc:"Search by Name"});
@@ -117,15 +129,16 @@
 			*/
 
 		    var table = new WLIU.TREE({
-				rootid: 0,
-				targetid: "#good_tree",
-				title: "Menus",
-				scope: 	"mytab",
-				url:   	"ajax/tree_action.php",
-				wait:   "#mywait",
-				autotip: "#myauto",
-				taberror:"#taberror",
-				tooltip: "#mytips",
+				scope: 		"mytab",
+				treeid:     "lemon",
+				rootid: 	0,
+				refid:      15,
+				title: 		"Menus",
+				url:   		"ajax/tree_action.php",
+				wait:   	"mywait",
+				autotip: 	"myauto",
+				taberror:	"taberror",
+				tooltip: 	"mytips",
 				rights: {detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
 				//filters:filters,
 				cols: 	cols,
@@ -133,33 +146,23 @@
 				sbutton: ["add", "save", "cancel", "delete"],
 				mbutton: ["save", "cancel", "delete"],
 				lists: 	{
-							colorCategory: 		{ loaded: 0, keys:{guid:"", name:""}, list:[] },
-							countryCategory: 	{ loaded: 0, keys:{guid:"", name:""}, list:[] },
-							langCategory: 	{ 
-											loaded: 2, 
-											keys: {guid:"", name:""}, 
-											list:[
-													{key: "cn", value:"China PRC", 		desc:"China MainLand"},
-													{key: "us", value:"United State", 	desc:"United State of America"},
-													{key: "ca", value:"Candada", 		desc:"O Canada"}
-											]
-						}
+							rightCategory: 		{ loaded: 0, keys:{guid:"", name:""}, list:[] }
 				}
 			});
 
             var app = angular.module("myApp", ["wliuTable"]);
             app.controller("myForm", function ($scope) {
 				table.setScope( $scope, "table" );
-				table.getRows(
-					{
-						ajaxSuccess: function(){
-							//$("ul[wliu-tree][root]").wliuTree();
-						}
-					}
-				);
 		    });
 
 			$(function(){
+				table.getRows(
+					{
+						ajaxSuccess: function(){
+							$("ul[wliu-tree][root]").wliuTree();
+						}
+					}
+				);
 			});
 		</script>
 </head>
@@ -176,7 +179,7 @@
 <div id="mywait" wliu-load></div>
 <div id="mytips" wliu-popup></div>
 
-<tree.checkdiag1 table="table" targetid="countryCategory_diag" name="countryCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></tree.checkdiag1>
+<tree.checkdiag1 table="table" targetid="rightDiag1" name="rightCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></tree.checkdiag1>
 
 
 <!-- container -->

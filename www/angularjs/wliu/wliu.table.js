@@ -13,10 +13,10 @@ var common_ng =     [
                         common_ng_options
                     ].join('');
 
-var common_tooltip = [  'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" ',
+var common_tooltip = [  'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" ',
                         'popup-toggle="hover" ',
                         'popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" '
+                        'title="{{table.colMeta(name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" '
                      ].join('');
 
 var wliu_table = angular.module("wliuTable",[]);
@@ -26,8 +26,7 @@ wliu_table.directive("table.navi", function () {
         restrict: "E",
         replace: true,
         scope: {
-            table:      "=",
-            tooltip:    "@"
+            table:      "="
         },
         template: [
                     '<div class="row" style="padding:0px; margin:5px;" ng-show="table.navi.paging==1">',
@@ -36,42 +35,42 @@ wliu_table.directive("table.navi", function () {
                             '<span style="vertical-align:middle;">Page: </span>',                           
                             '<input type="text" class="input-tiny" style="height:1.2em;width:30px;font-size:1.2em;text-align:center;" ng-model="table.navi.pageno" ',
                                 'ng-keypress="keypress($event)" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Page Number" ',
-                                'title="{{tooltip? \'\':\'Page Number\'}}" ',
+                                'popup-target="{{table.navi.tooltip?\'#\'+table.navi.tooltip:\'\'}}" popup-toggle="hover" popup-body="Page Number" ',
+                                'title="{{table.navi.tooltip? \'\':\'Page Number\'}}" ',
                             '/>',
                             '<span style="vertical-align:middle;font-size:1.2em;font-weight:bold"> / </span>',                           
                             '<span style="vertical-align:middle;font-size:1.2em;">{{ table.navi.pagetotal }}</span>',                           
                             '<span style="vertical-align:middle;font-size:1.2em;"> | </span>',                           
                             '<a class="wliu-btn24 wliu-btn24-first"     ng-class="{\'wliu-btn24-first-disabled\':table.firstState()}" ',
                                 'ng-click="table.firstPage()" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="First Page" ',
-                                'title="{{tooltip? \'\':\'First Page\'}}" ',
+                                'popup-target="{{table.navi.tooltip?\'#\'+table.navi.tooltip:\'\'}}" popup-toggle="hover" popup-body="First Page" ',
+                                'title="{{table.navi.tooltip? \'\':\'First Page\'}}" ',
                             '>',
                             '</a>',
                             '<a class="wliu-btn24 wliu-btn24-previous"  ng-class="{\'wliu-btn24-previous-disabled\':table.previousState()}" ',
                                 'ng-click="table.previousPage()" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Previous Page" ',
-                                'title="{{tooltip? \'\':\'Previous Page\'}}" ',
+                                'popup-target="{{table.navi.tooltip?\'#\'+table.navi.tooltip:\'\'}}" popup-toggle="hover" popup-body="Previous Page" ',
+                                'title="{{table.navi.tooltip? \'\':\'Previous Page\'}}" ',
                             '>',
                             '</a>',
                             '<a class="wliu-btn24 wliu-btn24-next"      ng-class="{\'wliu-btn24-next-disabled\':table.nextState()}" ',
                                 'ng-click="table.nextPage()" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Next Page" ',
-                                'title="{{tooltip? \'\':\'Next Page\'}}" ',
+                                'popup-target="{{table.navi.tooltip?\'#\'+table.navi.tooltip:\'\'}}" popup-toggle="hover" popup-body="Next Page" ',
+                                'title="{{table.navi.tooltip? \'\':\'Next Page\'}}" ',
                             '>',
                             '</a>',
                             '<a class="wliu-btn24 wliu-btn24-last"      ng-class="{\'wliu-btn24-last-disabled\':table.lastState()}" ',
                                 'ng-click="table.lastPage()" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Last Page" ',
-                                'title="{{tooltip? \'\':\'Last Page\'}}" ',
+                                'popup-target="{{table.navi.tooltip?\'#\'+table.navi.tooltip:\'\'}}" popup-toggle="hover" popup-body="Last Page" ',
+                                'title="{{table.navi.tooltip? \'\':\'Last Page\'}}" ',
                             '>',
                             '</a>',
                             '<span style="vertical-align:middle;font-size:1.2em;"> | </span>',                           
                             '<a class="wliu-btn24 wliu-btn24-reload" ',
                                 'ng-hide="table.navi.loading==1" ',
                                 'ng-click="table.getRows()" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Reload Data" ',
-                                'title="{{tooltip? \'\':\'Reload Data\'}}" ',
+                                'popup-target="{{table.navi.tooltip?\'#\'+table.navi.tooltip:\'\'}}" popup-toggle="hover" popup-body="Reload Data" ',
+                                'title="{{table.navi.tooltip? \'\':\'Reload Data\'}}" ',
                             '></a>',
                             '<i class="fa fa-spinner fa-lg fa-pulse fa-fw" aria-hidden="true" ng-show="table.navi.loading==1"></i>',
                             '<span style="vertical-align:middle;font-size:1.2em;"> | </span>',                           
@@ -83,19 +82,19 @@ wliu_table.directive("table.navi", function () {
                             '<span style="vertical-align:middle;">Size: </span>',                           
                             '<input type="text" class="input-tiny" style="height:1.2em;width:40px;font-size:1.2em;text-align:center;" ng-model="table.navi.pagesize" ',
                                 'ng-keypress="keypress($event)" ',                                
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Page Size" ',
-                                'title="{{tooltip? \'\':\'Page Size\'}}" ',
+                                'popup-target="{{table.navi.tooltip?\'#\'+table.navi.tooltip:\'\'}}" popup-toggle="hover" popup-body="Page Size" ',
+                                'title="{{table.navi.tooltip? \'\':\'Page Size\'}}" ',
                             '/>',
                             '<a class="wliu-btn24 wliu-btn24-reload" ',
                                 'ng-hide="table.navi.loading==1" ',
                                 'ng-click="table.getRows()" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Reload Data" ',
-                                'title="{{tooltip? \'\':\'Reload Data\'}}" ',
+                                'popup-target="{{table.navi.tooltip?\'#\'+table.navi.tooltip:\'\'}}" popup-toggle="hover" popup-body="Reload Data" ',
+                                'title="{{table.navi.tooltip? \'\':\'Reload Data\'}}" ',
                             '></a>',
                             '<i class="fa fa-spinner fa-lg fa-pulse fa-fw" aria-hidden="true" ng-show="table.navi.loading==1"></i>',
                             '<table.order table="table" style="margin-right:10px" xsize="24" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Sort By" ',
-                                'title="{{tooltip? \'\':\'Sort By\'}}" ',
+                                'popup-target="{{table.navi.tooltip?\'#\'+table.navi.tooltip:\'\'}}" popup-toggle="hover" popup-body="Sort By" ',
+                                'title="{{table.navi.tooltip? \'\':\'Sort By\'}}" ',
                             '><table.order>',
                         '</div>',
                         '</div>',
@@ -118,8 +117,7 @@ wliu_table.directive("table.navi1", function () {
         restrict: "E",
         replace: true,
         scope: {
-            table:      "=",
-            tooltip:    "@"
+            table:      "="
         },
         template: [
                     '<div style="display:block; position:relative; padding:0px; margin:5px;" ng-show="table.navi.paging==1">',
@@ -248,18 +246,17 @@ wliu_table.directive("table.rowno", function () {
         replace: true,
         scope: {
             table:      "=",
-            row:        "=",
-            tooltip:    "@"
+            row:        "="
         },
         template: [
                     '<span class="wliu-text" scope="{{ table.scope }}" ',
                         'ng-disabled="row==undefined" ',
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" ',
+                        'popup-target="{{table.tooltip?\'#\'+table.tooltip:\'\'}}" popup-toggle="hover" ',
                         'popup-body="{{row.error.errorCode?row.error.errorMessage.nl2br():\'\'}}"',
-                        'title="{{ tooltip?\'\':(row.error.errorCode ? row.error.errorMessage : \'\') }}"',
+                        'title="{{ table.tooltip?\'\':(row.error.errorCode ? row.error.errorMessage : \'\') }}"',
                     '>',
                         '<a class="wliu-btn16 wliu-btn16-error-help"    ng-if="row.error.errorCode" ',
-                            'title="{{ tooltip?\'\':( row.error.errorCode? row.error.errorMessage : \'\') }}"',
+                            'title="{{ table.tooltip?\'\':( row.error.errorCode? row.error.errorMessage : \'\') }}"',
                         '>',
                         '</a>',
                         '<span ng-if="row.error.errorCode==0 && row.rowstate==0" title="Series Number">{{ table.indexByRow(row) - 0 + 1 }}</span>',
@@ -284,14 +281,13 @@ wliu_table.directive("table.fileupload", function () {
             row:            "=",
             name:           "@",
             icon:           "@",
-            actname:        "@",
-            tooltip:        "@"
+            actname:        "@"
         },
         template: [
                     '<div style="display:inline-block;min-width:120px;text-align:left;">',
                         '<i ng-if="icon" class="wliu-btn24 wliu-btn24-file-upload" style="overflow:hidden;" ',
-                            'title="{{tooltip?\'\':\'upload File\'}}" ',
-                            'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Upload File" ',
+                            'title="{{table.colMeta(name).tooltip?\'\':\'upload File\'}}" ',
+                            'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="Upload File" ',
                         '>',
                                 '<input type="file" style="display:block; position:absolute; opacity:0;top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" value="Browse..." ',
                                         'onchange="angular.element(this).scope().selectFile(event);" ',
@@ -303,12 +299,12 @@ wliu_table.directive("table.fileupload", function () {
                             '{{actname}}',
                         '</div>',
                         '<a class="wliu-btn16 wliu-btn16-img-print" ng-click="printFile()" ng-if="table.getCol(row, name).value" style="margin-left:5px;" ',
-                            'title="{{tooltip?\'\':\'Print File\'}}" ',
-                            'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Print File" ',
+                            'title="{{table.colMeta(name).tooltip?\'\':\'Print File\'}}" ',
+                            'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="Print File" ',
                         '>',
                         '<a class="wliu-btn16 wliu-btn16-dispose" ng-click="deleteFile()" ng-if="table.getCol(row, name).value" ',
-                            'title="{{tooltip?\'\':\'Delete File\'}}" ',
-                            'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Delete File" ',
+                            'title="{{table.colMeta(name).tooltip?\'\':\'Delete File\'}}" ',
+                            'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="Delete File" ',
                         '></a>',
                         '<div style="display:block;position:relative;font-size:12px;font-weight:bold;color:red;" ng-if="table.getCol(row, name).errorCode">{{table.getCol(row, name).errorMessage}}</div>',
                         '<div style="display:block;text-align:left;" ng-if="table.getCol(row, name).value && !table.getCol(row, name).errorCode">',
@@ -368,29 +364,28 @@ wliu_table.directive("table.imgupload", function () {
             vh:             "@",  
             view:           "@",
             minww:          "@",
-            minhh:          "@",
-            tooltip:        "@"
+            minhh:          "@"
         },
         template: [
                     '<span>',
                         '<div style="position:relative;font-size:12px;font-weight:bold;color:red;" ng-if="table.getCol(row, name).errorCode">{{table.getCol(row, name).errorMessage}}</div>',
                         '<div style="display:inline-block;position:relative;min-width:{{minww}}px;min-height:{{minhh}}px;width:{{ww}}px;border:1px solid #cccccc;" class="wliu-background-1">',
                             '<i class="wliu-btn16 wliu-btn16-image" style="position:absolute; margin-top:3px;margin-left:3px;opacity:0.8; overflow:hidden;" ',
-                                'title="{{tooltip?\'\':\'upload Image\'}}" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Upload Image" ',
+                                'title="{{table.colMeta(name).tooltip?\'\':\'upload Image\'}}" ',
+                                'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="Upload Image" ',
                             '>',
                                     '<input type="file" style="display:block; position:absolute; opacity:0;top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" value="Browse..." ',
                                             'onchange="angular.element(this).scope().selectFile(event);" ',
                                             'ng-disabled="table.getCol(row, name)==undefined" />',
                             '</i>',
                             '<a class="wliu-btn16 wliu-btn16-img-print" ng-click="printImage()" ng-if="table.getCol(row, name).value" style="position:absolute; margin-top:3px;margin-left:24px;opacity:0.8;" ',
-                                'title="{{tooltip?\'\':\'Print Image\'}}" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Print Image" ',
+                                'title="{{table.colMeta(name).tooltip?\'\':\'Print Image\'}}" ',
+                                'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="Print Image" ',
                             '>',
                             '</a>',
                             '<a class="wliu-btn16 wliu-btn16-dispose" ng-click="deleteImage()" ng-if="table.getCol(row, name).value" style="position:absolute; right:0px; margin-top:3px;margin-right:3px;opacity:0.8;" ',
-                                'title="{{tooltip?\'\':\'Delete Image\'}}" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Delete Image" ',
+                                'title="{{table.colMeta(name).tooltip?\'\':\'Delete Image\'}}" ',
+                                'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="Delete Image" ',
                             '>',
                             '</a>',
                             '<span style="position:absolute;top:24px;left:3px;font-size:12px;font-weight:bold;color:#666666;" ng-if="!table.getCol(row, name).value && !table.getCol(row, name).errorCode">{{actname}}</span>',
@@ -566,29 +561,28 @@ wliu_table.directive("table.imgupload1", function () {
             ratio:          "@",
             view:           "@",
             minww:          "@",
-            minhh:          "@",
-            tooltip:        "@"
+            minhh:          "@"
         },
         template: [
                     '<span>',
                         '<div style="position:relative;font-size:12px;font-weight:bold;color:red;" ng-if="table.getCol(row, name).errorCode">{{table.getCol(row, name).errorMessage}}</div>',
                         '<div style="display:inline-block;position:relative;min-width:{{minww}}px;min-height:{{minhh}}px;width:{{ww}}px;border:1px solid #cccccc;" class="wliu-background-1">',
                             '<i class="wliu-btn16 wliu-btn16-image" style="position:absolute; margin-top:3px;margin-left:3px;opacity:0.8; overflow:hidden;" ',
-                                'title="{{tooltip?\'\':\'upload Image\'}}" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Upload Image" ',
+                                'title="{{table.colMeta(name).tooltip?\'\':\'upload Image\'}}" ',
+                                'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="Upload Image" ',
                             '>',
                                     '<input type="file" style="display:block; position:absolute; opacity:0;top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" value="Browse..." ',
                                             'onchange="angular.element(this).scope().selectFile(event);" ',
                                             'ng-disabled="table.getCol(row, name)==undefined" />',
                             '</i>',
                             '<a class="wliu-btn16 wliu-btn16-img-print" ng-click="printImage()" ng-if="table.getCol(row, name).value" style="position:absolute; margin-top:3px;margin-left:24px;opacity:0.8;" ',
-                                'title="{{tooltip?\'\':\'Print Image\'}}" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Print Image" ',
+                                'title="{{table.colMeta(name).tooltip?\'\':\'Print Image\'}}" ',
+                                'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="Print Image" ',
                             '>',
                             '</a>',
                             '<a class="wliu-btn16 wliu-btn16-dispose" ng-click="deleteImage()" ng-if="table.getCol(row, name).value" style="position:absolute; right:0px; margin-top:3px;margin-right:3px;opacity:0.8;" ',
-                                'title="{{tooltip?\'\':\'Delete Image\'}}" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Delete Image" ',
+                                'title="{{table.colMeta(name).tooltip?\'\':\'Delete Image\'}}" ',
+                                'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="Delete Image" ',
                             '>',
                             '</a>',
                             '<span style="position:absolute;top:24px;left:3px;font-size:12px;font-weight:bold;color:#666666;" ng-if="!table.getCol(row, name).value && !table.getCol(row, name).errorCode">{{actname}}</span>',
@@ -856,8 +850,7 @@ wliu_table.directive("table.esign", function () {
             ww:         "@",
             hh:         "@",
             minww:      "@",
-            minhh:      "@",
-            tooltip:    "@"
+            minhh:      "@"
         },
         template: [
                     '<span>',
@@ -965,13 +958,12 @@ wliu_table.directive("table.head", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
                     '<label for="navi_{{table.scope}}_{{name}}" class="wliuCommon-header" scope="{{ table.scope }}" ',
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}" ',
-                        'title="{{tooltip? \'\':table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}" ',
+                        'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}" ',
+                        'title="{{table.colMeta(name).tooltip? \'\':table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}" ',
                     '>',
                         '<span style="vertival-align:middle;">{{ table.colMeta(name).colname?table.colMeta(name).colname:name }}</span>',
                         '<span style="vertival-align:middle;" class="wliuCommon-text-error" ng-if="table.colMeta(name).notnull"> <b>*</b></span> ',
@@ -1009,13 +1001,12 @@ wliu_table.directive("table.label", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
                     '<label class="wliuCommon-label" scope="{{ table.scope }}" ',
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}" ',
-                        'title="{{tooltip? \'\':table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}" ',
+                        'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}" ',
+                        'title="{{table.colMeta(name).tooltip? \'\':table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}" ',
                     '>',
                         '<span style="vertival-align:middle;">{{ table.colMeta(name).colname?table.colMeta(name).colname:name }}</span>',
                         '<span style="vertival-align:middle;" class="wliuCommon-text-error" ng-if="table.colMeta(name).notnull"> <b>*</b></span>',
@@ -1062,14 +1053,13 @@ wliu_table.directive("table.text", function () {
         scope: {
             table:      "=",
             row:        "=",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
                     '<span class="wliu-text" scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)" ',
                         'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                        'title="{{ tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
+                        'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                        'title="{{ table.colMeta(name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
                     '>',
                         '{{ table.getCol(row, name).value }}',
                     '</span>'
@@ -1111,8 +1101,7 @@ wliu_table.directive("table.textbox", function () {
         scope: {
             table:      "=",
             row:        "=",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
                     '<input type="textbox" ',
@@ -1159,8 +1148,7 @@ wliu_table.directive("table.passpair", function () {
         scope: {
             table:      "=",
             row:        "=",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
                     '<span style="display:inline-block;vertical-align:top;" ' + common_ng_hide + '>',
@@ -1172,8 +1160,6 @@ wliu_table.directive("table.passpair", function () {
                         common_ng_disabled,
                         common_ng_options,
                         common_tooltip,
-                        //'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():\'\'}}" ',
-                        //'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:\'\'}}" ',
                     '/>',
                     '<input type="password" style="box-sizing:border-box;width:100%;" placeholder="Confirm Password" ',
                         'ng-model="table.getCol(row, name).value.confirm" ',
@@ -1182,8 +1168,8 @@ wliu_table.directive("table.passpair", function () {
                         common_scope,
                         common_ng_disabled,
                         common_ng_options,
-                        'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).value.password!=table.getCol(row, name).value.confirm ?\'Password not match!\':\'\'}}" ',
-                        'title="{{tooltip?\'\':table.getCol(row, name).value.password!=table.getCol(row, name).value.confirm?\'Password not match!\':\'\'}}" ',
+                        'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).value.password!=table.getCol(row, name).value.confirm ?\'Password not match!\':\'\'}}" ',
+                        'title="{{table.colMeta(name).tooltip?\'\':table.getCol(row, name).value.password!=table.getCol(row, name).value.confirm?\'Password not match!\':\'\'}}" ',
                     '/>',
                     '</span>'
                 ].join(''),
@@ -1214,8 +1200,7 @@ wliu_table.directive("table.textarea", function () {
         scope: {
             table:      "=",
             row:        "=",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
                     '<textarea ',
@@ -1239,8 +1224,7 @@ wliu_table.directive("table.select", function () {
         scope: {
             table:      "=",
             row:        "=",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
 			    '<select ',
@@ -1271,8 +1255,7 @@ wliu_table.directive("table.relation", function () {
             table:      "=",
             row:        "=",
             name:       "@",
-            label:      "@",
-            tooltip:    "@"
+            label:      "@"
         },
         template: [
                     '<span class="checkbox" ',
@@ -1308,8 +1291,7 @@ wliu_table.directive("table.bool", function () {
             table:      "=",
             row:        "=",
             name:       "@",
-            label:      "@",
-            tooltip:    "@"
+            label:      "@"
         },
         template: [
                     '<span class="checkbox" ',
@@ -1328,8 +1310,8 @@ wliu_table.directive("table.bool", function () {
                                 //'<abbr title="{{rdObj.desc}}" ng-if="rdObj.desc!=\'\'">{{ rdObj.value }}</abbr>',
                                 '{{ label.toLowerCase()=="default"?table.colMeta(name).colname:label?label:"" }}',
                             '</label>',
-                            '<br ng-if="table.getCol(row, name).errorCode">',
-                            '<span style="color:red;" ng-if="table.getCol(row, name).errorCode">{{table.getCol(row, name).errorMessage}}</span>',
+                            //'<br ng-if="table.getCol(row, name).errorCode">',
+                            //'<span style="color:red;" ng-if="table.getCol(row, name).errorCode">{{table.getCol(row, name).errorMessage}}</span>',
                     '</span>',
                 ].join(''),
         controller: function ($scope) {
@@ -1346,8 +1328,7 @@ wliu_table.directive("table.datetime", function () {
         scope: {
             table:      "=",
             row:        "=",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
                     '<span  ',
@@ -1402,9 +1383,8 @@ wliu_table.directive("table.date", function () {
         replace: true,
         scope: {
             table:      "=",
-            row:      "=",
-            name:       "@",
-            tooltip:    "@"
+            row:        "=",
+            name:       "@"
         },
         template: [
                     '<input type="textbox" class="wliuCommon-datepicker" placeholder="yyyy-mm-dd" ',
@@ -1445,8 +1425,7 @@ wliu_table.directive("table.time", function () {
         scope: {
             table:      "=",
             row:        "=",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
                     '<input type="textbox" class="wliuCommon-timepicker" placeholder="hh:mm" ',
@@ -1502,8 +1481,7 @@ wliu_table.directive("table.checkbox", function () {
             table:      "=",
             row:        "=",
             name:       "@",
-            colnum:     "@",
-            tooltip:    "@"
+            colnum:     "@"
         },
         template: [
                     '<div ',
@@ -1546,16 +1524,14 @@ wliu_table.directive("table.checkbox1", function () {
         scope: {
             table:      "=",
             row:        "=",
-            name:       "@",  // col_name 
-            targetid:   "@",
-            tooltip:    "@"
+            name:       "@"  // col_name 
         },
         template: [
                     '<input type="text" readonly class="wliuCommon-checklist" value="{{ valueText() }}" ',
                             'ng-click="change(row, name)" ',
-                            'diag-target="#{{targetid}}" diag-toggle="click" ',
-                            'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                            'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                            'diag-target="#{{table.colMeta(name).targetid}}" diag-toggle="click" ',
+                            'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                            'title="{{table.colMeta(name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                             common_scope,
                             common_ng_class,
                             common_ng_disabled,
@@ -1693,8 +1669,7 @@ wliu_table.directive("table.checklist1", function () {
             name:       "@",   // $scope.name is  col_name 
             colnum:     "@",
             bar:        "@",
-            title:      "@",
-            tooltip:    "@"
+            title:      "@"
         },
         template: [
                     '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px; padding:2px; overflow-y:auto; overflow:visible; text-align:left; min-width:240px;" ',
@@ -1785,16 +1760,14 @@ wliu_table.directive("table.checkbox2", function () {
         scope: {
             table:      "=",
             row:        "=",
-            name:       "@", // col_name
-            targetid:   "@",
-            tooltip:    "@"
+            name:       "@" // col_name
         },
         template: [
                         '<input type="text" readonly class="wliuCommon-checklist" value="{{ valueText() }}" ',
                                 'ng-click="change(row, name)" ',
-                                'diag-target="#{{targetid}}" diag-toggle="click" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                                'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                                'diag-target="#{{table.colMeta(name).targetid}}" diag-toggle="click" ',
+                                'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                                'title="{{table.colMeta(name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                                 common_scope,
                                 common_ng_class,
                                 common_ng_disabled,
@@ -1955,8 +1928,7 @@ wliu_table.directive("table.checklist2", function () {
             colnum:     "@",
             colnum1:    "@",
             bar:        "@",
-            title:      "@",
-            tooltip:    "@"
+            title:      "@"
         },
         template: [
                     '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;overflow:visible;" ',
@@ -2062,16 +2034,14 @@ wliu_table.directive("table.checkbox3", function () {
         scope: {
             table:      "=",
             row:        "=", 
-            name:       "@",  // col_name
-            targetid:   "@",
-            tooltip:    "@"
+            name:       "@"  // col_name
         },
         template: [
                     '<input type="text" readonly class="wliuCommon-checklist" value="{{ valueText() }}" ',
                             'ng-click="change(row, name)" ',
-                            'diag-target="#{{targetid}}" diag-toggle="click" ',
-                            'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                            'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                            'diag-target="#{{table.colMeta(name).targetid}}" diag-toggle="click" ',
+                            'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                            'title="{{table.colMeta(name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                             common_scope,
                             common_ng_class,
                             common_ng_disabled,
@@ -2257,8 +2227,7 @@ wliu_table.directive("table.checklist3", function () {
             colnum:     "@",
             colnum1:    "@",
             bar:        "@",
-            title:      "@",
-            tooltip:    "@"
+            title:      "@"
         },
         template: [
                     '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;overflow:visible;" ',
@@ -2387,8 +2356,7 @@ wliu_table.directive("table.radio", function () {
             table:      "=",
             row:        "=",
             name:       "@",
-            colnum:     "@",
-            tooltip:    "@"
+            colnum:     "@"
         },
         template: [
                     '<div ',
@@ -2428,15 +2396,13 @@ wliu_table.directive("table.radio1", function () {
         scope: {
             table:      "=",
             row:        "=",
-            name:       "@",  // col_name
-            targetid:   "@",
-            tooltip:    "@"
+            name:       "@"  // col_name
         },
         template: [     '<input  type="text" readonly class="wliuCommon-radiolist" value="{{ valueText() }}" ',
                                 'ng-click="change(row, name)" ',
-                                'diag-target="#{{targetid}}" diag-toggle="click" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                                'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                                'diag-target="#{{table.colMeta(name).targetid}}" diag-toggle="click" ',
+                                'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                                'title="{{table.colMeta(name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                                 common_scope,
                                 common_ng_class,
                                 common_ng_disabled,
@@ -2537,8 +2503,7 @@ wliu_table.directive("table.radiolist1", function () {
             name:       "@", // col_name
             colnum:     "@",
             bar:        "@", 
-            title:      "@",
-            tooltip:    "@"
+            title:      "@"
         },
         template: [
                     '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px; padding:2px; overflow-y:auto;text-align:left; min-width:240px;" ',
@@ -2600,17 +2565,15 @@ wliu_table.directive("table.radio2", function () {
         scope: {
             table:      "=",
             row:        "=",
-            name:       "@", // col_name
-            targetid:   "@",
-            tooltip:    "@"
+            name:       "@" // col_name
         },
         template: [
                         '<input type="text" readonly class="wliuCommon-radiolist" value="{{ valueText() }}" ',
                                 'ng-click="change(row, name)" ',
-                                'diag-target="#{{targetid}}" diag-toggle="click" ',
+                                'diag-target="#{{table.colMeta(name).targetid}}" diag-toggle="click" ',
 
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                                'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                                'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                                'title="{{table.colMeta(name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                                 common_scope,
                                 common_ng_class,
                                 common_ng_disabled,
@@ -2752,8 +2715,7 @@ wliu_table.directive("table.radiolist2", function () {
             colnum:     "@",
             colnum1:    "@",
             bar:        "@",
-            title:      "@",
-            tooltip:    "@"
+            title:      "@"
         },
         template: [
                     '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;"',
@@ -2839,16 +2801,14 @@ wliu_table.directive("table.radio3", function () {
         scope: {
             table:      "=",
             row:        "=",
-            name:       "@", // col_name
-            targetid:   "@",
-            tooltip:    "@"
+            name:       "@" // col_name
         },
         template: [
                     '<input type="text" readonly class="wliuCommon-radiolist" value="{{ valueText() }}" ',
                             'ng-click="change(row, name)" ',
-                            'diag-target="#{{targetid}}" diag-toggle="click" ',
-                            'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
-                            'title="{{tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                            'diag-target="#{{table.colMeta(name).targetid}}" diag-toggle="click" ',
+                            'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                            'title="{{table.colMeta(name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                             common_scope,
                             common_ng_class,
                             common_ng_disabled,
@@ -3008,8 +2968,7 @@ wliu_table.directive("table.radiolist3", function () {
             colnum:     "@",
             colnum1:    "@",
             bar:        "@",
-            title:      "@",
-            tooltip:    "@"
+            title:      "@"
         },
         template: [
                     '<div class="col-md-12" style="border:1px dotted #666666;border-radius:5px;overflow-y:auto;" ',
@@ -3534,16 +3493,15 @@ wliu_table.directive("table.bicon", function (wliuTableService) {
             xsize:      "@",
             name:       "@",
             actname:    "@",
-            action:     "&",
-            tooltip:    "@"
+            action:     "&"
         },
         template: [
                     '<span>',
                         '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" ',
                             'ng-click="action1(table.getRow(row))" ',
                             'ng-if="buttonState(name, table.getRow(row).rowstate)" ',
-                            'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" popup-placement="down" ',
-                            'title="{{tooltip?\'\':actname?actname:name}}" ',
+                            'popup-target="{{table.tooltip?\'#\'+table.tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" popup-placement="down" ',
+                            'title="{{table.tooltip?\'\':actname?actname:name}}" ',
                             common_scope,
                         '>',
                         '</a>',
@@ -3751,16 +3709,15 @@ wliu_table.directive("table.hicon", function (wliuTableService) {
             xsize:      "@",
             name:       "@",
             actname:    "@",
-            action:     "&",
-            tooltip:    "@"
+            action:     "&"
         },
         template: [
                     '<span>',
                         '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" ',
                             'ng-click="action1()" ',
                             'ng-if="buttonState(name, rowstate())" ',
-                            'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" popup-placement="down" ',
-                            'title="{{tooltip?\'\':actname?actname:name}}" ',
+                            'popup-target="{{table.tooltip?\'#\'+table.tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" popup-placement="down" ',
+                            'title="{{table.tooltip?\'\':actname?actname:name}}" ',
                             common_scope,
                         '>',
                         '</a>',

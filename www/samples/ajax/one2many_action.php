@@ -6,7 +6,7 @@ include_once($CFG["include_path"] . "/wliu/database/database.php");
 define("DEBUG", 1);
 $response = array();
 try {
-	$rights = array("view"=>1, "save"=>0, "add"=>1, "delete"=>1);
+	$rights = array("view"=>1, "save"=>1, "add"=>1, "delete"=>1);
 
 	/*** common secure : prevent url hack from hack tool ***/
 	$db = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
@@ -59,13 +59,13 @@ try {
 							"fkeys"=>array("user_id"), 
 							"cols"=>array("id","user_id", "address", "lang", "color",  "country", "shipdate", "status", "created_time"), 
 							"insert"=>array(), 
-							"update"=>array() 
+							"update"=>array(), 
+							"country"=>array("name"=>"website_admin_country", "value"=>"country_id", "keys"=>array("admin_id") )  // checkbox values  id => admin_id ; country_id is values
 		),
-		"medium"=>array( ),
+		"medium"=>array( )
 
 		//checkbox maping keys, fkeys using  database colname.  keys is value col,  fkeys is relational cols; 
 		//Javascript ,  don't need to define keys, fkeys for checkbox mapping 
-		"country"=>array("name"=>"website_admin_country", "value"=>"country_id", "keys"=>array("admin_id") )  // checkbox values  id => admin_id ; country_id is values
 	);
 	$table["metadata"] = $tableMeta; 	
 

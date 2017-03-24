@@ -57,17 +57,17 @@
 
         <script language="javascript" type="text/javascript">
 		   	var col1 = new WLIU.COL({key:1, table:"p",	coltype:"hidden", 		name:"id", 			colname:"User No.",  	coldesc:"User ID"});
-		   	var col2 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"user_name",	colname:"User Name", 	coldesc:"Login User",  	sort:"ASC", need:1, notnull: 1});
-		   	var col3 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name",  	sort:"ASC", notnull:1});
-		   	var col4 = new WLIU.COL({key:1, table:"s", 	coltype:"hidden", 	    name:"uid",		    col:"id", 				colname:"AddressID",  	coldesc:"AddressID"});
+		   	var col2 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"user_name",	colname:"User Name", 	coldesc:"Login User", tooltip:"mytips", 	sort:"ASC", need:1, notnull: 1});
+		   	var col3 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"full_name", 	colname:"Full Name", 	coldesc:"Full Name", tooltip:"mytips",  	sort:"ASC", notnull:1});
+		   	var col4 = new WLIU.COL({key:1, table:"s", 	coltype:"hidden", 	    name:"uid",		    col:"id", 				colname:"AddressID", tooltip:"mytips",  	coldesc:"AddressID"});
 		   	var col5 = new WLIU.COL({key:0, table:"s", 	coltype:"hidden", 	    name:"user_id",		colname:"User ID",  	coldesc:"uSERid"});
 		   	var col6 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"address", 	colname:"Address",   	coldesc:"Address", 		    sort:"ASC", need:1, notnull:1});
-			var col7 = new WLIU.COL({key:0, table:"s", 	coltype:"select", 		name:"lang", 		colname:"LangISO", 		coldesc:"Language ISO Code",defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory"});
-		   	var col8 = new WLIU.COL({key:0, table:"s", 	coltype:"radio3", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name",  		defval: 77, notnull:1, 	list:"colorCategory"});
-			var col9 = new WLIU.COL({key:0, table:"s", 	coltype:"checkbox1",	name:"country", 	colname:"Homeland", 	coldesc:"Nationality",  	sort:"DESC", need:1,  notnull:0, list:"countryCategory"});
-		   	var col10 = new WLIU.COL({key:0, table:"s", coltype:"datetime", 	name:"shipdate", 	colname:"Ship Date", 	coldesc:"Date of Shipment",  sort:"DESC"});
-		   	var col11 = new WLIU.COL({key:0, table:"s", coltype:"bool", 	    name:"status", 	    colname:"Acitve?", 	    coldesc:"is Active?",  sort:"DESC"});
-		   	var col12 = new WLIU.COL({key:0, table:"s", coltype:"text", 	    name:"ctime", 	    col:"created_time",     colname:"Acitve?", 	    coldesc:"is Active?",  sort:"DESC"});
+			var col7 = new WLIU.COL({key:0, table:"s", 	coltype:"select", 		name:"lang", 		colname:"LangISO", 		coldesc:"Language ISO Code",defval:"cn",	sort:"DESC", need:1,  notnull:1, list:"langCategory" });
+		   	var col8 = new WLIU.COL({key:0, table:"s", 	coltype:"radio3", 		name:"color", 	 	colname:"Color", 		coldesc:"Color Name",  		defval: 77, notnull:1, 	list:"colorCategory",  targetid:"colorCategory_diag"});
+			var col9 = new WLIU.COL({key:0, table:"s", 	coltype:"checkbox1",	name:"country", 	colname:"Homeland", 	coldesc:"Nationality",  	defval:[1,2,3], sort:"DESC", need:1,  notnull:0, list:"countryCategory",  targetid:"countryCategory_diag"});
+		   	var col10 = new WLIU.COL({key:0, table:"s", coltype:"datetime", 	name:"shipdate", 	colname:"Ship Date", 	coldesc:"Date of Shipment",  sort:"DESC", defval:"2015-10-25"});
+		   	var col11 = new WLIU.COL({key:0, table:"s", coltype:"bool", 	    name:"status", 	    colname:"Acitve?", 	    coldesc:"is Active?", defval:1,  sort:"DESC"});
+		   	var col12 = new WLIU.COL({key:0, table:"s", coltype:"text", 	    name:"ctime", 	    col:"created_time",     colname:"CreateTime?", 	    coldesc:"is Active?",  sort:"DESC"});
 
 		   	var cols = [];
 		   	cols.push(col1);
@@ -94,9 +94,10 @@
 		    var table = new WLIU.TABLE({
 				scope: 	"mytab",
 				url:   	"ajax/one2many_action.php",
-				wait:   "#mywait",
-				autotip: "#myauto",
-				taberror:"#taberror",
+				wait:   "mywait",
+				autotip: "myauto",
+				taberror:"taberror",
+				tooltip: "mytips",
 				rights: {detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
 				navi:   {pagesize:20, match: 0, orderby:"s.created_time", sortby:"DESC", paging:1 },
 				filters:filters,
@@ -145,10 +146,10 @@
 		<div class="col-md-12">
 			<fieldset>
 				<legend>Search</legend>
-				<filter.label table="table" name="user_name"></filter.label> : <filter.textbox class="input-medium" table="table" name="adminname" tooltip="mytips"></filter.textbox><br /><br />
+				<filter.label table="table" name="user_name"></filter.label> : <filter.textbox class="input-medium" table="table" name="adminname"></filter.textbox><br /><br />
 				<!--
-				<filter.label table="table" name="color"></filter.label> : <filter.textbox class="input-medium" table="table" name="color" colnum="3" targetid="#color_filter1" bar="1"  tooltip="mytips"></filter.textbox><br />
-				<filter.label table="table" name="email"></filter.label> : <filter.textbox class="input-medium" table="table" name="country"  tooltip="mytips"></filter.textbox><br />
+				<filter.label table="table" name="color"></filter.label> : <filter.textbox class="input-medium" table="table" name="color" colnum="3" targetid="#color_filter1" bar="1" ></filter.textbox><br />
+				<filter.label table="table" name="email"></filter.label> : <filter.textbox class="input-medium" table="table" name="country" ></filter.textbox><br />
 				-->
 			</feildset>
 			<div style="margin-top:20px;">
@@ -169,41 +170,41 @@
 						</table.hgroup>
 					</td>
 					<td width=30 align="center">
-						<table.head table="table" name="SN" tooltip="mytips"></table.head>
+						<table.head table="table" name="SN"></table.head>
 					</td>
 					<td>
-						<table.head table="table" name="id" tooltip="mytips"></table.head>
+						<table.head table="table" name="id"></table.head>
 					</td>
 					<td>
-						<table.head table="table" name="user_name" tooltip="mytips"></table.head>
+						<table.head table="table" name="user_name"></table.head>
 					</td>
 					<td>
-						<table.head table="table" name="full_name" tooltip="mytips"></table.head>
+						<table.head table="table" name="full_name"></table.head>
 					</td>
 					
 					<td>
-						<table.head table="table"  name="uid" tooltip="1"></table.head>
+						<table.head table="table"  name="uid"></table.head>
 					</td>
 					<td>
-						<table.head table="table"  name="address" tooltip="1"></table.head>
+						<table.head table="table"  name="address"></table.head>
 					</td>
 					<td>
-						<table.head table="table"  name="lang" tooltip="1"></table.head>
+						<table.head table="table"  name="lang"></table.head>
 					</td>
 					<td>
-						<table.head table="table"  name="color" tooltip="1"></table.head>
+						<table.head table="table"  name="color"></table.head>
 					</td>
 					<td>
-						<table.head table="table" name="country" tooltip="mytips"></table.head>
+						<table.head table="table" name="country"></table.head>
 					</td>
 					<td>
-						<table.head table="table" name="memberdate" tooltip="1"></table.head>
+						<table.head table="table" name="memberdate"></table.head>
 					</td>
 					<td>
-						<table.head table="table" name="status" tooltip="1"></table.head>
+						<table.head table="table" name="status"></table.head>
 					</td>
 					<td>
-						<table.head table="table" name="ctime" tooltip="1"></table.head>
+						<table.head table="table" name="ctime"></table.head>
 					</td>
 				</tr>	
 				<tr ng-repeat="row in table.rows">
@@ -218,40 +219,40 @@
 						</table.bgroup>
 					</td>
 					<td width=30 align="center">
-						<table.rowno table="table"  row="row" tooltip="mytips"></table.rowno>
+						<table.rowno table="table"  row="row"></table.rowno>
 					</td>
 					<td align="center">
-						<table.text table="table" name="id" row="row" tooltip="mytips"></table.text> 
+						<table.text table="table" name="id" row="row"></table.text> 
 					</td>
 					<td>
-						<table.textbox class="input-small" table="table" name="user_name" row="row" tooltip="mytips"></table.textbox>
+						<table.textbox class="input-small" table="table" name="user_name" row="row"></table.textbox>
 					</td>
 					<td>
-						<table.textbox class="input-small" table="table" name="full_name" row="row" tooltip="mytips"></table.textbox>
+						<table.textbox class="input-small" table="table" name="full_name" row="row"></table.textbox>
 					</td>
 					<td>
-						<table.text table="table" name="uid" row="row" tooltip="mytips"></table.text>
+						<table.text table="table" name="uid" row="row"></table.text>
 					</td>
 					<td>
-						<table.textbox table="table" name="address" row="row" style="width:200px;" hh=300 tooltip="mytips"></table.textbox>
+						<table.textbox table="table" name="address" row="row" style="width:200px;" hh=300></table.textbox>
 					</td>
 					<td>
-						<table.select class="input-small" table="table" name="lang" row="row" tooltip="mytips"></table.select>
+						<table.select class="input-small" table="table" name="lang" row="row"></table.select>
 					</td>
 					<td>
-						<table.radio3 class="input-tiny" table="table" name="color" row="row" targetid="colorCategory_diag" tooltip="mytips"></table.radio3>
+						<table.radio3 class="input-tiny" table="table" name="color" row="row"></table.radio3>
 					</td>
 					<td>
-						<table.checkbox1 class="input-small" table="table" name="country" row="row" tooltip="mytips" targetid="countryCategory_diag"></table.checkbox1>
+						<table.checkbox1 class="input-small" table="table" name="country" row="row"></table.checkbox1>
 					</td>
 					<td>
-						<table.datetime class="input-small" table="table" name="shipdate" row="row" tooltip="mytips"></table.datetime>
+						<table.datetime class="input-small" table="table" name="shipdate" row="row"></table.datetime>
+					</td>
+					<td align="center" valgin="middle">
+						<table.bool table="table" name="status" row="row"></table.bool>
 					</td>
 					<td>
-						<table.bool class="input-small" table="table" name="status" row="row" tooltip="mytips"></table.bool>
-					</td>
-					<td>
-						<table.intdate class="input-small" table="table" name="ctime" row="row" tooltip="mytips"></table.intdate>
+						<table.intdate class="input-small" table="table" name="ctime" row="row"></table.intdate>
 					</td>
 				</tr>
 			</table>

@@ -3,12 +3,12 @@ var WLIU = WLIU || {};
 // Table Object
 WLIU.TREE = function( opts ) {
 	this.sc			= null;
-
 	this.lang       = opts.lang?opts.lan:"cn";
 	this.title  	= opts.title?opts.title:"";
-	this.targetid	= opts.targetid?opts.targetid:"";
+	this.treeid		= opts.treeid?opts.treeid:0;  // tree root id
 	this.rootid		= opts.rootid?opts.rootid:0;  // tree root id
 	this.refid		= opts.refid?opts.refid:0;    // refid = refer to other table for checkbox1, multiple select
+
 	this.scope  	= opts.scope?opts.scope:"";
 	this.url		= opts.url?opts.url:"";
 	
@@ -16,6 +16,7 @@ WLIU.TREE = function( opts ) {
 	this.rowerror   = opts.rowerror?opts.rowerror:"";
 	this.taberror 	= opts.taberror?opts.taberror:"";
 	this.autotip 	= opts.autotip?opts.autotip:"";
+	this.tooltip 	= opts.tooltip?opts.tooltip:"";
 
 	this.pbutton 	= opts.pbutton?opts.pbutton:["add", "save", "cancel", "delete"],
 	this.sbutton	= opts.sbutton?opts.sbutton:["add", "save", "cancel", "delete"],
@@ -27,7 +28,6 @@ WLIU.TREE = function( opts ) {
 	this.rights 	= {view:1, save:0, cancel:1, clear:1, delete:0, add:1, detail:1, output:0, print:1};
 	this.cols 		= {};
 	this.rows 		= [];
-	this.navi		= { paging:1, pageno: 0, pagesize:20, pagetotal:0, recordtotal:0, match: 1, loading:0, orderby: "", sortby:"" };
 	this.filters 	= [];
 	this.lists		= {};  // { gender: { loaded: 1, keys: { rowsn: -1, name: "" }, list: [{key:1, value:"Male", desc:""}, {key:2, value:"Female", desc:""}] },  	xxx: {} }
 	
@@ -201,8 +201,17 @@ WLIU.TREE.prototype = {
 	},
 	
 	/*** ajax method ***/
-	saveRow: function(theRow, callback) {
-		FTABLE.saveRow(this, theRow, callback);
+	saveRow: function(theRows, theRow, callback) {
+		var ntable = {};
+		ntable.scope 	= this.scope;
+		ntable.lang  	= this.lang;
+		ntable.rootid  	= this.rootid;
+		ntable.refid  	= this.refid;
+		ntable.action	= "save";
+		ntable.error  	= {errorCode: 0, errorMessage:""};
+		ntable.cols 	= this.cols;    
+		ntable.rows 	= FROW.getChangeRow(theRow);
+		this.ajaxCall(ntable, callback, theRow, theRows);
 	},
 	
 	// for one2many & many2many 
@@ -217,7 +226,7 @@ WLIU.TREE.prototype = {
 		ntable.cols     = this.cols; // must provide cols meta to get data from database;
 		ntable.filters  = FTABLE.getFilters(this);
 		ntable.lists    = FTABLE.getLists(this);
-		ntable.rows = [];
+		ntable.rows 	= [];
 		this.ajaxCall(ntable, callback);
 	},
 
@@ -226,9 +235,9 @@ WLIU.TREE.prototype = {
 	},
 	/********************************/
 
-	ajaxCall: function(ntable, callback) {
+	ajaxCall: function(ntable, callback, theRow, theRows) {
 		var _self = this;
-		if( _self.wait ) $(_self.wait).trigger("show");
+		if(_self.wait ) $("#" + _self.wait).trigger("show");
 		if( callback && callback.ajaxBefore && $.isFunction(callback.ajaxBefore) ) callback.ajaxBefore(table);
 		//console.log(table);
 		$.ajax({
@@ -238,10 +247,10 @@ WLIU.TREE.prototype = {
 			dataType: "json",  
 			contentType:"application/x-www-form-urlencoded",
 			error: function(xhr, tStatus, errorTh ) {
-				if( _self.wait ) $(_self.wait).trigger("hide");
+				if(_self.wait ) $("#" + _self.wait).trigger("hide");
 			},
 			success: function(req, tStatus) {
-				if( _self.wait ) $(_self.wait).trigger("hide");
+				if(_self.wait ) $("#" + _self.wait).trigger("hide");
 				if( callback && callback.ajaxAfter && $.isFunction(callback.ajaxAfter) ) callback.ajaxAfter(req.table);
 
 				switch( req.table.action ) {
@@ -250,10 +259,10 @@ WLIU.TREE.prototype = {
 						_self.syncRows(req.table);
 						break;
 					case "add":
-						_self.syncError(req.table);
+						_self.updateRow(req.table, theRow, theRows);
 						break;
 					case "save":
-						_self.syncError(req.table);
+						_self.updateRow(req.table, theRow, theRows);
 						break;
 				}
 				if(!_self.sc.$$phase) _self.sc.$apply();
@@ -263,8 +272,7 @@ WLIU.TREE.prototype = {
 				} else {
 					if(callback && callback.ajaxError && $.isFunction(callback.ajaxError) ) callback.ajaxError(req.table);
 				}
-				
-				$(_self.errorShow).trigger("errorshow");
+				$("#" + _self.taberror).trigger("ishow");
 			},
 			type: "post",
 			url: _self.url
@@ -309,21 +317,75 @@ WLIU.TREE.prototype = {
 				this.rows.push(prow);	
 			}
 		}
-		console.log(this);
 	},
-	_toHTML: function() {
-		var html = '<ul id="' + 'tree_' + this.targetid + '" wliu-tree root>';
-		html += '<li nodes open><s folder></s>';
 
-			html += this.title?this.title:'Tree Root';
-			html += '<ul wliu-tree>';
-			if(this.cols.p && this.cols.p.length>0) {
+	updateRow: function(table, theRow, theRows) {
+		this.tableError(table.error);
+		if( table.rows && table.rows.length > 0) {
+			var nrow = table.rows[0];
+			if( nrow.error.errorCode > 0 ) {
+				theRow.error.errorCode = nrow.error.errorCode;
+				theRow.error.errorMessage = nrow.error.errorMessage;
+				
+				/***************************************/
+				for(var cidx in nrow.cols) {
+					var ncol = nrow.cols[cidx];
+					var theCol = FCOLLECT.objectByKV( theRow.cols, { name: ncol.name } );
+					if( theCol ) {
+						this.colError(theRow, ncol.name, {errorCode: ncol.errorCode, errorMessage: ncol.errorMessage});
+					}
+				}
+				/***************************************/
+			
+			} else {
+					switch(parseInt(theRow.rowstate)) {
+						case 0:
+							break;
+						case 1:
+							theRow.error.errorCode = nrow.error.errorCode;
+							theRow.error.errorMessage = nrow.error.errorMessage;
+							theRow.rowstate = 0;
+							/***************************************/
+							for(var cidx in nrow.cols) {
+								var ncol = nrow.cols[cidx];
+								var theCol = FCOLLECT.objectByKV( theRow.cols, { name: ncol.name } );
+								if( theCol ) {
+									theCol.colstate 	= 0;
+									theCol.current 		= angular.copy(theCol.value);
+									this.colError(theRow, ncol.name, {errorCode:0, errorMessage:""});
+								}
+							}
+							/***************************************/
 
+							break;
+						case 2:
+							theRow.error.errorCode = nrow.error.errorCode;
+							theRow.error.errorMessage = nrow.error.errorMessage;
+							theRow.rowstate = 0;
+							for(var cidx in nrow.cols) {
+								var ncol = nrow.cols[cidx];
+								var theCol = FCOLLECT.objectByKV( theRow.cols, { name: ncol.name } );
+								if( theCol ) {
+									if(theCol.key) {
+										FROW.setColVal(theCol, ncol.value);
+									}
+									theCol.colstate 	= 0;
+									theCol.current 		= angular.copy(theCol.value);
+								
+									this.colError(theRow, ncol.name, {errorCode:0, errorMessage:""});
+								}
+							}
+							break;
+						case 3:
+							theRow.error.errorCode = nrow.error.errorCode;
+							theRow.error.errorMessage = nrow.error.errorMessage;
+							theRow.rowstate = 0;
+							if( parseInt(theRow.error.errorCode)<=0 ) {
+								this.removeRow(theRows, theRow);
+							}
+							break;
+					}
 			}
-			html += '</ul>';
-
-		html += '</ul>';
-		html += '</li>';
-		html += '</ul>';
+		}
 	}
 }
