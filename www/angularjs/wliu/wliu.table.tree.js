@@ -126,6 +126,78 @@ wliu_table.directive("table.tree", function () {
     }
 });
 
+wliu_table.directive("table.treeview", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            action:     "&"
+        },
+        template: [
+                    '<ul id="' + 'tree_' + table.treeid + '" wliu-tree root>',
+                        '<li nodes open><s folder></s>',
+                            '{{table.title?table.title:\'Tree Root\'}} ',
+                            '<tree.hicon table="table" rows="table.rows" row="root" name="add" actname="Add"></tree.hicon>',
+                            /*** ptable ***/
+                            '<ul wliu-tree>',
+                                '<li nodes open ng-repeat="prow in table.rows"><s folder></s>',
+                                    '<tree.rowstatus table="table" row="prow"></tree.rowstatus>',
+                                    '<span style="display:none;" ng-repeat-start="pcol in prow.cols"></span>',
+                                            '<span ng-switch on="pcol.coltype">',
+                                                '<tree.text ng-switch-when="text"       table="table" row="prow" name="{{pcol.name}}"></tree.text>',
+
+                                                //'<tree.label ng-switch-when="checkbox"     table="table" row="prow" name="{{pcol.name}}"></tree.label>',
+                                                '<tree.checkbox ng-switch-when="checkbox"  table="table" row="prow" name="{{pcol.name}}"></tree.checkbox>',
+
+                                                '<tree.label   ng-switch-when="radio1"      table="table" row="prow" name="{{pcol.name}}"></tree.label>',
+                                                '<tree.radio1  ng-switch-when="radio1"      table="table" row="prow" name="{{pcol.name}}"></tree.radio1>',
+                                            '</span>',
+                                    '<span style="display:none;" ng-repeat-end></span>',
+                                    /*** stable ***/
+                                    '<ul wliu-tree>',
+                                            '<li nodes open ng-repeat="srow in prow.rows"><s folder></s>',
+                                                '<tree.rowstatus table="table" row="srow"></tree.rowstatus>',
+                                                '<span style="display:none;" ng-repeat-start="scol in srow.cols"></span>',
+                                                        '<span ng-switch on="scol.coltype">',
+                                                            '<tree.text ng-switch-when="text"       table="table" row="srow" name="{{scol.name}}"></tree.text>',
+
+                                                            //'<tree.label ng-switch-when="checkbox"     table="table" row="srow" name="{{scol.name}}"></tree.label>',
+                                                            '<tree.checkbox ng-switch-when="checkbox" table="table" row="srow" name="{{scol.name}}"></tree.checkbox>',
+                                                            '<tree.radio1  ng-switch-when="radio1"  table="table" row="srow" name="{{scol.name}}"></tree.radio1>',
+                                                        '</span>',
+                                                '<span style="display:none;" ng-repeat-end></span>',
+                                                /*** mtable ***/
+                                                '<ul wliu-tree>',
+                                                    '<li node ng-repeat="mrow in srow.rows"><s folder></s>',
+                                                        '<tree.rowstatus table="table" row="mrow"></tree.rowstatus>',
+                                                        '<span style="display:none;" ng-repeat-start="mcol in mrow.cols"></span>',
+                                                                '<span ng-switch on="mcol.coltype">',
+                                                                    '<tree.text ng-switch-when="text"       table="table" row="mrow" name="{{mcol.name}}"></tree.text>',
+
+                                                                    //'<tree.label ng-switch-when="checkbox"     table="table" row="mrow" name="{{mcol.name}}"></tree.label>',
+                                                                    '<tree.checkbox ng-switch-when="checkbox" table="table" row="mrow" name="{{mcol.name}}"></tree.checkbox>',
+                                                                    '<tree.radio1  ng-switch-when="radio1"      table="table" row="mrow" name="{{mcol.name}}"></tree.radio1>',
+                                                                '</span>',
+                                                        '<span style="display:none;" ng-repeat-end></span>',
+                                                    '</li>',
+                                                '</ul>',
+                                                /***\\mtable ***/
+                                            '</li>',
+                                    '</ul>',
+                                    /*** \\stable ***/
+                                '</li>',
+                            '</ul>',
+                            /*** \\ptable ***/
+                        '</li>',
+                    '</ul>'
+                ].join(''),
+        controller: function ($scope) {
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
 
 wliu_table.directive("tree.rowstatus", function () {
     return {
@@ -322,6 +394,53 @@ wliu_table.directive("tree.bool", function () {
         link: function (sc, el, attr) {
             $(el).unbind("click.treeBool").bind("click.treeBool", function(){
                 sc.table.getCol(sc.row, sc.name).value = !sc.table.getCol(sc.row, sc.name).value;
+                sc.table.changeCol(sc.row, sc.name);
+                sc.$apply();
+            })
+        }
+    }
+});
+
+wliu_table.directive("tree.checkbox", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            row:        "=",
+            name:       "@"
+        },
+        template: [
+                    '<div style="display:inline-block;" ',
+                        tree_scope,
+                        tree_ng_class,
+                        tree_tooltip,
+                    '>',
+                        '<span ',
+                            'ng-repeat="rdObj in table.colList(row, name).list">',
+                                '<span class="checkbox" ckval="{{rdObj.key}}">',
+                                        '<input type="checkbox" id="{{table.scope}}_{{name}}_{{row.guid}}_{{rdObj.key}}" ',
+                                            'ng-model="table.getCol(row, name).value[rdObj.key]" ng-value="rdObj.key"  ',
+                                            tree_scope,
+                                            tree_ng_change,
+                                            //tree_ng_disabled,
+                                        '/>',
+
+                                        '<label for="{{table.scope}}_{{name}}_{{row.guid}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
+                                            '{{ rdObj.value }}',
+                                        '</label>',
+
+                                '</span>',
+                        '</span>',
+                    '</div>'
+                ].join(''),
+        controller: function ($scope) {
+           $scope.table.getCol($scope.row, $scope.name).value = $scope.table.getCol($scope.row, $scope.name).value?$scope.table.getCol($scope.row, $scope.name).value:{}; 
+        },
+        link: function (sc, el, attr) {
+            $("span.checkbox" , el).unbind("click.treeBool").bind("click.treeBool", function(){
+                alert( $(this).attr("ckval") );
+                sc.table.getCol(sc.row, sc.name).value[$(this).attr("ckval")] = !sc.table.getCol(sc.row, sc.name).value([$(this).attr("ckval")]);
                 sc.table.changeCol(sc.row, sc.name);
                 sc.$apply();
             })

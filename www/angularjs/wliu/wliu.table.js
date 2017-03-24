@@ -3500,8 +3500,8 @@ wliu_table.directive("table.bicon", function (wliuTableService) {
                         '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" ',
                             'ng-click="action1(table.getRow(row))" ',
                             'ng-if="buttonState(name, table.getRow(row).rowstate)" ',
-                            'popup-target="{{table.tooltip?\'#\'+table.tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" popup-placement="down" ',
-                            'title="{{table.tooltip?\'\':actname?actname:name}}" ',
+                            'popup-target="{{table.navi.tooltip?\'#\'+table.navi.tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" popup-placement="down" ',
+                            'title="{{table.navi.tooltip?\'\':actname?actname:name}}" ',
                             common_scope,
                         '>',
                         '</a>',
@@ -3716,8 +3716,8 @@ wliu_table.directive("table.hicon", function (wliuTableService) {
                         '<a class="wliu-btn{{xsize}} wliu-btn{{xsize}}-{{name}}" ',
                             'ng-click="action1()" ',
                             'ng-if="buttonState(name, rowstate())" ',
-                            'popup-target="{{table.tooltip?\'#\'+table.tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" popup-placement="down" ',
-                            'title="{{table.tooltip?\'\':actname?actname:name}}" ',
+                            'popup-target="{{table.navi.tooltip?\'#\'+table.navi.tooltip:\'\'}}" popup-toggle="hover" popup-body="{{actname?actname:name}}" popup-placement="down" ',
+                            'title="{{table.navi.tooltip?\'\':actname?actname:name}}" ',
                             common_scope,
                         '>',
                         '</a>',
@@ -3945,8 +3945,8 @@ wliu_table.service("wliuTableService", function () {
     self.btnActive = {
         "0": { "detail": 1, "save": 0, "cancel": 0, "reset":0, "add": 1, "delete": 1, "output": 1, "print": 1, "email": 1 },
         "1": { "detail": 1, "save": 1, "cancel": 1, "reset":1, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 },
-        "2": { "detail": 1, "save": 1, "cancel": 1, "reset":1, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 },
-        "3": { "detail": 1, "save": 1, "cancel": 1, "reset":0, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 }
+        "2": { "detail": 0, "save": 1, "cancel": 1, "reset":1, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 },
+        "3": { "detail": 0, "save": 1, "cancel": 1, "reset":0, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 }
     };
 
     self.buttonState = function(name, rowstate ) {

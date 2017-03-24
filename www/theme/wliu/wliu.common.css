@@ -772,6 +772,7 @@ input.wliuCommon-text-error
 	color:					red;
 }
 
+label.input-tiny,
 span.input-tiny,
 input.input-tiny, 
 input.input-tiny,
@@ -780,6 +781,7 @@ textarea.input-tiny {
 	width:              50px;
 }
 
+label.input-short,
 span.input-short,
 input.input-short, 
 input.input-short,
@@ -788,6 +790,7 @@ textarea.input-short {
 	width: 				80px;
 }
 
+label.input-small,
 span.input-small,
 input.input-small, 
 input.input-small,
@@ -796,6 +799,7 @@ textarea.input-small {
 	width: 				120px;
 }
 
+label.input-medium,
 span.input-medium,
 input.input-medium, 
 input.input-medium,
@@ -804,6 +808,7 @@ textarea.input-medium {
 	width: 				160px;
 }
 
+label.input-large,
 span.input-large,
 input.input-large, 
 input.input-large,
@@ -812,6 +817,7 @@ textarea.input-large {
 	width: 				250px;
 }
 
+label.input-long,
 span.input-long,
 input.input-long, 
 input.input-long,
@@ -820,6 +826,7 @@ textarea.input-long {
 	width: 				300px;
 }
 
+label.input-auto,
 span.input-auto,
 input.input-auto, 
 input.input-auto,

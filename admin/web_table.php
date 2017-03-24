@@ -64,14 +64,14 @@ include_once("../include/config/config.php");
 
 
         <script language="javascript" type="text/javascript">
-		   	var col1 = new WLIU.COL({key:1, coltype:"hidden", 		name:"id", 			colname:"Table ID",  	coldesc:"Table ID", 				defval:0 });
-		   	var col2 = new WLIU.COL({key:0, coltype:"textbox", 		name:"table_name",	colname:"Table Name", 	coldesc:"Table Name", 			sort:"ASC", maxlength:64,	notnull:1,	unique:1});
-		   	var col3 = new WLIU.COL({key:0, coltype:"textbox", 		name:"title_en", 	colname:"Title.EN", 	coldesc:"Title English",  		sort:"ASC", maxlength:64, 	notnull:1	});
-		   	var col4 = new WLIU.COL({key:0, coltype:"textbox", 		name:"title_cn", 	colname:"Title.CN", 	coldesc:"Title Chinese",  		sort:"ASC", maxlength:64,  	notnull:1,  });
-		   	var col5 = new WLIU.COL({key:0, coltype:"textarea", 	name:"desc_en", 	colname:"Detail.EN",   	coldesc:"Description English",	sort:"ASC", maxlength:256 });
-		   	var col6 = new WLIU.COL({key:0, coltype:"textarea", 	name:"desc_cn", 	colname:"Detail.CN",   	coldesc:"Description Chinese",	sort:"ASC", maxlength:256 });
-		   	var col7 = new WLIU.COL({key:0, coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status", 		defval: true});
-		   	var col8 = new WLIU.COL({key:0, coltype:"textbox", 		name:"orderno", 	colname:"Order", 		coldesc:"Order No.",  			sort:"Desc", min:0, max:999, defval:0, datatype:"NUMBER" });
+		   	var col1 = new WLIU.COL({key:1, table:"p", 	coltype:"hidden", 		name:"id", 			colname:"Table ID",  	coldesc:"Table ID", 				defval:0 });
+		   	var col2 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"table_name",	colname:"Table Name", 	coldesc:"Table Name", 			sort:"ASC", maxlength:64,	notnull:1,	unique:1});
+		   	var col3 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_en", 	colname:"Title.EN", 	coldesc:"Title English",  		sort:"ASC", maxlength:64, 	notnull:1	});
+		   	var col4 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_cn", 	colname:"Title.CN", 	coldesc:"Title Chinese",  		sort:"ASC", maxlength:64,  	notnull:1,  });
+		   	var col5 = new WLIU.COL({key:0, table:"p", 	coltype:"textarea", 	name:"desc_en", 	colname:"Detail.EN",   	coldesc:"Description English",	sort:"ASC", maxlength:256 });
+		   	var col6 = new WLIU.COL({key:0, table:"p", 	coltype:"textarea", 	name:"desc_cn", 	colname:"Detail.CN",   	coldesc:"Description Chinese",	sort:"ASC", maxlength:256 });
+		   	var col7 = new WLIU.COL({key:0, table:"p", 	coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status", 		defval: true});
+		   	var col8 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"orderno", 	colname:"Order", 		coldesc:"Order No.",  			sort:"Desc", min:0, max:999, defval:0, datatype:"NUMBER" });
 
 		   	var cols = [];
 		   	cols.push(col1);
@@ -92,10 +92,10 @@ include_once("../include/config/config.php");
 		    var table = new WLIU.TABLE({
 				scope: 		"mytab",
 				url:   		"ajax/web_table_action.php",
-				wait:   	"#ajax_wait",
-				taberror:	"#table_error",
-				tooltip:	"#tool_tip",
-				autotip: 	"#auto_tips",
+				wait:   	"ajax_wait",
+				taberror:	"table_error",
+				tooltip:	"tool_tip",
+				autotip: 	"auto_tips",
 				rights: 	{detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
 				navi:   	{pagesize:20, match: 1, orderby:"last_updated", sortby:"DESC"},
 				filters: 	filters,
@@ -118,7 +118,7 @@ include_once("../include/config/config.php");
 		<div class="row">
 			<fieldset>
 				<legend>Search By</legend>
-				<filter.label table="web_table" name="table_name"></filter.label> : 	<filter.textbox class="input-medium" table="web_table" name="table_name"></filter.textbox>
+				<filter.label table="web_table" name="table_name"></filter.label> : <filter.textbox class="input-medium" table="web_table" name="table_name"></filter.textbox>
 				<filter.label table="web_table" name="content"></filter.label> : 	<filter.textbox class="input-medium" table="web_table" name="content"></filter.textbox>
 			</feildset>
 			<div style="margin-top:20px;">
@@ -129,9 +129,9 @@ include_once("../include/config/config.php");
 			<table class="table table-condensed">
 				<tr style="background-color:#eeeeee;"> 
 					<td width=50>
-						<table.hicon table="web_table" name="add" 		actname="Add New"  	action="" 		tooltip="#tool_tip"></table.hicon>
-						<table.hicon table="web_table" name="save" 	actname="Save" 	action="" 	tooltip="#tool_tip"></table.hicon>
-						<table.hicon table="web_table" name="cancel" 	actname="Undo" 	action="" 		tooltip="#tool_tip"></table.hicon>
+						<table.hicon table="web_table" name="add" 		actname="Add New"></table.hicon>
+						<table.hicon table="web_table" name="save" 		actname="Save"></table.hicon>
+						<table.hicon table="web_table" name="cancel" 	actname="Undo"></table.hicon>
 					</td>
 					<td width=40 align="center">
 						<table.head table="web_table" name="SN"></table.head>
@@ -160,33 +160,33 @@ include_once("../include/config/config.php");
 				</tr>	
 				<tr ng-repeat="row in web_table.rows">
 					<td style="white-space:nowrap; width:40px;">
-						<table.bicon table="web_table" name="save"  	actname="Save" 		rowsn="{{$index}}" 	action="" tooltip="#tool_tip"></table.bicon>
-						<table.bicon table="web_table" name="cancel"	actname="Cancel" 	rowsn="{{$index}}" 	action="" tooltip="#tool_tip"></table.bicon>
-						<table.bicon table="web_table" name="delete" 	actname="Delete" 	rowsn="{{$index}}" 	action="" tooltip="#tool_tip"></table.bicon>
+						<table.bicon table="web_table" name="save"  	actname="Save" 		row="row"></table.bicon>
+						<table.bicon table="web_table" name="cancel"	actname="Cancel" 	row="row"></table.bicon>
+						<table.bicon table="web_table" name="delete" 	actname="Delete" 	row="row"></table.bicon>
 					</td>
 					<td width=30 align="center">
-						<table.rowno table="web_table"  rowsn="{{$index}}"></table.rowno>
+						<table.rowno table="web_table"  row="row"></table.rowno>
 					</td>
 					<td width="100px">
-						<table.textbox class="input-auto" table="web_table" name="table_name" rowsn="{{$index}}"></table.textbox>
+						<table.textbox class="input-auto" table="web_table" name="table_name" row="row"></table.textbox>
 					</td>
 					<td width="100px">
-						<table.textbox class="input-auto" table="web_table" name="title_en" rowsn="{{$index}}"></table.textbox>
+						<table.textbox class="input-auto" table="web_table" name="title_en" row="row"></table.textbox>
 					</td>
 					<td>
-						<table.textbox class="input-small" table="web_table" name="title_cn" rowsn="{{$index}}"></table.textbox>
+						<table.textbox class="input-small" table="web_table" name="title_cn" row="row"></table.textbox>
 					</td>
 					<td>
-						<table.textarea class="input-large" table="web_table" name="desc_en" rowsn="{{$index}}"></table.textarea>
+						<table.textarea class="input-large" table="web_table" name="desc_en" row="row"></table.textarea>
 					</td>
 					<td>
-						<table.textarea class="input-large" table="web_table" name="desc_cn" rowsn="{{$index}}"></table.textarea>
+						<table.textarea class="input-large" table="web_table" name="desc_cn" row="row"></table.textarea>
 					</td>
 					<td>
-						<table.textbox class="input-tiny" table="web_table" name="orderno" rowsn="{{$index}}" style="text-align:center;"></table.textbox>
+						<table.textbox class="input-tiny" table="web_table" name="orderno" row="row" style="text-align:center;"></table.textbox>
 					</td>
 					<td>
-						<table.bool table="web_table" name="status" rowsn="{{$index}}"></table.bool>
+						<table.bool table="web_table" name="status" row="row"></table.bool>
 					</td>
 				</tr>
 			</table>

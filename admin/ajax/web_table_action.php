@@ -26,7 +26,8 @@ try {
 
 	$tableMeta = array(
 		"type"=>"one",   
-		"primary"=>array(	
+		"p"=>array(	
+							"type"=>"p",
 							"name"=>"web_basic_table", 
 							"keys"=>array("id"),  
 							"fkeys"=>array(), 

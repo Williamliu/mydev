@@ -36,19 +36,21 @@ try {
 
 	$tableMeta = array(
 		"type"=>"one2many",   
-		"primary"=>array(	
+		"p"=>array(	
+							"type"=>"p",
 							"name"=>"web_basic_table", 
-							"keys"=>array("tid"),  
+							"keys"=>array("id"),  
 							"fkeys"=>array(), 
-							"cols"=>array("tid", "table_name"), 
+							"cols"=>array("id", "table_name"), 
 							"insert"=>array("last_updated"=>time()), 
 							"update"=>array()  
 					),
-		"second"=>array(
+		"s"=>array(
+							"type"=>"s",
 							"name"=>"web_basic_info", 
-							"keys"=>array("bid"),  
-							"fkeys"=>array("ref_tid"), 
-							"cols"=>array("bid","ref_tid", "title_en", "title_cn", "desc_en", "desc_cn", "status", "orderno", "last_updated"), 
+							"keys"=>array("id"),  
+							"fkeys"=>array("ref_id"), 
+							"cols"=>array("id","ref_id", "title_en", "title_cn", "desc_en", "desc_cn", "status", "orderno", "last_updated"), 
 							"insert"=>array("last_updated"=>time()), 
 							"update"=>array()  
 		)

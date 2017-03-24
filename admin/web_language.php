@@ -64,14 +64,14 @@ include_once("../include/config/config.php");
 
 
         <script language="javascript" type="text/javascript">
-		   	var col1 = new WLIU.COL({key:1, coltype:"hidden", 		name:"id", 			colname:"Lang ID",  	coldesc:"Word ID", defval:0 });
-		   	var col2 = new WLIU.COL({key:0, coltype:"textbox", 		name:"project",		colname:"Project", 		coldesc:"Project Name", sort:"ASC", defval:"website", 	maxlength:64, 	notnull:1	});
-		   	var col3 = new WLIU.COL({key:0, coltype:"textbox", 		name:"filter", 		colname:"Category", 	coldesc:"Category",  	sort:"ASC", defval:"field", 	maxlength:64, 	notnull:1	});
-		   	var col4 = new WLIU.COL({key:0, coltype:"textbox", 		name:"keyword", 	colname:"Keyword", 		coldesc:"Keyword",  	sort:"ASC", notnull:1, unique:1,  maxlength:128 });
-		   	var col5 = new WLIU.COL({key:0, coltype:"textarea", 	name:"en", 			colname:"English",   	coldesc:"English", 		sort:"ASC", notnull:1,  maxlength:2048 });
-		   	var col6 = new WLIU.COL({key:0, coltype:"textarea", 	name:"cn", 			colname:"Chinese",   	coldesc:"Chinese", 		sort:"ASC", notnull:1,  maxlength:2048 });
-		   	var col7 = new WLIU.COL({key:0, coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status", defval: true});
-		   	var col8 = new WLIU.COL({key:0, coltype:"text", 		name:"last_updated",colname:"Last Updated", coldesc:"Last Updated", sort:"DESC"});
+		   	var col1 = new WLIU.COL({key:1, table:"p",	coltype:"hidden", 		name:"id", 			colname:"Lang ID",  	coldesc:"Word ID", defval:0 });
+		   	var col2 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"project",		colname:"Project", 		coldesc:"Project Name", sort:"ASC", defval:"website", 	maxlength:64, 	notnull:1	});
+		   	var col3 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"filter", 		colname:"Category", 	coldesc:"Category",  	sort:"ASC", defval:"field", 	maxlength:64, 	notnull:1	});
+		   	var col4 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"keyword", 	colname:"Keyword", 		coldesc:"Keyword",  	sort:"ASC", notnull:1, unique:1,  maxlength:128 });
+		   	var col5 = new WLIU.COL({key:0, table:"p",	coltype:"textarea", 	name:"en", 			colname:"English",   	coldesc:"English", 		sort:"ASC", notnull:1,  maxlength:2048 });
+		   	var col6 = new WLIU.COL({key:0, table:"p",	coltype:"textarea", 	name:"cn", 			colname:"Chinese",   	coldesc:"Chinese", 		sort:"ASC", notnull:1,  maxlength:2048 });
+		   	var col7 = new WLIU.COL({key:0, table:"p",	coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status", defval: true});
+		   	var col8 = new WLIU.COL({key:0, table:"p",	coltype:"text", 		name:"last_updated",colname:"Last Updated", coldesc:"Last Updated", sort:"DESC"});
 
 		   	var cols = [];
 		   	cols.push(col1);
@@ -96,10 +96,10 @@ include_once("../include/config/config.php");
 		    var table = new WLIU.TABLE({
 				scope: 		"mytab",
 				url:   		"ajax/web_language_action.php",
-				wait:   	"#ajax_wait",
-				taberror:	"#table_error",
-				tooltip:	"#tool_tip",
-				autotip: 	"#auto_tips",
+				wait:   	"ajax_wait",
+				taberror:	"table_error",
+				tooltip:	"tool_tip",
+				autotip: 	"auto_tips",
 				rights: 	{detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
 				navi:   	{pagesize:20, match: 1, orderby:"last_updated", sortby:"DESC"},
 				filters: 	filters,
@@ -135,9 +135,9 @@ include_once("../include/config/config.php");
 			<table class="table table-condensed">
 				<tr style="background-color:#eeeeee;"> 
 					<td width=50>
-						<table.hicon table="lang_table" name="add" 		actname="Add New"  	action="" 		tooltip="tool_tip"></table.hicon>
-						<table.hicon table="lang_table" name="save" 	actname="Save" 		action="" 		tooltip="tool_tip"></table.hicon>
-						<table.hicon table="lang_table" name="cancel" 	actname="Undo" 		action="" 		tooltip="tool_tip"></table.hicon>
+						<table.hicon table="lang_table" name="add" 		actname="Add New"></table.hicon>
+						<table.hicon table="lang_table" name="save" 	actname="Save"></table.hicon>
+						<table.hicon table="lang_table" name="cancel" 	actname="Undo"></table.hicon>
 					</td>
 					<td width=40 align="center">
 						<table.head table="lang_table" name="SN"></table.head>
@@ -166,33 +166,33 @@ include_once("../include/config/config.php");
 				</tr>	
 				<tr ng-repeat="row in lang_table.rows">
 					<td style="white-space:nowrap; width:40px;">
-						<table.bicon table="lang_table" name="save"  	actname="Save" 		rowsn="{{$index}}" 	action="" tooltip="tool_tip"></table.bicon>
-						<table.bicon table="lang_table" name="cancel"	actname="Cancel" 	rowsn="{{$index}}" 	action="" tooltip="tool_tip"></table.bicon>
-						<table.bicon table="lang_table" name="delete" 	actname="Delete" 	rowsn="{{$index}}" 	action="" tooltip="tool_tip"></table.bicon>
+						<table.bicon table="lang_table" name="save"  	actname="Save" 		row="row"></table.bicon>
+						<table.bicon table="lang_table" name="cancel"	actname="Cancel" 	row="row"></table.bicon>
+						<table.bicon table="lang_table" name="delete" 	actname="Delete" 	row="row"></table.bicon>
 					</td>
 					<td width=30 align="center">
-						<table.rowno table="lang_table"  rowsn="{{$index}}"></table.rowno>
+						<table.rowno table="lang_table"  row="row"></table.rowno>
 					</td>
 					<td width="120px">
-						<table.textbox class="input-auto" table="lang_table" name="project" rowsn="{{$index}}"></table.textbox>
+						<table.textbox class="input-auto" table="lang_table" name="project" row="row"></table.textbox>
 					</td>
 					<td width="80px">
-						<table.textbox class="input-auto" table="lang_table" name="filter" rowsn="{{$index}}"></table.textbox>
+						<table.textbox class="input-auto" table="lang_table" name="filter" row="row"></table.textbox>
 					</td>
 					<td>
-						<table.textbox class="input-small" table="lang_table" name="keyword" rowsn="{{$index}}"></table.textbox>
+						<table.textbox class="input-small" table="lang_table" name="keyword" row="row"></table.textbox>
 					</td>
 					<td>
-						<table.textarea class="input-large" table="lang_table" name="en" rowsn="{{$index}}"></table.textarea>
+						<table.textarea class="input-large" table="lang_table" name="en" row="row"></table.textarea>
 					</td>
 					<td>
-						<table.textarea class="input-large" table="lang_table" name="cn" rowsn="{{$index}}"></table.textarea>
+						<table.textarea class="input-large" table="lang_table" name="cn" row="row"></table.textarea>
 					</td>
 					<td>
-						<table.bool table="lang_table" name="status" rowsn="{{$index}}"></table.bool>
+						<table.bool table="lang_table" name="status" row="row"></table.bool>
 					</td>
 					<td>
-						<table.intdate table="lang_table" name="last_updated" rowsn="{{$index}}"></table.intdate>
+						<table.intdate table="lang_table" name="last_updated" row="row"></table.intdate>
 					</td>
 				</tr>
 			</table>

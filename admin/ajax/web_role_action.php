@@ -19,19 +19,23 @@ try {
 	//  table1.name == table2.name ;  fkey is parent_id started from 0  as tree root 
 
 	// 3) table metadata
-	// medium table:   medium.keys->primary.keys   medium.fkeys->second.keys   
-	// colname using js-meta name, even keys, fkeys
-	// primary, second, medium  using js colname
-	// checkbox relationship  using database colname,  checkbox:  keys[0] is value col;  fkeys is mapping to parent table(primary-keys, second->keys, medium->keys+fkeys) 
+	$roleLevel = array(
+		"type"=>"list1",
+		"table1"=>array("name"=>"web_role_level", 	"key"=>"id", "fkey"=>"", "value"=>"title_cn", "desc"=>"desc_cn"),
+		"table2"=>array(),
+		"table3"=>array()
+	);
+	$listTable["roleLevel"] = $roleLevel;
+	$table["listTable"] = $listTable;
 
 	$tableMeta = array(
 		"type"=>"one",   
 		"p"=>array(	
 							"type"=>"p",
-							"name"=>"web_language", 
+							"name"=>"web_role", 
 							"keys"=>array("id"),  
 							"fkeys"=>array(), 
-							"cols"=>array("id", "project", "filter", "keyword", "en", "cn", "status", "last_updated"), 
+							"cols"=>array("id", "title_en", "title_cn", "desc_en", "desc_cn", "level", "orderno", "status", "last_updated"), 
 							"insert"=>array("last_updated"=>time()), 
 							"update"=>array()  
 					)

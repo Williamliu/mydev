@@ -64,16 +64,14 @@ include_once("../include/config/config.php");
 
 
         <script language="javascript" type="text/javascript">
-		   	var col1 = new WLIU.COL({key:1, 	table:"p",	coltype:"hidden", 		name:"tid", 		col:"id", 	colname:"Table ID",  	coldesc:"Table ID", defval: "" });
-		   	var col2 = new WLIU.COL({key:0, 	table:"p",	coltype:"textbox", 		name:"table_name",	colname:"Table Name", 	coldesc:"Table Name" });
-		   	var col3 = new WLIU.COL({key:1, 	table:"s", 	coltype:"hidden", 		name:"bid", 		col:"id", 	    colname:"Info ID",  coldesc:"Info ID", 	defval:"" });
-		   	var col4 = new WLIU.COL({key:0, 	table:"s", 	coltype:"hidden", 		name:"ref_tid", 	col:"ref_id",   colname:"Ref ID",  	coldesc:"Ref ID", 	defval:"" });
-		   	var col5 = new WLIU.COL({key:0, 	table:"s", 	coltype:"textbox", 		name:"title_en", 	colname:"Title.EN", 	coldesc:"Title English",  		sort:"ASC", maxlength:64, 	notnull:1, unique:1	});
-		   	var col6 = new WLIU.COL({key:0, 	table:"s", 	coltype:"textbox", 		name:"title_cn", 	colname:"Title.CN", 	coldesc:"Title Chinese",  		sort:"ASC", maxlength:64,  	notnull:1,  });
-		   	var col7 = new WLIU.COL({key:0, 	table:"s", 	coltype:"textarea", 	name:"desc_en", 	colname:"Detail.EN",   	coldesc:"Description English",	sort:"ASC", maxlength:256 });
-		   	var col8 = new WLIU.COL({key:0, 	table:"s", 	coltype:"textarea", 	name:"desc_cn", 	colname:"Detail.CN",   	coldesc:"Description Chinese",	sort:"ASC", maxlength:256 });
-		   	var col9 = new WLIU.COL({key:0, 	table:"s", 	coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status", 		defval: true});
-		   	var col10 = new WLIU.COL({key:0, 	table:"s", 	coltype:"textbox", 		name:"orderno", 	colname:"Order", 		coldesc:"Order No.",  		sort:"Desc", min:1, max:999, defval:"0", datatype:"NUMBER" });
+		   	var col1 = new WLIU.COL({key:1, table:"p",	coltype:"hidden", 		name:"id", 			colname:"Lang ID",  	coldesc:"Word ID",  defval:0 });
+		   	var col2 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"title_en",	colname:"Role(EN)", 	coldesc:"Role Name English",    sort:"ASC", maxlength:64, 	notnull:1	});
+		   	var col3 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"title_cn",	colname:"Role(CN)", 	coldesc:"Role Name Chinese",    sort:"ASC", maxlength:64, 	notnull:1	});
+		   	var col4 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"desc_en", 	colname:"Detail(EN)", 	coldesc:"Description English",	sort:"ASC", maxlength:256, 	notnull:0	});
+		   	var col5 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"desc_cn", 	colname:"Detail(CN)", 	coldesc:"Description Chinese",	sort:"ASC", maxlength:256, 	notnull:0	});
+		   	var col6 = new WLIU.COL({key:0, table:"p",	coltype:"select", 		name:"level", 	    colname:"Class", 		coldesc:"Permission Level",  	sort:"ASC", list:"roleLevel", notnull:1 });
+		   	var col7 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 	    name:"orderno", 	colname:"Sort",   	    coldesc:"Sort Number", 	sort:"ASC", notnull:1,  defval:0, datatype:"NUMBER" });
+		   	var col8 = new WLIU.COL({key:0, table:"p",	coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status", defval: true});
 
 		   	var cols = [];
 		   	cols.push(col1);
@@ -84,34 +82,30 @@ include_once("../include/config/config.php");
 		   	cols.push(col6);
 		   	cols.push(col7);
 		   	cols.push(col8);
-		   	cols.push(col9);
-		   	cols.push(col10);
 
-			var filter1 = new WLIU.FILTER({name:"tid", 	        coltype:"bind", 		colname:"Table Name", 	coldesc:"Search by Table Name", list: "tableList"});
-			var filter2 = new WLIU.FILTER({name:"content", 		coltype:"textbox",		cols:"s.title_en,s.title_cn,s.desc_en,s.desc_cn",  	colname:"Content",  	coldesc:"search by Content"});
+			var filter1 = new WLIU.FILTER({name:"content", 		coltype:"textbox",		cols:"title_en,title_cn,desc_en,desc_cn",  	colname:"Content",  	coldesc:"search by Content"});
 			var filters = [];
 			filters.push(filter1);
-			filters.push(filter2);
 
 		    var table = new WLIU.TABLE({
 				scope: 		"mytab",
-				url:   		"ajax/web_table_info_action.php",
+				url:   		"ajax/web_role_action.php",
 				wait:   	"ajax_wait",
 				taberror:	"table_error",
 				tooltip:	"tool_tip",
 				autotip: 	"auto_tips",
 				rights: 	{detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
-				navi:   	{pagesize:20, match: 1, orderby:"s.last_updated", sortby:"DESC"},
-				filters: 	filters,
-				cols: 		cols,
                 lists:      {
-                    tableList: { loaded: 0 , list:[] }
-                }
+                            roleLevel: {loaded: 0, keys:{guid:"", name:""}, list:[] }
+                },
+				navi:   	{pagesize:20, match: 1, orderby:"last_updated", sortby:"DESC"},
+				filters: 	filters,
+				cols: 		cols
 			});
 
             var app = angular.module("myApp", ["wliuTable"]);
             app.controller("myForm", function ($scope) {
-				table.setScope( $scope, "web_table" );
+				table.setScope( $scope, "role_table" );
 				table.getRecords();
 		    });
 
@@ -125,75 +119,75 @@ include_once("../include/config/config.php");
 		<div class="row">
 			<fieldset>
 				<legend>Search By</legend>
-				<filter.label table="web_table" name="tid"></filter.label> :        <filter.bind class="input-medium" 		table="web_table" name="tid"></filter.bind>
-				<filter.label table="web_table" name="content"></filter.label> :    <filter.textbox class="input-medium" 	table="web_table" name="content"></filter.textbox>
+				<filter.label table="role_table" name="content"></filter.label> : 	<filter.textbox class="input-medium" table="role_table" name="content"></filter.textbox>
 			</feildset>
 			<div style="margin-top:20px;">
-			<table.tablebutton table="web_table" name="search" actname="Search" outline=1></table.tablebutton>
+			<table.tablebutton table="role_table" name="search" actname="Search" outline=1></table.tablebutton>
 			</div>
 			<br>
-			<table.navi table="web_table"></table.navi>
+			<table.navi table="role_table"></table.navi>
 			<table class="table table-condensed">
 				<tr style="background-color:#eeeeee;"> 
 					<td width=50>
-						<table.hicon table="web_table" name="add" 		actname="Add New"  	action=""></table.hicon>
-						<table.hicon table="web_table" name="save" 		actname="Save" 		action=""></table.hicon>
-						<table.hicon table="web_table" name="cancel"	actname="Undo" 		action=""></table.hicon>
+						<table.hicon table="role_table" name="add" 		actname="Add New"></table.hicon>
+						<table.hicon table="role_table" name="save" 	actname="Save"></table.hicon>
+						<table.hicon table="role_table" name="cancel" 	actname="Undo"></table.hicon>
 					</td>
 					<td width=40 align="center">
-						<table.head table="web_table" name="SN"></table.head>
+						<table.head table="role_table" name="SN"></table.head>
 					</td>
 					<td>
-						<table.head table="web_table" name="table_name"></table.head>
+						<table.head table="role_table" name="title_en" class="input-medium"></table.head>
 					</td>
 					<td>
-						<table.head table="web_table" name="title_en"></table.head>
+						<table.head table="role_table" name="desc_en"></table.head>
 					</td>
 					<td>
-						<table.head table="web_table"  name="title_cn"></table.head>
+						<table.head table="role_table"  name="title_cn" class="input-medium"></table.head>
 					</td>
 					<td>
-						<table.head table="web_table"  name="desc_en"></table.head>
+						<table.head table="role_table"  name="desc_cn"></table.head>
 					</td>
 					<td>
-						<table.head table="web_table"  name="desc_cn"></table.head>
+						<table.head table="role_table"  name="level"></table.head>
 					</td>
 					<td>
-						<table.head table="web_table"  name="orderno"></table.head>
+						<table.head table="role_table"  name="orderno"></table.head>
 					</td>
 					<td>
-						<table.head table="web_table"  name="status"></table.head>
+						<table.head table="role_table" name="status"></table.head>
 					</td>
 				</tr>	
-				<tr ng-repeat="row in web_table.rows">
+				<tr ng-repeat="row in role_table.rows">
 					<td style="white-space:nowrap; width:40px;">
-						<table.bicon table="web_table" name="save"  	actname="Save" 		row="row" 	action=""></table.bicon>
-						<table.bicon table="web_table" name="cancel"	actname="Cancel" 	row="row" 	action=""></table.bicon>
-						<table.bicon table="web_table" name="delete" 	actname="Delete" 	row="row" 	action=""></table.bicon>
+						<table.bicon table="role_table" name="detail"  	actname="Edit" 		row="row"></table.bicon>
+						<table.bicon table="role_table" name="save"  	actname="Save" 		row="row"></table.bicon>
+						<table.bicon table="role_table" name="cancel"	actname="Cancel" 	row="row"></table.bicon>
+						<table.bicon table="role_table" name="delete" 	actname="Delete" 	row="row"></table.bicon>
 					</td>
 					<td width=30 align="center">
-						<table.rowno table="web_table"  row="row"></table.rowno>
-					</td>
-					<td width="100px">
-						<table.text class="input-auto" table="web_table" name="table_name" row="row"></table.text>
-					</td>
-					<td width="100px">
-						<table.textbox class="input-auto" table="web_table" name="title_en" row="row"></table.textbox>
+						<table.rowno table="role_table"  row="row"></table.rowno>
 					</td>
 					<td>
-						<table.textbox class="input-small" table="web_table" name="title_cn" row="row"></table.textbox>
+						<table.textbox class="input-medium" table="role_table" name="title_en" row="row"></table.textbox>
 					</td>
 					<td>
-						<table.textbox class="input-large" table="web_table" name="desc_en" row="row"></table.textbox>
+						<table.textarea class="input-auto" table="role_table" name="desc_en" row="row"></table.textarea>
 					</td>
 					<td>
-						<table.textbox class="input-large" table="web_table" name="desc_cn" row="row"></table.textbox>
+						<table.textbox class="input-medium" table="role_table" name="title_cn" row="row"></table.textbox>
 					</td>
 					<td>
-						<table.textbox class="input-tiny" table="web_table" name="orderno" row="row" style="text-align:center;"></table.textbox>
+						<table.textarea class="input-auto" table="role_table" name="desc_cn" row="row"></table.textarea>
 					</td>
 					<td>
-						<table.bool table="web_table" name="status" row="row"></table.bool>
+						<table.select class="input-small" table="role_table" name="level" row="row"></table.select>
+					</td>
+					<td>
+						<table.textbox class="input-tiny" table="role_table" name="orderno" row="row"></table.textbox>
+					</td>
+					<td>
+						<table.bool table="role_table" name="status" row="row"></table.bool>
 					</td>
 				</tr>
 			</table>
@@ -208,7 +202,7 @@ include_once("../include/config/config.php");
 
 
 <!-- MD Bootstrap 4.0 js -- must place at the end of body -->
-<script type="text/javascript" src="theme/mdb4.0/js/mdb.min.js"></script>
+<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/theme/mdb4.0/js/mdb.min.js"></script>
 <!-- <script type="text/javascript" src="theme/mdb_pro/js/woocommerce.min.js"></script> -->
 <!-- //MD Bootstrap 4.0 js -->
 </body>
