@@ -25,13 +25,12 @@ wliu_table.directive("form.rowstatus", function () {
         restrict: "E",
         replace: true,
         scope: {
-            table:      "=",
-            tooltip:    "@"
+            table:      "="
         },
         template: [
                     '<span class="wliu-text" style="vertical-align:middle;padding:0px;" ',
-                        'title="{{ table.tooltip?\'\':(table.getCurrent().error.errorCode ? table.getCurrent().error.errorMessage:\'\') }}"',
-                        'popup-target="{{table.tooltip?\'#\'+table.tooltip:\'\'}}" ',
+                        //'title="{{ table.tooltip?\'\':(table.getCurrent().error.errorCode ? table.getCurrent().error.errorMessage:\'\') }}"',
+                        'popup-target="#table_rowno_tooltip" ',
                         'popup-toggle="hover" ',
                         'popup-body="{{ table.getCurrent().error.errorCode?table.getCurrent().error.errorMessage.nl2br():\'\' }}" ',
                         form_scope,
@@ -46,9 +45,9 @@ wliu_table.directive("form.rowstatus", function () {
                         '<span ng-if="table.getCurrent().error.errorCode" style="color:red;vertical-align:middle;font-size:20px;">Error : </span>',
                         '<a class="wliu-btn24 wliu-btn24-error-help" ',
                             'ng-if="table.getCurrent().error.errorCode" ',
-                            'popup-target="{{table.tooltip?\'#\'+table.tooltip:\'\'}}" popup-toggle="hover" ',
+                            'popup-target="#table_rowno_tooltip" popup-toggle="hover" ',
                             'popup-body="{{table.getCurrent().error.errorCode?table.getCurrent().error.errorMessage.nl2br():\'\'}}"',
-                            'title="{{ table.tooltip?\'\':(table.getCurrent().error.errorCode? table.getCurrent().error.errorMessage : \'\') }}"',
+                            //'title="{{ table.tooltip?\'\':(table.getCurrent().error.errorCode? table.getCurrent().error.errorMessage : \'\') }}"',
                         '>',
                         '</a>',
                         '<a class="wliu-btn16 wliu-btn16-rowstate-save"     ng-if="table.getCurrent().error.errorCode==0 && table.getCurrent().rowstate==1" style="padding-left:20px;vertical-align:middle;font-size:14px;" title="Changed"></a>',
@@ -58,6 +57,7 @@ wliu_table.directive("form.rowstatus", function () {
                     '</span>'
                 ].join(''),
         controller: function ($scope, $sce) {
+            $scope.table.error_tooltip = "table_rowno_tooltip";
             $scope.getHTML = function() {
                 if($scopt.table.getCurrent() )
                     if($scopt.table.getCurrent().error.errorCode )
@@ -67,6 +67,12 @@ wliu_table.directive("form.rowstatus", function () {
             }
         },
         link: function (sc, el, attr) {
+            $(function(){
+                if( $("#" + sc.table.error_tooltip).length <= 0 ) {
+                    $("body").append('<div id="' + sc.table.error_tooltip + '" wliu-popup></div>');
+                    $("#" + sc.table.error_tooltip).wliuPopup();
+                }
+            })
         }
     }
 });

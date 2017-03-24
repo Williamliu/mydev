@@ -251,12 +251,12 @@ wliu_table.directive("table.rowno", function () {
         template: [
                     '<span class="wliu-text" scope="{{ table.scope }}" ',
                         'ng-disabled="row==undefined" ',
-                        'popup-target="{{table.tooltip?\'#\'+table.tooltip:\'\'}}" popup-toggle="hover" ',
+                        'popup-target="#table_rowno_tooltip" popup-toggle="hover" ',
                         'popup-body="{{row.error.errorCode?row.error.errorMessage.nl2br():\'\'}}"',
-                        'title="{{ table.tooltip?\'\':(row.error.errorCode ? row.error.errorMessage : \'\') }}"',
+                        //'title="{{ table.tooltip?\'\':(row.error.errorCode ? row.error.errorMessage : \'\') }}"',
                     '>',
                         '<a class="wliu-btn16 wliu-btn16-error-help"    ng-if="row.error.errorCode" ',
-                            'title="{{ table.tooltip?\'\':( row.error.errorCode? row.error.errorMessage : \'\') }}"',
+                            //'title="{{ table.tooltip?\'\':( row.error.errorCode? row.error.errorMessage : \'\') }}"',
                         '>',
                         '</a>',
                         '<span ng-if="row.error.errorCode==0 && row.rowstate==0" title="Series Number">{{ table.indexByRow(row) - 0 + 1 }}</span>',
@@ -266,8 +266,15 @@ wliu_table.directive("table.rowno", function () {
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
+            $scope.table.error_tooltip = "table_rowno_tooltip";
         },
         link: function (sc, el, attr) {
+            $(function(){
+                if( $("#" + sc.table.error_tooltip).length <= 0 ) {
+                    $("body").append('<div id="' + sc.table.error_tooltip + '" wliu-popup></div>');
+                    $("#" + sc.table.error_tooltip).wliuPopup();
+                }
+            })
         }
     }
 });
