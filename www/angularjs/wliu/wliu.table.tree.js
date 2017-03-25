@@ -17,8 +17,6 @@ var tree_tooltip = [    'popup-target="{{table.colMeta(row, name).tooltip?\'#\'+
                         'title="{{table.colMeta(row, name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(row, name).coldesc?table.colMeta(row, name).coldesc:table.colMeta(row, name).colname}}" '
                      ].join('');
 
-var wliu_table = angular.module("wliuTable",[]);
-
 wliu_table.directive("table.tree", function () {
     return {
         restrict: "E",
@@ -1081,22 +1079,5 @@ wliu_table.directive("tree.message", function (wliuTableService) {
         },
         link: function (sc, el, attr) {
         }
-    }
-});
-
-
-/****** Form Service *********/
-wliu_table.service("wliuTableService", function () {
-    var self = this;
-    // state control button status
-    self.btnActive = {
-        "0": { "detail": 1, "save": 0, "cancel": 0, "reset":0, "add": 1, "delete": 1, "output": 1, "print": 1, "email": 1 },
-        "1": { "detail": 1, "save": 1, "cancel": 1, "reset":1, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 },
-        "2": { "detail": 1, "save": 1, "cancel": 1, "reset":1, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 },
-        "3": { "detail": 1, "save": 1, "cancel": 1, "reset":0, "add": 0, "delete": 0, "output": 0, "print": 0, "email": 0 }
-    };
-
-    self.buttonState = function(name, rowstate ) {
-        return self.btnActive[rowstate]?(self.btnActive[rowstate][name]?true:false):false;
     }
 });
