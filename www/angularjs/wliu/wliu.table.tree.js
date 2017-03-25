@@ -33,7 +33,8 @@ wliu_table.directive("table.tree", function () {
                             '<tree.hicon table="table" rows="table.rows" row="root" name="add" actname="Add"></tree.hicon>',
                             /*** ptable ***/
                             '<ul wliu-tree>',
-                                '<li nodes open ng-repeat="prow in table.rows" name="meme"><s folder></s>',
+                                '<li nodes open ng-repeat="prow in table.rows" name="meme">',
+                                    //'<s folder></s>',
                                     '<tree.rowstatus table="table" row="prow"></tree.rowstatus>',
                                     '<span style="display:none;" ng-repeat-start="pcol in prow.cols"></span>',
                                             '<span ng-switch on="pcol.coltype">',
@@ -60,7 +61,7 @@ wliu_table.directive("table.tree", function () {
                                     '<ul wliu-tree>',
                                             /*********** 3 layer tree ******************************************/
                                             '<li ng-if="table.cols.m" nodes open ng-repeat="srow in prow.rows">',
-                                            '<s folder></s>',
+                                                //'<s folder></s>',
                                                 '<tree.rowstatus table="table" row="srow"></tree.rowstatus>',
                                                 '<span style="display:none;" ng-repeat-start="scol in srow.cols"></span>',
                                                         '<span ng-switch on="scol.coltype">',
@@ -85,7 +86,8 @@ wliu_table.directive("table.tree", function () {
                                                 '<tree.bicon ng-repeat="actname in table.sbutton" table="table" rows="prow.rows" row="srow" name="{{actname}}"></tree.bicon>',
                                                 /*** mtable ***/
                                                 '<ul wliu-tree>',
-                                                    '<li node ng-repeat="mrow in srow.rows"><s folder></s>',
+                                                    '<li node ng-repeat="mrow in srow.rows">',
+                                                        //'<s folder></s>',
                                                         '<tree.rowstatus table="table" row="mrow"></tree.rowstatus>',
                                                         '<span style="display:none;" ng-repeat-start="mcol in mrow.cols"></span>',
                                                                 '<span ng-switch on="mcol.coltype">',
@@ -116,7 +118,7 @@ wliu_table.directive("table.tree", function () {
 
                                             /*********** 2 layer tree ******************************************/
                                             '<li ng-if="!table.cols.m" node ng-repeat="srow in prow.rows">',
-                                            '<s folder></s>',
+                                                //'<s folder></s>',
                                                 '<tree.rowstatus table="table" row="srow"></tree.rowstatus>',
                                                 '<span style="display:none;" ng-repeat-start="scol in srow.cols"></span>',
                                                         '<span ng-switch on="scol.coltype">',
@@ -185,7 +187,8 @@ wliu_table.directive("table.treeview", function () {
                             '<tree.hicon table="table" rows="table.rows" row="root" name="add" actname="Add"></tree.hicon>',
                             /*** ptable ***/
                             '<ul wliu-tree>',
-                                '<li nodes open ng-repeat="prow in table.rows"><s folder></s>',
+                                '<li nodes open ng-repeat="prow in table.rows">',
+                                    //'<s folder></s>',
                                     '<tree.rowstatus table="table" row="prow"></tree.rowstatus>',
                                     '<span style="display:none;" ng-repeat-start="pcol in prow.cols"></span>',
                                             '<span ng-switch on="pcol.coltype">',
@@ -200,7 +203,8 @@ wliu_table.directive("table.treeview", function () {
                                     '<span style="display:none;" ng-repeat-end></span>',
                                     /*** stable ***/
                                     '<ul wliu-tree>',
-                                            '<li nodes open ng-repeat="srow in prow.rows"><s folder></s>',
+                                            '<li nodes open ng-repeat="srow in prow.rows">',
+                                                //'<s folder></s>',
                                                 '<tree.rowstatus table="table" row="srow"></tree.rowstatus>',
                                                 '<span style="display:none;" ng-repeat-start="scol in srow.cols"></span>',
                                                         '<span ng-switch on="scol.coltype">',
@@ -252,7 +256,7 @@ wliu_table.directive("tree.rowstatus", function () {
             row:      "="
         },
         template: [
-                    '<span style="vertical-align:middle;padding:0px;" ',
+                    '<s folder style="vertical-align:middle;padding:0px;" ',
                         'ng-disabled="row==undefined" ',
                         'popup-target="#table_rowno_tooltip" popup-toggle="hover" ',
                         'popup-body="{{row.error.errorCode?row.error.errorMessage.nl2br():\'\'}}"',
@@ -260,14 +264,14 @@ wliu_table.directive("tree.rowstatus", function () {
                         tree_scope,
                     '>',
                         //'{{row.type}}-{{row.parent}}-{{table.keyValue(row)}}',
-                        '<a class="wliu-btn16 wliu-btn16-error-help"    ng-if="row.error.errorCode" ',
+                        '<a class="wliu-btn16 wliu-btn16-error-help"  ng-if="row.error.errorCode" style="background-color:#ffffff;" ',
                             //'title="{{ tooltip?\'\':( row.error.errorCode? row.error.errorMessage : \'\') }}"',
                         '>',
                         '</a>',
-                        '<a class="wliu-btn16 wliu-btn16-rowstate-save"     ng-if="row.error.errorCode==0 && row.rowstate==1"   title="Changed"></a>',
-                        '<a class="wliu-btn16 wliu-btn16-rowstate-add"      ng-if="row.error.errorCode==0 && row.rowstate==2"   title="New"></a>',
-                        '<a class="wliu-btn16 wliu-btn16-rowstate-delete"   ng-if="row.error.errorCode==0 && row.rowstate==3"   title="Deleted"></a>',
-                    '</span>'
+                        '<a class="wliu-btn16 wliu-btn16-rowstate-save"     ng-if="row.error.errorCode==0 && row.rowstate==1"   title="Changed" style="background-color:#ffffff;"></a>',
+                        '<a class="wliu-btn16 wliu-btn16-rowstate-add"      ng-if="row.error.errorCode==0 && row.rowstate==2"   title="New" style="background-color:#ffffff;"></a>',
+                        '<a class="wliu-btn16 wliu-btn16-rowstate-delete"   ng-if="row.error.errorCode==0 && row.rowstate==3"   title="Deleted" style="background-color:#ffffff;"></a>',
+                    '</s>'
                 ].join(''),
         controller: function ($scope) {
             $scope.table.error_tooltip = "table_rowno_tooltip";
