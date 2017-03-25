@@ -120,29 +120,29 @@ wliu_image.directive("image.list", function () {
                             '<span ng-if="imglist.config.mode==\'edit\'">',                            
                                 '<span style="position:absolute;color:red;margin-top:3px;margin-left:60px">{{imgObj.orderno}}</span>',
                                 '<a class="wliu-btn24 wliu-btn24-img-print" ng-click="printImage(imgObj)" style="position:absolute; margin-top:3px;margin-left:3px;opacity:0.8;" ',
-                                    'title="{{tooltip?\'\':\'Print Image\'}}" ',
-                                    'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Print Image" ',
+                                    //'title="{{tooltip?\'\':\'Print Image\'}}" ',
+                                    'popup-target="#imglist_common_tooltip" popup-placement="down" popup-toggle="hover" popup-body="Print Image" ',
                                 '>',
                                 '</a>',
                                 '<a class="wliu-btn24 wliu-btn24-comments" ng-click="textImage(imgObj)" style="position:absolute; margin-top:3px;margin-left:30px;opacity:0.8;" ',
-                                    'title="{{tooltip?\'\':\'Image Comments\'}}" ',
-                                    'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Image Comments" ',
+                                    //'title="{{tooltip?\'\':\'Image Comments\'}}" ',
+                                    'popup-target="#imglist_common_tooltip" popup-placement="down" popup-toggle="hover" popup-body="Image Comments" ',
                                 '>',
                                 '</a>',
                                 '<a class="wliu-btn24 wliu-btn24-download" ng-if="imgObj.url" href="{{imgObj.url}}" style="position:absolute; margin-top:3px;margin-left:56px;opacity:0.8;" target="_blank" ',
-                                    'title="{{tooltip?\'\':\'Download Image\'}}" ',
-                                    'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Download Image" ',
+                                    //'title="{{tooltip?\'\':\'Download Image\'}}" ',
+                                    'popup-target="#imglist_common_tooltip" popup-placement="down" popup-toggle="hover" popup-body="Download Image" ',
                                 '>',
                                 '</a>',
                                 '<a class="wliu-btn24 wliu-btn24-dispose" ng-click="deleteImage(imgObj)" style="position:absolute; right:0px; margin-top:3px;margin-right:3px;opacity:0.8;" ',
-                                    'title="{{tooltip?\'\':\'Delete Image\'}}" ',
-                                    'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Delete Image" ',
+                                    //'title="{{tooltip?\'\':\'Delete Image\'}}" ',
+                                    'popup-target="#imglist_common_tooltip" popup-placement="down" popup-toggle="hover" popup-body="Delete Image" ',
                                 '>',
                                 '</a>',
                             '</span>',
                             '<div style="display:table;">',
                                 '<div style="display:table-cell;vertical-align:middle;text-align:center;width:{{ww}}px;height:{{hh}}px;box-sizing:content-box;border:1px solid #cccccc;border-radius:5px;" class="img-content wliu-background-1">',
-                                    '<img class="img-responsive" width="100%" ng-click="clickImage(imgObj)" onload="imageAutoFix(this)" ww="{{ww}}" hh="{{hh}}" style="cursor:pointer;" src="{{imglist.thumbImageData(imgObj)}}" />',
+                                    '<img class="img-responsive" width="100%" ng-click="clickImage(imgObj)" onload="imageAutoFix(this)" ww="{{ww}}" hh="{{hh}}" style="cursor:pointer;" src="{{imglist.thumbImageData(imgObj)}}" title="click to view image" />',
                                 '</div>',
                             '</div>',
                             '<div ng-if="text" style="display:block;text-align:center;width:{{ww}}px;padding-top:6px;height:16px;line-height:16px;box-sizing:content-box;font-size:14px;cursor:pointer;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;" class="image-detail-tooltips" ',
@@ -168,6 +168,8 @@ wliu_image.directive("image.list", function () {
                 '</div>'
                 ].join(''),
         controller: function ($scope) {
+            $scope.imglist.common_tooltip = "imglist_common_tooltip";
+
             $scope.detailTipsID = $scope.imglist.scope + "_" + guid();
             $scope.detailTips = "#" + $scope.detailTipsID;
             
@@ -224,6 +226,11 @@ wliu_image.directive("image.list", function () {
         },
         link: function (sc, el, attr) {
             $(function(){
+                if( $("#" + sc.imglist.common_tooltip).length <= 0 ) {
+                    $("body").append('<div id="' + sc.imglist.common_tooltip + '" wliu-popup></div>');
+                    $("#" + sc.imglist.common_tooltip).wliuPopup();
+                }
+          
                 $("body > div[image-popup][disposable]").each(function(img_idx, img_detail) {
                     if( $("div.image-detail-tooltips[targetid='" + $(img_detail).attr("id") + "']").length<=0 ) $(img_detail).remove();
                 });

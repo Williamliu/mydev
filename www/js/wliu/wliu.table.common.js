@@ -990,6 +990,16 @@ WLIU.TABLEACTION.prototype = {
 	indexByRow: function(theTable, theRow) {
 		return this.index(theTable, theRow.guid);
 	},
+	getRowKeys: function(theTable, theRow) {
+		var r_rowKeys = {};
+		if(theRow && theRow.cols) {
+			var keyCols = FCOLLECT.collectionByKV(theRow.cols, {key:1});
+			for(var kidx in keyCols) {
+				r_rowKeys[keyCols[kidx].name] = keyCols[kidx].value;
+			}
+		} 
+		return r_rowKeys;
+	},
 	setColsDefault: function(theTable, IDKeyValues) {
 		if( $.isPlainObject(IDKeyValues) ) {
 			for(var key in IDKeyValues) {

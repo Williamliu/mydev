@@ -35,7 +35,7 @@ try {
 	// checkbox relationship  using database colname,  checkbox:  keys[0] is value col;  fkeys is mapping to parent table(primary-keys, second->keys, medium->keys+fkeys) 
 
 	$tableMeta = array(
-		"type"=>"2",   
+		"type"=>"3",   
 		"p"=>array(	
 							"type"=>"p",
 							"name"=>"website_menu", 

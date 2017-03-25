@@ -231,7 +231,11 @@ WLIU.TREE.prototype = {
 	},
 
 	getRecords: function(IDKeyValues, callback) {
-		FTABLE.getRecords(this, IDKeyValues, callback);
+		if(IDKeyValues) {
+			if(IDKeyValues.rootid!=undefined) 	this.rootid = IDKeyValues.rootid;
+			if(IDKeyValues.refid!=undefined) 	this.refid 	= IDKeyValues.refid;	
+		}
+		this.getRows(callback);
 	},
 	/********************************/
 
@@ -266,6 +270,9 @@ WLIU.TREE.prototype = {
 						break;
 				}
 				if(!_self.sc.$$phase) _self.sc.$apply();
+
+				// important to remember open|close from localStorage
+				if(req.table.action=="get") $("ul[wliu-tree][root]").wliuTree();
 
 				if( parseInt(req.table.error.errorCode) == 0 ) {
 					if(callback && callback.ajaxSuccess && $.isFunction(callback.ajaxSuccess) ) callback.ajaxSuccess(req.table);

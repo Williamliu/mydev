@@ -13,6 +13,7 @@ var tree_ng =     [
 
 var tree_tooltip = [    'popup-target="{{table.colMeta(row, name).tooltip?\'#\'+table.colMeta(row, name).tooltip:\'\'}}" ',
                         'popup-toggle="hover" ',
+                        'popup-placement="down" ',
                         'popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(row, name).coldesc?table.colMeta(row, name).coldesc:table.colMeta(row, name).colname}}" ',
                         'title="{{table.colMeta(row, name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(row, name).coldesc?table.colMeta(row, name).coldesc:table.colMeta(row, name).colname}}" '
                      ].join('');
@@ -22,7 +23,8 @@ wliu_table.directive("table.tree", function () {
         restrict: "E",
         replace: true,
         scope: {
-            table:      "="
+            table:      "=",
+            label:      "@"
         },
         template: [
                     '<ul id="' + 'tree_' + table.treeid + '" wliu-tree root>',
@@ -37,20 +39,20 @@ wliu_table.directive("table.tree", function () {
                                             '<span ng-switch on="pcol.coltype">',
                                                 '<tree.text ng-switch-when="text"       table="table" row="prow" name="{{pcol.name}}"></tree.text>',
 
-                                                '<tree.label ng-switch-when="textbox"   table="table" row="prow" name="{{pcol.name}}"></tree.label>',
+                                                '<tree.label   ng-switch-when="textbox" ng-if="label" table="table" row="prow" name="{{pcol.name}}"></tree.label>',
                                                 '<tree.textbox ng-switch-when="textbox" table="table" row="prow" name="{{pcol.name}}" class="{{table.colMeta(prow, pcol.name).css}}" style="{{table.colMeta(prow, pcol.name).style}}"></tree.textbox>',
 
-                                                '<tree.label ng-switch-when="select"    table="table" row="prow" name="{{pcol.name}}"></tree.label>',
-                                                '<tree.select ng-switch-when="select"   table="table" row="prow" name="{{pcol.name}}" class="{{table.colMeta(prow, pcol.name).css}}" style="{{table.colMeta(prow, pcol.name).style}}"></tree.select>',
+                                                '<tree.label ng-switch-when="select"    ng-if="label"   table="table" row="prow" name="{{pcol.name}}"></tree.label>',
+                                                '<tree.select ng-switch-when="select"   table="table"   row="prow" name="{{pcol.name}}" class="{{table.colMeta(prow, pcol.name).css}}" style="{{table.colMeta(prow, pcol.name).style}}"></tree.select>',
 
-                                                '<tree.label ng-switch-when="bool"      table="table" row="prow" name="{{pcol.name}}"></tree.label>',
-                                                '<tree.bool ng-switch-when="bool"       table="table" row="prow" name="{{pcol.name}}"></tree.bool>',
+                                                '<tree.label ng-switch-when="bool"      ng-if="label"   table="table" row="prow" name="{{pcol.name}}"></tree.label>',
+                                                '<tree.bool ng-switch-when="bool"       table="table"   row="prow" name="{{pcol.name}}"></tree.bool>',
 
-                                                '<tree.label ng-switch-when="checkbox1"     table="table" row="prow" name="{{pcol.name}}"></tree.label>',
-                                                '<tree.checkbox1 ng-switch-when="checkbox1" table="table" row="prow" name="{{pcol.name}}"></tree.checkbox1>',
+                                                '<tree.label ng-switch-when="checkbox1" ng-if="label"       table="table" row="prow" name="{{pcol.name}}"></tree.label>',
+                                                '<tree.checkbox1 ng-switch-when="checkbox1" table="table"   row="prow" name="{{pcol.name}}" class="{{table.colMeta(prow, pcol.name).css}}" style="{{table.colMeta(prow, pcol.name).style}}"></tree.checkbox1>',
 
-                                                '<tree.label   ng-switch-when="radio1"      table="table" row="prow" name="{{pcol.name}}"></tree.label>',
-                                                '<tree.radio1  ng-switch-when="radio1"      table="table" row="prow" name="{{pcol.name}}"></tree.radio1>',
+                                                '<tree.label   ng-switch-when="radio1"   ng-if="label"      table="table" row="prow" name="{{pcol.name}}"></tree.label>',
+                                                '<tree.radio1  ng-switch-when="radio1"   table="table"      row="prow" name="{{pcol.name}}" class="{{table.colMeta(prow, pcol.name).css}}" style="{{table.colMeta(prow, pcol.name).style}}"></tree.radio1>',
                                             '</span>',
                                     '<span style="display:none;" ng-repeat-end></span>',
                                     '<tree.bicon ng-repeat="actname in table.pbutton" table="table" rows="table.rows" row="prow" name="{{actname}}"></tree.bicon>',
@@ -64,20 +66,20 @@ wliu_table.directive("table.tree", function () {
                                                         '<span ng-switch on="scol.coltype">',
                                                             '<tree.text ng-switch-when="text"       table="table" row="srow" name="{{scol.name}}"></tree.text>',
 
-                                                            '<tree.label ng-switch-when="textbox"   table="table" row="srow" name="{{scol.name}}"></tree.label>',
+                                                            '<tree.label ng-switch-when="textbox"    ng-if="label"  table="table" row="srow" name="{{scol.name}}"></tree.label>',
                                                             '<tree.textbox ng-switch-when="textbox" table="table" row="srow" name="{{scol.name}}" class="{{table.colMeta(srow, scol.name).css}}" style="{{table.colMeta(srow, scol.name).style}}"></tree.textbox>',
 
-                                                            '<tree.label ng-switch-when="select"    table="table" row="srow" name="{{scol.name}}"></tree.label>',
-                                                            '<tree.select ng-switch-when="select"   table="table" row="srow" name="{{scol.name}}" class="{{table.colMeta(srow, scol.name).css}}" style="{{table.colMeta(srow, scol.name).style}}"></tree.select>',
+                                                            '<tree.label ng-switch-when="select"     ng-if="label"  table="table" row="srow" name="{{scol.name}}"></tree.label>',
+                                                            '<tree.select ng-switch-when="select"   table="table" row="srow" name="{{scol.name}}"   class="{{table.colMeta(srow, scol.name).css}}" style="{{table.colMeta(srow, scol.name).style}}"></tree.select>',
 
-                                                            '<tree.label ng-switch-when="bool"      table="table" row="srow" name="{{scol.name}}"></tree.label>',
+                                                            '<tree.label ng-switch-when="bool"       ng-if="label"  table="table" row="srow" name="{{scol.name}}"></tree.label>',
                                                             '<tree.bool ng-switch-when="bool"       table="table" row="srow" name="{{scol.name}}"></tree.bool>',
 
-                                                            '<tree.label ng-switch-when="checkbox1"     table="table" row="srow" name="{{scol.name}}"></tree.label>',
-                                                            '<tree.checkbox1 ng-switch-when="checkbox1" table="table" row="srow" name="{{scol.name}}"></tree.checkbox1>',
+                                                            '<tree.label ng-switch-when="checkbox1"  ng-if="label"  table="table" row="srow" name="{{scol.name}}"></tree.label>',
+                                                            '<tree.checkbox1 ng-switch-when="checkbox1" table="table" row="srow" name="{{scol.name}}"   class="{{table.colMeta(srow, scol.name).css}}" style="{{table.colMeta(srow, scol.name).style}}"></tree.checkbox1>',
 
-                                                            '<tree.label   ng-switch-when="radio1"  table="table" row="srow" name="{{scol.name}}"></tree.label>',
-                                                            '<tree.radio1  ng-switch-when="radio1"  table="table" row="srow" name="{{scol.name}}"></tree.radio1>',
+                                                            '<tree.label   ng-switch-when="radio1"   ng-if="label"  table="table" row="srow" name="{{scol.name}}"></tree.label>',
+                                                            '<tree.radio1  ng-switch-when="radio1"  table="table" row="srow" name="{{scol.name}}"   class="{{table.colMeta(srow, scol.name).css}}" style="{{table.colMeta(srow, scol.name).style}}"></tree.radio1>',
                                                         '</span>',
                                                 '<span style="display:none;" ng-repeat-end></span>',
                                                 '<tree.bicon ng-repeat="actname in table.sbutton" table="table" rows="prow.rows" row="srow" name="{{actname}}"></tree.bicon>',
@@ -87,22 +89,22 @@ wliu_table.directive("table.tree", function () {
                                                         '<tree.rowstatus table="table" row="mrow"></tree.rowstatus>',
                                                         '<span style="display:none;" ng-repeat-start="mcol in mrow.cols"></span>',
                                                                 '<span ng-switch on="mcol.coltype">',
-                                                                    '<tree.text ng-switch-when="text"       table="table" row="mrow" name="{{mcol.name}}"></tree.text>',
+                                                                    '<tree.text ng-switch-when="text"       table="table"   row="mrow" name="{{mcol.name}}"></tree.text>',
 
-                                                                    '<tree.label ng-switch-when="textbox"   table="table" row="mrow" name="{{mcol.name}}"></tree.label>',
-                                                                    '<tree.textbox ng-switch-when="textbox" table="table" row="mrow" name="{{mcol.name}}" class="{{table.colMeta(mrow, mcol.name).css}}" style="{{table.colMeta(mrow, mcol.name).style}}"></tree.textbox>',
+                                                                    '<tree.label ng-switch-when="textbox"    ng-if="label"  table="table" row="mrow" name="{{mcol.name}}"></tree.label>',
+                                                                    '<tree.textbox ng-switch-when="textbox" table="table"   row="mrow" name="{{mcol.name}}" class="{{table.colMeta(mrow, mcol.name).css}}" style="{{table.colMeta(mrow, mcol.name).style}}"></tree.textbox>',
 
-                                                                    '<tree.label ng-switch-when="select"    table="table" row="mrow" name="{{mcol.name}}"></tree.label>',
-                                                                    '<tree.select ng-switch-when="select"   table="table" row="mrow" name="{{mcol.name}}" class="{{table.colMeta(mrow, mcol.name).css}}" style="{{table.colMeta(mrow, mcol.name).style}}"></tree.select>',
+                                                                    '<tree.label ng-switch-when="select"     ng-if="label"  table="table" row="mrow" name="{{mcol.name}}"></tree.label>',
+                                                                    '<tree.select ng-switch-when="select"   table="table"   row="mrow" name="{{mcol.name}}" class="{{table.colMeta(mrow, mcol.name).css}}" style="{{table.colMeta(mrow, mcol.name).style}}"></tree.select>',
 
-                                                                    '<tree.label ng-switch-when="bool"      table="table" row="mrow" name="{{mcol.name}}"></tree.label>',
-                                                                    '<tree.bool ng-switch-when="bool"       table="table" row="mrow" name="{{mcol.name}}"></tree.bool>',
+                                                                    '<tree.label ng-switch-when="bool"      ng-if="label"   table="table" row="mrow" name="{{mcol.name}}"></tree.label>',
+                                                                    '<tree.bool ng-switch-when="bool"       table="table"   row="mrow" name="{{mcol.name}}"></tree.bool>',
 
-                                                                    '<tree.label ng-switch-when="checkbox1"     table="table" row="mrow" name="{{mcol.name}}"></tree.label>',
-                                                                    '<tree.checkbox1 ng-switch-when="checkbox1" table="table" row="mrow" name="{{mcol.name}}"></tree.checkbox1>',
+                                                                    '<tree.label ng-switch-when="checkbox1" ng-if="label"       table="table" row="mrow" name="{{mcol.name}}"></tree.label>',
+                                                                    '<tree.checkbox1 ng-switch-when="checkbox1" table="table"   row="mrow" name="{{mcol.name}}" class="{{table.colMeta(mrow, mcol.name).css}}" style="{{table.colMeta(mrow, mcol.name).style}}"></tree.checkbox1>',
 
-                                                                    '<tree.label   ng-switch-when="radio1"      table="table" row="mrow" name="{{mcol.name}}"></tree.label>',
-                                                                    '<tree.radio1  ng-switch-when="radio1"      table="table" row="mrow" name="{{mcol.name}}"></tree.radio1>',
+                                                                    '<tree.label   ng-switch-when="radio1"  ng-if="label"   table="table" row="mrow" name="{{mcol.name}}"></tree.label>',
+                                                                    '<tree.radio1  ng-switch-when="radio1"  table="table"   row="mrow" name="{{mcol.name}}" class="{{table.colMeta(mrow, mcol.name).css}}" style="{{table.colMeta(mrow, mcol.name).style}}"></tree.radio1>',
                                                                 '</span>',
                                                         '<span style="display:none;" ng-repeat-end></span>',
                                                         '<tree.bicon ng-repeat="actname in table.mbutton" table="table" rows="srow.rows" row="mrow" name="{{actname}}"></tree.bicon>',
@@ -120,20 +122,20 @@ wliu_table.directive("table.tree", function () {
                                                         '<span ng-switch on="scol.coltype">',
                                                             '<tree.text ng-switch-when="text"       table="table" row="srow" name="{{scol.name}}"></tree.text>',
 
-                                                            '<tree.label ng-switch-when="textbox"   table="table" row="srow" name="{{scol.name}}"></tree.label>',
-                                                            '<tree.textbox ng-switch-when="textbox" table="table" row="srow" name="{{scol.name}}" class="{{table.colMeta(srow, scol.name).css}}" style="{{table.colMeta(srow, scol.name).style}}"></tree.textbox>',
+                                                            '<tree.label ng-switch-when="textbox"   ng-if="label"   table="table" row="srow" name="{{scol.name}}"></tree.label>',
+                                                            '<tree.textbox ng-switch-when="textbox" table="table"   row="srow" name="{{scol.name}}" class="{{table.colMeta(srow, scol.name).css}}" style="{{table.colMeta(srow, scol.name).style}}"></tree.textbox>',
 
-                                                            '<tree.label ng-switch-when="select"    table="table" row="srow" name="{{scol.name}}"></tree.label>',
-                                                            '<tree.select ng-switch-when="select"   table="table" row="srow" name="{{scol.name}}" class="{{table.colMeta(srow, scol.name).css}}" style="{{table.colMeta(srow, scol.name).style}}"></tree.select>',
+                                                            '<tree.label ng-switch-when="select"    ng-if="label"   table="table" row="srow" name="{{scol.name}}"></tree.label>',
+                                                            '<tree.select ng-switch-when="select"   table="table"   row="srow" name="{{scol.name}}" class="{{table.colMeta(srow, scol.name).css}}" style="{{table.colMeta(srow, scol.name).style}}"></tree.select>',
 
-                                                            '<tree.label ng-switch-when="bool"      table="table" row="srow" name="{{scol.name}}"></tree.label>',
-                                                            '<tree.bool ng-switch-when="bool"       table="table" row="srow" name="{{scol.name}}"></tree.bool>',
+                                                            '<tree.label ng-switch-when="bool"      ng-if="label"   table="table" row="srow" name="{{scol.name}}"></tree.label>',
+                                                            '<tree.bool ng-switch-when="bool"       table="table"   row="srow" name="{{scol.name}}"></tree.bool>',
 
-                                                            '<tree.label ng-switch-when="checkbox1"     table="table" row="srow" name="{{scol.name}}"></tree.label>',
-                                                            '<tree.checkbox1 ng-switch-when="checkbox1" table="table" row="srow" name="{{scol.name}}"></tree.checkbox1>',
+                                                            '<tree.label ng-switch-when="checkbox1" ng-if="label"   table="table" row="srow" name="{{scol.name}}"></tree.label>',
+                                                            '<tree.checkbox1 ng-switch-when="checkbox1" table="table" row="srow" name="{{scol.name}}" class="{{table.colMeta(srow, scol.name).css}}" style="{{table.colMeta(srow, scol.name).style}}"></tree.checkbox1>',
 
-                                                            '<tree.label   ng-switch-when="radio1"  table="table" row="srow" name="{{scol.name}}"></tree.label>',
-                                                            '<tree.radio1  ng-switch-when="radio1"  table="table" row="srow" name="{{scol.name}}"></tree.radio1>',
+                                                            '<tree.label   ng-switch-when="radio1"  ng-if="label"   table="table" row="srow" name="{{scol.name}}"></tree.label>',
+                                                            '<tree.radio1  ng-switch-when="radio1"  table="table"   row="srow" name="{{scol.name}}" class="{{table.colMeta(srow, scol.name).css}}" style="{{table.colMeta(srow, scol.name).style}}"></tree.radio1>',
                                                         '</span>',
                                                 '<span style="display:none;" ng-repeat-end></span>',
                                                 '<tree.bicon ng-repeat="actname in table.sbutton" table="table" rows="prow.rows" row="srow" name="{{actname}}"></tree.bicon>',
@@ -154,7 +156,6 @@ wliu_table.directive("table.tree", function () {
             $(function(){
                 //JQuery 3.0+ no longer support die and live; this is same as die and live,  must using document 
                 $(document).off("click.treebutton", $("a[treebutton][name='add']", el) ).on("click.treebutton", "a[treebutton][name='add']", function(evt){
-                     console.log("count: " + count);
                      $(this).parents("li").removeAttr("close").addAttr("open");
                 });
                  /*  this is same as  unbind and bind
@@ -168,6 +169,7 @@ wliu_table.directive("table.tree", function () {
     }
 });
 
+// treeview not in use 
 wliu_table.directive("table.treeview", function () {
     return {
         restrict: "E",
@@ -257,7 +259,7 @@ wliu_table.directive("tree.rowstatus", function () {
                         //'title="{{ tooltip?\'\':(row.error.errorCode ? row.error.errorMessage : \'\') }}"',
                         tree_scope,
                     '>',
-                        '{{row.type}}-{{row.parent}}-{{table.keyValue(row)}}',
+                        //'{{row.type}}-{{row.parent}}-{{table.keyValue(row)}}',
                         '<a class="wliu-btn16 wliu-btn16-error-help"    ng-if="row.error.errorCode" ',
                             //'title="{{ tooltip?\'\':( row.error.errorCode? row.error.errorMessage : \'\') }}"',
                         '>',
@@ -292,7 +294,7 @@ wliu_table.directive("tree.label", function () {
         },
         template: [
                     '<label class="wliuCommon-label" ',
-                        'popup-target="{{table.colMeta(row, name).tooltip?\'#\'+table.colMeta(row, name).tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.colMeta(row, name).coldesc?table.colMeta(row, name).coldesc:table.colMeta(row, name).colname?table.colMeta(row, name).colname:name}}" ',
+                        'popup-target="{{table.colMeta(row, name).tooltip?\'#\'+table.colMeta(row, name).tooltip:\'\'}}" popup-placement="down" popup-toggle="hover" popup-body="{{table.colMeta(row, name).coldesc?table.colMeta(row, name).coldesc:table.colMeta(row, name).colname?table.colMeta(row, name).colname:name}}" ',
                         'title="{{table.colMeta(row, name).tooltip? \'\':table.colMeta(row, name).coldesc?table.colMeta(row, name).coldesc:table.colMeta(row, name).colname?table.colMeta(row, name).colname:name}}" ',
                         tree_scope,
                     '>',
@@ -450,6 +452,7 @@ wliu_table.directive("tree.bool", function () {
     }
 });
 
+//checkbox not in use, not support yet 
 wliu_table.directive("tree.checkbox", function () {
     return {
         restrict: "E",
@@ -510,14 +513,15 @@ wliu_table.directive("tree.checkbox1", function () {
                     '<input type="text" readonly class="wliuCommon-checklist" value="{{ valueText() }}" ',
                             'ng-click="change(row, name)" ',
                             'diag-target="#{{table.colMeta(row, name).targetid}}" diag-toggle="click" ',
-                            'popup-target="{{table.colMeta(row, name).tooltip?\'#\'+table.colMeta(row, name).tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(row, name).coldesc?table.colMeta(row, name).coldesc:table.colMeta(row, name).colname}}" ',
-                            'title="{{table.colMeta(row, name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(row, name).coldesc?table.colMeta(row, name).coldesc:table.colMeta(row, name).colname}}" ',
+                            'popup-target="#table_rowno_tooltip" popup-placement="down" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(row, name).coldesc?table.colMeta(row, name).coldesc:table.colMeta(row, name).colname}}" ',
+                            //'title="{{table.colMeta(row, name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(row, name).coldesc?table.colMeta(row, name).coldesc:table.colMeta(row, name).colname}}" ',
                             tree_scope,
                             tree_ng_class,
                             tree_ng_disabled,
                     '/>'
                 ].join(''),
         controller: function ($scope) {
+            $scope.table.error_tooltip = "table_rowno_tooltip";
             $scope.table.colList($scope.row, $scope.name).keys = $scope.table.colList($scope.row, $scope.name).keys || {};
             $scope.change = function(row, name) {
                 $scope.table.colList(row, name).keys.guid = row;
@@ -539,6 +543,12 @@ wliu_table.directive("tree.checkbox1", function () {
             }
         },
         link: function (sc, el, attr) {
+            $(function(){
+                if( $("#" + sc.table.error_tooltip).length <= 0 ) {
+                    $("body").append('<div id="' + sc.table.error_tooltip + '" wliu-popup></div>');
+                    $("#" + sc.table.error_tooltip).wliuPopup();
+                }
+            })
         }
     }
 });
@@ -651,14 +661,15 @@ wliu_table.directive("tree.radio1", function () {
         template: [     '<input  type="text" readonly class="wliuCommon-radiolist" value="{{ valueText() }}" ',
                                 'ng-click="change(row, name)" ',
                                 'diag-target="#{{table.colMeta(row, name).targetid}}" diag-toggle="click" ',
-                                'popup-target="{{table.colMeta(row, name).tooltip?\'#\'+table.colMeta(row, name).tooltip:\'\'}}" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(row, name).coldesc?table.colMeta(row, name).coldesc:table.colMeta(row, name).colname}}" ',
-                                'title="{{table.colMeta(row, name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(row, name).coldesc?table.colMeta(row, name).coldesc:table.colMeta(row, name).colname}}" ',
+                                'popup-target="#table_rowno_tooltip" popup-placement="down" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(row, name).coldesc?table.colMeta(row, name).coldesc:table.colMeta(row, name).colname}}" ',
+                                //'title="{{table.colMeta(row, name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:valueText()?valueText():table.colMeta(row, name).coldesc?table.colMeta(row, name).coldesc:table.colMeta(row, name).colname}}" ',
                                 tree_scope,
                                 tree_ng_class,
                                 tree_ng_disabled,
                         '/>'
                 ].join(''),
         controller: function ($scope) {
+            $scope.table.error_tooltip = "table_rowno_tooltip";
             //important:  guid is row;
             $scope.table.colList($scope.row, $scope.name).keys = $scope.table.colList($scope.row, $scope.name).keys || {};
             $scope.change = function(row, name) {
@@ -673,6 +684,12 @@ wliu_table.directive("tree.radio1", function () {
             }
         },
         link: function (sc, el, attr) {
+            $(function(){
+                if( $("#" + sc.table.error_tooltip).length <= 0 ) {
+                    $("body").append('<div id="' + sc.table.error_tooltip + '" wliu-popup></div>');
+                    $("#" + sc.table.error_tooltip).wliuPopup();
+                }
+            })
         }
     }
 });

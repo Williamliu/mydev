@@ -70,7 +70,7 @@ include_once("../include/config/config.php");
 
         <script language="javascript" type="text/javascript">
 		   	var col1 = new WLIU.COL({key:1, table:"p",	coltype:"hidden", 		name:"id", 			colname:"Lang ID",  	coldesc:"Word ID",  defval:0 });
-		   	var col2 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"title_en",	colname:"Role(EN)", 	coldesc:"Role Name English",    sort:"ASC", maxlength:64, 	notnull:1	});
+		   	var col2 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"title_en",	colname:"Role(EN)", 	coldesc:"Role Name English",    sort:"ASC", maxlength:64, 	notnull:1,	tooltip:"tool_tip"});
 		   	var col3 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"title_cn",	colname:"Role(CN)", 	coldesc:"Role Name Chinese",    sort:"ASC", maxlength:64, 	notnull:1	});
 		   	var col4 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"desc_en", 	colname:"Detail(EN)", 	coldesc:"Description English",	sort:"ASC", maxlength:256, 	notnull:0	});
 		   	var col5 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"desc_cn", 	colname:"Detail(CN)", 	coldesc:"Description Chinese",	sort:"ASC", maxlength:256, 	notnull:0	});
@@ -112,30 +112,30 @@ include_once("../include/config/config.php");
 
 			var col11 = new WLIU.COL({key:1, table:"p",		coltype:"hidden", 		name:"id", 			colname:"Menu ID", coldesc:"Menu's ID"});
 		   	var col12 = new WLIU.COL({key:0, table:"p", 	coltype:"hidden", 		name:"parent_id",	colname:"Menu Parent ID"});
-		   	var col13 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	 notnull:1});
-		   	var col14 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)", coldesc:"Title For English", tooltip:"mytips",	notnull:1});
-		   	var col15 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", notnull:1});
-		   	var col16 = new WLIU.COL({key:0, table:"p", 	coltype:"bool", 		name:"status", 		colname:"Status",  	notnull:1});
-		   	var col17 = new WLIU.COL({key:0, table:"p", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",   list:"rightCategory",  targetid:"rightDiag1",	notnull:1});
-		   	var col18 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"orderno", 	css:"input-tiny text-md-center", style:"color:red;", colname:"Sort",   tooltip:"mytips", datatype:"NUMBER",	notnull:1});
+		   	var col13 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	 notnull:1, tooltip:"tool_tip"});
+		   	var col14 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)", coldesc:"Title For English", notnull:1, tooltip:"tool_tip"});
+		   	var col15 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", notnull:1, tooltip:"tool_tip"});
+		   	var col16 = new WLIU.COL({key:0, table:"p", 	coltype:"bool", 		name:"status", 		colname:"Status",  	notnull:1, tooltip:"tool_tip"});
+		   	var col17 = new WLIU.COL({key:0, table:"p", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",    css:"input-medium", list:"rightCategory",  targetid:"rightDiag1",	notnull:1});
+		   	var col18 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"orderno", 	colname:"Sort",		css:"input-tiny text-md-center", datatype:"NUMBER",	notnull:1, tooltip:"tool_tip"});
 
 			var col21 = new WLIU.COL({key:1, table:"s",		coltype:"hidden", 		name:"id", 			colname:"Menu ID"});
 		   	var col22 = new WLIU.COL({key:0, table:"s", 	coltype:"hidden", 		name:"parent_id",	colname:"Menu Parent ID"});
-		   	var col23 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	 unique:1,	notnull:1});
-		   	var col24 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",	notnull:1});
-		   	var col25 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", 	notnull:1});
-		   	var col26 = new WLIU.COL({key:0, table:"s", 	coltype:"bool", 		name:"status", 		colname:"Status", 		notnull:1});
-		   	var col27 = new WLIU.COL({key:0, table:"s", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",   tooltip:"mytips", list:"rightCategory",  targetid:"rightDiag1",	notnull:1});
-		   	var col28 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"orderno", 	colname:"Sort", datatype:"NUMBER",   tooltip:"mytips",	notnull:1});
+		   	var col23 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	 unique:1,	notnull:1, tooltip:"tool_tip"});
+		   	var col24 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",	notnull:1, tooltip:"tool_tip"});
+		   	var col25 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", 	notnull:1, tooltip:"tool_tip"});
+		   	var col26 = new WLIU.COL({key:0, table:"s", 	coltype:"bool", 		name:"status", 		colname:"Status", 		notnull:1, tooltip:"tool_tip"});
+		   	var col27 = new WLIU.COL({key:0, table:"s", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",    css:"input-medium", list:"rightCategory",  targetid:"rightDiag1",	notnull:1});
+		   	var col28 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"orderno", 	colname:"Sort", 	css:"input-tiny text-md-center", 	datatype:"NUMBER",  notnull:1, tooltip:"tool_tip"});
 
 			var col31 = new WLIU.COL({key:1, table:"m",		coltype:"hidden", 		name:"id", 			colname:"Menu ID"});
 		   	var col32 = new WLIU.COL({key:0, table:"m", 	coltype:"hidden", 		name:"ref_id",		colname:"Menu Parent ID"});
-		   	var col33 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"menu_key",  css:"input-tiny", style:"color:red",	colname:"Menu Key",			tooltip:"mytips",	unique:1,	notnull:1});
-		   	var col34 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",		notnull:1});
-		   	var col35 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", 		notnull:1});
-		   	var col36 = new WLIU.COL({key:0, table:"m", 	coltype:"bool", 		name:"status", 		colname:"Status", 			tooltip:"mytips", notnull:1});
-		   	var col37 = new WLIU.COL({key:0, table:"m", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",   tooltip:"mytips", list:"rightCategory",  targetid:"rightDiag1",	notnull:1});
-		   	var col38 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"orderno", 	colname:"Sort", datatype:"NUMBER",   tooltip:"mytips",	notnull:1});
+		   	var col33 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"menu_key",  	colname:"Menu Key",			unique:1,	notnull:1, tooltip:"tool_tip"});
+		   	var col34 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",		notnull:1, tooltip:"tool_tip"});
+		   	var col35 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", 		notnull:1, tooltip:"tool_tip"});
+		   	var col36 = new WLIU.COL({key:0, table:"m", 	coltype:"bool", 		name:"status", 		colname:"Status", 			notnull:1, tooltip:"tool_tip"});
+		   	var col37 = new WLIU.COL({key:0, table:"m", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",    css:"input-medium",  list:"rightCategory",  targetid:"rightDiag1",	notnull:1});
+		   	var col38 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"orderno", 	colname:"Sort", 	css:"input-tiny text-md-center",	datatype:"NUMBER",  notnull:1, tooltip:"tool_tip"});
 
 
 		   	var tree_cols = {};
@@ -158,7 +158,7 @@ include_once("../include/config/config.php");
 		   	tree_cols.s.push(col26);
 		   	tree_cols.s.push(col27);
 		   	tree_cols.s.push(col28);
-			/*
+			
 			tree_cols.m = [];
 		   	tree_cols.m.push(col31);
 		   	tree_cols.m.push(col32);
@@ -168,16 +168,16 @@ include_once("../include/config/config.php");
 		   	tree_cols.m.push(col36);
 		   	tree_cols.m.push(col37);
 		   	tree_cols.m.push(col38);
-			*/
+			
 
 		    var tree = new WLIU.TREE({
 				scope: 		"mytab",
 				treeid:     "lemon",
 				rootid: 	0,
-				refid:      15,
+				refid:      0,
 				title: 		"Menus",
 				url:   		"ajax/tree_action.php",
-				wait:   	"mywait",
+				wait:   	"ajax_wait",
 				autotip: 	"myauto",
 				taberror:	"taberror",
 				tooltip: 	"",
@@ -198,18 +198,29 @@ include_once("../include/config/config.php");
             app.controller("myForm", function ($scope) {
 				tree.setScope( $scope, "menu_tree" );
 				table.setScope( $scope, "role_table" );
+
+				$scope.row_detail = function(theRow) {
+					tree.getRecords({refid: table.getRowKeys(theRow).id});
+					$("#div_right").show();
+					$("#div_role").hide();
+				}
 		    });
 
 			$(function(){
 				table.getRecords();
-				tree.getRows();
+				//tree.getRecords({refid: table.getCurrentKeys().id});
 			});
+
+			function goback() {
+				$("#div_right").hide();
+				$("#div_role").show();
+			}
 		</script>
 </head>
-<body ng-app="myApp" ng-controller="myForm" style="padding-top:80px;position:relative;">
+<body ng-app="myApp" ng-controller="myForm">
 <!-- container -->
 <div class="container">
-		<div class="row">
+		<div id="div_role" class="row">
 			<fieldset>
 				<legend>Search By</legend>
 				<filter.label table="role_table" name="content"></filter.label> : 	<filter.textbox class="input-medium" table="role_table" name="content"></filter.textbox>
@@ -253,7 +264,7 @@ include_once("../include/config/config.php");
 				</tr>	
 				<tr ng-repeat="row in role_table.rows">
 					<td style="white-space:nowrap; width:40px;">
-						<table.bicon table="role_table" name="detail"  	actname="Edit" 		row="row"></table.bicon>
+						<table.bicon table="role_table" name="detail"  	actname="Edit" 		row="row" action="row_detail(row)"></table.bicon>
 						<table.bicon table="role_table" name="save"  	actname="Save" 		row="row"></table.bicon>
 						<table.bicon table="role_table" name="cancel"	actname="Cancel" 	row="row"></table.bicon>
 						<table.bicon table="role_table" name="delete" 	actname="Delete" 	row="row"></table.bicon>
@@ -285,14 +296,20 @@ include_once("../include/config/config.php");
 				</tr>
 			</table>
 		</div>
+		
+		<div id="div_right" style="display:none;">
+			<br>
+			<button class="btn btn-outline-info" onclick="goback()">Go Back</button><br>
+			<br>
+			Role Name: 		<form.text table="role_table" name="title_en"></form.text><br>
+			Role Detail: 	<form.text table="role_table" name="desc_en"></form.text><br>
+			<table.tree table="menu_tree"></table.tree>
+		</div>
 </div>
 <!-- container -->
+<br>
 
-<table.tree table="menu_tree"></table.tree>
-<tree.checkdiag1 table="table" targetid="rightDiag1" name="rightCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></tree.checkdiag1>
-
-
-
+<tree.checkdiag1 table="menu_tree" targetid="rightDiag1" name="rightCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></tree.checkdiag1>
 
 <div id="table_error" wliu-diag movable maskable></div>
 <div id="auto_tips" wliu-tips></div>

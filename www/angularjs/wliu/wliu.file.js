@@ -16,23 +16,23 @@ wliu_file.directive("file.list", function () {
                     '<ul style="display:inline-block;">',
                         '<li ng-repeat="fileObj in filelist.rows" style="text-decoration:underline;">',
                             '<a href="{{fileObj.url?fileObj.url:\'javascript:void(0);\'}}" target="_blank" ',
-                                'title="{{fileObj.title_en}}\n{{fileObj.title_cn}}" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="{{ fileObj.title_en.join(\'<br>\',fileObj.detail_en).join(\'<br>\',fileObj.title_cn).join(\'<br>\',fileObj.detail_cn)  }}" ',
+                                //'title="{{fileObj.title_en}}\n{{fileObj.title_cn}}" ',
+                                'popup-target="#filelist_common_tooltip" popup-placement="down" popup-toggle="hover" popup-body="{{ fileObj.title_en.join(\'<br>\',fileObj.detail_en).join(\'<br>\',fileObj.title_cn).join(\'<br>\',fileObj.detail_cn)  }}" ',
                             '>',
                                     '{{$index+1}}. {{(\'\'+fileObj.full_name).subName(namemax)}}',
                             '</a>',
                             '<a class="wliu-btn16 wliu-btn16-notes" ng-click="textFile(fileObj)" style="margin-left:10px;" ',
-                                'title="{{tooltip?\'\':\'File Comments\'}}" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="File Comments" ',
+                                //'title="{{tooltip?\'\':\'File Comments\'}}" ',
+                                'popup-target="#filelist_common_tooltip" popup-placement="down" popup-toggle="hover" popup-body="File Comments" ',
                             '>',
                             '</a>',
                             '<a class="wliu-btn16 wliu-btn16-img-print" ng-click="printFile(fileObj)" style="margin-left:2px;" ',
-                                'title="{{tooltip?\'\':\'Print File\'}}" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Print File" ',
+                                //'title="{{tooltip?\'\':\'Print File\'}}" ',
+                                'popup-target="#filelist_common_tooltip" popup-placement="down" popup-toggle="hover" popup-body="Print File" ',
                             '>',
                             '<a class="wliu-btn16 wliu-btn16-dispose" ng-click="deleteFile(fileObj)" style="margin-left:2px;" ',
-                                'title="{{tooltip?\'\':\'Delete File\'}}" ',
-                                'popup-target="{{tooltip?\'#\'+tooltip:\'\'}}" popup-toggle="hover" popup-body="Delete File" ',
+                                //'title="{{tooltip?\'\':\'Delete File\'}}" ',
+                                'popup-target="#filelist_common_tooltip" popup-placement="down" popup-toggle="hover" popup-body="Delete File" ',
                             '>',
                             '</a>',
                         '</li>',
@@ -46,6 +46,8 @@ wliu_file.directive("file.list", function () {
                     '</ul>'
                 ].join(''),
         controller: function ($scope) {
+            $scope.filelist.common_tooltip = "filelist_common_tooltip";
+
             $scope.actname      = $scope.actname?$scope.actname:"Upload File";
             $scope.namemax      = $scope.namemax?parseInt($scope.namemax):20;
 
@@ -79,6 +81,11 @@ wliu_file.directive("file.list", function () {
         },
         link: function (sc, el, attr) {
             $(function(){
+                if( $("#" + sc.filelist.common_tooltip).length <= 0 ) {
+                    $("body").append('<div id="' + sc.filelist.common_tooltip + '" wliu-popup></div>');
+                    $("#" + sc.filelist.common_tooltip).wliuPopup();
+                }
+                
                 /*
                 $(el).sortable({
                     items: ">div.image-item",

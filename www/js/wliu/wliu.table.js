@@ -52,7 +52,12 @@ WLIU.TABLE.prototype = {
 	rowstate: function(theRow, p_rowstate) {
 		return FROW.rowstate(theRow, p_rowstate);
 	},
-
+	getRowKeys: function(theRow)  {
+		return FTABLE.getRowKeys(this, theRow);
+	},
+	getCurrentKeys: function()  {
+		return FTABLE.getRowKeys(this, this.getCurrent());
+	},
 	colMeta: function(col_name) {
 		return FTABLE.colMeta(this, col_name);
 	},
