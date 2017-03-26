@@ -110,73 +110,67 @@ include_once("../include/config/config.php");
 
 
 
-			var col11 = new WLIU.COL({key:1, table:"p",		coltype:"hidden", 		name:"id", 			colname:"Menu ID", coldesc:"Menu's ID"});
-		   	var col12 = new WLIU.COL({key:0, table:"p", 	coltype:"hidden", 		name:"parent_id",	colname:"Menu Parent ID"});
-		   	var col13 = new WLIU.COL({key:0, table:"p", 	coltype:"bool", 		name:"status", 		colname:"Status",  	notnull:1, tooltip:"tool_tip"});
-		   	var col14 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)", coldesc:"Title For English", notnull:1, tooltip:"tool_tip"});
-		   	var col15 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", notnull:1, tooltip:"tool_tip"});
-		   	var col16 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	 notnull:1, tooltip:"tool_tip"});
-		   	var col17 = new WLIU.COL({key:0, table:"p", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",    css:"input-medium", list:"rightCategory",  targetid:"rightDiag1",	notnull:1});
-		   	var col18 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"orderno", 	colname:"Sort",		css:"input-tiny text-md-center", datatype:"NUMBER",	notnull:1, tooltip:"tool_tip"});
+			var col101 = new WLIU.COL({key:1, table:"p",	coltype:"hidden", 		name:"id", 			colname:"Menu ID", coldesc:"Menu's ID"});
+		   	var col103 = new WLIU.COL({key:0, table:"p", 	coltype:"bool", 		name:"status", 		colname:"Status", 	tooltip:"tool_tip"});
+		   	var col104 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	coldesc:"Menu Key", 			unique:1,	notnull:1, tooltip:"tool_tip"});
+		   	var col105 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",coldesc:"Title English",		notnull:1, tooltip:"tool_tip"});
+		   	var col106 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)",	coldesc:"Description English",	tooltip:"tool_tip"});
+		   	var col107 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_cn", 	colname:"Title(CN)",coldesc:"Title Chinese",		notnull:1, tooltip:"tool_tip"});
+		   	var col108 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"desc_cn", 	colname:"Desc(CN)",	coldesc:"Description Chinese", 	tooltip:"tool_tip"});
+		   	var col109 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"template", 	colname:"Template",	coldesc:"Template",				css:"input-medium",			tooltip:"tool_tip"});
+		   	var col110 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"url",			colname:"URL",		coldesc:"URL",					tooltip:"tool_tip"});
+		   	var col111 = new WLIU.COL({key:0, table:"p", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",    css:"input-medium", list:"rightCategory",  targetid:"rightDiag1",	notnull:1});
+		   	var col112 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"orderno", 	colname:"Sort", 	css:"input-tiny text-md-center", 	datatype:"NUMBER",  notnull:1, tooltip:"tool_tip"});
 
-			var col21 = new WLIU.COL({key:1, table:"s",		coltype:"hidden", 		name:"id", 			colname:"Menu ID"});
-		   	var col22 = new WLIU.COL({key:0, table:"s", 	coltype:"hidden", 		name:"parent_id",	colname:"Menu Parent ID"});
-		   	var col23 = new WLIU.COL({key:0, table:"s", 	coltype:"bool", 		name:"status", 		colname:"Status", 		notnull:1, tooltip:"tool_tip"});
-		   	var col24 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",	notnull:1, tooltip:"tool_tip"});
-		   	var col25 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", 	notnull:1, tooltip:"tool_tip"});
-		   	var col26 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	 unique:1,	notnull:1, tooltip:"tool_tip"});
-		   	var col27 = new WLIU.COL({key:0, table:"s", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",    css:"input-medium", list:"rightCategory",  targetid:"rightDiag1",	notnull:1});
-		   	var col28 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"orderno", 	colname:"Sort", 	css:"input-tiny text-md-center", 	datatype:"NUMBER",  notnull:1, tooltip:"tool_tip"});
-
-			var col31 = new WLIU.COL({key:1, table:"m",		coltype:"hidden", 		name:"id", 			colname:"Menu ID"});
-		   	var col32 = new WLIU.COL({key:0, table:"m", 	coltype:"hidden", 		name:"ref_id",		colname:"Menu Parent ID"});
-		   	var col33 = new WLIU.COL({key:0, table:"m", 	coltype:"bool", 		name:"status", 		colname:"Status", 			notnull:1, tooltip:"tool_tip"});
-		   	var col34 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",		notnull:1, tooltip:"tool_tip"});
-		   	var col35 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)", 		notnull:1, tooltip:"tool_tip"});
-		   	var col36 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"menu_key",  	colname:"Menu Key",			unique:1,	notnull:1, tooltip:"tool_tip"});
-		   	var col37 = new WLIU.COL({key:0, table:"m", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",    css:"input-medium",  list:"rightCategory",  targetid:"rightDiag1",	notnull:1});
-		   	var col38 = new WLIU.COL({key:0, table:"m", 	coltype:"textbox", 		name:"orderno", 	colname:"Sort", 	css:"input-tiny text-md-center",	datatype:"NUMBER",  notnull:1, tooltip:"tool_tip"});
+			var col201 = new WLIU.COL({key:1, table:"s",	coltype:"hidden", 		name:"id", 			colname:"Menu ID"});
+		   	var col202 = new WLIU.COL({key:0, table:"s", 	coltype:"hidden", 		name:"ref_id",		colname:"Menu Parent ID"});
+		   	var col203 = new WLIU.COL({key:0, table:"s", 	coltype:"bool", 		name:"status", 		colname:"Status", 	tooltip:"tool_tip"});
+		   	var col204 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	coldesc:"Menu Key", 			unique:1,	notnull:1, tooltip:"tool_tip"});
+		   	var col205 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",coldesc:"Title English",		notnull:1, tooltip:"tool_tip"});
+		   	var col206 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)",	coldesc:"Description English",	tooltip:"tool_tip"});
+		   	var col207 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"title_cn", 	colname:"Title(CN)",coldesc:"Title Chinese",		notnull:1, tooltip:"tool_tip"});
+		   	var col208 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"desc_cn", 	colname:"Desc(CN)",	coldesc:"Description Chinese", 	tooltip:"tool_tip"});
+		   	var col209 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"template", 	colname:"Template",	coldesc:"Template",				css:"input-medium",	tooltip:"tool_tip"});
+		   	var col210 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"url",			colname:"URL",		coldesc:"URL",					tooltip:"tool_tip"});
+		   	var col211 = new WLIU.COL({key:0, table:"s", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",    css:"input-medium", list:"rightCategory",  targetid:"rightDiag1",	notnull:1});
+		   	var col212 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"orderno", 	colname:"Sort", 	css:"input-tiny text-md-center", 	datatype:"NUMBER",  notnull:1, tooltip:"tool_tip"});
 
 
 		   	var tree_cols = {};
 		   	tree_cols.p = [];
-			tree_cols.p.push(col11);
-		   	tree_cols.p.push(col12);
-		   	tree_cols.p.push(col13);
-		   	tree_cols.p.push(col14);
-		   	tree_cols.p.push(col15);
-		   	tree_cols.p.push(col16);
-		   	tree_cols.p.push(col17);
-		   	tree_cols.p.push(col18);
+			tree_cols.p.push(col101);
+			tree_cols.p.push(col103);
+			tree_cols.p.push(col104);
+			tree_cols.p.push(col105);
+			tree_cols.p.push(col106);
+			tree_cols.p.push(col107);
+			tree_cols.p.push(col108);
+			tree_cols.p.push(col109);
+			tree_cols.p.push(col110);
+			tree_cols.p.push(col111);
+			tree_cols.p.push(col112);
 		   	
 			tree_cols.s = [];
-			tree_cols.s.push(col21);
-		   	tree_cols.s.push(col22);
-		   	tree_cols.s.push(col23);
-		   	tree_cols.s.push(col24);
-		   	tree_cols.s.push(col25);
-		   	tree_cols.s.push(col26);
-		   	tree_cols.s.push(col27);
-		   	tree_cols.s.push(col28);
+			tree_cols.s.push(col201);
+		   	tree_cols.s.push(col202);
+		   	tree_cols.s.push(col203);
+		   	tree_cols.s.push(col204);
+		   	tree_cols.s.push(col205);
+		   	tree_cols.s.push(col206);
+		   	tree_cols.s.push(col207);
+		   	tree_cols.s.push(col208);
+		   	tree_cols.s.push(col209);
+		   	tree_cols.s.push(col210);
+		   	tree_cols.s.push(col211);
+		   	tree_cols.s.push(col212);
 			
-			tree_cols.m = [];
-		   	tree_cols.m.push(col31);
-		   	tree_cols.m.push(col32);
-		   	tree_cols.m.push(col33);
-		   	tree_cols.m.push(col34);
-		   	tree_cols.m.push(col35);
-		   	tree_cols.m.push(col36);
-		   	tree_cols.m.push(col37);
-		   	tree_cols.m.push(col38);
-			
-
 		    var tree = new WLIU.TREE({
 				scope: 		"mytab",
 				treeid:     "lemon",
 				rootid: 	0,
 				refid:      0,
 				title: 		"Menus",
-				url:   		"ajax/tree_action.php",
+				url:   		"ajax/web_role_right_action.php",
 				wait:   	"ajax_wait",
 				autotip: 	"myauto",
 				taberror:	"taberror",
@@ -185,7 +179,7 @@ include_once("../include/config/config.php");
 				//filters:filters,
 				cols: 	 tree_cols,
 				pbutton: ["add", "save", "cancel", "delete"],
-				sbutton: ["add", "save", "cancel", "delete"],
+				sbutton: ["save", "cancel", "delete"],
 				mbutton: ["save", "cancel", "delete"],
 				lists: 	{
 							rightCategory: 		{ loaded: 0, keys:{guid:"", name:""}, list:[] }
