@@ -1,4 +1,9 @@
 /*** fix  bootstrap and mdbootstrap  problem : overwrite their css ***/
+table {
+	empty-cells: 			show;
+	border-collapse:		collapse;
+}
+
 table td, table th,
 .table td, .table th {
 	padding: 		5px 2px;
