@@ -69,6 +69,7 @@ div.picker__footer {
 }
 /***** input element: overwrite bootstrap *****************************/
 
+
 input {
 	padding: 0px;
 	margin:  0px;
@@ -97,10 +98,11 @@ textarea
 	border-radius: 		4px;
 	border: 			1px solid rgb(204,204,204);
 	vertical-align: 	middle;
-	height:  			auto;
+	height:  			20px;
 	width:  			auto;
 
 	font-size:          14px;
+	box-sizing: 		content-box;
 }
 
 textarea {
@@ -136,11 +138,12 @@ span.checkbox {
 	*/
 	padding:     	0px;
 	margin: 	 	0px 4px;
+	box-sizing: 	content-box;
 }
 span.radio > label,
 span.checkbox > label,
-[type="checkbox"] + label,
-[type="radio"] + label
+input[type="checkbox"] + label,
+input[type="radio"] + label
 {
 	display: 	inline-block;
 	/*
@@ -153,8 +156,8 @@ span.checkbox > label,
 
 span.radio > input[type="radio"],
 span.checkbox > input[type="checkbox"],
-span.checkbox > [type="checkbox"],
-span.checkbox > [type="radio"]
+span.checkbox > input[type="checkbox"],
+span.checkbox > input[type="radio"]
 {
 	display: 		none;
 	position: 		absolute;
@@ -163,8 +166,8 @@ span.checkbox > [type="radio"]
 
 span.radio > label:before,
 span.checkbox > label:before, 
-[type="checkbox"] + label:before,
-[type="radio"] + label:before
+input[type="checkbox"] + label:before,
+input[type="radio"] + label:before
 {
 	display: 	inline-block;
 	position: 	relative;
@@ -178,57 +181,57 @@ span.checkbox > label:before,
     background-image:           url(wliu.buttons/wliu-buttons-16.png);
 }
 span.radio > label:before,
-[type="radio"] + label:before
+input[type="radio"] + label:before
 {
-	margin-top:   -4px;
+	margin-top:   2px;
 }
 span.checkbox > label:before,
-[type="checkbox"] + label:before
+input[type="checkbox"] + label:before
 {
-	margin-top:   -2px;
+	margin-top:   2px;
 }
 
 
 span.radio > label:before,
-[type="radio"] + label:before
+input[type="radio"] + label:before
 {
     background-position:        -40px -120px;
 }
 
 span.checkbox > label:before,
-[type="checkbox"] + label:before
+input[type="checkbox"] + label:before
 {
     background-position:        -40px -100px;
 }
 
 span.radio:hover > label:before,
-[type="radio"]:hover + label:before
+input[type="radio"]:hover + label:before
 {
     background-position:        -20px -120px;
 }
 
 span.checkbox:hover > label:before,
-[type="checkbox"]:hover + label:before
+input[type="checkbox"]:hover + label:before
 {
     background-position:        -20px -100px;
 }
 
 span.radio > input[type="radio"]:checked + label:before,
-[type="radio"]:checked + label:before
+input[type="radio"]:checked + label:before
 {
     background-position:        0px -120px;
 }
 
 span.checkbox > input[type="checkbox"]:checked + label:before,
-[type="checkbox"]:checked + label:before
+input[type="checkbox"]:checked + label:before
 {
     background-position:        0px -100px;
 }
 
 span.radio > input[type="radio"]:checked + label,
 span.checkbox > input[type="checkbox"]:checked + label,
-[type="radio"]:checked + label,
-[type="checkbox"]:checked + label
+input[type="radio"]:checked + label,
+input[type="checkbox"]:checked + label
 {
 	color: 		#A807C4;
 }
@@ -297,8 +300,8 @@ a.wliuCommon-sort {
 input.wliuCommon-checklist {
 	cursor: 			pointer;
 	display: 			inline-block;
-	height:  			24px;
-	line-height: 		24px;
+	height:  			20px;
+	line-height: 		20px;
 	padding: 			0px;
 	padding-top: 		2px;
 	padding-bottom: 	2px;
@@ -316,8 +319,8 @@ input.wliuCommon-checklist {
 input.wliuCommon-radiolist {
 	cursor: 			pointer;
 	display: 			inline-block;
-	height: 			24px;
-	line-height: 		24px;
+	height: 			20px;
+	line-height: 		20px;
 	padding: 			0px;
 	padding-top: 		2px;
 	padding-bottom: 	2px;
@@ -336,8 +339,8 @@ input.wliuCommon-search {
     display:        inline-block;
     position:       relative;
     width:          100px;
-    height:         24px;
-    line-height:    24px;
+    height:         20px;
+    line-height:    20px;
     padding:        0px;
     padding-left:   20px;
     margin:         2px;
@@ -351,8 +354,8 @@ select.wliuCommon-filter {
     display:        inline-block;
     position:       relative;
     min-width:      120px;
-    height:         24px;
-    line-height:    24px;
+    height:         20px;
+    line-height:    20px;
     padding:        0px;
     padding-left:   20px;
     margin:         2px;

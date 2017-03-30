@@ -20,18 +20,17 @@ echo "save: $save";
 		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
 		<link href='<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
 		<!-- //JQuery -->
+
+	    <!-- Font Awesome & BS & MDB -->
+		<link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
+		<link 	href='<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/css/bootstrap.min.css' type='text/css' rel='stylesheet' />
+		<link href='<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/css/mdb.css' type='text/css' rel='stylesheet' />
 		
 		<!-- Bootstrap3.3 -->
-		<link 	href='<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/css/bootstrap.min.css' type='text/css' rel='stylesheet' />
-		<script src="<?php echo $CFG["web_domain"]?>/theme/mdb4.0/js/tether.js" type="text/javascript"></script>
+		<script src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/tether.min.js" type="text/javascript"></script>
 		<script src="<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/js/bootstrap.min.js" type="text/javascript"></script>    
 		<!-- //Bootstrap -->
 		
-		<!-- MD Bootstrap 4.0 -->
-		<link href='<?php echo $CFG["web_domain"]?>/theme/mdb4.0/css/mdb.wliu.css' type='text/css' rel='stylesheet' />
-		<link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
-
-
 		<!--
 		<link href='theme/font-awesome-4.6.3/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
 		<link href='theme/mdb_pro/css/woocommerce.css' rel='stylesheet' type='text/css'>
@@ -78,8 +77,8 @@ echo "save: $save";
 
         <script language="javascript" type="text/javascript">
 			var words = <?php echo json_encode($words); ?>;
-			alert( words["save"].replace("{{good}}", " Hello ").replace("{{bad}}", " World ")  );
-		   console.log(words);
+			//alert( words["save"].replace("{{good}}", " Hello ").replace("{{bad}}", " World ")  );
+		    console.log(words);
 
 		   	var col1 = new WLIU.COL({key:1, table:"p",	coltype:"hidden", 		name:"id", 			colname:"Lang ID",  	coldesc:"Word ID",  defval:0 });
 		   	var col2 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"title_en",	colname:"Role(EN)", 	coldesc:"Role Name English",    sort:"ASC", maxlength:64, 	notnull:1,	tooltip:"tool_tip"});
@@ -215,6 +214,13 @@ echo "save: $save";
 			$(function(){
 				table.getRecords();
 				//tree.getRecords({refid: table.getCurrentKeys().id});
+
+				$('.min-chart#chart-sales').easyPieChart({
+					barColor: "orange",
+					onStep: function (from, to, percent) {
+						$(this.el).find('.percent').text(Math.round(percent));
+					}
+				});				
 			});
 
 			function goback() {
@@ -226,6 +232,9 @@ echo "save: $save";
 <body ng-app="myApp" ng-controller="myForm">
 <!-- container -->
 <div class="container">
+<div style="display:inline-block;border:1px solid red;">
+		<span class="min-chart" id="chart-sales" style="margin:0px;" data-percent="80"><span class="percent"></span></span>
+</div>
 		<div id="div_role" class="row">
 			<fieldset>
 				<legend>Search By</legend>
@@ -325,7 +334,7 @@ echo "save: $save";
 
 
 <!-- MD Bootstrap 4.0 js -- must place at the end of body -->
-<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/theme/mdb4.0/js/mdb.min.js"></script>
+<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/mdb.min.js"></script>
 <!-- <script type="text/javascript" src="theme/mdb_pro/js/woocommerce.min.js"></script> -->
 <!-- //MD Bootstrap 4.0 js -->
 </body>
