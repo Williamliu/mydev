@@ -232,9 +232,8 @@ echo "save: $save";
 <body ng-app="myApp" ng-controller="myForm">
 <!-- container -->
 <div class="container">
-<div style="display:inline-block;border:1px solid red;">
 		<span class="min-chart" id="chart-sales" style="margin:0px;" data-percent="80"><span class="percent"></span></span>
-</div>
+
 		<div id="div_role" class="row">
 			<fieldset>
 				<legend>Search By</legend>
