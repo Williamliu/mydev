@@ -3799,7 +3799,10 @@ class cLANG {
 	public static function getWords($lang="") {
 		global $CFG;
 		$def_lang 	= $CFG["lang_default"]?$CFG["lang_default"]:"cn";
-		$lang 		= $lang?$lang:$def_lang;
+
+		$trans_lang = $lang;
+		$lang 		= $lang=="tw"?"cn":$lang;
+		$lang 		= $lang!="en" && $lang!="cn"?$def_lang:$lang;
 		$other_lang = $lang=="en"?"cn":"en";
 
 		$query_lang		= "SELECT keyword, IF($lang!='', $lang, $other_lang) AS lang  FROM web_language WHERE deleted <> 1";
@@ -3807,7 +3810,7 @@ class cLANG {
 		$result_lang 	= $db_lang->query($query_lang);
 		$words 			= array();
 		while($row_lang = $db_lang->fetch($result_lang)) {
-			$words[$row_lang["keyword"]] = $row_lang["lang"]?$row_lang["lang"]:$row_lang["keyword"];
+			$words[$row_lang["keyword"]] = $row_lang["lang"]?cLANG::trans($row_lang["lang"], $trans_lang):$row_lang["keyword"];
 		}
 		$db_lang->close();
 		return $words;

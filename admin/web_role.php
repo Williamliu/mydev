@@ -1,15 +1,9 @@
 <?php
 session_start();
-ini_set("display_errors", 1);
+ini_set("display_errors", 0);
 include_once("../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
-
-$words = cLANG::getWords("en");
-
-print_r($words);
-
-$save = cLANG::replace($words["save"], array("good"=>"Hello", "bad"=>"World"));
-echo "save: $save";
+include_once($CFG["include_path"] . "/wliu/language/language.php");
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -17,6 +11,7 @@ echo "save: $save";
 		<meta charset="utf8" />
 		<!-- JQuery3.1.1 -->
 		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery.cookie.1.4.1.js"></script>
 		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
 		<link href='<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
 		<!-- //JQuery -->
@@ -76,10 +71,6 @@ echo "save: $save";
 
 
         <script language="javascript" type="text/javascript">
-			var words = <?php echo json_encode($words); ?>;
-			//alert( words["save"].replace("{{good}}", " Hello ").replace("{{bad}}", " World ")  );
-		    console.log(words);
-
 		   	var col1 = new WLIU.COL({key:1, table:"p",	coltype:"hidden", 		name:"id", 			colname:"Lang ID",  	coldesc:"Word ID",  defval:0 });
 		   	var col2 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"title_en",	colname:"Role(EN)", 	coldesc:"Role Name English",    sort:"ASC", maxlength:64, 	notnull:1,	tooltip:"tool_tip"});
 		   	var col3 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"title_cn",	colname:"Role(CN)", 	coldesc:"Role Name Chinese",    sort:"ASC", maxlength:64, 	notnull:1	});
@@ -232,8 +223,9 @@ echo "save: $save";
 <body ng-app="myApp" ng-controller="myForm">
 <!-- container -->
 <div class="container">
+<div style="display:inline-block;border:0px solid red;">
 		<span class="min-chart" id="chart-sales" style="margin:0px;" data-percent="80"><span class="percent"></span></span>
-
+</div>
 		<div id="div_role" class="row">
 			<fieldset>
 				<legend>Search By</legend>

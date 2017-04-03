@@ -215,6 +215,48 @@ wliu_table.directive("table.order", function(){
     }
 });
 
+wliu_table.directive("table.head", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            name:       "@"
+        },
+        template: [
+                    '<label for="navi_{{table.scope}}_{{name}}" class="wliuCommon-header" scope="{{ table.scope }}" ',
+                        'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-placement="down" popup-toggle="hover" popup-body="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}" ',
+                        'title="{{table.colMeta(name).tooltip? \'\':table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}" ',
+                    '>',
+                        '<span style="vertival-align:middle;">{{ table.colMeta(name).colname?table.colMeta(name).colname:name }}</span>',
+                        '<span style="vertival-align:middle;" class="wliuCommon-text-error" ng-if="table.colMeta(name).notnull"> <b>*</b></span> ',
+                        '<a id="navi_{{table.scope}}_{{name}}" ng-click="changeOrder()" class="wliu-btn16 wliu-btn16-sort" ng-if="table.colMeta(name).sort" ',
+                                'ng-class="{\'wliu-btn16-sort-asc\': table.orderState(name, \'ASC\') ',
+                                ',\'wliu-btn16-sort-desc\':table.orderState(name, \'DESC\') }" title="Sort by {{table.colMeta(name).colname}}"',
+                        '>',
+                        '</a>',
+                    '</label>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.changeOrder=function() {
+                if( $scope.table.navi.orderby==($scope.table.colMeta($scope.name).table + "." + $scope.table.colMeta($scope.name).col) ) {
+                    if($scope.table.navi.sortby.toUpperCase()=="ASC") {
+                        $scope.table.navi.sortby = "DESC";
+                    } else {
+                        $scope.table.navi.sortby = "ASC";
+                    }
+                } else {
+                    $scope.table.navi.orderby = $scope.table.colMeta($scope.name).table + "." + $scope.table.colMeta($scope.name).col;
+                    $scope.table.navi.sortby = $scope.table.colMeta($scope.name).sort?$scope.table.colMeta($scope.name).sort.toUpperCase():"ASC";
+                }
+                $scope.table.getRows();
+            }
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
 wliu_table.directive("table.rowstatus", function () {
     return {
         restrict: "E",
@@ -991,49 +1033,6 @@ wliu_table.directive("table.esign", function () {
                 sc.esign_canvas.init();
                 
             });
-        }
-    }
-});
-
-wliu_table.directive("table.head", function () {
-    return {
-        restrict: "E",
-        replace: true,
-        scope: {
-            table:      "=",
-            name:       "@"
-        },
-        template: [
-                    '<label for="navi_{{table.scope}}_{{name}}" class="wliuCommon-header" scope="{{ table.scope }}" ',
-                        'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-placement="down" popup-toggle="hover" popup-body="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}" ',
-                        'title="{{table.colMeta(name).tooltip? \'\':table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname?table.colMeta(name).colname:name}}" ',
-                    '>',
-                        '<span style="vertival-align:middle;">{{ table.colMeta(name).colname?table.colMeta(name).colname:name }}</span>',
-                        '<span style="vertival-align:middle;" class="wliuCommon-text-error" ng-if="table.colMeta(name).notnull"> <b>*</b></span> ',
-                        '<a id="navi_{{table.scope}}_{{name}}" ng-click="changeOrder()" class="wliu-btn16 wliu-btn16-sort" ng-if="table.colMeta(name).sort" ',
-                                'ng-class="{\'wliu-btn16-sort-asc\': table.orderState(name, \'ASC\') ',
-                                ',\'wliu-btn16-sort-desc\':table.orderState(name, \'DESC\') }" title="Sort by {{table.colMeta(name).colname}}"',
-                        '>',
-                        '</a>',
-                    '</label>'
-                ].join(''),
-        controller: function ($scope) {
-            $scope.changeOrder=function() {
-                var colMeta = $scope.table.colMeta($scope.name);
-                if( $scope.table.navi.orderby== colMeta.table + "." + colMeta.col ) {
-                    if($scope.table.navi.sortby.toUpperCase=="ASC") {
-                        $scope.table.navi.sortby = "DESC";
-                    } else {
-                        $scope.table.navi.sortby = "ASC";
-                    }
-                } else {
-                    $scope.table.navi.orderby = colMeta.table + "." + colMeta.col;
-                    $scope.table.navi.sortby = $scope.table.colMeta($scope.name).sort?$scope.table.colMeta($scope.name).sort.toUpperCase():"ASC";
-                }
-                $scope.table.getRows();
-            }
-        },
-        link: function (sc, el, attr) {
         }
     }
 });
