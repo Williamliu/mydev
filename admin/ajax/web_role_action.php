@@ -36,7 +36,7 @@ try {
 							"name"=>"web_role", 
 							"keys"=>array("id"),  
 							"fkeys"=>array(), 
-							"cols"=>array("id", "title_en", "title_cn", "detail_en", "detail_cn", "level", "orderno", "status", "last_updated"), 
+							"cols"=>array("id", "title_en", "detail_en", "title_cn", "detail_cn", "level", "orderno", "status", "last_updated"), 
 							"insert"=>array("last_updated"=>time()), 
 							"update"=>array()  
 					)

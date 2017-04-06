@@ -3,7 +3,7 @@ var WLIU = WLIU || {};
 // Table Object
 WLIU.TREE = function( opts ) {
 	this.sc			= null;
-	this.lang       = opts.lang?opts.lan:"cn";
+	this.lang       = opts.lang?opts.lang:"cn";
 	this.title  	= opts.title?opts.title:"";
 	this.treeid		= opts.treeid?opts.treeid:0;  // tree root id
 	this.rootid		= opts.rootid?opts.rootid:0;  // tree root id

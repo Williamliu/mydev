@@ -3,7 +3,7 @@ var WLIU = WLIU || {};
 WLIU.FILELIST = function( opts ) {
 	this.sc			= null;
 
-	this.lang       = opts.lang?opts.lan:"cn";
+	this.lang       = opts.lang?opts.lang:"cn";
 	this.url		= opts.url?opts.url:"";
 	this.wait		= opts.wait?opts.wait:"";
 	this.autotip 	= opts.autotip?opts.autotip:"";

@@ -1649,8 +1649,9 @@ class cACTION {
         $colstr = "";
 		foreach($otable["selectCols"] as $oCol) {
 			$dbColName 	= $otable["colmeta"][$oCol]["name"]?$otable["colmeta"][$oCol]["name"]:$oCol;
-			$dbCol 		= ($otype?$otype:$otable["type"]) . "." . $oCol;
-			cTYPE::join( $colstr, ", ", "$dbCol as $dbColName"); 
+			$dbCol 		= ($otype?$otype:$otable["type"]) . "." . $oCol . " AS " . $dbColName;
+			if( $otable["colmeta"][$oCol]["trans"] )  $dbCol = cLANG::col( ($otype?$otype:$otable["type"]) . "." . $oCol, "", $dbColName);
+			cTYPE::join( $colstr, ", ", $dbCol); 
 		}
 		return $colstr;
 	}
@@ -1891,6 +1892,7 @@ class cACTION {
 							unset($theCol["maxlength"]);
 							unset($theCol["min"]);
 							unset($theCol["max"]);
+							unset($theCol["trans"]);
 							unset($theCol["sort"]);
 							unset($theCol["list"]);
 
@@ -3808,9 +3810,11 @@ class cLANG {
 	public static $support = array("cn", "en", "tw");
 	public static function getWords($lang="") {
 		global $CFG;
+		global $GLang;
 		$trans_lang = $lang;
 		$def_lang 	= cLANG::$support[0];
 
+		$lang 		= $lang?$lang:$GLang;
 		$lang 		= $lang?$lang:$def_lang;
 		$lang 		= in_array($lang, cLANG::$support)?$lang:$def_lang;
 		$lang 		= $lang=="tw"?"cn":$lang;
@@ -3833,10 +3837,11 @@ class cLANG {
 		}
 		return $word;
 	}
-	public static function col($col, $lang, $alias="") {
+	public static function col($col, $lang="", $alias="") {
 		global $CFG;
+		global $GLang;
 		$def_lang 	= cLANG::$support[0];
-
+		$lang 		= $lang?$lang:$GLang;	
 		$lang 		= $lang?$lang:$def_lang;
 		$lang 		= in_array($lang, cLANG::$support)?$lang:$def_lang;
 		$lang 		= $lang=="tw"?"cn":$lang;
@@ -3859,20 +3864,20 @@ class cLANG {
 		$ret_col 	= $col . "_" . $lang; 
 		return $ret_col;
 	}
-    public static function trans($str, $lang) {
-        $word = "";
+    public static function trans($str, $lang="") {
+		global $GLang;
+		$lang = $lang?$lang:$GLang;
         switch($lang) {
             case "cn":
-                $word = self::toCN($str);
+                $str = self::toCN($str);
                 break;
             case "tw":
-                $word = self::toTW($str);
+                $str = self::toTW($str);
                 break;
             default:
-                $word = $str;
                 break;
         }
-        return $word;
+        return $str;
     }
     public static function toTW ($str) {  
             $str_t = '';  

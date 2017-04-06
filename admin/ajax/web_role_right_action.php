@@ -20,7 +20,7 @@ try {
 	$listTable = array();
 	$rightCategory = array(
 		"type"=>"list1",
-		"table1"=>array("name"=>"web_right", "key"=>"id", "fkey"=>"", "value"=>"title_en", "desc"=>"desc_en"),
+		"table1"=>array("name"=>"web_right", "key"=>"id", "fkey"=>"", "value"=>cLANG::langCol("title"), "desc"=>cLANG::langCol("detail")),
 		"table2"=>array(),
 		"table3"=>array()
 	);
@@ -41,7 +41,7 @@ try {
 							"name"=>"web_menu1", 
 							"keys"=>array("id"),  
 							"fkeys"=>array("parent_id"), 
-							"cols"=>array("id","parent_id","menu_key","title_en","desc_en","title_cn","desc_cn","template","url","seo_title","seo_keyword","seo_description","right","orderno","status"), 
+							"cols"=>array("id","parent_id","menu_key","title_en","detail_en","title_cn","detail_cn","template","url","seo_title","seo_keyword","seo_description","right","orderno","status"), 
 							"insert"=>array(), 
 							"update"=>array(),
 							"right"=>array("name"=>"web_role_menu", "value"=>"menu_right", "keys"=>array("menu_id", "role_id"))
@@ -51,7 +51,7 @@ try {
 							"name"=>"web_menu2", 
 							"keys"=>array("id"),  
 							"fkeys"=>array("ref_id"), 
-							"cols"=>array("id","ref_id", "menu_key", "title_en", "desc_en","title_cn","desc_cn","template","url","seo_title","seo_keyword","seo_description","status","right", "orderno"), 
+							"cols"=>array("id","ref_id", "menu_key", "title_en", "detail_en","title_cn","detail_cn","template","url","seo_title","seo_keyword","seo_description","status","right", "orderno"), 
 							"insert"=>array(), 
 							"update"=>array(),
 							"right"=>array("name"=>"web_role_template", "value"=>"temp_right", "keys"=>array("temp_id", "role_id"))

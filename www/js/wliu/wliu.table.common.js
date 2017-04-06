@@ -257,6 +257,7 @@ WLIU.FILTER = function(opts) {
 		maxlength:  0,		 
 		min:		0,    
 		max:		0,
+		trans:		0,
 		list:       "",    // select , checkbox, radio base on list
 		compare:	"",    // default defined in server side php 
 		defval:     "",
@@ -287,6 +288,7 @@ WLIU.COL = function(opts) {
 		maxlength:  0,		 
 		min:		0,    
 		max:		0,
+		trans:		0,
 		sort:		"",
 		relation:   "",
 		list:       "",    // select , checkbox, radio base on list
@@ -337,6 +339,7 @@ WLIU.ROW = function( cols, nameValues, scope ) {
 		colObj.maxlength  	= cols[cidx].maxlength?cols[cidx].maxlength:0;
 		colObj.min  		= cols[cidx].min?cols[cidx].min:0;
 		colObj.max  		= cols[cidx].max?cols[cidx].max:0;
+		colObj.trans  		= cols[cidx].trans?cols[cidx].trans:0;
 
 		colObj.relation  	= cols[cidx].relation?cols[cidx].relation:"";
 		colObj.sort  		= cols[cidx].sort?cols[cidx].sort:"";
@@ -1678,7 +1681,7 @@ WLIU.TABLEACTION.prototype = {
 	},
 	orderState: function(theTable, name, sort) {
 		var colMeta = this.colMeta(theTable, name);
-		var colName = colMeta.table + "." + colMeta.col;
+		var colName = colMeta.trans? colMeta.col : colMeta.table + "." + colMeta.col;
 		if( theTable.navi.orderby== colName && ( theTable.navi.sortby.toUpperCase()==sort.toUpperCase() || ( theTable.navi.sortby=="" && colMeta.sort.toUpperCase()==sort.toUpperCase() ) ) ) 
 			return true;
 		else 

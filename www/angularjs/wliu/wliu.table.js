@@ -205,7 +205,7 @@ wliu_table.directive("table.order", function(){
         controller: function ($scope) {
             $scope.xsize = $scope.xsize?$scope.xsize:24;
             $scope.changeOrder=function(colMeta, order) {
-                $scope.table.navi.orderby=colMeta.table + "." + colMeta.col;
+                $scope.table.navi.orderby= colMeta.trans ? colMeta.col : colMeta.table + "." + colMeta.col;
                 $scope.table.navi.sortby=order;
                 $scope.table.getRows();
             }
@@ -239,14 +239,16 @@ wliu_table.directive("table.head", function () {
                 ].join(''),
         controller: function ($scope) {
             $scope.changeOrder=function() {
-                if( $scope.table.navi.orderby==($scope.table.colMeta($scope.name).table + "." + $scope.table.colMeta($scope.name).col) ) {
+                var order_col = $scope.table.colMeta($scope.name).trans? $scope.table.colMeta($scope.name).col : $scope.table.colMeta($scope.name).table + "." + $scope.table.colMeta($scope.name).col;
+                
+                if( $scope.table.navi.orderby == order_col ) {
                     if($scope.table.navi.sortby.toUpperCase()=="ASC") {
                         $scope.table.navi.sortby = "DESC";
                     } else {
                         $scope.table.navi.sortby = "ASC";
                     }
                 } else {
-                    $scope.table.navi.orderby = $scope.table.colMeta($scope.name).table + "." + $scope.table.colMeta($scope.name).col;
+                    $scope.table.navi.orderby = order_col;
                     $scope.table.navi.sortby = $scope.table.colMeta($scope.name).sort?$scope.table.colMeta($scope.name).sort.toUpperCase():"ASC";
                 }
                 $scope.table.getRows();
@@ -1614,6 +1616,40 @@ wliu_table.directive("table.checkbox1", function () {
     }
 });
 
+wliu_table.directive("table.checktext1", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            row:        "=",
+            name:       "@"  // col_name 
+        },
+        template: [
+                    '<span>{{ valueText() }}</span>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
+            $scope.valueText = function() {
+                    var text = $.map( $scope.table.colList($scope.name).list , function(n) {
+                    if( $scope.table.getCol($scope.row, $scope.name)!= undefined ) {
+                        if($scope.table.getCol($scope.row, $scope.name).value[n.key]) 
+                            return n.value;
+                        else
+                            return null;
+                    } else {
+                        return null;
+                    }
+
+               }).join("; ");
+               return text;
+            }
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
 wliu_table.directive("table.checkdiag1", function () {
     return {
         restrict: "E",
@@ -1859,6 +1895,45 @@ wliu_table.directive("table.checkbox2", function () {
                     $("#" + sc.table.error_tooltip).wliuPopup();
                 }
             })
+        }
+    }
+});
+
+wliu_table.directive("table.checktext2", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            row:        "=",
+            name:       "@" // col_name
+        },
+        template: [
+                        '<span>{{ valueText() }}</span>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
+            $scope.valueText = function() {
+                var ret_text = "";
+                for(var key in $scope.table.colList($scope.name).list) {
+                    var dList = $scope.table.colList($scope.name).list[key].list;
+                    var text = $.map( dList , function(n) {
+                        if( $scope.table.getCol($scope.row, $scope.name)!=undefined ) {
+                            if($scope.table.getCol($scope.row, $scope.name).value[n.key]) 
+                                    return n.value;
+                            else
+                                    return null;
+                        } else {
+                            return null;
+                        }
+
+                    }).join("; ");
+                    ret_text += (ret_text && text?"; ":"") + text;
+                }
+                return ret_text;
+            }
+        },
+        link: function (sc, el, attr) {
         }
     }
 });
@@ -2144,6 +2219,48 @@ wliu_table.directive("table.checkbox3", function () {
                     $("#" + sc.table.error_tooltip).wliuPopup();
                 }
             })
+        }
+    }
+});
+
+wliu_table.directive("table.checktext3", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            row:        "=", 
+            name:       "@"  // col_name
+        },
+        template: [
+                    '<span>{{ valueText() }}</span>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
+            $scope.valueText = function() {
+                var ret_text = "";
+                for(var key1 in $scope.table.colList($scope.name).list) {
+                    var list2 = $scope.table.colList($scope.name).list[key1].list;
+                    for(var key2 in list2) {
+                        var list3 = list2[key2].list;
+                        var text = $.map( list3 , function(n) {
+                            if( $scope.table.getCol($scope.row, $scope.name)!= undefined ) {
+                                if( $scope.table.getCol($scope.row, $scope.name).value[n.key] ) 
+                                        return n.value;
+                                else
+                                        return null;
+                            } else {
+                                return null;
+                            }
+
+                        }).join("; ");
+                        ret_text += (ret_text && text?"; ":"") + text;
+                    }
+                }
+                return ret_text;
+            }
+        },
+        link: function (sc, el, attr) {
         }
     }
 });
@@ -2493,6 +2610,30 @@ wliu_table.directive("table.radio1", function () {
     }
 });
 
+wliu_table.directive("table.radiotext1", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            row:        "=",
+            name:       "@"  // col_name
+        },
+        template: [     '<span>{{ valueText() }}</span>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
+            $scope.valueText = function() {
+               var val =  $scope.table.getCol($scope.row, $scope.name)?$scope.table.getCol($scope.row, $scope.name).value:"";
+               var valText = FCOLLECT.firstByKV( $scope.table.colList($scope.name).list, {key:val})?FCOLLECT.firstByKV( $scope.table.colList($scope.name).list, {key:val} ).value:"";
+               return valText;
+            }
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
 wliu_table.directive("table.radiodiag1", function () {
     return {
         restrict: "E",
@@ -2652,6 +2793,45 @@ wliu_table.directive("table.radio2", function () {
                 $scope.table.colList(name).keys.guid = row.guid;
                 $scope.table.colList(name).keys.name = name;
             }
+            $scope.valueText = function() {
+                var ret_text = "";
+                for(var key in $scope.table.colList($scope.name).list) {
+                    var dList = $scope.table.colList($scope.name).list[key].list;
+                    var text = $.map(dList , function(n) {
+                        if($scope.table.getCol($scope.row, $scope.name)!=undefined) {
+                            if($scope.table.getCol($scope.row, $scope.name).value == n.key) 
+                                    return n.value;
+                            else
+                                    return null;
+                        } else {
+                            return null;
+                        }
+
+                    }).join("; ");
+                    ret_text += text;
+                }
+                return ret_text;
+            }
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
+wliu_table.directive("table.radiotext2", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            row:        "=",
+            name:       "@" // col_name
+        },
+        template: [
+                        '<span>{{ valueText() }}</span>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
             $scope.valueText = function() {
                 var ret_text = "";
                 for(var key in $scope.table.colList($scope.name).list) {
@@ -2887,6 +3067,48 @@ wliu_table.directive("table.radio3", function () {
                 $scope.table.colList(name).keys.guid = row.guid;
                 $scope.table.colList(name).keys.name = name;
             }
+            $scope.valueText = function() {
+                var ret_text = "";
+                for(var key in $scope.table.colList($scope.name).list) {
+                    var dList = $scope.table.colList($scope.name).list[key].list;
+                    for(var pkey in dList) {
+                        var pList = dList[pkey].list;
+                        var text = $.map( pList , function(n) {
+                            if( $scope.table.getCol($scope.row, $scope.name)!=undefined ) {
+                                if($scope.table.getCol($scope.row, $scope.name).value==n.key) 
+                                        return n.value;
+                                else
+                                        return null;
+                            } else {
+                                return null;
+                            }
+
+                        }).join("; ");
+                        ret_text += text;
+                    }
+                }
+                return ret_text;
+            }
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
+wliu_table.directive("table.radiotext3", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            row:        "=",
+            name:       "@" // col_name
+        },
+        template: [
+                    '<span>{{ valueText() }}</span>'
+                ].join(''),
+        controller: function ($scope) {
+            $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
             $scope.valueText = function() {
                 var ret_text = "";
                 for(var key in $scope.table.colList($scope.name).list) {

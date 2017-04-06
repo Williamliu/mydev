@@ -4,7 +4,7 @@ var WLIU = WLIU || {};
 WLIU.TABLE = function( opts ) {
 	this.sc			= null;
 
-	this.lang       = opts.lang?opts.lan:"cn";
+	this.lang       = opts.lang?opts.lang:"cn";
 	this.scope  	= opts.scope?opts.scope:"";
 	this.url		= opts.url?opts.url:"";
 	

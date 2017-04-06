@@ -72,9 +72,9 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 
         <script language="javascript" type="text/javascript">
 		   	var col1 = new WLIU.COL({key:1, table:"p",	coltype:"hidden", 		name:"id", 			colname:"Lang ID",  	coldesc:"Word ID",  defval:0 });
-		   	var col2 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"title_en",	colname:"Role(EN)", 	coldesc:"Role Name English",    sort:"ASC", maxlength:64, 	notnull:1,	tooltip:"tool_tip"});
+		   	var col2 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"title_en", 	colname:"Role(EN)", 	coldesc:"Role Name English",    sort:"ASC", maxlength:64, 	notnull:1,	tooltip:"tool_tip"});
 		   	var col3 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"title_cn",	colname:"Role(CN)", 	coldesc:"Role Name Chinese",    sort:"ASC", maxlength:64, 	notnull:1	});
-		   	var col4 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"detail_en", 	colname:"Detail(EN)", 	coldesc:"Description English",	sort:"ASC", maxlength:256, 	notnull:0	});
+		   	var col4 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"detail_en",  	colname:"Detail(EN)", 	coldesc:"Description English",	sort:"ASC", maxlength:256, 	notnull:0	});
 		   	var col5 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"detail_cn", 	colname:"Detail(CN)", 	coldesc:"Description Chinese",	sort:"ASC", maxlength:256, 	notnull:0	});
 		   	var col6 = new WLIU.COL({key:0, table:"p",	coltype:"select", 		name:"level", 	    colname:"Class", 		coldesc:"Permission Level",  	sort:"ASC", list:"roleLevel", notnull:1 });
 		   	var col7 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 	    name:"orderno", 	colname:"Sort",   	    coldesc:"Sort Number", 	sort:"ASC", notnull:1,  defval:0, datatype:"NUMBER" });
@@ -90,11 +90,12 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 		   	cols.push(col7);
 		   	cols.push(col8);
 
-			var filter1 = new WLIU.FILTER({name:"content", 		coltype:"textbox",		cols:"title_en,title_cn,desc_en,desc_cn",  	colname:"Content",  	coldesc:"search by Content"});
+			var filter1 = new WLIU.FILTER({name:"content", 		coltype:"textbox",		cols:"title_en,title_cn,detail_en,detail_cn",  	colname:"Content",  	coldesc:"search by Content"});
 			var filters = [];
 			filters.push(filter1);
 
 		    var table = new WLIU.TABLE({
+				lang:	 	GLang,
 				scope: 		"mytab",
 				url:   		"ajax/web_role_action.php",
 				wait:   	"ajax_wait",
@@ -116,9 +117,9 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 		   	var col103 = new WLIU.COL({key:0, table:"p", 	coltype:"bool", 		name:"status", 		colname:"Status", 	tooltip:"tool_tip"});
 		   	var col104 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	coldesc:"Menu Key", 			unique:1,	notnull:1, tooltip:"tool_tip"});
 		   	var col105 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",coldesc:"Title English",		notnull:1, tooltip:"tool_tip"});
-		   	var col106 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)",	coldesc:"Description English",	tooltip:"tool_tip"});
+		   	var col106 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"detail_en", 	colname:"Desc(EN)",	coldesc:"Description English",	tooltip:"tool_tip"});
 		   	var col107 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_cn", 	colname:"Title(CN)",coldesc:"Title Chinese",		notnull:1, tooltip:"tool_tip"});
-		   	var col108 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"desc_cn", 	colname:"Desc(CN)",	coldesc:"Description Chinese", 	tooltip:"tool_tip"});
+		   	var col108 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"detail_cn", 	colname:"Desc(CN)",	coldesc:"Description Chinese", 	tooltip:"tool_tip"});
 		   	var col109 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"template", 	colname:"Template",	coldesc:"Template",				css:"input-medium",			tooltip:"tool_tip"});
 		   	var col110 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"url",			colname:"URL",		coldesc:"URL",					tooltip:"tool_tip"});
 		   	var col111 = new WLIU.COL({key:0, table:"p", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",    css:"input-medium", list:"rightCategory",  targetid:"rightDiag1",	notnull:1});
@@ -129,9 +130,9 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 		   	var col203 = new WLIU.COL({key:0, table:"s", 	coltype:"bool", 		name:"status", 		colname:"Status", 	tooltip:"tool_tip"});
 		   	var col204 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	coldesc:"Menu Key", 			unique:1,	notnull:1, tooltip:"tool_tip"});
 		   	var col205 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",coldesc:"Title English",		notnull:1, tooltip:"tool_tip"});
-		   	var col206 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"desc_en", 	colname:"Desc(EN)",	coldesc:"Description English",	tooltip:"tool_tip"});
+		   	var col206 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"detail_en", 	colname:"Desc(EN)",	coldesc:"Description English",	tooltip:"tool_tip"});
 		   	var col207 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"title_cn", 	colname:"Title(CN)",coldesc:"Title Chinese",		notnull:1, tooltip:"tool_tip"});
-		   	var col208 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"desc_cn", 	colname:"Desc(CN)",	coldesc:"Description Chinese", 	tooltip:"tool_tip"});
+		   	var col208 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"detail_cn", 	colname:"Desc(CN)",	coldesc:"Description Chinese", 	tooltip:"tool_tip"});
 		   	var col209 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"template", 	colname:"Template",	coldesc:"Template",				css:"input-medium",	tooltip:"tool_tip"});
 		   	var col210 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"url",			colname:"URL",		coldesc:"URL",					tooltip:"tool_tip"});
 		   	var col211 = new WLIU.COL({key:0, table:"s", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",    css:"input-medium", list:"rightCategory",  targetid:"rightDiag1",	notnull:1});
@@ -167,6 +168,7 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 		   	tree_cols.s.push(col212);
 			
 		    var tree = new WLIU.TREE({
+				lang:		GLang,
 				scope: 		"mytab",
 				treeid:     "lemon",
 				rootid: 	0,
@@ -251,13 +253,13 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 						<table.head table="role_table" name="title_en" class="input-medium"></table.head>
 					</td>
 					<td>
-						<table.head table="role_table" name="desc_en"></table.head>
+						<table.head table="role_table" name="detail_en"></table.head>
 					</td>
 					<td>
 						<table.head table="role_table"  name="title_cn" class="input-medium"></table.head>
 					</td>
 					<td>
-						<table.head table="role_table"  name="desc_cn"></table.head>
+						<table.head table="role_table"  name="detail_cn"></table.head>
 					</td>
 					<td>
 						<table.head table="role_table"  name="level"></table.head>
@@ -283,13 +285,13 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 						<table.textbox class="input-medium" table="role_table" name="title_en" row="row"></table.textbox>
 					</td>
 					<td>
-						<table.textarea class="input-auto" table="role_table" name="desc_en" row="row"></table.textarea>
+						<table.textarea class="input-auto" table="role_table" name="detail_en" row="row"></table.textarea>
 					</td>
 					<td>
 						<table.textbox class="input-medium" table="role_table" name="title_cn" row="row"></table.textbox>
 					</td>
 					<td>
-						<table.textarea class="input-auto" table="role_table" name="desc_cn" row="row"></table.textarea>
+						<table.textarea class="input-auto" table="role_table" name="detail_cn" row="row"></table.textarea>
 					</td>
 					<td>
 						<table.select class="input-small" table="role_table" name="level" row="row"></table.select>
@@ -309,7 +311,7 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 			<button class="btn btn-outline-info" onclick="goback()">Go Back</button><br>
 			<br>
 			Role Name: 		<form.text table="role_table" name="title_en"></form.text><br>
-			Role Detail: 	<form.text table="role_table" name="desc_en"></form.text><br>
+			Role Detail: 	<form.text table="role_table" name="detail_en"></form.text><br>
 			<table.tree table="menu_tree"></table.tree>
 		</div>
 </div>

@@ -10,8 +10,8 @@ $query_menu     = "SELECT $select_str FROM web_menu1 WHERE deleted<>1 AND status
 $result_menu    = $db_menu->query($query_menu);
 $rows_menu      = $db_menu->rows($result_menu);
 foreach($rows_menu as &$row_mm) {
-    $row_mm["title"]    = cLANG::trans($row_mm["title"], $GLang);
-    $row_mm["detail"]   = cLANG::trans($row_mm["detail"], $GLang);
+    $row_mm["title"]    = cLANG::trans($row_mm["title"]);
+    $row_mm["detail"]   = cLANG::trans($row_mm["detail"]);
 }
 print_r($rows_menu);
 $db_menu->close();

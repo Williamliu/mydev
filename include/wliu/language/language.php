@@ -1,4 +1,6 @@
 <?php
+// $_REQUEST > $_COOKIE > $DLang 
+// Set Cookie and Session(for pass to ajax)
 $langName = "wliu_lang";
 $DLang = cLANG::$support[0];
 $GLang = $_COOKIE[$langName]?$_COOKIE[$langName]:$DLang;
@@ -19,5 +21,6 @@ cLANG::replace("Hello {{good}} or {{bad}}", array("good"=>"Well", "bad"=>"Worst"
 ?>
 <script language="javascript" type="text/javascript">
 	var words = <?php echo json_encode($words); ?>;
+    var GLang = "<?php echo $GLang; ?>";
     //console.log(words);
 </script>
