@@ -3,6 +3,7 @@ session_start();
 ini_set("display_errors", 0);
 include_once("../../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
+include_once($CFG["include_path"] . "/wliu/language/language_ajax.php");
 define("DEBUG", 1);
 $response = array();
 try {
@@ -21,7 +22,7 @@ try {
 	// 3) table metadata
 	$roleLevel = array(
 		"type"=>"list1",
-		"table1"=>array("name"=>"web_role_level", 	"key"=>"id", "fkey"=>"", "value"=>"title_cn", "desc"=>"desc_cn"),
+		"table1"=>array("name"=>"web_role_level", 	"key"=>"id", "fkey"=>"", "value"=>cLANG::langCol("title"), "desc"=>cLANG::langCol("detail")),
 		"table2"=>array(),
 		"table3"=>array()
 	);
@@ -35,7 +36,7 @@ try {
 							"name"=>"web_role", 
 							"keys"=>array("id"),  
 							"fkeys"=>array(), 
-							"cols"=>array("id", "title_en", "title_cn", "desc_en", "desc_cn", "level", "orderno", "status", "last_updated"), 
+							"cols"=>array("id", "title_en", "title_cn", "detail_en", "detail_cn", "level", "orderno", "status", "last_updated"), 
 							"insert"=>array("last_updated"=>time()), 
 							"update"=>array()  
 					)
@@ -61,11 +62,11 @@ try {
 	echo json_encode($response);
 	
 } catch(Exception $e ) {
-	$table 							= $_REQUEST["table"];
-	$table["navi"]["loading"]       = 0;
-	$table["error"]["errorCode"] 	= $e->getCode();
-	$table["error"]["errorMessage"] = $e->getMessage();
-	$response["table"] 				= $table; 
+	$table 										= $_REQUEST["table"];
+	$table["navi"]["loading"]       			= 0;
+	$table["error"]["errorCode"] 				= $e->getCode();
+	$table["error"]["errorMessage"] 			= $e->getMessage();
+	$response["table"] 							= $table; 
 
 	$response["errorCode"] 		    			= $e->getCode();
 	$response["errorMessage"] 	    			= $e->getMessage();

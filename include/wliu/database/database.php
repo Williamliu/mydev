@@ -531,7 +531,7 @@ class cMYSQL implements iSQL {
 	public function phone($phone_col, $oper, $phone_str) {
 		return $this->express($phone_col, $oper, $phone_str, array(",","-","."), "");
 	}
-	public function express( $p_col, $oper, $p_val, $searchArr, $replaceArr) {
+	public function express($p_col, $oper, $p_val, $searchArr, $replaceArr) {
 		$colName 	= $p_col;
 		$colVal 	= $this->quote($p_val);
 		$ret_str 	= $colName . " " . $oper . " '" . $colVal . "'";
@@ -563,6 +563,15 @@ class cMYSQL implements iSQL {
 			case "like":
 				$ret_str = $colName . " LIKE " . "'%" . $this->quote($colVal) . "%'";
 				break;
+		}
+		return $ret_str;
+	}
+	public function selectCols($colArr) {
+		$ret_str = "";
+		if( is_array($colArr) ) {
+			foreach( $colArr as $col ) {
+				cTYPE::join($ret_str, ", ", "$col"); 
+			}
 		}
 		return $ret_str;
 	}
@@ -3796,14 +3805,17 @@ class cLIST {
 }
 
 class cLANG {
+	public static $support = array("cn", "en", "tw");
 	public static function getWords($lang="") {
 		global $CFG;
-		$def_lang 	= $CFG["lang_default"]?$CFG["lang_default"]:"cn";
-
 		$trans_lang = $lang;
+		$def_lang 	= cLANG::$support[0];
+
+		$lang 		= $lang?$lang:$def_lang;
+		$lang 		= in_array($lang, cLANG::$support)?$lang:$def_lang;
 		$lang 		= $lang=="tw"?"cn":$lang;
-		$lang 		= $lang!="en" && $lang!="cn"?$def_lang:$lang;
-		$other_lang = $lang=="en"?"cn":"en";
+
+		$other_lang = $lang==$def_lang?cLANG::$support[1]:$def_lang;
 
 		$query_lang		= "SELECT keyword, IF($lang!='', $lang, $other_lang) AS lang  FROM web_language WHERE deleted <> 1";
 		$db_lang 		= new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
@@ -3821,13 +3833,31 @@ class cLANG {
 		}
 		return $word;
 	}
-	public static function col($col, $lang) {
-		$ret_lang = $col;
-		if($lang=="en") 
-			$ret_lang = $col . "_en";
-		else 
-			$ret_lang = $col . "_cn";
-		return $ret_lang;
+	public static function col($col, $lang, $alias="") {
+		global $CFG;
+		$def_lang 	= cLANG::$support[0];
+
+		$lang 		= $lang?$lang:$def_lang;
+		$lang 		= in_array($lang, cLANG::$support)?$lang:$def_lang;
+		$lang 		= $lang=="tw"?"cn":$lang;
+		$other_lang = $lang==$def_lang?cLANG::$support[1]:$def_lang;
+		
+
+		$dbcol 		= $col . "_" . $lang;
+		$dbother 	= $col . "_" . $other_lang;
+		$dbalias 	= $alias?$alias:$col;
+		$ret_col 	= "IF($dbcol!='', $dbcol, $dbother) AS $dbalias"; 
+		return $ret_col;
+	}
+	public static function langCol($col, $lang="") {
+		global $GLang;
+		$def_lang 	= cLANG::$support[0];
+		$lang 		= $lang?$lang:$GLang;
+		$lang 		= $lang?$lang:$def_lang;
+		$lang 		= in_array($lang, cLANG::$support)?$lang:$def_lang;
+		$lang 		= $lang=="tw"?"cn":$lang;
+		$ret_col 	= $col . "_" . $lang; 
+		return $ret_col;
 	}
     public static function trans($str, $lang) {
         $word = "";

@@ -1,10 +1,12 @@
 <?php
 $langName = "wliu_lang";
-$DLang = $CFG["lang_default"]?$CFG["lang_default"]:"cn";
+$DLang = cLANG::$support[0];
 $GLang = $_COOKIE[$langName]?$_COOKIE[$langName]:$DLang;
 $GLang = $_REQUEST["lang"]?$_REQUEST["lang"]:$GLang;
 setcookie($langName, $GLang, time() + 3600 * 24 * 365);
+$_SESSION[$langName] = $GLang;
 $words = cLANG::getWords($GLang);
+
 /*
 echo "name: " . $langName;
 echo "<br>";

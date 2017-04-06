@@ -74,8 +74,8 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 		   	var col1 = new WLIU.COL({key:1, table:"p",	coltype:"hidden", 		name:"id", 			colname:"Lang ID",  	coldesc:"Word ID",  defval:0 });
 		   	var col2 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"title_en",	colname:"Role(EN)", 	coldesc:"Role Name English",    sort:"ASC", maxlength:64, 	notnull:1,	tooltip:"tool_tip"});
 		   	var col3 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"title_cn",	colname:"Role(CN)", 	coldesc:"Role Name Chinese",    sort:"ASC", maxlength:64, 	notnull:1	});
-		   	var col4 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"desc_en", 	colname:"Detail(EN)", 	coldesc:"Description English",	sort:"ASC", maxlength:256, 	notnull:0	});
-		   	var col5 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"desc_cn", 	colname:"Detail(CN)", 	coldesc:"Description Chinese",	sort:"ASC", maxlength:256, 	notnull:0	});
+		   	var col4 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"detail_en", 	colname:"Detail(EN)", 	coldesc:"Description English",	sort:"ASC", maxlength:256, 	notnull:0	});
+		   	var col5 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"detail_cn", 	colname:"Detail(CN)", 	coldesc:"Description Chinese",	sort:"ASC", maxlength:256, 	notnull:0	});
 		   	var col6 = new WLIU.COL({key:0, table:"p",	coltype:"select", 		name:"level", 	    colname:"Class", 		coldesc:"Permission Level",  	sort:"ASC", list:"roleLevel", notnull:1 });
 		   	var col7 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 	    name:"orderno", 	colname:"Sort",   	    coldesc:"Sort Number", 	sort:"ASC", notnull:1,  defval:0, datatype:"NUMBER" });
 		   	var col8 = new WLIU.COL({key:0, table:"p",	coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status", defval: true});
@@ -221,6 +221,7 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 		</script>
 </head>
 <body ng-app="myApp" ng-controller="myForm">
+<?php include("head/menu_admin.php");?>
 <!-- container -->
 <div class="container">
 <div style="display:inline-block;border:0px solid red;">
