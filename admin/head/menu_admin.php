@@ -13,6 +13,6 @@ foreach($rows_menu as &$row_mm) {
     $row_mm["title"]    = cLANG::trans($row_mm["title"]);
     $row_mm["detail"]   = cLANG::trans($row_mm["detail"]);
 }
-print_r($rows_menu);
+//print_r($rows_menu);
 $db_menu->close();
 ?>

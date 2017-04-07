@@ -1,4 +1,24 @@
 /*** fix  bootstrap and mdbootstrap  problem : overwrite their css ***/
+fieldset {
+	display: 		block;
+	width: 			100%;
+	padding:        0px 10px 10px 10px;
+	background-color: #efefef;
+	box-sizing: 	border-box;
+	border-radius: 	5px;
+}
+
+fieldset legend {
+	display: 		inline-block;
+	width: 			auto;
+	font-size: 		16px;
+	font-weight: 	500;
+	color: 			#ffffff;
+	padding:        2px 10px;
+	border-radius:  8px;
+	background-color: #666666;
+}
+
 table {
 	empty-cells: 			show;
 	border-collapse:		collapse;
@@ -71,8 +91,11 @@ div.picker__footer {
 
 
 input {
-	padding: 0px;
-	margin:  0px;
+	padding: 			1px;
+	margin:  			1px;
+	font-size:          14px;
+	box-sizing: 		content-box;
+	height:  			20px;
 }
 
 div.row {
@@ -840,12 +863,7 @@ input.input-auto,
 input.input-auto,
 select.input-auto,
 textarea.input-auto {
-	box-sizing: 		border-box;
 	width: 				100%;
-}
-
-select {
-	box-sizing: content-box;
 }
 
 

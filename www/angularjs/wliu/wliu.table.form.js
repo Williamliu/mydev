@@ -1013,6 +1013,38 @@ wliu_table.directive("form.hidden", function () {
     }
 });
 
+wliu_table.directive("form.readonly", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            name:       "@"
+        },
+        template: [
+                    '<span>',
+                        '<input type="textbox" ng-if="table.getCurrent().rowstate>=2" ',
+                            'ng-model="table.getColCurrent(name).value" ',
+                            form_ng,
+                            form_tooltip,
+                        '/>',
+                        '<span class="wliu-text" ng-if="table.getCurrent().rowstate<2" ',
+                            form_scope,
+                            form_ng_hide,
+                            form_ng_class,
+                            form_tooltip,
+                        '>',
+                            '{{ table.getColCurrent(name).value }}',
+                        '</span>',
+                    '</span>'
+                ].join(''),
+        controller: function ($scope) {
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
 wliu_table.directive("form.textbox", function () {
     return {
         restrict: "E",

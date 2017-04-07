@@ -1138,6 +1138,38 @@ wliu_table.directive("table.hidden", function () {
     }
 });
 
+wliu_table.directive("table.readonly", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            row:        "=",
+            name:       "@"
+        },
+        template: [
+                    '<span>',
+                        '<input type="textbox" ng-if="row.rowstate>=2" ',
+                            'ng-model="table.getCol(row, name).value" ',
+                            common_ng,
+                            common_tooltip,
+                        '/>',
+                        '<span class="wliu-text" scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)" ng-if="row.rowstate<2" ',
+                            'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
+                            'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-placement="down" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
+                            'title="{{ table.colMeta(name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
+                        '>',
+                            '{{ table.getCol(row, name).value }}',
+                        '</span>',
+                    '</span>'
+                ].join(''),
+        controller: function ($scope) {
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
 wliu_table.directive("table.textbox", function () {
     return {
         restrict: "E",
