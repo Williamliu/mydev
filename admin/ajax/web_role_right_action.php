@@ -3,6 +3,8 @@ session_start();
 ini_set("display_errors", 0);
 include_once("../../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
+//include_once($CFG["include_path"] . "/wliu/language/language_ajax.php");
+
 define("DEBUG", 1);
 $response = array();
 try {

@@ -614,7 +614,7 @@ class cMYSQL implements iSQL {
 	public function treeNodes(&$table, $tableLevel, $parent_id) {
 		$otable	= $table["metadata"][$tableLevel];
 		// 1. select cols 
-        $colstr = cACTION::buildSelect($otable);
+        $colstr = cACTION::buildSelect($otable, "", $table["lang"]);
 	
 		// 2. join table 
 		$joinLink 		= $otable["name"] . " " . $otable["type"];
@@ -735,7 +735,7 @@ class cMYSQL implements iSQL {
 		$ptable	= $table["metadata"]["p"];
 
 		// 1. select cols 
-        $colstr = cACTION::buildSelect($ptable);
+        $colstr = cACTION::buildSelect($ptable, "", $table["lang"]);
 
 		// 2. join table 
 		$pk_criteria 	= "";
@@ -857,8 +857,8 @@ class cMYSQL implements iSQL {
 		$stable = $table["metadata"]["s"];
 
 		// 1. select cols
-		$colstr = cACTION::buildSelect($ptable);
-		cTYPE::join( $colstr, ", ", cACTION::buildSelect($stable) );
+		$colstr = cACTION::buildSelect($ptable, "", $table["lang"]);
+		cTYPE::join( $colstr, ", ", cACTION::buildSelect($stable, "", $table["lang"]) );
 
 		// 2. join table
 		$joinOn = "";
@@ -1038,7 +1038,7 @@ class cMYSQL implements iSQL {
 		$stable = $table["metadata"]["s"];
 		
 		// 1. crreate primary information 
-		$pcolstr = cACTION::buildSelect($ptable);
+		$pcolstr = cACTION::buildSelect($ptable, "", $table["lang"]);
 		$criteria_primary = "1=1";
 		foreach($ptable["keys"] as $pkey) {
 			$pkeyDBCol 	= $ptable["type"] . "." . $pkey;
@@ -1063,8 +1063,8 @@ class cMYSQL implements iSQL {
 
 
 		// 2. select cols 
-		$colstr = cACTION::buildSelect($ptable);
-		cTYPE::join( $colstr, ", ", cACTION::buildSelect($stable) );
+		$colstr = cACTION::buildSelect($ptable, "", $table["lang"]);
+		cTYPE::join( $colstr, ", ", cACTION::buildSelect($stable, "", $table["lang"]) );
 
 		// 3. join table
 		$pname 			= $ptable["name"] . " " . $ptable["type"];
@@ -1125,7 +1125,7 @@ class cMYSQL implements iSQL {
 		$stable = $table["metadata"]["s"];
 
 		// 1. crreate primary information 
-		$pcolstr = cACTION::buildSelect($ptable);
+		$pcolstr = cACTION::buildSelect($ptable, "", $table["lang"]);
 		$criteria_primary = "1=1";
 		foreach($ptable["keys"] as $pkey) {
 			$pkeyDBCol 	= $ptable["type"] . "." . $pkey;
@@ -1259,7 +1259,7 @@ class cMYSQL implements iSQL {
 		$mtable = $table["metadata"]["m"];
 
 		// 1. crreate primary information 
-		$pcolstr = cACTION::buildSelect($ptable);
+		$pcolstr = cACTION::buildSelect($ptable, "", $table["lang"]);
 		$criteria_primary = "1=1";
 		foreach($ptable["keys"] as $pkey) {
 			$pkeyDBCol 	= $ptable["type"] . "." . $pkey;
@@ -1302,14 +1302,14 @@ class cMYSQL implements iSQL {
 		}
 
 		// 2.2 p & m select cols 
-        $mmcolstr = cACTION::buildSelect($ptable);
-		cTYPE::join( $mmcolstr, ", ", cACTION::buildSelect($mtable, "mm") );
+        $mmcolstr = cACTION::buildSelect($ptable, "", $table["lang"]);
+		cTYPE::join( $mmcolstr, ", ", cACTION::buildSelect($mtable, "mm", $table["lang"]) );
 		// many to many,  s left join ( select * from p inner join m  ) c  
 		$mmname = $mtable["name"] . " mm";
 		$mmjoinLink = "SELECT $mmcolstr FROM $pname INNER JOIN $mmname ON ( $mmjoinOn )";
 
 		// 2.3 s table select cols
-        $scolstr = cACTION::buildSelect($stable);
+        $scolstr = cACTION::buildSelect($stable, "", $table["lang"]);
 
 		// 2.4 s join on 
 		$sjoinOn 		= "";
@@ -1374,7 +1374,7 @@ class cMYSQL implements iSQL {
 		$mtable = $table["metadata"]["m"];
 
 		// 1. crreate primary information 
-		$pcolstr = cACTION::buildSelect($ptable);
+		$pcolstr = cACTION::buildSelect($ptable, "", $table["lang"]);
 		$criteria_primary = "1=1";
 		foreach($ptable["keys"] as $pkey) {
 			$pkeyDBCol 	= $ptable["type"] . "." . $pkey;
@@ -1558,7 +1558,7 @@ class cMYSQL implements iSQL {
 		$ptable = $table["metadata"]["p"];
 
 		// 1. crreate primary information 
-		$pcolstr = cACTION::buildSelect($ptable);
+		$pcolstr = cACTION::buildSelect($ptable, "", $table["lang"]);
 		$criteria_primary = "1=1";
 		foreach($ptable["keys"] as $pkey) {
 			$pkeyDBCol 	= $ptable["type"] . "." . $pkey;
@@ -1645,12 +1645,12 @@ class cACTION {
 			}
 		}
 	}
-	static public function buildSelect($otable, $otype="") {
+	static public function buildSelect($otable, $otype="", $lang="") {
         $colstr = "";
 		foreach($otable["selectCols"] as $oCol) {
 			$dbColName 	= $otable["colmeta"][$oCol]["name"]?$otable["colmeta"][$oCol]["name"]:$oCol;
 			$dbCol 		= ($otype?$otype:$otable["type"]) . "." . $oCol . " AS " . $dbColName;
-			if( $otable["colmeta"][$oCol]["trans"] )  $dbCol = cLANG::col( ($otype?$otype:$otable["type"]) . "." . $oCol, "", $dbColName);
+			if( $otable["colmeta"][$oCol]["trans"] )  $dbCol = cLANG::col( ($otype?$otype:$otable["type"]) . "." . $oCol, $lang, $dbColName);
 			cTYPE::join( $colstr, ", ", $dbCol); 
 		}
 		return $colstr;
