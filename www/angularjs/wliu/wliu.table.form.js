@@ -43,8 +43,8 @@ wliu_table.directive("form.rowstatus", function () {
                         '>',
                         */
                         '<span ng-if="table.getCurrent()==undefined" style="color:red;vertical-align:middle;">No record found!</span>',
-                        '<span ng-if="table.getCurrent().error.errorCode" style="color:red;vertical-align:middle;font-size:20px;">Error : </span>',
-                        '<a class="wliu-btn24 wliu-btn24-error-help" ',
+                        '<span ng-if="table.getCurrent().error.errorCode" style="color:red;vertical-align:middle;font-size:16px;">Error : </span>',
+                        '<a class="wliu-btn16 wliu-btn16-error-help" ',
                             'ng-if="table.getCurrent().error.errorCode" ',
                             'popup-target="#table_rowno_tooltip" popup-toggle="hover" popup-placement="down" ',
                             'popup-body="{{table.getCurrent().error.errorCode?table.getCurrent().error.errorMessage.nl2br():\'\'}}" ',
@@ -973,7 +973,7 @@ wliu_table.directive("form.text", function () {
             name:       "@"
         },
         template: [
-                    '<span class="wliu-text" ',
+                    '<span class="wliuCommon-label" ',
                         form_scope,
                         form_ng_hide,
                         form_ng_class,
@@ -1019,16 +1019,18 @@ wliu_table.directive("form.readonly", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@"
+            name:       "@",
+            class:      "@"
         },
         template: [
                     '<span>',
                         '<input type="textbox" ng-if="table.getCurrent().rowstate>=2" ',
+                            'class="{{class}}" ',
                             'ng-model="table.getColCurrent(name).value" ',
                             form_ng,
                             form_tooltip,
                         '/>',
-                        '<span class="wliu-text" ng-if="table.getCurrent().rowstate<2" ',
+                        '<span class="wliuCommon-label" ng-if="table.getCurrent().rowstate<2" ',
                             form_scope,
                             form_ng_hide,
                             form_ng_class,
@@ -1101,7 +1103,7 @@ wliu_table.directive("form.passpair", function () {
                     '<span style="display:inline-block;vertical-align:top;" ',
                         form_ng_hide,
                     '>',
-                    '<input type="password" style="box-sizing:border-box;width:100%;" placeholder="Password" ',
+                    '<input type="password" style="width:100%;" placeholder="Password" ',
                         'ng-model="table.getColCurrent(name).value.password" ',
                         'ng-change="passChange()" ',
                         form_scope,
@@ -1110,7 +1112,7 @@ wliu_table.directive("form.passpair", function () {
                         form_ng_disabled,
                         form_tooltip,
                     '/>',
-                    '<input type="password" style="box-sizing:border-box;width:100%;" placeholder="Confirm Password" ',
+                    '<input type="password" style="width:100%;" placeholder="Confirm Password" ',
                         'ng-class="{ \'wliuCommon-input-invalid\': table.getColCurrent(name).value.password!=table.getColCurrent(name).value.confirm }" ',
                         'ng-model="table.getColCurrent(name).value.confirm" ',
                         'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-placement="down" popup-toggle="hover" popup-body="{{table.getColCurrent(name).value.password!=table.getColCurrent(name).value.confirm ?\'Password not match!\':\'\'}}" ',
@@ -1394,7 +1396,7 @@ wliu_table.directive("form.intdate", function () {
             format:     "@"
         },
         template: [
-                    '<span ',
+                    '<span class="wliuCommon-label" ',
                         form_ng_hide,
                     '>',
                     '{{ table.getColCurrent(name).value?(table.getColCurrent(name).value>0?(table.getColCurrent(name).value * 1000 | date : (format?format:"yyyy-MM-dd H:mm") ):"") :"" }}',
@@ -1415,13 +1417,13 @@ wliu_table.directive("form.checkbox", function () {
             colnum:     "@"
         },
         template: [
-                    '<div ',
+                    '<div class="wliuCommon-label" ',
                         form_scope,
                         form_ng_class,
                         form_ng_hide,
                         form_tooltip,
                     '>',
-                        '<span ng-repeat="rdObj in table.colList(name).list">',
+                        '<span ng-repeat-start="rdObj in table.colList(name).list"></span>',
                                 '<span class="checkbox">',
                                         '<input type="checkbox" id="{{table.scope}}_{{name}}_current_{{rdObj.key}}" ',
                                             'ng-model="table.getColCurrent(name).value[rdObj.key]" ng-value="rdObj.key"  ',
@@ -1434,7 +1436,7 @@ wliu_table.directive("form.checkbox", function () {
                                         '</label>',
                                 '</span>',
                                 '<br ng-if="colnum>0?(($index+1)%colnum)==0:false" />',
-                        '</span>',
+                        '<span ng-repeat-end></span>',
                     '</div>'
                 ].join(''),
         controller: function ($scope) {
@@ -1506,7 +1508,7 @@ wliu_table.directive("form.checktext1", function () {
             name:       "@"
         },
         template: [
-                    '<span>{{ valueText() }}</span>'
+                    '<span class="wliuCommon-label">{{ valueText() }}</span>'
                 ].join(''),
         controller: function ($scope) {
             $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
@@ -1785,7 +1787,7 @@ wliu_table.directive("form.checktext2", function () {
             name:       "@"  //col_name
         },
         template: [ 
-                        '<span>{{ valueText() }}</span>',
+                        '<span class="wliuCommon-label">{{ valueText() }}</span>',
                 ].join(''),
         controller: function ($scope) {
             $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
@@ -2106,7 +2108,7 @@ wliu_table.directive("form.checktext3", function () {
             name:       "@"  // col_name
         },
         template: [
-                    '<span>{{ valueText() }}</span>'
+                    '<span class="wliuCommon-label">{{ valueText() }}</span>'
                 ].join(''),
         controller: function ($scope) {
             $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
@@ -2414,7 +2416,7 @@ wliu_table.directive("form.radio", function () {
             name:       "@"
         },
         template: [
-                    '<div ',
+                    '<div class="wliuCommon-label" ',
                         form_scope,
                         form_ng_class,
                         form_ng_hide,
@@ -2488,7 +2490,7 @@ wliu_table.directive("form.radiotext1", function () {
             name:       "@"
         },
         template: [
-                        '<span>{{ valueText() }}</span>',
+                        '<span class="wliuCommon-label">{{ valueText() }}</span>',
                 ].join(''),
         controller: function ($scope) {
             $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
@@ -2687,7 +2689,7 @@ wliu_table.directive("form.radio2", function () {
     }
 });
 
-wliu_table.directive("form.radio2", function () {
+wliu_table.directive("form.radiotext2", function () {
     return {
         restrict: "E",
         replace: true,
@@ -2696,7 +2698,7 @@ wliu_table.directive("form.radio2", function () {
             name:       "@"
         },
         template: [
-                        '<span>{{ valueText() }}</span>'
+                        '<span class="wliuCommon-label">{{ valueText() }}</span>'
                 ].join(''),
         controller: function ($scope) {
             $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
@@ -2970,7 +2972,7 @@ wliu_table.directive("form.radiotext3", function () {
             name:       "@"
         },
         template: [
-                    '<span>{{ valueText() }}</span>'
+                    '<span class="wliuCommon-label">{{ valueText() }}</span>'
                 ].join(''),
         controller: function ($scope) {
             $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
@@ -3235,7 +3237,7 @@ wliu_table.directive("form.button", function (wliuTableService) {
             after:      "&"
         },
         template: [
-                    '<span>',
+                    '<div class="white-block">',
                         '<button class="btn btn{{ outline==1?\'-outline\':\'\'}}-{{ buttonStyle() }} waves-effect" ',
                             'style="min-width:60px;{{!buttonState(name, table.getCurrent().rowstate)?\'border-color:grey;\':\'\'}}" ',
                             'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
@@ -3251,7 +3253,7 @@ wliu_table.directive("form.button", function (wliuTableService) {
                             '{{actname}}',
                         '</span>',
                         '</button>',
-                    '</span>'
+                    '</div>'
                 ].join(''),
         controller: function ($scope, wliuTableService) {
             $scope.buttonStyle = function() {
@@ -3319,7 +3321,6 @@ wliu_table.directive("form.button", function (wliuTableService) {
         }
     }
 });
-
 
 wliu_table.directive("form.linkbutton", function (wliuTableService) {
     return {
@@ -3416,7 +3417,6 @@ wliu_table.directive("form.linkbutton", function (wliuTableService) {
     }
 });
 
-
 wliu_table.directive("form.message", function (wliuTableService) {
     return {
         restrict: "E",
@@ -3425,19 +3425,29 @@ wliu_table.directive("form.message", function (wliuTableService) {
             table: "="
         },
         template: [
-                    '<div ng-show="table.error.errorCode>0" class="card card-danger text-center z-depth-2 mb-1 white-text" style="padding:10px;">',
+                    '<div ng-show="table.error.errorCode>0 || table.getCurrent().error.errorCode>0" class="card card-danger text-center z-depth-2 mb-1 white-text" style="padding:10px;">',
                         '<div wliu-diag-body style="font-size:16px;text-align:left;">',
-                        '<i class="fa fa-exclamation-triangle fa-md" aria-hidden="true" style="color:white;"></i> <span style="font-size:16px;">Message :</span>',
+                        '<i class="fa fa-exclamation-triangle fa-md" aria-hidden="true" style="color:white;"></i> <span style="font-size:16px;">We can\'t process submitted data:</span>',
+
                         '<p class="white-text mb-0" style="padding-left:20px;" ng-bind-html="getHTML()">',
                         '</p>',
                     '</div>'
                 ].join(''),
         controller: function ($scope, $sce) {
             $scope.getHTML = function() {
+                if( $scope.table.error.errorCode || ( $scope.table.getCurrent() && $scope.table.getCurrent().error.errorCode ) ) {
+                    var errMsg = $scope.table.error.errorMessage.nl2br1();
+                    if( $scope.table.getCurrent() ) errMsg += "\n" + $scope.table.getCurrent().error.errorMessage.nl2br1();
+                    return $sce.trustAsHtml(errMsg);
+                } else { 
+                    return $sce.trustAsHtml("");
+                }
+                /*                
                 if( $scope.table.error.errorCode )
                     return $sce.trustAsHtml($scope.table.error.errorMessage.nl2br1());
                 else 
                     return $sce.trustAsHtml("");
+                */
             }
         },
         link: function (sc, el, attr) {

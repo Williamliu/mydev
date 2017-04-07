@@ -1100,7 +1100,7 @@ wliu_table.directive("table.text", function () {
             name:       "@"
         },
         template: [
-                    '<span class="wliu-text" scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)" ',
+                    '<span class="wliuCommon-label" scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)" ',
                         'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
                         'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-placement="down" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                         'title="{{ table.colMeta(name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
@@ -1145,16 +1145,18 @@ wliu_table.directive("table.readonly", function () {
         scope: {
             table:      "=",
             row:        "=",
-            name:       "@"
+            name:       "@",
+            class:      "@"
         },
         template: [
                     '<span>',
                         '<input type="textbox" ng-if="row.rowstate>=2" ',
+                            'class="{{class}}" ',
                             'ng-model="table.getCol(row, name).value" ',
                             common_ng,
                             common_tooltip,
                         '/>',
-                        '<span class="wliu-text" scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)" ng-if="row.rowstate<2" ',
+                        '<span class="wliuCommon-label" scope="{{ table.scope }}" ng-hide="table.relationHide(row, name)" ng-if="row.rowstate<2" ',
                             'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).errorCode }" ',
                             'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-placement="down" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
                             'title="{{ table.colMeta(name).tooltip?\'\':table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage:table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',
@@ -1224,29 +1226,32 @@ wliu_table.directive("table.passpair", function () {
         scope: {
             table:      "=",
             row:        "=",
-            name:       "@"
+            name:       "@",
+            class:      "@"
         },
         template: [
                     '<span style="display:inline-block;vertical-align:top;" ' + common_ng_hide + '>',
-                    '<input type="password" style="box-sizing:border-box;width:100%;" placeholder="Password" ',
+                    '<input type="password" style="width:100%;" placeholder="Password" ',
                         'ng-model="table.getCol(row, name).value.password" ',
                         'ng-change="passChange()" ',
+                        'class="{{class}}" ',
                         common_scope,
                         common_ng_class,
                         common_ng_disabled,
                         common_ng_options,
                         common_tooltip,
-                    '/>',
-                    '<input type="password" style="box-sizing:border-box;width:100%;" placeholder="Confirm Password" ',
+                    ' />',
+                    '<input type="password" style="width:100%;" placeholder="Confirm Password" ',
                         'ng-model="table.getCol(row, name).value.confirm" ',
                         'ng-class="{ \'wliuCommon-input-invalid\': table.getCol(row, name).value.password!=table.getCol(row, name).value.confirm }" ',
+                        'class="{{class}}" ',
                         //'ng-change="confirmChange()" ',
                         common_scope,
                         common_ng_disabled,
                         common_ng_options,
                         'popup-target="{{table.colMeta(name).tooltip?\'#\'+table.colMeta(name).tooltip:\'\'}}" popup-placement="down" popup-toggle="hover" popup-body="{{table.getCol(row, name).value.password!=table.getCol(row, name).value.confirm ?\'Password not match!\':\'\'}}" ',
                         'title="{{table.colMeta(name).tooltip?\'\':table.getCol(row, name).value.password!=table.getCol(row, name).value.confirm?\'Password not match!\':\'\'}}" ',
-                    '/>',
+                    ' />',
                     '</span>'
                 ].join(''),
         controller: function ($scope) {
@@ -1538,7 +1543,7 @@ wliu_table.directive("table.intdate", function () {
             format:     "@"
         },
         template: [
-                    '<span ',
+                    '<span class="wliuCommon-label" ',
                         common_ng_hide,
                     '>',
                         '{{ table.getCol(row, name).value?(table.getCol(row, name).value>0?(table.getCol(row, name).value * 1000 | date : (format?format:"yyyy-MM-dd H:mm") ):"") :"" }}',
@@ -1566,7 +1571,7 @@ wliu_table.directive("table.checkbox", function () {
                         common_ng_hide,
                         common_tooltip,
                     '>',
-                        '<span ',
+                        '<span class="wliuCommon-label" ',
                             'ng-repeat="rdObj in table.lists[table.colMeta(name).list].list">',
                                 '<span class="checkbox">',
                                         '<input type="checkbox" id="{{table.scope}}_{{name}}_{{row.guid}}_{{rdObj.key}}" ',
@@ -1658,7 +1663,7 @@ wliu_table.directive("table.checktext1", function () {
             name:       "@"  // col_name 
         },
         template: [
-                    '<span>{{ valueText() }}</span>'
+                    '<span class="wliuCommon-label">{{ valueText() }}</span>'
                 ].join(''),
         controller: function ($scope) {
             $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
@@ -1941,7 +1946,7 @@ wliu_table.directive("table.checktext2", function () {
             name:       "@" // col_name
         },
         template: [
-                        '<span>{{ valueText() }}</span>'
+                        '<span class="wliuCommon-label">{{ valueText() }}</span>'
                 ].join(''),
         controller: function ($scope) {
             $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
@@ -2265,7 +2270,7 @@ wliu_table.directive("table.checktext3", function () {
             name:       "@"  // col_name
         },
         template: [
-                    '<span>{{ valueText() }}</span>'
+                    '<span class="wliuCommon-label">{{ valueText() }}</span>'
                 ].join(''),
         controller: function ($scope) {
             $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
@@ -2574,7 +2579,7 @@ wliu_table.directive("table.radio", function () {
             colnum:     "@"
         },
         template: [
-                    '<div ',
+                    '<div class="wliuCommon-label" ',
                         common_scope,
                         common_ng_class,
                         common_ng_hide,
@@ -2651,7 +2656,7 @@ wliu_table.directive("table.radiotext1", function () {
             row:        "=",
             name:       "@"  // col_name
         },
-        template: [     '<span>{{ valueText() }}</span>'
+        template: [     '<span class="wliuCommon-label">{{ valueText() }}</span>'
                 ].join(''),
         controller: function ($scope) {
             $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
@@ -2860,7 +2865,7 @@ wliu_table.directive("table.radiotext2", function () {
             name:       "@" // col_name
         },
         template: [
-                        '<span>{{ valueText() }}</span>'
+                        '<span class="wliuCommon-label">{{ valueText() }}</span>'
                 ].join(''),
         controller: function ($scope) {
             $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
@@ -3137,7 +3142,7 @@ wliu_table.directive("table.radiotext3", function () {
             name:       "@" // col_name
         },
         template: [
-                    '<span>{{ valueText() }}</span>'
+                    '<span class="wliuCommon-label">{{ valueText() }}</span>'
                 ].join(''),
         controller: function ($scope) {
             $scope.table.colList($scope.name).keys = $scope.table.colList($scope.name).keys || {};
@@ -3563,7 +3568,7 @@ wliu_table.directive("table.tablebutton", function (wliuTableService) {
             after:      "&"
         },
         template: [
-                    '<span>',
+                    '<div class="white-block">',
                         '<button class="btn btn{{ outline==1?\'-outline\':\'\'}}-{{ buttonStyle() }} waves-effect" ',
                             'style="min-width:60px;" ',
                             'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}" ',
@@ -3572,7 +3577,7 @@ wliu_table.directive("table.tablebutton", function (wliuTableService) {
                         '>',
                             '{{actname}}',
                         '</button>',
-                    '</span>'
+                    '</div>'
                 ].join(''),
         controller: function ($scope) {
             

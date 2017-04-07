@@ -526,7 +526,7 @@ WLIU.ROWACTION.prototype = {
 				if(val==null) val = "";
 				if(val != undefined) {
 					// write value
-					theCol.value = val;
+					theCol.value = val; //this.toColVal(theCol.coltype, val);
 					
 					if( $.isPlainObject(theCol.value) ) {
 						// compare object {1:true, 2:true}
@@ -552,10 +552,13 @@ WLIU.ROWACTION.prototype = {
 						else	
 							theCol.colstate 	= 1; 
 					}
-
+					
 					theCol.errorCode 	= 0;
 					theCol.errorMessage 	= "";	
 					this.validate(theRow);
+					
+					//fix resetRow bug
+					theCol.value = theCol.coltype=="bool"?(theCol.value?true:false):theCol.value;
 					return theCol.value;
 				} else {
 					// read value

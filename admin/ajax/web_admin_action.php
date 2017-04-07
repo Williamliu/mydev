@@ -20,13 +20,21 @@ try {
 	//  table1.name == table2.name ;  fkey is parent_id started from 0  as tree root 
 
 	// 3) table metadata
-	$roleLevel = array(
+	$countryList = array(
 		"type"=>"list1",
-		"table1"=>array("name"=>"web_role_level", 	"key"=>"id", "fkey"=>"", "value"=>cLANG::langCol("title"), "desc"=>cLANG::langCol("detail")),
+		"table1"=>array("name"=>"web_country", 	"key"=>"id", "fkey"=>"", "value"=>cLANG::langCol("country"), "desc"=>""),
 		"table2"=>array(),
 		"table3"=>array()
 	);
-	$listTable["roleLevel"] = $roleLevel;
+	$roleList = array(
+		"type"=>"list1",
+		"table1"=>array("name"=>"web_role", 	"key"=>"id", "fkey"=>"", "value"=>cLANG::langCol("title"), "desc"=>cLANG::langCol("detail")),
+		"table2"=>array(),
+		"table3"=>array()
+	);
+
+	$listTable["countryList"] 	= $countryList;
+	$listTable["roleList"] 		= $roleList;
 	$table["listTable"] = $listTable;
 
 	$tableMeta = array(
@@ -36,9 +44,10 @@ try {
 							"name"=>"web_admin", 
 							"keys"=>array("id"),  
 							"fkeys"=>array(), 
-							"cols"=>array("id", "user_name", "email", "first_name", "last_name", "phone", "cell", "status", "hits", "last_updated"), 
+							"cols"=>array("id", "user_name", "email", "password", "first_name", "last_name", "phone", "cell", "status", "address", "city", "state","country", "postal", "hits", "created_time", "last_updated", "last_login", "role_id"), 
 							"insert"=>array("last_updated"=>time()), 
-							"update"=>array()  
+							"update"=>array(),
+							"role_id"=>array( "name"=>"web_admin_role", value=>"role_id", keys=>array("admin_id") ) 
 					)
 	);
 	$table["metadata"] = $tableMeta; 	

@@ -209,7 +209,7 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 				//tree.getRecords({refid: table.getCurrentKeys().id});
 
 				$('.min-chart#chart-sales').easyPieChart({
-					barColor: "orange",
+					barColor: "navy",
 					onStep: function (from, to, percent) {
 						$(this.el).find('.percent').text(Math.round(percent));
 					}
@@ -226,84 +226,83 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 <?php include("head/menu_admin.php");?>
 <!-- container -->
 <div class="container">
-<div style="display:inline-block;border:0px solid red;">
-		<span class="min-chart" id="chart-sales" style="margin:0px;" data-percent="80"><span class="percent"></span></span>
-</div>
-		<div id="div_role" class="row">
+		<div id="div_role">
 			<fieldset>
-				<legend>Search By</legend>
+				<legend><?php echo $words["search by"];?></legend>
 				<filter.label table="role_table" name="content"></filter.label> : 	<filter.textbox class="input-medium" table="role_table" name="content"></filter.textbox>
-			</feildset>
+				<table.tablebutton table="role_table" name="search" actname="Search" outline=1></table.tablebutton>
+			</fieldset>
 			<div style="margin-top:20px;">
-			<table.tablebutton table="role_table" name="search" actname="Search" outline=1></table.tablebutton>
+				<table.navi table="role_table"></table.navi>
+				<table class="table table-condensed">
+					<tr style="background-color:#eeeeee;"> 
+						<td width=50>
+							<table.hicon table="role_table" name="add" 		actname="Add New"></table.hicon>
+							<table.hicon table="role_table" name="save" 	actname="Save"></table.hicon>
+							<table.hicon table="role_table" name="cancel" 	actname="Undo"></table.hicon>
+						</td>
+						<td width=40 align="center">
+							<table.head table="role_table" name="SN"></table.head>
+						</td>
+						<td>
+							<table.head table="role_table" name="title_en" class="input-medium"></table.head>
+						</td>
+						<td>
+							<table.head table="role_table" name="detail_en"></table.head>
+						</td>
+						<td>
+							<table.head table="role_table"  name="title_cn" class="input-medium"></table.head>
+						</td>
+						<td>
+							<table.head table="role_table"  name="detail_cn"></table.head>
+						</td>
+						<td>
+							<table.head table="role_table"  name="level"></table.head>
+						</td>
+						<td>
+							<table.head table="role_table"  name="orderno"></table.head>
+						</td>
+						<td>
+							<table.head table="role_table" name="status"></table.head>
+						</td>
+					</tr>	
+					<tr ng-repeat="row in role_table.rows">
+						<td style="white-space:nowrap; width:40px;">
+							<table.bicon table="role_table" name="detail"  	actname="Edit" 		row="row" action="row_detail(row)"></table.bicon>
+							<table.bicon table="role_table" name="save"  	actname="Save" 		row="row"></table.bicon>
+							<table.bicon table="role_table" name="cancel"	actname="Cancel" 	row="row"></table.bicon>
+							<table.bicon table="role_table" name="delete" 	actname="Delete" 	row="row"></table.bicon>
+						</td>
+						<td width=30 align="center">
+							<table.rowno table="role_table"  row="row"></table.rowno>
+						</td>
+						<td>
+							<table.textbox class="input-medium" table="role_table" name="title_en" row="row"></table.textbox>
+						</td>
+						<td>
+							<table.textarea class="input-auto" table="role_table" name="detail_en" row="row"></table.textarea>
+						</td>
+						<td>
+							<table.textbox class="input-medium" table="role_table" name="title_cn" row="row"></table.textbox>
+						</td>
+						<td>
+							<table.textarea class="input-auto" table="role_table" name="detail_cn" row="row"></table.textarea>
+						</td>
+						<td>
+							<table.select class="input-small" table="role_table" name="level" row="row"></table.select>
+						</td>
+						<td>
+							<table.textbox class="input-tiny" table="role_table" name="orderno" row="row"></table.textbox>
+						</td>
+						<td>
+							<table.bool table="role_table" name="status" row="row"></table.bool>
+						</td>
+					</tr>
+				</table>
 			</div>
-			<br>
-			<table.navi table="role_table"></table.navi>
-			<table class="table table-condensed">
-				<tr style="background-color:#eeeeee;"> 
-					<td width=50>
-						<table.hicon table="role_table" name="add" 		actname="Add New"></table.hicon>
-						<table.hicon table="role_table" name="save" 	actname="Save"></table.hicon>
-						<table.hicon table="role_table" name="cancel" 	actname="Undo"></table.hicon>
-					</td>
-					<td width=40 align="center">
-						<table.head table="role_table" name="SN"></table.head>
-					</td>
-					<td>
-						<table.head table="role_table" name="title_en" class="input-medium"></table.head>
-					</td>
-					<td>
-						<table.head table="role_table" name="detail_en"></table.head>
-					</td>
-					<td>
-						<table.head table="role_table"  name="title_cn" class="input-medium"></table.head>
-					</td>
-					<td>
-						<table.head table="role_table"  name="detail_cn"></table.head>
-					</td>
-					<td>
-						<table.head table="role_table"  name="level"></table.head>
-					</td>
-					<td>
-						<table.head table="role_table"  name="orderno"></table.head>
-					</td>
-					<td>
-						<table.head table="role_table" name="status"></table.head>
-					</td>
-				</tr>	
-				<tr ng-repeat="row in role_table.rows">
-					<td style="white-space:nowrap; width:40px;">
-						<table.bicon table="role_table" name="detail"  	actname="Edit" 		row="row" action="row_detail(row)"></table.bicon>
-						<table.bicon table="role_table" name="save"  	actname="Save" 		row="row"></table.bicon>
-						<table.bicon table="role_table" name="cancel"	actname="Cancel" 	row="row"></table.bicon>
-						<table.bicon table="role_table" name="delete" 	actname="Delete" 	row="row"></table.bicon>
-					</td>
-					<td width=30 align="center">
-						<table.rowno table="role_table"  row="row"></table.rowno>
-					</td>
-					<td>
-						<table.textbox class="input-medium" table="role_table" name="title_en" row="row"></table.textbox>
-					</td>
-					<td>
-						<table.textarea class="input-auto" table="role_table" name="detail_en" row="row"></table.textarea>
-					</td>
-					<td>
-						<table.textbox class="input-medium" table="role_table" name="title_cn" row="row"></table.textbox>
-					</td>
-					<td>
-						<table.textarea class="input-auto" table="role_table" name="detail_cn" row="row"></table.textarea>
-					</td>
-					<td>
-						<table.select class="input-small" table="role_table" name="level" row="row"></table.select>
-					</td>
-					<td>
-						<table.textbox class="input-tiny" table="role_table" name="orderno" row="row"></table.textbox>
-					</td>
-					<td>
-						<table.bool table="role_table" name="status" row="row"></table.bool>
-					</td>
-				</tr>
-			</table>
+			<div style="display:inline-block;border:0px solid red;">
+				<span class="min-chart" id="chart-sales" style="margin:0px;" data-percent="80"><span class="percent"></span></span>
+			</div>
 		</div>
 		
 		<div id="div_right" style="display:none;">

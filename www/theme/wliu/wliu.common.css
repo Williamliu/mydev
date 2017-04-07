@@ -16,7 +16,7 @@ fieldset legend {
 	color: 			#ffffff;
 	padding:        2px 10px;
 	border-radius:  8px;
-	background-color: #666666;
+	background-color: #888888;
 }
 
 table {
@@ -87,11 +87,18 @@ div.picker__header {
 div.picker__footer {
 	padding:    		5px 15px;
 }
+
+div.white-block {
+	display: 			inline-block;
+	position: 			relative;
+	background-color: 	#ffffff;
+	vertical-align:     middle;
+}
 /***** input element: overwrite bootstrap *****************************/
 
 
 input {
-	padding: 			1px;
+	padding: 			2px 1px;
 	margin:  			1px;
 	font-size:          14px;
 	box-sizing: 		content-box;
@@ -114,10 +121,7 @@ textarea
 	color: 				rgb(85,85,85);
 	box-shadow: 		rgba(0,​ 0,​ 0,​ 0.075) 0px 1px 1px 0px inset;
 	margin: 			1px 1px;
-	padding-top: 		1px;
-	padding-bottom: 	1px;
-	padding-left: 		1px;
-	padding-right: 		1px;
+	padding: 			2px 1px;
 	border-radius: 		4px;
 	border: 			1px solid rgb(204,204,204);
 	vertical-align: 	middle;
@@ -160,7 +164,7 @@ span.checkbox {
 	line-height:    20px;
 	*/
 	padding:     	0px;
-	margin: 	 	0px 4px;
+	margin: 	 	3px 4px;
 	box-sizing: 	content-box;
 }
 span.radio > label,
@@ -173,7 +177,7 @@ input[type="radio"] + label
 	height:         20px;
 	line-height:    20px;
 	*/
-	vertical-align: middle;
+	vertical-align: bottom;
 } 
 
 
@@ -195,7 +199,7 @@ input[type="radio"] + label:before
 	display: 	inline-block;
 	position: 	relative;
 	width:  	16px;
-	height: 	16px;
+	height: 	20px;
 	margin-right: 2px;
 	content: 	" ";
 	vertical-align: middle;
@@ -206,12 +210,12 @@ input[type="radio"] + label:before
 span.radio > label:before,
 input[type="radio"] + label:before
 {
-	margin-top:   2px;
+	margin-top:   0px;
 }
 span.checkbox > label:before,
 input[type="checkbox"] + label:before
 {
-	margin-top:   2px;
+	margin-top:   0px;
 }
 
 
@@ -278,7 +282,7 @@ abbr {
 	padding: 		0px;
 	font-size: 		14px; /* 0.9em */
 	font-weight: 	400;
-	margin: 		5px;
+	margin: 		3px;
 	white-space:    nowrap;
 	overflow: 		hidden;
 	vertical-align: middle;
@@ -288,11 +292,16 @@ abbr {
 .wliuCommon-label {
 	display: 		inline-block;
 	position: 		relative;
-	padding: 		0px;
 	font-size: 		14px; /* 0.9em */
 	font-weight: 	400;
-	margin: 		5px;
 	vertical-align: middle;
+	margin: 		3px 0px;
+	/*
+	height: 		20px;
+	line-height: 	20px;
+	padding: 		2px 0px;
+	margin: 		1px;
+	*/
 }
 
 .wliuCommon-tips:before {
@@ -301,11 +310,16 @@ abbr {
 .wliuCommon-tips {
 	display: 		inline-block;
 	position: 		relative;
-	padding: 		0px;
 	font-size: 		14px; /* 0.9em */
 	font-style:     italic;
 	font-weight: 	400;
 	vertical-align: middle;
+	margin:  		3px 0px;
+	/*
+	height: 		20px;
+	padding: 		2px 0px;
+	margin: 		1px;
+	*/
 }
 
 a.wliuCommon-sort {
@@ -549,15 +563,15 @@ li.wliu-orderlist-active:hover {
 input.wliuCommon-datepicker {
 	cursor: 			pointer;
 	display: 			inline-block;
-	height:  			24px;
-	line-height: 		24px;
+	height:  			20px;
+	line-height: 		20px;
 	padding: 			0px;
 	padding-top: 		2px;
 	padding-bottom: 	2px;
 	padding-left: 		20px;
 	font-size: 			1em;
 	width:  			90px;
-	margin: 			2px 0px;
+	margin: 			1px;
 	border: 			0px;
 	border-bottom: 		1px solid rgb(204,204,204);
 	border-radius: 		0px;
@@ -569,15 +583,15 @@ input.wliuCommon-datepicker {
 input.wliuCommon-timepicker {
 	cursor: 			pointer;
 	display: 			inline-block;
-	height:  			24px;
-	line-height: 		24px;
+	height:  			20px;
+	line-height: 		20px;
 	padding: 			0px;
 	padding-top: 		2px;
 	padding-bottom: 	2px;
 	padding-left: 		20px;
 	font-size: 			1em;
 	width:  			50px;
-	margin: 			0px 2px;
+	margin: 			1px;
 	border: 			0px;
 	border-bottom: 		1px solid rgb(204,204,204);
 	border-radius: 		0px;
