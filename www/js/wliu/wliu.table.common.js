@@ -509,7 +509,7 @@ WLIU.ROWACTION.prototype = {
 		}
 		
 		theRow.error.errorCode 		= theRow.error.errorCode<=1?errorCode	:theRow.error.errorCode;
-		theRow.error.errorMessage 	= theRow.error.errorCode<=1?errorMessage:theRow.error.errorMessage.join("\n",errorMessage);
+		theRow.error.errorMessage 	= errorMessage; //theRow.error.errorCode<=1?errorMessage:theRow.error.errorMessage.join("\n",errorMessage);
 		if( theRow.rowstate <= 1) {
 			if(changed) 
 				theRow.rowstate = 1;
@@ -1466,7 +1466,8 @@ WLIU.TABLEACTION.prototype = {
 		theTable.tableError(ntable.error);
 		theTable.rows 		= [];
 		theTable.current 	= "";
-		theTable.navi = angular.copy(ntable.navi);
+		theTable.navi 		= angular.copy(ntable.navi);
+		theTable.rights 	= angular.copy(ntable.rights);
 
 		// update primary table information: one2one, one2many, many2many 
 		if( ntable.primary && $.isArray(ntable.primary) ) {
@@ -1493,10 +1494,15 @@ WLIU.TABLEACTION.prototype = {
 		}
 
 		// set first row as current row;
-		if(theTable.rows.length>0) theTable.current = theTable.rows[0].guid;
+		if(theTable.firstone && theTable.rows.length>0)  {
+			theTable.current = theTable.rows[0].guid;
+		} else {
+			theTable.current = ""; 
+		}
 	},
 	updateRows: function(theTable, ntable) {
 			//theTable.current = "";
+			theTable.rights = angular.copy(ntable.rights);
 			theTable.tableError(ntable.error);
 			//if(ntable.success <= 0 || ntable.error.errorCode > 0) return;
 			// update primary table information: one2one, one2many, many2many 
@@ -1569,6 +1575,7 @@ WLIU.TABLEACTION.prototype = {
 								theTable.rowError(tableRow, nRow.error);
 								tableRow.rowstate = 0;
 								if( parseInt(tableRow.error.errorCode)<=0 ) {
+									if(theTable.current == tableRow.guid) theTable.current = "";
 									theTable.removeRow(tableRow);
 									theTable.navi.recordtotal--;
 								}

@@ -14,14 +14,16 @@ WLIU.TABLE = function( opts ) {
 	this.autotip 	= opts.autotip?opts.autotip:"";
 	this.tooltip 	= opts.tooltip?opts.tooltip:"";
 	
+	this.firstone 	= opts.firstone?opts.firstone:0;
 	this.current    = ""; // row guid
 	this._rowno 	= -1; // private for rowno
 	this.action		= "get";
 	this.error		= {errorCode:0, errorMessage:""};  // table level error : action rights 
-	this.rights 	= {view:1, save:0, cancel:1, clear:1, delete:0, add:1, detail:1, output:0, print:1};
+	this.rights 	= {view:1, save:1, cancel:1, clear:1, delete:1, add:1, detail:1, output:1, print:1};
 	this.cols 		= [];
 	this.rows 		= [];
 	this.navi		= { paging:1, pageno: 0, pagesize:20, pagetotal:0, recordtotal:0, match: 1, loading:0, orderby: "", sortby:"", tooltip:"" };
+
 	this.filters 	= [];
 	this.lists		= {};  // { gender: { loaded: 1, keys: { rowsn: -1, name: "" }, list: [{key:1, value:"Male", desc:""}, {key:2, value:"Female", desc:""}] },  	xxx: {} }
 	this.callback   = {ajaxBefore: null, ajaxAfter: null, ajaxComplete: null, ajaxError: null,  ajaxSuccess: null};

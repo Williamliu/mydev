@@ -412,10 +412,11 @@ a.wliu-btn16 {
 .wliu-btn16-download {
     background-position:        0px -580px;
 }
-.wliu-btn16-xxxx1 {
+.wliu-btn16-status-true {
     background-position:        -20px -580px;
 }
-.wliu-btn16-xxx2 {
+.wliu-btn16-status-,
+.wliu-btn16-status-false {
     background-position:        -40px -580px;
 }
 
@@ -822,10 +823,11 @@ a.wliu-btn24 {
 .wliu-btn24-download {
     background-position:        0px -870px;
 }
-.wliu-btn24-xxxx1 {
+.wliu-btn24-status-true {
     background-position:        -30px -870px;
 }
-.wliu-btn24-xxxx2 {
+.wliu-btn24-status-,
+.wliu-btn24-status-false {
     background-position:        -60px -870px;
 }
 

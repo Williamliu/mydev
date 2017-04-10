@@ -18,9 +18,16 @@ print_r($words);
 //we can set place holder to word and replace with new one.
 cLANG::replace("Hello {{good}} or {{bad}}", array("good"=>"Well", "bad"=>"Worst"));
 */
+function gwords($keyword) {
+    global $words;
+    return $words[$keyword]?$words[$keyword]:ucwords(strtolower($keyword));
+}
 ?>
 <script language="javascript" type="text/javascript">
 	var words = <?php echo json_encode($words); ?>;
     var GLang = "<?php echo $GLang; ?>";
     //console.log(words);
+    function gwords(keyword) {
+        return words[keyword]?words[keyword]:(""+keyword).capital();
+    }
 </script>

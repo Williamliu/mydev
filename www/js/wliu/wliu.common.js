@@ -107,6 +107,15 @@ String.prototype.toDate = function() {
 	}
 }
 
+String.prototype.intDate = function() {
+	if( isNaN(this) || parseInt(this) <= 0  ) {
+		return "";
+	} else {
+		var ndate = new Date(parseInt(this)*1000);
+		return ndate.format("Y-m-d H:i")
+	}
+}
+
 Number.prototype.toSize = function() {
 		if( isNaN(this) || parseFloat(this) <= 0  ) {
 			return "";
@@ -129,6 +138,14 @@ Number.prototype.toDate = function() {
 		return new Date(0);
 	} else {
 		return new Date(parseInt(this)*1000);
+	}
+}
+Number.prototype.intDate = function() {
+	if( isNaN(this) || parseInt(this) <= 0  ) {
+		return "";
+	} else {
+		var ndate = new Date(parseInt(this)*1000);
+		return ndate.format("Y-m-d H:i")
 	}
 }
 

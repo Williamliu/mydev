@@ -18,6 +18,7 @@ WLIU.TREE = function( opts ) {
 	this.autotip 	= opts.autotip?opts.autotip:"";
 	this.tooltip 	= opts.tooltip?opts.tooltip:"";
 
+	this.rootadd 	= opts.rootadd?opts.rootadd:0;
 	this.pbutton 	= opts.pbutton?opts.pbutton:["add", "save", "cancel", "delete"],
 	this.sbutton	= opts.sbutton?opts.sbutton:["add", "save", "cancel", "delete"],
 	this.mbutton	= opts.mbutton?opts.mbutton:["save", "cancel", "delete"],
@@ -233,7 +234,7 @@ WLIU.TREE.prototype = {
 	getRecords: function(IDKeyValues, callback) {
 		if(IDKeyValues) {
 			if(IDKeyValues.rootid!=undefined) 	this.rootid = IDKeyValues.rootid;
-			if(IDKeyValues.refid!=undefined) 	this.refid 	= IDKeyValues.refid;	
+			this.refid 	= IDKeyValues.refid?IDKeyValues.refid:"";	
 		}
 		this.getRows(callback);
 	},
@@ -286,6 +287,7 @@ WLIU.TREE.prototype = {
 		});
 	},
 	syncRows: function(table) {
+		this.rights = angular.copy(table.rights);
 		this.tableError(table.error);
 		this.rows = [];
 		
@@ -327,6 +329,7 @@ WLIU.TREE.prototype = {
 	},
 
 	updateRow: function(table, theRow, theRows) {
+		this.rights = angular.copy(table.rights);
 		this.tableError(table.error);
 		if( table.rows && table.rows.length > 0) {
 			var nrow = table.rows[0];

@@ -4,6 +4,8 @@ ini_set("display_errors", 0);
 include_once("../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
 include_once($CFG["include_path"] . "/wliu/language/language.php");
+include("head/menu_admin.php");
+//print_r($user_right["M11"]);
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -68,7 +70,7 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 		   	var col6 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"phone", 	    colname:"Phone", 		coldesc:"Phone", 			sort:"ASC", maxlength:64, notnull:0 });
 		   	var col7 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 	    name:"cell", 		colname:"Cell",   	    coldesc:"Cell Phone", 		sort:"ASC", maxlength:64, notnull:0 });
 		   	var col8 = new WLIU.COL({key:0, table:"p",	coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status", 	defval:1 });
-		   	var col9 = new WLIU.COL({key:0, table:"p",	coltype:"text", 		name:"hits",		colname:"Hits",  		coldesc:"Login Count"});
+		   	var col9 = new WLIU.COL({key:0, table:"p",	coltype:"text", 		name:"hits",		colname:"Logins",  		coldesc:"Login Count"});
 		   	var col10 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"address",		colname:"Address",  	coldesc:"Address", 			maxlength:256});
 		   	var col11 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"city",		colname:"City",  		coldesc:"City", 			maxlength:64});
 		   	var col12 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"state",		colname:"State",  		coldesc:"State/Province", 	maxlength:64});
@@ -115,7 +117,7 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 				taberror:	"table_error",
 				tooltip:	"tool_tip",
 				autotip: 	"auto_tips",
-				rights: 	{detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
+				//rights: 	{detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
                 lists:      {
                             countryList: 	{loaded: 0, keys:{guid:"", name:""}, list:[] },
                             roleList: 		{loaded: 0, keys:{guid:"", name:""}, list:[] }
@@ -124,12 +126,6 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 				filters: 	filters,
 				cols: 		cols
 			});
-
-
-
-
-
-
 
             var app = angular.module("myApp", ["wliuTable"]);
             app.controller("myForm", function ($scope) {
@@ -152,12 +148,11 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 		</script>
 </head>
 <body ng-app="myApp" ng-controller="myForm">
-<?php include("head/menu_admin.php");?>
 <!-- container -->
 <div class="container">
 		<div id="div_role">
 			<fieldset>
-				<legend><?php echo $words["search by"];?></legend>
+				<legend><?php echo gwords("search by")?></legend>
 				<filter.label table="role_table" name="content"></filter.label> : 	<filter.textbox class="input-medium" table="role_table" name="content"></filter.textbox>
 				<table.tablebutton table="role_table" name="search" actname="Search" outline=1></table.tablebutton>
 			</fieldset>
@@ -236,12 +231,12 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 			<br>
 			<button class="btn btn-outline-info" onclick="goback()">Go Back</button>
 			<form.button table="role_table" name="save"		outline=1 	actname="Save"></form.button>		
-			<form.button table="role_table" name="cancel" 	outline=1 	actname="Cancel"></form.button>	
+			<form.button table="role_table" name="reset" 	outline=1 	actname="Cancel"></form.button>	
 			<form.rowstatus table="role_table"></form.rowstatus>
 			<br>			
 			<br>
 			<ul wliu-tab9 color-purple>
-				<li><span>Admin Detail</span><s></s></li>
+				<li><span><?php echo $words["admin.detail"]?></span><s></s></li>
 			</ul>
 			<div wliu-tab9-body>
 				<div class="selected" style="padding:15px;">
@@ -345,7 +340,7 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 									<form.label table="role_table" name="country"></form.label>
 								</div>
 								<div class="col-md-8">
-									<form.select table="role_table" name="country"></form.select>	
+									<form.select table="role_table" name="country" class="input-auto"></form.select>	
 								</div>
 							</div>
 							<div class="row">

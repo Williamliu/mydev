@@ -4250,7 +4250,7 @@ wliu_table.directive("table.message", function (wliuTableService) {
             $scope.getHTML = function() {
                 if( $scope.table.error.errorCode || ( $scope.table.getCurrent() && $scope.table.getCurrent().error.errorCode ) ) {
                     var errMsg = $scope.table.error.errorMessage.nl2br1();
-                    if( $scope.table.getCurrent() ) errMsg += "\n" + $scope.table.getCurrent().error.errorMessage.nl2br1();
+                    if( $scope.table.getCurrent() ) errMsg += "<br>" + $scope.table.getCurrent().error.errorMessage.nl2br1();
                     return $sce.trustAsHtml(errMsg);
                 } else { 
                     return $sce.trustAsHtml("");

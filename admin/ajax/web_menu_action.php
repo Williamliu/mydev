@@ -5,7 +5,7 @@ include_once("../../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
 include_once($CFG["include_path"] . "/wliu/language/language_ajax.php");
 include_once("../head/full_right.php");
-define("DEBUG", 1);
+define("DEBUG", 0);
 $response = array();
 try {
 	/*** common secure : prevent url hack from hack tool ***/
@@ -17,15 +17,6 @@ try {
 
 	// 2) list table : list1, list2, list3, cate1, cate2, cate3
 	//  table1.name == table2.name ;  fkey is parent_id started from 0  as tree root 
-	$listTable = array();
-	$rightCategory = array(
-		"type"=>"list1",
-		"table1"=>array("name"=>"web_right", "key"=>"id", "fkey"=>"", "value"=>cLANG::langCol("title"), "desc"=>cLANG::langCol("detail")),
-		"table2"=>array(),
-		"table3"=>array()
-	);
-	$listTable["rightCategory"] = $rightCategory;
-	
 	$table["listTable"] = $listTable;
 
 	// 3) table metadata
@@ -41,22 +32,18 @@ try {
 							"name"=>"web_menu1", 
 							"keys"=>array("id"),  
 							"fkeys"=>array("parent_id"), 
-							"cols"=>array("id","parent_id","menu_key","right"), 
+							"cols"=>array("id","parent_id","menu_key","title_en","detail_en","title_cn","detail_cn","template","url","seo_title","seo_keyword","seo_description","status","orderno"), 
 							"insert"=>array(), 
-							"update"=>array(),
-							"right"=>array("name"=>"web_role_menu1", "value"=>"menu_right", "keys"=>array("menu_id", "role_id")),
-							"filter"=>array("status"=>1)
+							"update"=>array()
 					),
 		"s"=>array(
 							"type"=>"s",
 							"name"=>"web_menu2", 
 							"keys"=>array("id"),  
 							"fkeys"=>array("parent_id"), 
-							"cols"=>array("id","parent_id", "menu_key", "right"), 
+							"cols"=>array("id","parent_id", "menu_key", "title_en", "detail_en","title_cn","detail_cn","template","url","seo_title","seo_keyword","seo_description","status", "orderno"), 
 							"insert"=>array(), 
-							"update"=>array(),
-							"right"=>array("name"=>"web_role_menu2", "value"=>"menu_right", "keys"=>array("menu_id", "role_id")),
-							"filter"=>array("status"=>1)
+							"update"=>array()
 		 )
 	);
 	$table["metadata"] = $tableMeta; 	

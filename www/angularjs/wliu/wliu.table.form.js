@@ -3267,6 +3267,8 @@ wliu_table.directive("form.button", function (wliuTableService) {
                         break;
                     case "cancel":
                         ret_val = "warning";
+                    case "reset":
+                        ret_val = "warning";
                         break;
                     case "delete":
                         ret_val = "danger";
@@ -3282,9 +3284,14 @@ wliu_table.directive("form.button", function (wliuTableService) {
                         $scope.table.addRow();
                         break;
                     case "save":
-                        $scope.table.saveRow(theRow);
+                        $scope.table.saveRow(theRow, {
+                            ajaxComplete: $scope.action
+                        });
                         break;
                     case "cancel":
+                        $scope.table.cancelRow(theRow);
+                        break;
+                    case "reset":
                         switch(theRow.rowstate) {
                             case 0:
                                 break;
@@ -3437,7 +3444,7 @@ wliu_table.directive("form.message", function (wliuTableService) {
             $scope.getHTML = function() {
                 if( $scope.table.error.errorCode || ( $scope.table.getCurrent() && $scope.table.getCurrent().error.errorCode ) ) {
                     var errMsg = $scope.table.error.errorMessage.nl2br1();
-                    if( $scope.table.getCurrent() ) errMsg += "\n" + $scope.table.getCurrent().error.errorMessage.nl2br1();
+                    if( $scope.table.getCurrent() ) errMsg += "<br>" + $scope.table.getCurrent().error.errorMessage.nl2br1();
                     return $sce.trustAsHtml(errMsg);
                 } else { 
                     return $sce.trustAsHtml("");

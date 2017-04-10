@@ -27,10 +27,10 @@ wliu_table.directive("table.tree", function () {
             label:      "@"
         },
         template: [
-                    '<ul id="' + 'tree_' + table.treeid + '" wliu-tree root>',
+                    '<ul id="tree_{{table.treeid}}" wliu-tree root>',
                         '<li nodes open><s folder></s>',
                             '{{table.title?table.title:\'Tree Root\'}} ',
-                            '<tree.hicon table="table" rows="table.rows" row="root" name="add" actname="Add"></tree.hicon>',
+                            '<tree.hicon table="table" rows="table.rows" row="root" name="add" actname="Add" ng-if="table.rootadd"></tree.hicon>',
                             /*** ptable ***/
                             '<ul wliu-tree>',
                                 '<li nodes open ng-repeat="prow in table.rows" name="meme">',
@@ -38,7 +38,8 @@ wliu_table.directive("table.tree", function () {
                                     '<tree.rowstatus table="table" row="prow"></tree.rowstatus>',
                                     '<span style="display:none;" ng-repeat-start="pcol in prow.cols"></span>',
                                             '<span ng-switch on="pcol.coltype">',
-                                                '<tree.text ng-switch-when="text"       table="table" row="prow" name="{{pcol.name}}"></tree.text>',
+                                                '<tree.text     ng-switch-when="text"       table="table" row="prow" name="{{pcol.name}}"></tree.text>',
+                                                '<tree.custom   ng-switch-when="custom"     table="table" row="prow" name="{{pcol.name}}"></tree.custom>',
 
                                                 '<tree.label   ng-switch-when="textbox" ng-if="label" table="table" row="prow" name="{{pcol.name}}"></tree.label>',
                                                 '<tree.textbox ng-switch-when="textbox" table="table" row="prow" name="{{pcol.name}}" class="{{table.colMeta(prow, pcol.name).css}}" style="{{table.colMeta(prow, pcol.name).style}}"></tree.textbox>',
@@ -65,7 +66,8 @@ wliu_table.directive("table.tree", function () {
                                                 '<tree.rowstatus table="table" row="srow"></tree.rowstatus>',
                                                 '<span style="display:none;" ng-repeat-start="scol in srow.cols"></span>',
                                                         '<span ng-switch on="scol.coltype">',
-                                                            '<tree.text ng-switch-when="text"       table="table" row="srow" name="{{scol.name}}"></tree.text>',
+                                                            '<tree.text     ng-switch-when="text"       table="table" row="srow" name="{{scol.name}}"></tree.text>',
+                                                            '<tree.custom   ng-switch-when="custom"     table="table" row="srow" name="{{scol.name}}"></tree.custom>',
 
                                                             '<tree.label ng-switch-when="textbox"    ng-if="label"  table="table" row="srow" name="{{scol.name}}"></tree.label>',
                                                             '<tree.textbox ng-switch-when="textbox" table="table" row="srow" name="{{scol.name}}" class="{{table.colMeta(srow, scol.name).css}}" style="{{table.colMeta(srow, scol.name).style}}"></tree.textbox>',
@@ -92,6 +94,7 @@ wliu_table.directive("table.tree", function () {
                                                         '<span style="display:none;" ng-repeat-start="mcol in mrow.cols"></span>',
                                                                 '<span ng-switch on="mcol.coltype">',
                                                                     '<tree.text ng-switch-when="text"       table="table"   row="mrow" name="{{mcol.name}}"></tree.text>',
+                                                                    '<tree.custom ng-switch-when="custom"   table="table"   row="mrow" name="{{mcol.name}}"></tree.custom>',
 
                                                                     '<tree.label ng-switch-when="textbox"    ng-if="label"  table="table" row="mrow" name="{{mcol.name}}"></tree.label>',
                                                                     '<tree.textbox ng-switch-when="textbox" table="table"   row="mrow" name="{{mcol.name}}" class="{{table.colMeta(mrow, mcol.name).css}}" style="{{table.colMeta(mrow, mcol.name).style}}"></tree.textbox>',
@@ -122,7 +125,8 @@ wliu_table.directive("table.tree", function () {
                                                 '<tree.rowstatus table="table" row="srow"></tree.rowstatus>',
                                                 '<span style="display:none;" ng-repeat-start="scol in srow.cols"></span>',
                                                         '<span ng-switch on="scol.coltype">',
-                                                            '<tree.text ng-switch-when="text"       table="table" row="srow" name="{{scol.name}}"></tree.text>',
+                                                            '<tree.text     ng-switch-when="text"       table="table" row="srow" name="{{scol.name}}"></tree.text>',
+                                                            '<tree.custom   ng-switch-when="custom"     table="table" row="srow" name="{{scol.name}}"></tree.custom>',
 
                                                             '<tree.label ng-switch-when="textbox"   ng-if="label"   table="table" row="srow" name="{{scol.name}}"></tree.label>',
                                                             '<tree.textbox ng-switch-when="textbox" table="table"   row="srow" name="{{scol.name}}" class="{{table.colMeta(srow, scol.name).css}}" style="{{table.colMeta(srow, scol.name).style}}"></tree.textbox>',
@@ -181,7 +185,7 @@ wliu_table.directive("table.treeview", function () {
             action:     "&"
         },
         template: [
-                    '<ul id="' + 'tree_' + table.treeid + '" wliu-tree root>',
+                    '<ul id="tree_{{table.treeid}}" wliu-tree root>',
                         '<li nodes open><s folder></s>',
                             '{{table.title?table.title:\'Tree Root\'}} ',
                             '<tree.hicon table="table" rows="table.rows" row="root" name="add" actname="Add"></tree.hicon>',
@@ -337,6 +341,30 @@ wliu_table.directive("tree.text", function () {
         }
     }
 });
+
+wliu_table.directive("tree.custom", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            row:        "=",
+            name:       "@"
+        },
+        template: [
+                    '<span ng-bind-html="valueText()"></span>'
+                ].join(''),
+        controller: function ($scope, $sce) {
+            $scope.valueText=function() {
+                var ret_val = FCOM.colreplace($scope.table.colMeta($scope.row, $scope.name).colname , $scope.row.cols);
+                return $sce.trustAsHtml(ret_val);
+            }
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
 
 wliu_table.directive("tree.hidden", function () {
     return {
@@ -514,7 +542,7 @@ wliu_table.directive("tree.checkbox1", function () {
             name:       "@"  // col_name 
         },
         template: [
-                    '<input type="text" readonly class="wliuCommon-checklist" value="{{ valueText() }}" ',
+                    '<input type="text" readonly class="wliuCommon-checklist input-long" value="{{ valueText() }}" ',
                             'ng-click="change(row, name)" ',
                             'diag-target="#{{table.colMeta(row, name).targetid}}" diag-toggle="click" ',
                             'popup-target="#table_rowno_tooltip" popup-placement="down" popup-toggle="hover" popup-body="{{table.getCol(row, name).errorCode?table.getCol(row, name).errorMessage.nl2br():valueText()?valueText():table.colMeta(row, name).coldesc?table.colMeta(row, name).coldesc:table.colMeta(row, name).colname}}" ',

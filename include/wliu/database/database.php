@@ -630,6 +630,9 @@ class cMYSQL implements iSQL {
 
 		// 3. create criteria  include  primary_key criteria
 		$criteria = "";
+		foreach($otable["filter"] as $fcol=>$fval) {
+			cTYPE::join($criteria, " AND ", $otable["type"] . "." . $fcol . "=" . "'". $this->quote($fval) ."'");
+		}
 		cTYPE::join($criteria, " AND ", $otable["type"] . ".deleted=0");
 		cTYPE::join($criteria, " AND ", $fk_criteria);
 		//cTYPE::join($criteria, " AND ", $table["criteria"]);
@@ -1639,6 +1642,8 @@ class cACTION {
 				case "checkbox3":
 					$table["metadata"][$colMeta["table"]]["checkboxCols"][] = $colMeta["col"];
 					break;
+				case "custom":
+					break;
 				default:
 					$table["metadata"][$colMeta["table"]]["selectCols"][] = $colMeta["col"];
 					break;
@@ -1913,7 +1918,7 @@ class cACTION {
 		if(!DEBUG) unset($table["criteria_prmiary"]);
 		if(!DEBUG) unset($table["query"]);
 		if(!DEBUG) unset($table["query_primary"]);
-		if(!DEBUG) unset($table["rights"]);
+		//if(!DEBUG) unset($table["rights"]);  // need to sync rights for front-end secure, front-end right should controlled by server-side
 		if(!DEBUG) unset($table["listTable"]);
 		if(!DEBUG) unset($table["metadata"]);
 		if(!DEBUG) unset($table["rowsArray"]);
@@ -2048,6 +2053,8 @@ class cACTION {
 						case "checkbox2":
 						case "checkbox3":
 							break;
+						case "custom":
+							break;
 						default:
 							$dbCols["fields"][$fieldName] = $colVal;
 							// only return key col value , other col value set to empty to avoid trafic 
@@ -2075,6 +2082,8 @@ class cACTION {
 									case "checkbox1":
 									case "checkbox2":
 									case "checkbox3":
+										break;
+									case "custom":
 										break;
 									default:
 										$dbCols["fields"][$fieldName] = $colVal;
@@ -2924,6 +2933,8 @@ class cTREE {
 						case "checkbox2":
 						case "checkbox3":
 							break;
+						case "custom":
+							break;
 						default:
 							$dbCols["fields"][$fieldName] = $colVal;
 							// only return key col value , other col value set to empty to avoid trafic 
@@ -2950,6 +2961,8 @@ class cTREE {
 							case "checkbox1":
 							case "checkbox2":
 							case "checkbox3":
+								break;
+							case "custom":
 								break;
 							default:
 								$dbCols["fields"][$fieldName] = $colVal;
@@ -2979,6 +2992,8 @@ class cTREE {
 					case "checkbox2":
 					case "checkbox3":
 						$table["metadata"][$tableType]["checkboxCols"][] 	= $colMeta["col"];
+						break;
+					case "custom":
 						break;
 					default:
 						$table["metadata"][$tableType]["selectCols"][] 		= $colMeta["col"];
@@ -3114,8 +3129,16 @@ class cTREE {
 			}	
 		} // foreach
 	}
-
-
+	static public function clearRows(&$table) {
+		if(!DEBUG) unset($table["cols"]);
+		if(!DEBUG) unset($table["filters"]);
+		if(!DEBUG) unset($table["criteria"]);
+		if(!DEBUG) unset($table["criteria_prmiary"]);
+		if(!DEBUG) unset($table["query"]);
+		//if(!DEBUG) unset($table["rights"]);  // need to sync rights for front-end secure, front-end right should controlled by server-side
+		if(!DEBUG) unset($table["listTable"]);
+		if(!DEBUG) unset($table["metadata"]);
+	}
 }
 
 class cIMAGE {

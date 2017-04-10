@@ -158,8 +158,8 @@ textarea:focus {
 span.radio,
 span.checkbox {
 	display: 		inline-block;
-	/*
 	white-space: 	nowrap;
+	/*
 	height:         20px;
 	line-height:    20px;
 	*/
@@ -172,12 +172,12 @@ span.checkbox > label,
 input[type="checkbox"] + label,
 input[type="radio"] + label
 {
-	display: 	inline-block;
+	display: 		inline-block;
 	/*
 	height:         20px;
 	line-height:    20px;
 	*/
-	vertical-align: bottom;
+	vertical-align: middle;
 } 
 
 
@@ -187,8 +187,8 @@ span.checkbox > input[type="checkbox"],
 span.checkbox > input[type="radio"]
 {
 	display: 		none;
-	position: 		absolute;
-	vertical-align: middle;
+	position: 		relative;
+	vertical-align: bottom;
 } 
 
 span.radio > label:before,
@@ -196,13 +196,14 @@ span.checkbox > label:before,
 input[type="checkbox"] + label:before,
 input[type="radio"] + label:before
 {
-	display: 	inline-block;
-	position: 	relative;
-	width:  	16px;
-	height: 	20px;
-	margin-right: 2px;
-	content: 	" ";
-	vertical-align: middle;
+	display: 		inline-block;
+	position: 		relative;
+	width:  		16px;
+	height: 		16px;
+	margin-top: 	3px;
+	margin-right: 	2px;
+	content: 		" ";
+	vertical-align: top;
 
     background-color:           transparent;
     background-image:           url(wliu.buttons/wliu-buttons-16.png);
@@ -210,12 +211,12 @@ input[type="radio"] + label:before
 span.radio > label:before,
 input[type="radio"] + label:before
 {
-	margin-top:   0px;
+	margin-top:   3px;
 }
 span.checkbox > label:before,
 input[type="checkbox"] + label:before
 {
-	margin-top:   0px;
+	margin-top:   3px;
 }
 
 
@@ -611,6 +612,8 @@ ul.wliuCommon-list-group {
 }
 
 ul.wliuCommon-list-group li.list-group-item {
+	display: 		block;
+	width: 			100%;
 	box-shadow: 	none; 
 	border-left: 	0px;
 	border-right: 	0px;
