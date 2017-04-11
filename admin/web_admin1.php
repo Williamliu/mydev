@@ -4,7 +4,6 @@ ini_set("display_errors", 0);
 include_once("../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
 include_once($CFG["include_path"] . "/wliu/language/language.php");
-include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
 include("head/menu_admin.php");
 //print_r($user_right["M11"]);
 ?>
@@ -43,7 +42,6 @@ include("head/menu_admin.php");
 		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.js" type="text/javascript"></script>
 		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.form.js" type="text/javascript"></script>
 		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.tree.js" type="text/javascript"></script>
-		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.list.js" type="text/javascript"></script>
 		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.filter.js" type="text/javascript"></script>
 	
 		<script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/diag/wliu.jquery.diag.js" type="text/javascript"></script>
@@ -84,9 +82,7 @@ include("head/menu_admin.php");
 		   	var col18 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"login_count", colname:"Login Count",  coldesc:"Login Count",  min:0 , max:5, maxlength:1 });
 		   	var col19 = new WLIU.COL({key:0, table:"p",	coltype:"checkbox", 	name:"role_id", 	colname:"Role",  		coldesc:"Admin Role", 	list:"roleList" });
 		   	var col20 = new WLIU.COL({key:0, table:"p",	coltype:"passpair", 	name:"password", 	colname:"Password",  	coldesc:"Login Password", minlength:6, maxlength:16, need:1, notnull:1 });
-		   	var col21 = new WLIU.COL({key:0, table:"p",	coltype:"custom", 		name:"listflag",		colname:"<a class='wliu-btn16 wliu-btn16-status-{status}'></a> "});
-		   	var col22 = new WLIU.COL({key:0, table:"p",	coltype:"custom", 		name:"listinfo",		colname:"{first_name} {last_name} - {user_name}"});
-			
+
 		   	var cols = [];
 		   	cols.push(col1);
 		   	cols.push(col2);
@@ -108,8 +104,6 @@ include("head/menu_admin.php");
 		   	cols.push(col18);
 		   	cols.push(col19);
 		   	cols.push(col20);
-		   	cols.push(col21);
-		   	cols.push(col22);
 
 			var filter1 = new WLIU.FILTER({name:"content", 		coltype:"textbox",		cols:"user_name,email,first_name,last_name",  	colname:"Content",  	coldesc:"search by Content"});
 			var filters = [];
@@ -128,7 +122,7 @@ include("head/menu_admin.php");
                             countryList: 	{loaded: 0, keys:{guid:"", name:""}, list:[] },
                             roleList: 		{loaded: 0, keys:{guid:"", name:""}, list:[] }
                 },
-				navi:   	{pagesize:20, match: 1, orderby:"p.first_name", sortby:"ASC"},
+				navi:   	{pagesize:20, match: 1, orderby:"last_updated", sortby:"DESC"},
 				filters: 	filters,
 				cols: 		cols
 			});
@@ -136,29 +130,118 @@ include("head/menu_admin.php");
             var app = angular.module("myApp", ["wliuTable"]);
             app.controller("myForm", function ($scope) {
 				table.setScope( $scope, "role_table" );
+
+				$scope.row_detail = function(theRow) {
+					$("#div_right").show();
+					$("#div_role").hide();
+				}
 		    });
 
 			$(function(){
 				table.getRecords();
 			});
+
+			function goback() {
+				$("#div_right").hide();
+				$("#div_role").show();
+			}
 		</script>
 </head>
 <body ng-app="myApp" ng-controller="myForm">
 <!-- container -->
 <div class="container">
-	<div class="row">
-		<div class="col-md-4">
-			<table.list table="role_table" title="<?php echo gwords("website.admin")?>" searchcol="user_name,first_name,last_name,email,phone,cell" displaycolx="user_name,email,first_name,last_name,phone,cell,role_id,last_login,hits,status"></table.list>
+		<div id="div_role">
+			<fieldset>
+				<legend><?php echo gwords("search by")?></legend>
+				<filter.label table="role_table" name="content"></filter.label> : 	<filter.textbox class="input-medium" table="role_table" name="content"></filter.textbox>
+				<table.tablebutton table="role_table" name="search" actname="Search" outline=1></table.tablebutton>
+			</fieldset>
+			<table.message table="role_table"></table.message>
+			<div style="margin-top:20px;">
+				<table.navi table="role_table" style="margin-top:20px;"></table.navi>
+				<table class="table table-condensed">
+					<tr style="background-color:#eeeeee;"> 
+						<td width=50 valign="middle">
+							<table.hicon table="role_table" name="add" 		actname="Add New" action="row_detail(role_table.getCurrent())"></table.hicon>
+							<table.hicon table="role_table" name="save" 	actname="Save"></table.hicon>
+							<table.hicon table="role_table" name="cancel" 	actname="Undo"></table.hicon>
+						</td>
+						<td width=40 align="center" valign="middle">
+							<table.head table="role_table" name="SN"></table.head>
+						</td>
+						<td valign="middle">
+							<table.head table="role_table" name="user_name"></table.head>
+						</td>
+						<td valign="middle">
+							<table.head table="role_table" name="email"></table.head>
+						</td>
+						<td valign="middle">
+							<table.head table="role_table"  name="first_name"></table.head>
+						</td>
+						<td>
+							<table.head table="role_table"  name="last_name"></table.head>
+						</td>
+						<td>
+							<table.head table="role_table"  name="role_id"></table.head>
+						</td>
+						<td>
+							<table.head table="role_table" name="status"></table.head>
+						</td>
+						<td>
+							<table.head table="role_table" name="hits"></table.head>
+						</td>
+					</tr>	
+					<tr ng-repeat="row in role_table.rows">
+						<td style="white-space:nowrap; width:40px;">
+							<table.bicon table="role_table" name="detail"  	actname="Edit" 		row="row" action="row_detail(row)"></table.bicon>
+							<table.bicon table="role_table" name="save"  	actname="Save" 		row="row"></table.bicon>
+							<table.bicon table="role_table" name="cancel"	actname="Cancel" 	row="row"></table.bicon>
+							<table.bicon table="role_table" name="delete" 	actname="Delete" 	row="row"></table.bicon>
+						</td>
+						<td width=30 align="center">
+							<table.rowno table="role_table"  row="row"></table.rowno>
+						</td>
+						<td>
+							<table.readonly class="input-small" table="role_table" name="user_name" row="row"></table.readonly>
+						</td>
+						<td>
+							<table.textbox class="input-medium" table="role_table" name="email" row="row"></table.textbox>
+						</td>
+						<td>
+							<table.textbox class="input-medium" table="role_table" name="first_name" row="row"></table.textbox>
+						</td>
+						<td>
+							<table.textbox class="input-medium" table="role_table" name="last_name" row="row"></table.textbox>
+						</td>
+						<td>
+							<table.checktext1  table="role_table" name="role_id" row="row"></table.checktext1>
+						</td>
+						<td>
+							<table.bool table="role_table" name="status" row="row"></table.bool>
+						</td>
+						<td align="center">
+							<table.text class="input-tiny" table="role_table" name="hits" row="row"></table.text>
+						</td>
+					</tr>
+				</table>
+			</div>
 		</div>
-		<div class="col-md-8">
-			<!---Admin Detail -->
+		
+		<div id="div_right" style="display:none;">
+			<br>
+			<button class="btn btn-outline-info" onclick="goback()">Go Back</button>
+			<form.button table="role_table" name="save"		outline=1 	actname="Save"></form.button>		
+			<form.button table="role_table" name="reset" 	outline=1 	actname="Cancel"></form.button>	
+			<form.rowstatus table="role_table"></form.rowstatus>
+			<br>			
+			<br>
 			<ul wliu-tab9 color-purple>
-				<li><span><?php echo gwords("admin.detail")?></span><s></s></li>
+				<li><span><?php echo $words["admin.detail"]?></span><s></s></li>
 			</ul>
 			<div wliu-tab9-body>
 				<div class="selected" style="padding:15px;">
 					<div class="row">
-						<div class="col-md-6" style="height:auto;">
+						<div class="col-md-4" style="height:auto;">
 								<!-- login information -->
 								<div class="row">
 									<div class="col-md-4 text-nowrap">
@@ -194,7 +277,7 @@ include("head/menu_admin.php");
 								</div>
 								<!-- //login information -->
 						</div>
-						<div class="col-md-6">
+						<div class="col-md-4">
 							<!-- Admin information -->
 							<div class="row">
 								<div class="col-md-4 text-nowrap">
@@ -268,7 +351,9 @@ include("head/menu_admin.php");
 									<form.textbox table="role_table" name="postal" class="input-auto"></form.textbox>		
 								</div>
 							</div>
-							<!-- \\Admin information -->
+							<!-- //Admin information -->
+						</div>
+						<div class="col-md-4">
 							<!-- other information -->
 							<div class="row">
 								<div class="col-md-4 text-nowrap">
@@ -310,19 +395,10 @@ include("head/menu_admin.php");
 									<form.bool table="role_table" name="status"></form.bool>		
 								</div>
 							</div>
-							<!-- \\other information -->
+							<!-- //other information -->
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-4">
-							<form.button table="role_table" name="add" 	outline=1 	actname="Add"></form.button>	
-							<form.button table="role_table" name="delete" 	outline=1 	actname="Delete"></form.button>
-						</div>
-						<div class="col-md-8">
-							<form.button table="role_table" name="save"		outline=1 	actname="Save"></form.button>		
-							<form.button table="role_table" name="cancel" 	outline=1 	actname="Cancel"></form.button>
-						</div>
-					</div>
+
 					<div class="row">
 						<div class="col-md-12">
 							<form.message table="role_table"></form.message>
@@ -330,9 +406,7 @@ include("head/menu_admin.php");
 					</div>
 				</div>
 			</div>
-			<!-- \\Admin Detail -->
 		</div>
-	</div>
 </div>
 <!-- container -->
 <br>

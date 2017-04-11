@@ -2792,6 +2792,7 @@ class cVALIDATE {
 										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
 									}
 								}
+								if(!$theCol["value"])  $theCol["value"]=0;
 								break;
 
 							case "radio":
@@ -4236,4 +4237,5 @@ class cERR extends Exception {
 		return $msg;
 	}
 }
+$err = new cERR();
 ?>

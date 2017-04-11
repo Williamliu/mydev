@@ -1,5 +1,4 @@
 <?php
-$_SESSION["session_id"] = 'abc';
 $db_menu_right = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
 
 /*** Menu Right for User ***/

@@ -4,7 +4,6 @@ $langName = "wliu_lang";
 $DLang = cLANG::$support[0];
 $GLang = $_SESSION[$langName]?$_SESSION[$langName]:$DLang;
 $GLang = $_REQUEST["lang"]?$_REQUEST["lang"]:$GLang;
-setcookie($langName, $GLang, time() + 3600 * 24 * 365);
 $words = cLANG::getWords($GLang);
 /*
 echo "name: " . $langName;

@@ -88,7 +88,7 @@ $(function(){
 
                             if( ntop > 0 ) {
                                     // place to left first, then right
-                                    if( cleft <= $(window).width() ) {
+                                    if( cleft <= $(window).scrollLeft() + window.innerWidth ) {
                                             nplace = "left";
                                             $("s[arrow][left]", $(target_el)).addAttr("active");
                                             nleft = $(this).offset().left + $(this).outerWidth() + 12;
@@ -202,7 +202,7 @@ $(function(){
 
                             if( ntop > 0 ) {
                                     // place to left first, then right
-                                    if( cleft <= $(window).width() ) {
+                                    if( cleft <= $(window).scrollLeft() + window.innerWidth ) {
                                             nplace = "left";
                                             $("s[arrow][left]", $(target_el)).addAttr("active");
                                             nleft = $(this).offset().left + $(this).outerWidth() + 12;
@@ -315,7 +315,7 @@ $(function(){
 
                         if( ntop > 0 ) {
                                 // place to left first, then right
-                                if( cleft <= $(window).width() ) {
+                                if( cleft <=  $(window).scrollLeft() + window.innerWidth ) {
                                         nplace = "left";
                                         $("s[arrow][left]", $(target_el)).addAttr("active");
                                         nleft = $(this).offset().left + $(this).outerWidth() + 12;

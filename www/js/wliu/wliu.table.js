@@ -28,6 +28,7 @@ WLIU.TABLE = function( opts ) {
 	this.lists		= {};  // { gender: { loaded: 1, keys: { rowsn: -1, name: "" }, list: [{key:1, value:"Male", desc:""}, {key:2, value:"Female", desc:""}] },  	xxx: {} }
 	this.callback   = {ajaxBefore: null, ajaxAfter: null, ajaxComplete: null, ajaxError: null,  ajaxSuccess: null};
 	
+	this.xhr 		= null;
 	$.extend(this.rights, opts.rights);
 	$.extend(this.cols, opts.cols);
 	$.extend(this.navi, opts.navi);

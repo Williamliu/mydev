@@ -1,5 +1,5 @@
 <?php
-include("full_right.php");
+include("admin_right.php");
 $db_menu = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
 $menu_cols      = array();
 $menu_cols[]    = "id";

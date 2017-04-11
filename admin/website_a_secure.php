@@ -4,7 +4,7 @@
 /* this module used to control legal user. and user must has "view" right.  but not verify user other rights: save, update, delete	*/
 /*********************************************************************************/
 include_once("../include/config/config.php");
-include_once($CFG["include_path"] . "/lib/encrypt/encrypt.php");
+include_once($CFG["include_path"] . "/wliu/encrypt/encrypt.php");
 
 $cert_server = array();
 $cert_server["lwhhost"] 	= $_SERVER['HTTP_HOST'];

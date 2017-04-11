@@ -31,7 +31,7 @@ WLIU.TREE = function( opts ) {
 	this.rows 		= [];
 	this.filters 	= [];
 	this.lists		= {};  // { gender: { loaded: 1, keys: { rowsn: -1, name: "" }, list: [{key:1, value:"Male", desc:""}, {key:2, value:"Female", desc:""}] },  	xxx: {} }
-	
+	this.xhr 		= null;
 	$.extend(this.rights, opts.rights);
 	$.extend(this.cols, opts.cols);
 	$.extend(this.filters, opts.filters);
@@ -245,6 +245,7 @@ WLIU.TREE.prototype = {
 		if(_self.wait ) $("#" + _self.wait).trigger("show");
 		if( callback && callback.ajaxBefore && $.isFunction(callback.ajaxBefore) ) callback.ajaxBefore(table);
 		//console.log(table);
+		//if(_self.xhr && _self.xhr.readyState != 4 ) _self.xhr.abort();
 		$.ajax({
 			data: {
 				table:	ntable

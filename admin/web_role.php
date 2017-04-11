@@ -4,6 +4,7 @@ ini_set("display_errors", 0);
 include_once("../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
 include_once($CFG["include_path"] . "/wliu/language/language.php");
+include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
 include("head/menu_admin.php");
 ?>
 <!DOCTYPE html>
@@ -108,7 +109,7 @@ include("head/menu_admin.php");
 				lang:	 	GLang,
 				scope: 		"mytab",
 				url:   		"ajax/web_role_action.php",
-				wait:   	"ajax_wait",
+				wait:   	"role_ajax_wait",
 				taberror:	"table_error",
 				tooltip:	"tool_tip",
 				autotip: 	"auto_tips",
@@ -124,7 +125,7 @@ include("head/menu_admin.php");
 
 
 			var col101 = new WLIU.COL({key:1, table:"p",	coltype:"hidden", 		name:"id", 			colname:"Menu ID", coldesc:"Menu's ID"});
-		   	var col102 = new WLIU.COL({key:0, table:"p", 	coltype:"text", 		name:"title", 		trans:1,	colname:"Title(EN)",coldesc:"Title English",		notnull:1, tooltip:"tool_tip"});
+		   	var col102 = new WLIU.COL({key:0, table:"p", 	coltype:"text", 		name:"title", 		trans:1,	colname:"Title(EN)",coldesc:"Title English",	notnull:1, tooltip:"tool_tip"});
 		   	var col103 = new WLIU.COL({key:0, table:"p", 	coltype:"custom", 		name:"aaa", 		colname:"&nbsp;&nbsp;&nbsp;"});
 		   	var col104 = new WLIU.COL({key:0, table:"p", 	coltype:"checkbox1", 	name:"right", 		colname:"Right",    css:"input-medium", list:"rightCategory",  targetid:"rightDiag1",	notnull:0});
 
@@ -157,7 +158,7 @@ include("head/menu_admin.php");
 				refid:      0,
 				title: 		"Menus",
 				url:   		"ajax/web_role_right_action.php",
-				wait:   	"ajax_wait",
+				wait:   	"tree_ajax_wait",
 				autotip: 	"myauto",
 				taberror:	"taberror",
 				tooltip: 	"",
@@ -197,90 +198,90 @@ include("head/menu_admin.php");
 	<br>
 	<div class="row">
 			<div class="col-md-4">
-				<table.list table="role_table" title="Website Roles" searchcol="title_en,title_cn" displaycol="title_en,detail_en,title_cn,detail_cn,level,status,created_time"></table.list>
+				<table.list table="role_table" title="Website Roles" searchcol="title_en,title_cn" displaycol="title_en,detail_en,title_cn,detail_cn,level,status,orderno,created_time"></table.list>
 			</div>
 			<div class="col-md-8">
-
-			<ul wliu-tab9 color-purple>
-				<li><span>Role Detail</span><s></s></li>
-			</ul>
-			<div wliu-tab9-body>
-				<div class="selected" style="padding:15px;">
-					<div class="row">
-						<div class="col-md-2 text-nowrap">
-							<form.label table="role_table" name="title_en"></form.label>
+				<ul wliu-tab9 color-purple>
+					<li><span>Role Detail</span><s></s></li>
+				</ul>
+				<div wliu-tab9-body>
+					<div class="selected" style="padding:15px;">
+						<div class="row">
+							<div class="col-md-2 text-nowrap">
+								<form.label table="role_table" name="title_en"></form.label>
+							</div>
+							<div class="col-md-4">
+								<form.textbox table="role_table" name="title_en" class="input-auto"></form.textbox>
+							</div>
+							<div class="col-md-2 text-nowrap">
+								<form.label table="role_table" name="title_cn"></form.label>
+							</div>
+							<div class="col-md-4">
+								<form.textbox table="role_table" name="title_cn" class="input-auto"></form.textbox>
+							</div>
 						</div>
-						<div class="col-md-4">
-							<form.textbox table="role_table" name="title_en" class="input-auto"></form.textbox>
+						<div class="row">
+							<div class="col-md-2 text-nowrap">
+								<form.label table="role_table" name="detail_en"></form.label>
+							</div>
+							<div class="col-md-4">
+								<form.textarea table="role_table" name="detail_en" class="input-auto"></form.textarea>
+							</div>
+							<div class="col-md-2 text-nowrap">
+								<form.label table="role_table" name="detail_cn"></form.label>
+							</div>
+							<div class="col-md-4">
+								<form.textarea table="role_table" name="detail_cn" class="input-auto"></form.textarea>
+							</div>
 						</div>
-						<div class="col-md-2 text-nowrap">
-							<form.label table="role_table" name="title_cn"></form.label>
+						<div class="row">
+							<div class="col-md-2 text-nowrap">
+								<form.label table="role_table" name="level"></form.label>
+							</div>
+							<div class="col-md-4">
+								<form.select table="role_table" name="level" class="input-auto"></form.select>
+							</div>
+							<div class="col-md-1 text-nowrap">
+								<form.label table="role_table" name="status"></form.label>
+							</div>
+							<div class="col-md-2">
+								<form.bool table="role_table" name="status"></form.bool>
+							</div>
+							<div class="col-md-1 text-nowrap">
+								<form.label table="role_table" name="orderno"></form.label>
+							</div>
+							<div class="col-md-2">
+								<form.textbox table="role_table" name="orderno" class="input-tiny"></form.textbox>
+							</div>
 						</div>
-						<div class="col-md-4">
-							<form.textbox table="role_table" name="title_cn" class="input-auto"></form.textbox>
+						<div class="row">
+							<div class="col-md-4">
+								<form.button table="role_table" name="add" 	outline=1 	actname="Add"></form.button>	
+								<form.button table="role_table" name="delete" 	outline=1 	actname="Delete"></form.button>
+							</div>
+							<div class="col-md-8">
+								<form.button table="role_table" name="save"		outline=1 	actname="Save"></form.button>		
+								<form.button table="role_table" name="cancel" 	outline=1 	actname="Cancel"></form.button>
+							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-2 text-nowrap">
-							<form.label table="role_table" name="detail_en"></form.label>
-						</div>
-						<div class="col-md-4">
-							<form.textarea table="role_table" name="detail_en" class="input-auto"></form.textarea>
-						</div>
-						<div class="col-md-2 text-nowrap">
-							<form.label table="role_table" name="detail_cn"></form.label>
-						</div>
-						<div class="col-md-4">
-							<form.textarea table="role_table" name="detail_cn" class="input-auto"></form.textarea>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-2 text-nowrap">
-							<form.label table="role_table" name="level"></form.label>
-						</div>
-						<div class="col-md-4">
-							<form.select table="role_table" name="level" class="input-auto"></form.select>
-						</div>
-						<div class="col-md-1 text-nowrap">
-							<form.label table="role_table" name="status"></form.label>
-						</div>
-						<div class="col-md-2">
-							<form.bool table="role_table" name="status"></form.bool>
-						</div>
-						<div class="col-md-1 text-nowrap">
-							<form.label table="role_table" name="orderno"></form.label>
-						</div>
-						<div class="col-md-2">
-							<form.textbox table="role_table" name="orderno" class="input-tiny"></form.textbox>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-4 text-center">
-							<form.button table="role_table" name="add" 	outline=1 	actname="Add"></form.button>	
-						</div>
-						<div class="col-md-8">
-							<form.button table="role_table" name="save"		outline=1 	actname="Save"></form.button>		
-							<form.button table="role_table" name="cancel" 	outline=1 	actname="Cancel"></form.button>
-							<form.button table="role_table" name="delete" 	outline=1 	actname="Delete"></form.button>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<form.message table="role_table"></form.message>
+						<div class="row">
+							<div class="col-md-12">
+								<form.message table="role_table"></form.message>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<ul wliu-tab9 color-purple>
-				<li><span>Role Menu Rights</span><s></s></li>
-			</ul>
-			<div wliu-tab9-body>
-				<div class="selected" style="padding:15px;">
-					<div class="row">
-						<div class="col-md-12">
-							Menu Rights:<br>
-							<table.tree table="menu_tree"></table.tree>
+				<ul wliu-tab9 color-purple>
+					<li><span>Role Menu Rights</span><s></s></li>
+				</ul>
+				<div wliu-tab9-body>
+					<div class="selected" style="padding:15px;">
+						<div class="row">
+							<div class="col-md-12">
+								Menu Rights:<br>
+								<table.tree table="menu_tree"></table.tree>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -289,12 +290,12 @@ include("head/menu_admin.php");
 </div>
 <!-- container -->
 <br>
-
 <tree.checkdiag1 table="menu_tree" targetid="rightDiag1" name="rightCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></tree.checkdiag1>
 
 <div id="table_error" wliu-diag movable maskable></div>
 <div id="auto_tips" wliu-tips></div>
-<div id="ajax_wait" wliu-load></div>
+<div id="role_ajax_wait" maskable wliu-load></div>
+<div id="tree_ajax_wait" maskable wliu-load></div>
 <div id="tool_tip" wliu-popup></div>
 
 

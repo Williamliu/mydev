@@ -13,7 +13,7 @@ wliu_table.directive("table.list", function () {
 
                     '<div class="card z-depth-1" style="min-width:260px;">',
                         '<div class="card-header info-color text-center white-text">',
-                            '{{title}}',
+                            '<strong>{{title}}</strong>',
                         '</div>',
                         '<div class="card-header text-left" style="padding:0px; background-color:#ffffff;">',
                             '<div style="padding:2px 5px;">',

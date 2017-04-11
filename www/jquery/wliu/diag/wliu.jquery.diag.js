@@ -122,13 +122,13 @@ $.fn.extend({
 
                         //if out of range ,  still need to relocation
                         if( 
-                            $(el).offset().top + $(el).outerHeight() >= $(window).scrollTop() + $(window).height() || 
-                            $(el).offset().left + $(el).outerWidth() >= $(window).scrollLeft() + $(window).width() || 
+                            $(el).offset().top + $(el).outerHeight() >= $(window).scrollTop() + window.innerHeight || 
+                            $(el).offset().left + $(el).outerWidth() >= $(window).scrollLeft() + window.innerWidth || 
                             $(el).data("parkTop") < $(window).scrollTop() ||
                             $(el).data("parkLeft") < $(window).scrollLeft()
                         ) {
-                            var el_top  = $(window).scrollTop() + ($(window).height() - 20 - $(el).outerHeight()) / 2;  // 20 = scollbar
-                            var el_left = $(window).scrollLeft() + ($(window).width() - 20 - $(el).outerWidth()) / 2;
+                            var el_top  = $(window).scrollTop() + (window.innerHeight - 20 - $(el).outerHeight()) / 2;  // 20 = scollbar
+                            var el_left = $(window).scrollLeft() + (window.innerWidth - 20 - $(el).outerWidth()) / 2;
 
                             if( el_top < 0 ) el_top = 5;
                             if( el_left < 0 ) el_left = 5;
@@ -212,13 +212,13 @@ $.fn.extend({
                     
                     //if out of range ,  still need to relocation
                     if( 
-                        $(el).data("parkTop") + $(el).outerHeight() >= $(window).scrollTop() + $(window).height() || 
-                        $(el).data("parkLeft") + $(el).outerWidth() >= $(window).scrollLeft() + $(window).width() ||
+                        $(el).data("parkTop") + $(el).outerHeight() >= $(window).scrollTop() + window.innerHeight || 
+                        $(el).data("parkLeft") + $(el).outerWidth() >= $(window).scrollLeft() + window.innerWidth ||
                         $(el).data("parkTop") < $(window).scrollTop() ||
                         $(el).data("parkLeft") < $(window).scrollLeft()
                     ) {
-                        var el_top  = $(window).scrollTop() + ($(window).height() - 20 - $(el).outerHeight()) / 2;  // 20 = scollbar
-                        var el_left = $(window).scrollLeft() + ($(window).width() - 20 - $(el).outerWidth() ) / 2;
+                        var el_top  = $(window).scrollTop() + (window.innerHeight - 20 - $(el).outerHeight()) / 2;  // 20 = scollbar
+                        var el_left = $(window).scrollLeft() + (window.innerWidth - 20 - $(el).outerWidth() ) / 2;
 
                         if( el_top < 0 ) el_top = 5;
                         if( el_left < 0 ) el_left = 5;
@@ -243,15 +243,15 @@ $.fn.extend({
                             top:    el_top
                         });
                     } else {
-                        var el_top  = $(window).scrollTop() + ($(window).height() - 20 - $(el).outerHeight()) / 2;  // 20 = scollbar
-                        var el_left = $(window).scrollLeft() + ($(window).width() - 20 - $(el).outerWidth()) / 2;
+                        // important:  window.innerHeight = $(document).height()  ,   window.innerHeight is browser viewport height include scrollbar 20px
+                        var el_top  = $(window).scrollTop() + (window.innerHeight - 20 - $(el).outerHeight()) / 2;  // 20 = scollbar
+                        var el_left = $(window).scrollLeft() + (window.innerWidth - 20 - $(el).outerWidth()) / 2;
                         
                         if( el_top < 0 ) el_top = 5;
                         if( el_left < 0 ) el_left = 5;
 
                         if(def_settings.top > 0) el_top = def_settings.top;
                         if(def_settings.left > 0) el_left = def_settings.left;
-
                         $(this).css({
                             left:   el_left,
                             top:    el_top
@@ -262,7 +262,6 @@ $.fn.extend({
                // end of re-position
                
                if( !$(el).is(":visible") ) eval( $(el).attr("before") );
-               
                $(el).fadeIn(( $(el).hasAttr("fade")?"slow":0), function(){
                    if( $(this).hasAttr("maskable") ) {
                         $(mask_ifrm).show();
@@ -302,13 +301,13 @@ $(function(){
                 if( $(this).hasAttr("park") ) {
                     //if out of range ,  still need to relocation
                     if( 
-                        $(this).data("parkTop") + $(this).outerHeight() >= $(window).scrollTop() + $(window).height() || 
-                        $(this).data("parkLeft") + $(this).outerWidth() >= $(window).scrollLeft() + $(window).width() ||
+                        $(this).data("parkTop") + $(this).outerHeight() >= $(window).scrollTop() + window.innerHeight || 
+                        $(this).data("parkLeft") + $(this).outerWidth() >= $(window).scrollLeft() + window.innerWidth ||
                         $(el).data("parkTop") < $(window).scrollTop() ||
                         $(el).data("parkLeft") < $(window).scrollLeft()
                     ) {
-                        var el_top  = $(window).scrollTop() + ( $(window).height() - 20 - $(this).outerHeight() ) / 2;  // 20 = scollbar
-                        var el_left = $(window).scrollLeft() + ( $(window).width() - 20 - $(this).outerWidth() ) / 2;
+                        var el_top  = $(window).scrollTop() + ( window.innerHeight - 20 - $(this).outerHeight() ) / 2;  // 20 = scollbar
+                        var el_left = $(window).scrollLeft() + ( window.innerWidth - 20 - $(this).outerWidth() ) / 2;
 
                         if( el_top < 0 ) el_top = 5;
                         if( el_left < 0 ) el_left = 5;
@@ -333,8 +332,8 @@ $(function(){
                             top:    el_top
                         });
                     } else {
-                        var el_top  = $(window).scrollTop() + ($(window).height() - 20 - $(this).outerHeight()) / 2;  // 20 = scollbar
-                        var el_left = $(window).scrollLeft() + ($(window).width() - 20 - $(this).outerWidth()) / 2;
+                        var el_top  = $(window).scrollTop() + (window.innerHeight - 20 - $(this).outerHeight()) / 2;  // 20 = scollbar
+                        var el_left = $(window).scrollLeft() + (window.innerWidth - 20 - $(this).outerWidth()) / 2;
                         
                         if( el_top < 0 ) el_top = 5;
                         if( el_left < 0 ) el_left = 5;

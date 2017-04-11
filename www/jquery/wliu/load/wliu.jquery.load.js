@@ -37,9 +37,11 @@ $.fn.extend({
 			});
 			 $(el).unbind("hide").bind("hide", function (evt, msg) {
 				 $(el).hide();
-				 if( $(el).hasAttr("maskable") ) {
-					 $(mask_div).hide();
-					 $(mask_ifrm).hide();
+				 if( $("div[wliu-load][maskable]:visible").length<=0) {
+					if( $(el).hasAttr("maskable") ) {
+						$(mask_div).hide();
+						$(mask_ifrm).hide();
+					}
 				 }
 			});
 		});

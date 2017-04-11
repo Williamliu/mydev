@@ -1416,7 +1416,7 @@ WLIU.TABLEACTION.prototype = {
 		if(_self.wait ) $("#" + _self.wait).trigger("show");
 		_self.navi.loading = 1;
 		if(callback && callback.ajaxBefore && $.isFunction(callback.ajaxBefore) ) callback.ajaxBefore(ntable);
-		
+		//if(theTable.xhr && theTable.xhr.readyState != 4 ) theTable.xhr.abort();
 		$.ajax({
 			data: {
 				table:	ntable

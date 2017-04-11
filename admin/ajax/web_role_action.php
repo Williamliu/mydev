@@ -1,13 +1,14 @@
 <?php 
-session_start();
-define("DEBUG", 1);
-ini_set("display_errors", 0);
-include_once("../../include/config/config.php");
-include_once($CFG["include_path"] . "/wliu/database/database.php");
-include_once($CFG["include_path"] . "/wliu/language/language_ajax.php");
-include_once("../head/admin_right.php");
-$response = array();
 try {
+	session_start();
+	define("DEBUG", 1);
+	ini_set("display_errors", 0);
+	include_once("../../include/config/config.php");
+	include_once($CFG["include_path"] . "/wliu/database/database.php");
+	include_once($CFG["include_path"] . "/wliu/language/language_ajax.php");
+	include_once($CFG["include_path"] . "/wliu/secure/secure_server.php");
+	include_once("../head/admin_right.php");
+	$response = array();
 
 	/*** common secure : prevent url hack from hack tool ***/
 	$db = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
