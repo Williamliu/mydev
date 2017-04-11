@@ -63,6 +63,7 @@ try {
 	echo json_encode($response);
 	
 } catch(Exception $e ) {
+	$response 									= array();
 	$table 										= $_REQUEST["table"];
 	$table["navi"]["loading"]       			= 0;
 	$table["error"]["errorCode"] 				= $e->getCode();
