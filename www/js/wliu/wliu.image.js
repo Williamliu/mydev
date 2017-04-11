@@ -296,6 +296,17 @@ WLIU.IMAGELIST.prototype = {
 				}
 				
 				$(_self.errorShow).trigger("errorshow");
+
+				//Sesssion Expiry
+				if(req.errorCode==990) {
+					if($("#" + theTable.autotip).length>0) {
+						$("#" + theTable.autotip).trigger("auto", [req.errorMessage, "warning", function(){ window.location.href = req.errorField; }]);
+					} else {
+						alert(req.errorMessage);
+						window.location.href = req.errorField;
+					}
+				} 
+				
 			},
 			type: "post",
 			url: _self.url

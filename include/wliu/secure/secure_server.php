@@ -11,8 +11,8 @@ $cert_server_json = json_encode($cert_server);
 $cert_server_encrypt 	= LWHENCRYPT::encrypt($cert_server_json);
 $cert_client_encrypt   = $_SESSION[$_SERVER['HTTP_HOST'] . ".securetoken"];
 if($cert_server_encrypt!=$cert_client_encrypt) {
-    $err->set(990, gwords("website.secure.failed"));
-    throw $err;
+    $gErr->set(980, gwords("website.secure.failed"));
+    throw $gErr;
 } 
 /*
 echo "<pre>";

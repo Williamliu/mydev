@@ -87,7 +87,7 @@ $.fn.extend({
 				$(el).hide();
 			});
 
-			$(el).unbind("auto").bind("auto", function (evt, msg, type) {
+			$(el).unbind("auto").bind("auto", function (evt, msg, type , callback) {
 				$(el).css({"left":"50%", "margin-left":"-100px"});
 				if( $(el).hasAttr("center") ) 	$(el).css({"left":"50%", "margin-left":"-100px"});
 				if( $(el).hasAttr("left") ) 	$(el).css({"left":"0px", "margin-left": parseInt(def_settings.offsetww) + "px"});
@@ -106,9 +106,9 @@ $.fn.extend({
 				if( $(el).hasAttr("warning") ) 	$(el).removeAttr("success warning danger").addAttr("warning");			
 				if( $(el).hasAttr("danger") ) 	$(el).removeAttr("success warning danger").addAttr("danger");			
 				if(msg!=undefined)		
-					$(el).stop(true, true).html(msg).fadeIn(10).delay(2000).fadeOut(1000);
+					$(el).stop(true, true).html(msg).fadeIn(10).delay(2000).fadeOut(1000, callback);
 				else 
-					$(el).stop(true, true).fadeIn(10).delay(2000).fadeOut(1000);
+					$(el).stop(true, true).fadeIn(10).delay(2000).fadeOut(1000, callback);
 			});
 
 		});

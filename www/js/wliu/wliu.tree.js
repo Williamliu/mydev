@@ -282,6 +282,17 @@ WLIU.TREE.prototype = {
 					if(callback && callback.ajaxError && $.isFunction(callback.ajaxError) ) callback.ajaxError(req.table);
 				}
 				$("#" + _self.taberror).trigger("ishow");
+
+				//Sesssion Expiry
+				if(req.errorCode==990) {
+					if($("#" + theTable.autotip).length>0) {
+						$("#" + theTable.autotip).trigger("auto", [req.errorMessage, "warning", function(){ window.location.href = req.errorField; }]);
+					} else {
+						alert(req.errorMessage);
+						window.location.href = req.errorField;
+					}
+				} 
+				
 			},
 			type: "post",
 			url: _self.url

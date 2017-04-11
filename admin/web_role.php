@@ -198,11 +198,11 @@ include("head/menu_admin.php");
 	<br>
 	<div class="row">
 			<div class="col-md-4">
-				<table.list table="role_table" title="Website Roles" searchcol="title_en,title_cn" displaycol="title_en,detail_en,title_cn,detail_cn,level,status,orderno,created_time"></table.list>
+				<table.list table="role_table" title="<?php echo gwords("website.role")?>" searchcol="title_en,title_cn" displaycol="title_en,detail_en,title_cn,detail_cn,level,status,orderno,created_time"></table.list>
 			</div>
 			<div class="col-md-8">
 				<ul wliu-tab9 color-purple>
-					<li><span>Role Detail</span><s></s></li>
+					<li><span><?php echo gwords("role.detail")?></span><s></s></li>
 				</ul>
 				<div wliu-tab9-body>
 					<div class="selected" style="padding:15px;">

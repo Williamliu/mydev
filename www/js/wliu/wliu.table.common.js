@@ -1428,7 +1428,6 @@ WLIU.TABLEACTION.prototype = {
 			},
 			success: function(req, tStatus) {
 				if(_self.wait ) $("#" + _self.wait).trigger("hide");
-
 				if(callback && callback.ajaxAfter && $.isFunction(callback.ajaxAfter) ) callback.ajaxAfter(req.table);
 
 				switch(req.table.action) {
@@ -1456,6 +1455,16 @@ WLIU.TABLEACTION.prototype = {
 				if(!_self.sc.$$phase) {
 					_self.sc.$apply();
 		 		}
+				
+				//Sesssion Expiry
+				if(req.errorCode==990) {
+					if($("#" + theTable.autotip).length>0) {
+						$("#" + theTable.autotip).trigger("auto", [req.errorMessage, "warning", function(){ window.location.href = req.errorField; }]);
+					} else {
+						alert(req.errorMessage);
+						window.location.href = req.errorField;
+					}
+				} 
 
 			},
 			type: "post",

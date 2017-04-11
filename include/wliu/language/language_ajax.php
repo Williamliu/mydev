@@ -16,6 +16,11 @@ cLANG::replace("Hello {{good}} or {{bad}}", array("good"=>"Well", "bad"=>"Worst"
 */
 function gwords($keyword) {
     global $words;
-    return $words[$keyword]?$words[$keyword]:ucwords(strtolower($keyword));
+    if($words[$keyword]) {
+        return $words[$keyword];
+    } else {
+        $keyword = str_replace(".", " ", $keyword);
+        return ucwords(strtolower($keyword));
+    }
 }
 ?>

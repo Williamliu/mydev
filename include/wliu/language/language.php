@@ -20,7 +20,12 @@ cLANG::replace("Hello {{good}} or {{bad}}", array("good"=>"Well", "bad"=>"Worst"
 */
 function gwords($keyword) {
     global $words;
-    return $words[$keyword]?$words[$keyword]:ucwords(strtolower($keyword));
+    if($words[$keyword]) {
+        return $words[$keyword];
+    } else {
+        $keyword = str_replace(".", " ", $keyword);
+        return ucwords(strtolower($keyword));
+    }
 }
 ?>
 <script language="javascript" type="text/javascript">
@@ -28,6 +33,11 @@ function gwords($keyword) {
     var GLang = "<?php echo $GLang; ?>";
     //console.log(words);
     function gwords(keyword) {
-        return words[keyword]?words[keyword]:(""+keyword).capital();
+        if(words[keyword]) {
+            return words[keyword];
+        } else {
+            keyword = keyword.replaceAll('[.]', " ");
+            return (""+keyword).capital();
+        }
     }
 </script>

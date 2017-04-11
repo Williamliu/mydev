@@ -4237,5 +4237,5 @@ class cERR extends Exception {
 		return $msg;
 	}
 }
-$err = new cERR();
+$gErr = new cERR();
 ?>

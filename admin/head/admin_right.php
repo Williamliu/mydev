@@ -1,7 +1,5 @@
 <?php
-$_SESSION[$_SERVER['HTTP_HOST'] . ".session_id"] = 'abc';
 $db_menu_right = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
-
 /*** Menu Right for User ***/
 $user_right         = array(); 
 $query_menu_right   = "
@@ -19,7 +17,7 @@ INNER JOIN web_admin_session e ON (a.id = e.admin_id)
 WHERE 
 a.deleted=0 AND a.status=1 AND 
 d.deleted=0 AND d.status=1 AND 
-e.session_id = '" . $db_menu_right->quote($_SESSION[$_SERVER['HTTP_HOST'] . ".session_id"]) . "' AND  e.status = 1 AND e.deleted = 0
+e.session_id = '" . $db_menu_right->quote($_SESSION[$_SERVER['HTTP_HOST'] . ".user.session"]) . "' AND  e.status = 1 AND e.deleted = 0
 ";
 $result_menu_right  = $db_menu_right->query($query_menu_right);
 while( $rows_menu_right = $db_menu_right->fetch($result_menu_right) ) {
@@ -41,7 +39,7 @@ INNER JOIN web_admin_session e ON (a.id = e.admin_id)
 WHERE 
 a.deleted=0 AND a.status=1 AND 
 d.deleted=0 AND d.status=1 AND 
-e.session_id = '" . $db_menu_right->quote($_SESSION[$_SERVER['HTTP_HOST'] . ".session_id"]) . "' AND  e.status = 1 AND e.deleted = 0
+e.session_id = '" . $db_menu_right->quote($_SESSION[$_SERVER['HTTP_HOST'] . ".user.session"]) . "' AND  e.status = 1 AND e.deleted = 0
 ";
 $result_menu_right  = $db_menu_right->query($query_menu_right);
 while( $rows_menu_right = $db_menu_right->fetch($result_menu_right) ) {
@@ -51,9 +49,11 @@ foreach($user_right as $menuKey=>$theRight) {
     $user_right[$menuKey]["cancel"] = 1;
     $user_right[$menuKey]["reset"] = 1;
 }
-//echo "<pre>";
-//print_r($user_right);
-//echo "</pre>";
+/*
+echo "<pre>";
+print_r($user_right);
+echo "</pre>";
+*/
 //////////////////////////////////////////////////////////////////////////////////////////
 $db_menu_right->close();
 ?>
