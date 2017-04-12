@@ -16,7 +16,6 @@ $.fn.extend({
             movable:    false,
             border:     false,
             fade:       false,
-            
             zIndex: 	8000
         };
         $.extend(def_settings, opts);
@@ -192,7 +191,7 @@ $.fn.extend({
                 });
             });
 
-            $(el).unbind("show").bind("show", function (evt) {
+            $(el).unbind("show").bind("show", function (evt, callback) {
                 var def_settings = $(el).data("default_settings");
     			if( def_settings.before ) if( $.isFunction(def_settings.before) ) def_settings.before(el);
                 

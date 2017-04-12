@@ -1458,8 +1458,8 @@ WLIU.TABLEACTION.prototype = {
 				
 				//Sesssion Expiry
 				if(req.errorCode==990) {
-					if($("#" + theTable.autotip).length>0) {
-						$("#" + theTable.autotip).trigger("auto", [req.errorMessage, "warning", function(){ window.location.href = req.errorField; }]);
+					if($("#" + _self.autotip).length>0) {
+						$("#" + _self.autotip).trigger("auto", [req.errorMessage, "warning", function(){ window.location.href = req.errorField; }]);
 					} else {
 						alert(req.errorMessage);
 						window.location.href = req.errorField;
