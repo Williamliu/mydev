@@ -8,33 +8,38 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-		<meta charset="utf8" />
-		<!-- JQuery3.1.1 -->
-		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery-3.1.1.min.js"></script>
-		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery.cookie.1.4.1.js"></script>
-		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-		<link href='<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
-		<!-- //JQuery -->
+    <meta charset="utf8" />
+    <!-- JQuery3.1.1 -->
+    <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery.cookie.1.4.1.js"></script>
+    <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <link href='<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
+    <!-- //JQuery -->
 
-	    <!-- Font Awesome & BS & MDB -->
-		<link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
-		<link 	href='<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/css/bootstrap.min.css' type='text/css' rel='stylesheet' />
-		<link href='<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/css/mdb.css' type='text/css' rel='stylesheet' />
-		
-		<!-- Bootstrap3.3 -->
-		<script src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/tether.min.js" type="text/javascript"></script>
-		<script src="<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/js/bootstrap.min.js" type="text/javascript"></script>    
-		<!-- //Bootstrap -->
-		
-		<!-- AngularJS 1.3.15 -->
-		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular.js" type="text/javascript"></script>
-		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular-cookies.js" type="text/javascript"></script>
-		<script src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular-sanitize.min.js" type="text/javascript"></script>
-		<!-- //AngularJS -->
+    <!-- Font Awesome & BS & MDB -->
+    <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
+    <link 	href='<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/css/bootstrap.min.css' type='text/css' rel='stylesheet' />
+    <link href='<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/css/mdb.css' type='text/css' rel='stylesheet' />
+    
+    <!-- Bootstrap3.3 -->
+    <script src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/tether.min.js" type="text/javascript"></script>
+    <script src="<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/js/bootstrap.min.js" type="text/javascript"></script>    
+    <!-- //Bootstrap -->
+    
+    <!-- AngularJS 1.3.15 -->
+    <script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular.js" type="text/javascript"></script>
+    <script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular-cookies.js" type="text/javascript"></script>
+    <script src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular-sanitize.min.js" type="text/javascript"></script>
+    <!-- //AngularJS -->
 
-		<!-- wliu components -->
-		<script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.common.js" type="text/javascript"></script>
-		<!-- //wliu components -->
+    <!-- wliu components -->
+    <script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.common.js" type="text/javascript"></script>
+    <!-- //wliu components -->
+    <script>
+    $(function(){
+        $('.mdb-select').material_select();
+    });
+    </script>
 </head>
 <body>
 <!-- container -->
@@ -56,10 +61,10 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 
             <!-- Image-->
             <div class="card-up" style="height:100px;">
-                <img src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/4-col/img%20%2859%29.jpg" class="img-fluid">
+                <img src="<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.background/wliu-cloud-1.jpg" class="img-fluid">
             </div>
             <!--Avatar-->
-            <div class="avatar"><img src="https://mdbootstrap.com/img/Photos/Avatars/img%20%289%29.jpg" class="rounded-circle img-responsive">
+            <div class="avatar"><img src="<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.common/login-user.png" class="rounded-circle img-responsive">
             </div>
             <!--Content-->
             <div class="card-block">
@@ -99,7 +104,7 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 
             <!-- Image-->
             <div class="card-up" style="height:100px;">
-                <img src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/4-col/img%20%2859%29.jpg" class="img-fluid">
+                <img src="<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.background/wliu-flower-1.jpg" class="img-fluid">
             </div>
 
             <div class="card-block">
@@ -161,23 +166,14 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
                         </div>
                     </div>
                     <div class="col-md-6 col-xs-6 text-left">
-                        Country: <br>
-                            <form class="form-inline" style="margin-top:15px;">
-                                <fieldset class="form-group">
-                                    <input name="country" type="radio" id="us" checked="checked"> 
-                                    <label for="us">United State</label>
-                                </fieldset>
-
-                                <fieldset class="form-group">
-                                    <input name="country" type="radio" id="cn"> 
-                                    <label for="cn">China</label>
-                                </fieldset>
-
-                                <fieldset class="form-group">
-                                    <input name="country" type="radio" id="ca"> 
-                                    <label for="ca">Canada</label>
-                                </fieldset>
-                            </form>
+                            <div style="margin-top:5px;">
+                                <select class="mdb-select">
+                                    <option value="" selected>Choose your live in country</option>
+                                    <option value="1">United State</option>
+                                    <option value="2">China</option>
+                                    <option value="3">Canada</option>
+                                </select>
+                            </div>
                     </div>
                 </div>
                 <div class="text-center">
