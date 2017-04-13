@@ -60,7 +60,7 @@ $result_url         = $db_menu_right->query("SELECT menu_key FROM web_menu2 WHER
 $row_url            = $db_menu_right->fetch($result_url);
 $current_menu_key   = $row_url["menu_key"]?$row_url["menu_key"]:$current_menu_key; 
 
-$web_user["right"]  = $user_right[$current_menu_key];
+$web_user["rights"]  = $user_right[$current_menu_key];
 /*
 echo "$current_menu_key<pre>";
 print_r($web_user);

@@ -2868,6 +2868,7 @@ class cVALIDATE {
 
 			foreach( $table["cols"] as &$theCol ) {
 				$colName 	= $theCol["name"];
+				$key 		= $theCol["key"];
 				$dispName   = $theCol["colname"];
 				$colType 	= $theCol["coltype"];
 				$dataType 	= strtoupper($theCol["datatype"]);
@@ -2881,212 +2882,236 @@ class cVALIDATE {
 				$tmpIdx 	= cARRAY::arrayIndex($table["data"], array("name"=>$colName));
 				$colVal 	= $table["data"][$tmpIdx]["value"];
 				/**************************************************************/
-				switch( $colType ) {
-					case "passpair":
-						$tmp_pass 		= trim($colVal["password"])?trim($colVal["password"]):""; 
-						$tmp_confirm 	= trim($colVal["confirm"])?trim($colVal["confirm"]):""; 
-						if( $tmp_pass != $tmp_confirm ) {
-							$table["success"] 				= 0;
-							$table["error"]["errorCode"] 	= 1;
-							$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-							$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' doesn't match confirm one.";  
-						}
-						$colVal = $tmp_pass;
-					case "hidden":
-					case "textbox":
-					case "textarea":
-					case "password":
-						if( $dataType == "NUMBER" ) {
-							if( is_numeric($colVal) ) {
-								$colVal = is_numeric($colVal)?$colVal:0;
-							} else {
-								$table["success"] 				= 0;
-								$table["error"]["errorCode"] 	= 1;
-								$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-								$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is invalid NUMBER type.";  
-							}
-						} 
-
-						if(!$colVal && $dataType != "NUMBER") $colVal="";
-						
-
-						if($notNull) {
+				switch($table["rowstate"]) {				
+					case 1:
+						if($key) {
 							if($colVal=="") {
-								$table["success"] 				= 0;
-								$table["error"]["errorCode"] 	= 1;
+								$table["success"] 								= 0;
+								$table["error"]["errorCode"] 					= 1;
 								$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-								$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
+								$table["data"][$tmpIdx]["errorMessage"] 		= "Key '" . $dispName . "' is null value.";  
 							}
 						}
-						
-						$slen = mb_strlen($colVal);
-						if( $theCol["errorCode"]<=0 ) {
-							if( $slen>0 && $minLength>0 && $slen<$minLength ) {
-								$table["success"] 				= 0;
-								$table["error"]["errorCode"] 	= 1;
-								$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-								$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "'($slen chars) less than minimum chars($minLength chars).";  
-							}
-							if( $slen>0 && $maxLength>0 && $slen>$maxLength ) {
-								$table["success"] 				= 0;
-								$table["error"]["errorCode"] 	= 1;
-								$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-								$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "'($slen chars) exceed maximum chars($maxLength chars).";  
-							}
-						}
-
-						if( $theCol["errorCode"]<=0 ) {
-							if( $slen>0 && !preg_match( cVALIDATE::$DATATYPE[$dataType], $colVal) ) {
-								$table["success"] 				= 0;
-								$table["error"]["errorCode"] 	= 1;
-								$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-								$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is invalid ". ucwords($dataType) . " format.";  
-								//print_r($theCol);
-							}
-						}
-
-						if( $theCol["errorCode"]<=0 ) {
-							if( $dataType == "NUMBER" ) {
-								$min 	= is_numeric($theCol["min"])?floatval($theCol["min"]):0;
-								$max 	= is_numeric($theCol["max"])?floatval($theCol["max"]):0;
-								$fval 	= is_numeric($colVal)?floatval($colVal):0;
-								if( $colVal!=0 && $min!=0 && $fval<$min ) {
+					case 2:					
+						switch( $colType ) {
+							case "passpair":
+								$tmp_pass 		= trim($colVal["password"])?trim($colVal["password"]):""; 
+								$tmp_confirm 	= trim($colVal["confirm"])?trim($colVal["confirm"]):""; 
+								if( $tmp_pass != $tmp_confirm ) {
 									$table["success"] 				= 0;
 									$table["error"]["errorCode"] 	= 1;
 									$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-									$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' value " .  $colVal . " less than minimum value $min";  
+									$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' doesn't match confirm one.";  
 								}
-								if( $colVal!=0 && $max!=0 && $fval>$max ) {
-									$table["success"] 				= 0;
-									$table["error"]["errorCode"] 	= 1;
-									$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-									$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' value " .  $colVal . " large than maximum value $max";  
-								}
-							}
-						}
+								$colVal = $tmp_pass;
+							case "hidden":
+							case "textbox":
+							case "textarea":
+							case "password":
+								if( $dataType == "NUMBER" ) {
+									if( is_numeric($colVal) ) {
+										$colVal = is_numeric($colVal)?$colVal:0;
+									} else {
+										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
+										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is invalid NUMBER type.";  
+									}
+								} 
 
+								if(!$colVal && $dataType != "NUMBER") $colVal="";
+								
+
+								if($notNull) {
+									if($colVal=="") {
+										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
+										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
+									}
+								}
+								
+								$slen = mb_strlen($colVal);
+								if( $theCol["errorCode"]<=0 ) {
+									if( $slen>0 && $minLength>0 && $slen<$minLength ) {
+										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
+										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "'($slen chars) less than minimum chars($minLength chars).";  
+									}
+									if( $slen>0 && $maxLength>0 && $slen>$maxLength ) {
+										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
+										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "'($slen chars) exceed maximum chars($maxLength chars).";  
+									}
+								}
+
+								if( $theCol["errorCode"]<=0 ) {
+									if( $slen>0 && !preg_match( cVALIDATE::$DATATYPE[$dataType], $colVal) ) {
+										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
+										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is invalid ". ucwords($dataType) . " format.";  
+										//print_r($theCol);
+									}
+								}
+
+								if( $theCol["errorCode"]<=0 ) {
+									if( $dataType == "NUMBER" ) {
+										$min 	= is_numeric($theCol["min"])?floatval($theCol["min"]):0;
+										$max 	= is_numeric($theCol["max"])?floatval($theCol["max"]):0;
+										$fval 	= is_numeric($colVal)?floatval($colVal):0;
+										if( $colVal!=0 && $min!=0 && $fval<$min ) {
+											$table["success"] 				= 0;
+											$table["error"]["errorCode"] 	= 1;
+											$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+											$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' value " .  $colVal . " less than minimum value $min";  
+										}
+										if( $colVal!=0 && $max!=0 && $fval>$max ) {
+											$table["success"] 				= 0;
+											$table["error"]["errorCode"] 	= 1;
+											$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+											$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' value " .  $colVal . " large than maximum value $max";  
+										}
+									}
+								}
+
+								break;
+							case "checkbox":
+								if($colVal !="") 
+									$colVal=explode(",", $colVal);
+								else 
+									$colVal=array();
+								if($notNull) {
+									if( !is_array( $colVal ) )  {
+										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
+										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
+									} else {
+										if(count($colVal)<=0) {
+											$table["success"] 				= 0;
+											$table["error"]["errorCode"] 	= 1;
+											$table["data"][$tmpIdx]["errorCode"] 		= 1;  
+											$table["data"][$tmpIdx]["errorMessage"] 	= "'" . $dispName . "' is required.";  
+										}
+									}
+								}
+
+								if( $theCol["errorCode"]<=0 ) {
+									$slen = count($colVal);
+									if( $slen>0 && $minLength>0 && $slen<$minLength ) {
+										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
+										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' require select at least $minLength items.";  
+									}
+									if( $slen>0 && $maxLength>0 && $slen>$maxLength ) {
+										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
+										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' selected items exceed maximum $maxLength items.";  
+									}
+								}
+								
+								break;
+
+							case "date":
+							case "time":
+								//echo "date : " . $colVal . "\n";
+								if(!$colVal)  $colVal="";
+								if($notNull) {
+									if($colVal=="") {
+										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
+										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
+									}
+								}
+
+								$slen = mb_strlen($colVal);
+								if( $theCol["errorCode"]<=0 ) {
+									if( $slen>0 && !preg_match( cVALIDATE::$DATATYPE[ strtoupper($colType) ], $colVal) ) {
+										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
+										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is invalid ". ucwords($colType) . " format.";  
+									}
+								}
+
+								if( $theCol["errorCode"]<=0 ) {
+										$min 	= $theCol["min"]?cTYPE::datetoint($theCol["min"]):0;
+										$max 	= $theCol["max"]?cTYPE::datetoint($theCol["max"]):0;
+										if( $slen>0 && $min>0 && cTYPE::datetoint($colVal)<$min ) {
+											$table["success"] 				= 0;
+											$table["error"]["errorCode"] 	= 1;
+											$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+											$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' value " .  $colVal . " less than minimum value " . $theCol["min"];  
+										}
+										if( $slen>0 && $max>0 && cTYPE::datetoint($colVal)>$max ) {
+											$table["success"] 				= 0;
+											$table["error"]["errorCode"] 	= 1;
+											$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+											$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' value " .  $colVal . " large than maximum value ". $theCol["max"];  
+										}
+								}
+								
+							case "date":
+								if(!$colVal)  $colVal="0000-00-00";
+								break;
+							case "time":
+								if(!$colVal)  $colVal="00:00";
+								break;
+							case "select":
+								if(!$colVal)  $colVal="";
+								if($notNull) {
+									if( trim($colVal)=="") {
+										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
+										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
+									}
+								}
+								if(!$colVal)  $colVal=0;
+								break;
+
+							case "radio":
+								$colVal=intval($colVal)?intval($colVal):0;
+								if($notNull) {
+									if(!$colVal) {
+										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
+										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
+									}
+								}
+								break;
+							case "bool":
+								if(!$colVal)  $colVal=0;
+								if($notNull) {
+									if(!$colVal) {
+										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
+										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
+										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
+									}
+								}
+								break;
+							default:
+								break;
+						}
 						break;
-					case "checkbox":
-						if($colVal !="") 
-							$colVal=explode(",", $colVal);
-						else 
-							$colVal=array();
-						if($notNull) {
-							if( !is_array( $colVal ) )  {
-								$table["success"] 				= 0;
-								$table["error"]["errorCode"] 	= 1;
-								$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-								$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
-							} else {
-								if(count($colVal)<=0) {
-									$table["success"] 				= 0;
-									$table["error"]["errorCode"] 	= 1;
-									$table["data"][$tmpIdx]["errorCode"] 		= 1;  
-									$table["data"][$tmpIdx]["errorMessage"] 	= "'" . $dispName . "' is required.";  
-								}
-							}
-						}
-
-						if( $theCol["errorCode"]<=0 ) {
-							$slen = count($colVal);
-							if( $slen>0 && $minLength>0 && $slen<$minLength ) {
-								$table["success"] 				= 0;
-								$table["error"]["errorCode"] 	= 1;
-								$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-								$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' require select at least $minLength items.";  
-							}
-							if( $slen>0 && $maxLength>0 && $slen>$maxLength ) {
-								$table["success"] 				= 0;
-								$table["error"]["errorCode"] 	= 1;
-								$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-								$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' selected items exceed maximum $maxLength items.";  
-							}
-						}
-						
-						break;
-
-					case "date":
-					case "time":
-						//echo "date : " . $colVal . "\n";
-						if(!$colVal)  $colVal="";
-						if($notNull) {
+					case 3:
+						if($key) {
 							if($colVal=="") {
-								$table["success"] 				= 0;
-								$table["error"]["errorCode"] 	= 1;
+								$table["success"] 								= 0;
+								$table["error"]["errorCode"] 					= 1;
+								//$table["error"]["errorMessage"] 				= "Key '" . $dispName . "' is null value.";  
 								$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-								$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
+								$table["data"][$tmpIdx]["errorMessage"] 		= "Key '" . $dispName . "' is null value.";  
 							}
 						}
-
-						$slen = mb_strlen($colVal);
-						if( $theCol["errorCode"]<=0 ) {
-							if( $slen>0 && !preg_match( cVALIDATE::$DATATYPE[ strtoupper($colType) ], $colVal) ) {
-								$table["success"] 				= 0;
-								$table["error"]["errorCode"] 	= 1;
-								$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-								$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is invalid ". ucwords($colType) . " format.";  
-							}
-						}
-
-						if( $theCol["errorCode"]<=0 ) {
-								$min 	= $theCol["min"]?cTYPE::datetoint($theCol["min"]):0;
-								$max 	= $theCol["max"]?cTYPE::datetoint($theCol["max"]):0;
-								if( $slen>0 && $min>0 && cTYPE::datetoint($colVal)<$min ) {
-									$table["success"] 				= 0;
-									$table["error"]["errorCode"] 	= 1;
-									$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-									$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' value " .  $colVal . " less than minimum value " . $theCol["min"];  
-								}
-								if( $slen>0 && $max>0 && cTYPE::datetoint($colVal)>$max ) {
-									$table["success"] 				= 0;
-									$table["error"]["errorCode"] 	= 1;
-									$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-									$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' value " .  $colVal . " large than maximum value ". $theCol["max"];  
-								}
-						}
-						
-					case "date":
-						if(!$colVal)  $colVal="0000-00-00";
-						break;
-					case "time":
-						if(!$colVal)  $colVal="00:00";
-						break;
-					case "select":
-						if(!$colVal)  $colVal="";
-						if($notNull) {
-							if( trim($colVal)=="") {
-								$table["success"] 				= 0;
-								$table["error"]["errorCode"] 	= 1;
-								$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-								$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
-							}
-						}
-						if(!$colVal)  $colVal=0;
-						break;
-
-					case "radio":
-						$colVal=intval($colVal)?intval($colVal):0;
-						if($notNull) {
-							if(!$colVal) {
-								$table["success"] 				= 0;
-								$table["error"]["errorCode"] 	= 1;
-								$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-								$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
-							}
-						}
-						break;
-					case "bool":
-						if(!$colVal)  $colVal=0;
-						if($notNull) {
-							if(!$colVal) {
-								$table["success"] 				= 0;
-								$table["error"]["errorCode"] 	= 1;
-								$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-								$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
-							}
-						}
-						break;
-					default:
 						break;
 				}
 				/**************************************************************/

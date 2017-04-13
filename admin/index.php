@@ -52,51 +52,63 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
 	<link href='<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
     <!-- //wliu components -->
     <script>
-        var col1 = new WLIU.COL({key:1, coltype:"hidden", 	name:"id", 			colname:"Lang ID",  	coldesc:"Word ID",          defval: 100});
-        var col2 = new WLIU.COL({key:0, coltype:"textbox", 	name:"user_name", 	colname:"User Name", 	coldesc:"Login User",       maxlength:64,   notnull:1, defval:""});
-        var col3 = new WLIU.COL({key:0, coltype:"textbox", 	name:"email",		colname:"Email", 		coldesc:"Email Address",    maxlength:256,  notnull:1, datatype:"EMAIL" });
-        var col4 = new WLIU.COL({key:0, coltype:"textbox", 	name:"first_name", 	colname:"First Name", 	coldesc:"First Name",		maxlength:64, 	notnull:1,  defval: "William"});
-        var col5 = new WLIU.COL({key:0, coltype:"textbox", 	name:"last_name", 	colname:"Last Name", 	coldesc:"Last Name",		maxlength:64, 	notnull:1, defval: "Liu"	});
-        var col6 = new WLIU.COL({key:0, coltype:"textbox", 	name:"phone", 	    colname:"Phone", 		coldesc:"Phone", 			maxlength:64,   notnull:0 });
-        var col7 = new WLIU.COL({key:0, coltype:"bool", 	name:"status",		colname:"Active?",  	coldesc:"Active Status",    defval: 1});
-        var col8 = new WLIU.COL({key:0, coltype:"select", 	name:"country",		colname:"Country",  	coldesc:"Country",          defval: 2});
-        var col9 = new WLIU.COL({key:0, coltype:"passpair", name:"password",    colname:"Password",     defval:111111});
+        var col101 = new WLIU.COL({key:1, coltype:"hidden", 	name:"id", 			colname:"Lang ID",  	coldesc:"Word ID",          defval: 100});
+        var col102 = new WLIU.COL({key:0, coltype:"textbox", 	name:"user_name", 	colname:"User Name", 	coldesc:"Login User",       maxlength:64,   notnull:1, defval:""});
+        var col103 = new WLIU.COL({key:0, coltype:"textbox", 	name:"email",		colname:"Email", 		coldesc:"Email Address",    maxlength:256,  notnull:1, datatype:"EMAIL" });
+        var col104 = new WLIU.COL({key:0, coltype:"textbox", 	name:"first_name", 	colname:"First Name", 	coldesc:"First Name",		maxlength:64, 	notnull:1,  defval: "William"});
+        var col105 = new WLIU.COL({key:0, coltype:"textbox", 	name:"last_name", 	colname:"Last Name", 	coldesc:"Last Name",		maxlength:64, 	notnull:1, defval: "Liu"	});
+        var col106 = new WLIU.COL({key:0, coltype:"textbox", 	name:"phone", 	    colname:"Phone", 		coldesc:"Phone", 			maxlength:64,   notnull:0 });
+        var col107 = new WLIU.COL({key:0, coltype:"bool", 	name:"status",		colname:"Active?",  	coldesc:"Active Status",    defval: 1});
+        var col108 = new WLIU.COL({key:0, coltype:"select", 	name:"country",		colname:"Country",  	coldesc:"Country"});
+        var col109 = new WLIU.COL({key:0, coltype:"passpair", name:"password",    colname:"Password"});
 
-        var cols = [];
-        cols.push(col1);
-        cols.push(col2);
-        cols.push(col3);
-        cols.push(col4);
-        cols.push(col5);
-        cols.push(col6);
-        cols.push(col7);
-        cols.push(col8);
-        cols.push(col9);
+        var cols1 = [];
+        cols1.push(col101);
+        cols1.push(col102);
+        cols1.push(col103);
+        cols1.push(col104);
+        cols1.push(col105);
+        cols1.push(col106);
+        cols1.push(col107);
+        cols1.push(col108);
+        cols1.push(col109);
 
-        var form = new WLIU.FORM({
+        var registerForm = new WLIU.FORM({
             lang:	 	GLang,
             scope: 		"register",
-            url:   		"ajax/index_ajax.php",
-            wait:   	"ajax_wait",
-    		autotip: 	"auto_tips",
-            cols: 		cols
+            url:   		"ajax/register_admin_action.php",
+            cols: 		cols1
         });
 
-        console.log(form);
+        var col201 = new WLIU.COL({key:0, coltype:"textbox", 	name:"login_user", 	    colname:"Login User",  	    coldesc:"Login User",       maxlength:64,   notnull:1, defval: "wmliu"});
+        var col202 = new WLIU.COL({key:1, coltype:"textbox", 	name:"login_password", 	colname:"Login Password", 	coldesc:"Login Password",   maxlength:16,   notnull:1, defval:""});
+        var cols2  = [];
+        cols2.push(col201);
+        cols2.push(col202);
+        var loginForm = new WLIU.FORM({
+            lang:	 	GLang,
+            scope: 		"login",
+            url:   		"ajax/login_admin_action.php",
+            cols: 		cols2
+        });        
+
+        console.log(registerForm);
     $(function(){
         $('.mdb-select').material_select();
-        form.resetData();
+        registerForm.resetData();
+        loginForm.resetData();
     });
-
+    function login() {
+        loginForm.addData();
+    }
     function addData() {
-        form.addData();
+        registerForm.addData();
     }
     </script>
 </head>
 <body>
 <!-- container -->
 <div class="container">
-    <br>
     <!--<div wliu-form-message></div>-->
     <!--Form without header-->
     <div class="row">
@@ -129,17 +141,23 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
                                     <div class="md-form text-left">
                                         <i class="fa fa-envelope prefix"></i>
                                         <input type="text" scope="login" name="login_user" id="login_user" class="form-control">
-                                        <label for="login_user">Your Email or User Name</label>
+                                        <label for="login_user">
+                                            Your Email or User Name
+                                            <a wliu-form-col-error scope="login" name="login_user"></a>
+                                        </label>
                                     </div>
 
                                     <div class="md-form  text-left">
                                         <i class="fa fa-lock prefix"></i>
                                         <input type="password" scope="login" name="login_password" id="login_password" class="form-control">
-                                        <label for="login_password">Your password</label>
+                                        <label for="login_password">
+                                            Your password
+                                            <a wliu-form-col-error scope="login" name="login_password"></a>
+                                        </label>
                                     </div>
 
                                     <div class="text-center">
-                                        <button class="btn btn-deep-purple">Login</button>
+                                        <button class="btn btn-deep-purple" onclick="login()">Login</button>
                                     </div>
 
                                 <!--Triggering button-->

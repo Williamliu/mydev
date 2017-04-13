@@ -46,7 +46,7 @@ WLIU.FORM.prototype = {
 			for(var cidx=0; cidx<this.cols.length; cidx++) {
 				var theCol 		= this.cols[cidx];
 				var nCol 		= FCOLLECT.objectByKV(ntable.data, {name:theCol.name});
-				if(nCol.errorCode>0) {
+				if(nCol && nCol.errorCode>0) {
 					$("a[wliu-form-col-error][scope='" + this.scope + "'][name='" + theCol.name + "']").attr("popup-body", nCol.errorMessage).addAttr("active");
 					errMsg += (errMsg?"\n":"") + nCol.errorMessage;
 				} else {
@@ -57,7 +57,7 @@ WLIU.FORM.prototype = {
 		this.error.errorCode 	= ntable.error.errorCode;
 		this.error.errorField 	= ntable.error.errorField;
 		this.error.errorMessage = errMsg;
-		if(this.error.errorCode && this.error.errorMessage!="") {
+		if(this.error.errorCode) {
 			$("#wliu-form-message-body", "div[wliu-form-message]").html(this.error.errorMessage.nl2br1());
 			$("div[wliu-form-message]").addAttr("active");
 
@@ -112,6 +112,43 @@ WLIU.FORM.prototype = {
 			}
 		}
 	},
+	_clearData: function() {
+		if(this.cols.length>0) {
+			for(var cidx=0; cidx<this.cols.length; cidx++) {
+				var theCol 		= this.cols[cidx];
+				switch(theCol.coltype) {
+					case "text":
+						$("span[scope='" + this.scope + "'][name='" + theCol.name + "']").html("");
+						break;
+					case "hidden":
+					case "textbox":
+					case "password":
+					case "date":
+						$("input[scope='" + this.scope + "'][name='" + theCol.name + "']").val("");
+						break;
+					case "textarea":
+						$("textarea[scope='" + this.scope + "'][name='" + theCol.name + "']").val("");
+						break;
+					case "select":
+						$("select[scope='" + this.scope + "'][name='" + theCol.name + "']").val("");
+						break;
+					case "passpair":
+						$("input[scope='" + this.scope + "'][name='" + theCol.name + "']").val("");
+						$("input[scope='" + this.scope + "'][name='confirm_" + theCol.name + "']").val("");
+						break;
+					case "radio":
+						$("input[scope='" + this.scope + "'][name='" + theCol.name + "']:checked").attr("checked", false);
+						break;
+					case "checkbox":
+						$("input[scope='" + this.scope + "'][name='" + theCol.name + "']").attr("checked", false);
+						break;
+					case "bool":
+						$("input[scope='" + this.scope + "'][name='" + theCol.name + "']").attr("checked", false);
+						break;
+				}
+			}
+		}
+	},
 	_getData: function() {
 		var pdata = [];
 		if(this.cols.length>0) {
@@ -119,6 +156,7 @@ WLIU.FORM.prototype = {
 				var theCol 		= this.cols[cidx];
 				var colDataObj 	= {};
 				colDataObj.name 		= theCol.name;
+				colDataObj.key 			= theCol.key;
 				colDataObj.errorCode 	= 0;
 				colDataObj.errorMessage = ""; 
 				switch(theCol.coltype) {
@@ -162,12 +200,15 @@ WLIU.FORM.prototype = {
 		if(this.cols.length>0) {
 			for(var cidx=0; cidx<this.cols.length; cidx++) {
 				var theCol 		= this.cols[cidx];
-				var colDataObj 	= {};
-				colDataObj.name 		= theCol.name;
-				colDataObj.errorCode 	= 0;
-				colDataObj.errorMessage = ""; 
-				if(theCol.key) colDataObj.value = $("input[scope='" + this.scope + "'][name='" + theCol.name + "']").val();
-				pdata.push(colDataObj);
+				if(parseInt(theCol.key)) {
+					var colDataObj 	= {};
+					colDataObj.name 		= theCol.name;
+					colDataObj.key			= theCol.key;
+					colDataObj.errorCode 	= 0;
+					colDataObj.errorMessage = ""; 
+					colDataObj.value = $("input[scope='" + this.scope + "'][name='" + theCol.name + "']").val();
+					pdata.push(colDataObj);
+				}
 			}
 		}
 		return pdata;
@@ -183,6 +224,35 @@ WLIU.FORM.prototype = {
 	getData: function(callback) {
 		this._resetError();
 		this.action		= "get";
+		this.rowstate 	= 0;
+		var ntable = {};
+		ntable.scope 	= this.scope;
+		ntable.action 	= this.action;
+		ntable.rowstate = this.rowstate;
+		ntable.lang  	= this.lang;
+		ntable.error    = {errorCode: 0, errorMessage:"", errorField:""};
+		ntable.cols     = this.cols; // must provide cols meta to get data from database;
+		this.ajaxCall(ntable, callback);
+	},
+
+	customData: function(callback) {
+		this._resetError();
+		this.action		= "custom";
+		this.rowstate 	= 0;
+		var ntable = {};
+		ntable.scope 	= this.scope;
+		ntable.action 	= this.action;
+		ntable.rowstate = this.rowstate;
+		ntable.lang  	= this.lang;
+		ntable.error    = {errorCode: 0, errorMessage:"", errorField:""};
+		ntable.cols     = this.cols; // must provide cols meta to get data from database;
+		if(callback && $.isFunction(callback.custom)) ntable.data = callback.custom();
+		this.ajaxCall(ntable, callback);
+	},
+
+	updateData: function(callback) {
+		this._resetError();
+		this.action		= "save";
 		this.rowstate 	= 1;
 		var ntable = {};
 		ntable.scope 	= this.scope;
@@ -191,6 +261,7 @@ WLIU.FORM.prototype = {
 		ntable.lang  	= this.lang;
 		ntable.error    = {errorCode: 0, errorMessage:"", errorField:""};
 		ntable.cols     = this.cols; // must provide cols meta to get data from database;
+		ntable.data 	= this._getData();
 		this.ajaxCall(ntable, callback);
 	},
 
@@ -242,8 +313,6 @@ WLIU.FORM.prototype = {
 				$("div#wliu-wait-id[wliu-wait]").trigger("hide");
 				if( callback && callback.ajaxAfter && $.isFunction(callback.ajaxAfter) ) callback.ajaxAfter(req.table);
 
-				_self._setError(req.table);
-
 				if( parseInt(req.table.error.errorCode) == 0 ) {
 					if(callback && callback.ajaxSuccess && $.isFunction(callback.ajaxSuccess) ) callback.ajaxSuccess(req.table);
 				} else {
@@ -254,13 +323,25 @@ WLIU.FORM.prototype = {
 						_self._syncRow(req.table);
 						break;
 					case "save":
-						_self._updateRow(req.table);
+						switch(parseInt(req.table.rowstate)) {
+							case 1:
+							case 2:
+								_self._updateRow(req.table);
+								break;
+							case 3:
+								_self._deleteRow(req.table);
+								break;
+						}
 						break;
 					case "custom":
 						_self._custRow(req.table);
 						break;
 				}
-				
+
+				_self._setError(req.table);
+
+				if( callback && callback.ajaxComplete && $.isFunction(callback.ajaxComplete) ) callback.ajaxComplete(_self);
+
 				//Error Handle include : session expiry
 				GCONFIG.errorCall(req.table.error);
 			},
@@ -269,14 +350,75 @@ WLIU.FORM.prototype = {
 		});
 	},
 	_syncRow: function(ntable) {
+		if(ntable.error.errorCode==0) {
+			this._clearData();
+			if(this.cols.length>0) {
+				for(var cidx=0; cidx<this.cols.length; cidx++) {
+					var theCol = this.cols[cidx];
+					var colVal = ntable.data[theCol.name]?ntable.data[theCol.name]:"";
+					var colVal = ("" + colVal).trim();
+					switch(theCol.coltype) {
+						case "text":
+							$("span[scope='" + this.scope + "'][name='" + theCol.name + "']").html(colVal);
+							break;
+						case "hidden":
+						case "textbox":
+						case "password":
+						case "date":
+							$("input[scope='" + this.scope + "'][name='" + theCol.name + "']").val(colVal);
+							break;
+						case "textarea":
+							$("textarea[scope='" + this.scope + "'][name='" + theCol.name + "']").val(colVal);
+							break;
+						case "select":
+							$("select[scope='" + this.scope + "'][name='" + theCol.name + "']").val(colVal);
+							break;
+						case "passpair":
+							$("input[scope='" + this.scope + "'][name='" + theCol.name + "']").val(colVal);
+							$("input[scope='" + this.scope + "'][name='confirm_" + theCol.name + "']").val(colVal);
+							break;
+						case "radio":
+							$("input[scope='" + this.scope + "'][name='" + theCol.name + "']:checked").attr("checked", false);
+							$("input[scope='" + this.scope + "'][name='" + theCol.name + "'][value='" + colVal + "']").attr("checked", true);
+							break;
+						case "checkbox":
+							$("input[scope='" + this.scope + "'][name='" + theCol.name + "']").attr("checked", false);
+							$.map(colVal.split(","), function (n) {
+								$("input[scope='" + this.scope + "'][name='" + theCol.name + "'][value='" + n + "']").attr("checked", true);
+							});
+							break;
+						case "bool":
+							colVal=parseInt(colVal);
+							$("input[scope='" + this.scope + "'][name='" + theCol.name + "']").attr("checked", colVal?true:false);
+							break;
+					}
+				}
+			}
+		}
 	},
 	_updateRow: function(ntable) {
-
+		if(ntable.error.errorCode==0) {
+			if(this.cols.length>0) {
+				for(var cidx=0; cidx<this.cols.length; cidx++) {
+					var theCol = this.cols[cidx];
+					if(parseInt(theCol.key)) {
+						var nCol = FCOLLECT.objectByKV(ntable.data, {name:theCol.name});
+						if(nCol && nCol.errorCode<=0) $("input[scope='" + this.scope + "'][name='" + theCol.name + "']").val(nCol.value);
+					}
+				}
+			}
+		}
+		// save success handle
+		GCONFIG.saveSuccess(ntable.error);
+	},
+	_deleteRow: function(ntable) {
+		if(ntable.error.errorCode==0) {
+			this._clearData();
+		}
 		// save success handle
 		GCONFIG.saveSuccess(ntable.error);
 	},
 	_custRow: function(ntable) {
-
 		// save success handle
 		GCONFIG.saveSuccess(ntable.error);
 	},

@@ -786,7 +786,7 @@ WLIU.ROWACTION.prototype = {
 	},
 	getChangeCols: function(theRow) {
 		var ncols = [];
-		switch(theRow.rowstate) {
+		switch(parseInt(theRow.rowstate)) {
 			case 0:
 				break;
 			case 1:
@@ -1304,7 +1304,7 @@ WLIU.TABLEACTION.prototype = {
 	},
 	cancelRow: function(theTable, theRow) {
 		if( theRow ) {
-			switch( theRow.rowstate ) {
+			switch( parseInt(theRow.rowstate) ) {
 				case 0: 
 					break;
 				case 1:
@@ -1471,7 +1471,7 @@ WLIU.TABLEACTION.prototype = {
 				
 				//Error Handle include : session expiry
 				GCONFIG.errorCall(req.table.error);
-
+				//popup error message
 				$("#wliu-table-error-popup").trigger("ishow");
 			},
 			type: "post",

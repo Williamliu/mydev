@@ -42,7 +42,7 @@ $current_menu_key   = $current_menu_key?$current_menu_key:"full_right";
 // even  menu not exists
 $user_right[$current_menu_key] = $role_right;
 
-$web_user["right"]  = $user_right[$current_menu_key];
+$web_user["rights"]  = $user_right[$current_menu_key];
 /*
 echo "$current_menu_key<pre>";
 print_r($web_user);
