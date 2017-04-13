@@ -278,15 +278,8 @@ WLIU.TREE.prototype = {
 					if(callback && callback.ajaxError && $.isFunction(callback.ajaxError) ) callback.ajaxError(req.table);
 				}
 
-				//Sesssion Expiry
-				if(req.errorCode==990) {
-					if($("div#wliu-autotip-id[wliu-autotip]").length>0) {
-						$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", [req.errorMessage, "warning", function(){ window.location.href = req.errorField; }]);
-					} else {
-						alert(req.errorMessage);
-						window.location.href = req.errorField;
-					}
-				} 
+				//Error Handle include : session expiry
+				GCONFIG.errorCall(req.table.error);
 			},
 			type: "post",
 			url: _self.url
@@ -402,8 +395,7 @@ WLIU.TREE.prototype = {
 			}
 		}
 
-		if(parseInt(table.success)) {
-			$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", ["Submitted Success.", "success"]);
-		} 
+		// save success handle
+		GCONFIG.saveSuccess(table.error);
 	}
 }

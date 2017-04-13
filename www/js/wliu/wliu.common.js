@@ -5,7 +5,26 @@ var GCONFIG = {
 	max_upload_size: 	20 * 1024 * 1024,
 	image_allow_type: 	["BMP", "JPG", "JPEG", "PNG", "TIF", "GIF"],
 	file_allow_type:	["PDF", "XLS", "XLSX", "DOC", "DOCX", "PPT", "PPTX", "TXT", "BMP", "JPG", "JPEG", "PNG", "TIF", "GIF"],
-	lang: ("" + (navigator.language || navigator.userLanguage)).toLowerCase().substr(0,2) 
+	lang: ("" + (navigator.language || navigator.userLanguage)).toLowerCase().substr(0,2),
+
+	errorCall: function(errorObj) {
+		switch(errorObj.errorCode) {
+			case 980:
+			case 990:
+				if($("div#wliu-autotip-id[wliu-autotip]").length>0) {
+					$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", [errorObj.errorMessage, "warning", function(){ window.location.href = errorObj.errorField; }]);
+				} else {
+					alert(errorObj.errorMessage);
+					window.location.href = errorObj.errorField;
+				}
+				break;
+		}
+	},
+	saveSuccess: function(errorObj) {
+		if(parseInt(errorObj.errorCode)==0) {
+			$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", ["Submitted Success.", "success"]);
+		} 
+	}
 };
 
 String.prototype.nl2br = function() {

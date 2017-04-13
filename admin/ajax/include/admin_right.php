@@ -50,7 +50,7 @@ foreach($user_right as $menuKey=>$theRight) {
     $user_right[$menuKey]["reset"] = 1;
 }
 
-$REF_URL            = $_SERVER["SCRIPT_NAME"];
+$REF_URL            = $_SERVER['HTTP_REFERER'];
 $REF_TEMP           = substr(strrchr($REF_URL, "/"), 1);
 $result_url         = $db_menu_right->query("SELECT menu_key FROM web_menu1 WHERE status=1 AND deleted=0 AND template='" . $db_menu_right->quote($REF_TEMP) . "'");
 $row_url            = $db_menu_right->fetch($result_url);
@@ -60,10 +60,9 @@ $result_url         = $db_menu_right->query("SELECT menu_key FROM web_menu2 WHER
 $row_url            = $db_menu_right->fetch($result_url);
 $current_menu_key   = $row_url["menu_key"]?$row_url["menu_key"]:$current_menu_key; 
 
-$web_user["right"]  = $user_right[$current_menu_key];
 /*
 echo "$current_menu_key<pre>";
-print_r($web_user);
+print_r($user_right[$current_menu_key]);
 echo "</pre>";
 echo "<pre>";
 print_r($user_right);

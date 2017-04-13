@@ -1,8 +1,6 @@
 <?php 
 try {
-	include_once("../include/table_ajax_include.php");
-	//1) rights
-	$user_right["M11"];
+	include_once("include/table_ajax_include.php");
 	cVALIDATE::validateForm($table);
 
 	switch($table["action"]) {
@@ -26,6 +24,6 @@ try {
 	echo json_encode($response);
 	
 } catch(Exception $e ) {
-	include_once("../include/table_error_catch.php");
+	include_once("include/table_error_catch.php");
 }
 ?>

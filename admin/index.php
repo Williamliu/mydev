@@ -88,7 +88,7 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
         form.resetData();
     });
 
-    function getddd() {
+    function addData() {
         form.addData();
     }
     </script>
@@ -97,8 +97,7 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
 <!-- container -->
 <div class="container">
     <br>
-    <button onclick="getddd()">Get Data</button><br>
-    <div wliu-form-message></div>
+    <!--<div wliu-form-message></div>-->
     <!--Form without header-->
     <div class="row">
         <div class="col-md-2 col-xs-0">
@@ -251,7 +250,7 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
                                     </div>
                                 </div>
                                 <div class="text-center">
-                                    <button class="btn btn-indigo">Sign up</button>
+                                    <button class="btn btn-indigo" onclick="addData()">Sign up</button>
                                 </div>
 
                                 <a class="rotate-btn" data-card="card-1"><i class="fa fa-undo"></i> Click here back to <span style="color:#0275d8;">login</span></a>

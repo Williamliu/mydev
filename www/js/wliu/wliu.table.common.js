@@ -1469,15 +1469,8 @@ WLIU.TABLEACTION.prototype = {
 					_self.sc.$apply();
 		 		}
 				
-				//Sesssion Expiry
-				if(req.errorCode==990) {
-					if($("div#wliu-autotip-id[wliu-autotip]").length>0) {
-						$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", [req.errorMessage, "warning", function(){ window.location.href = req.errorField; }]);
-					} else {
-						alert(req.errorMessage);
-						window.location.href = req.errorField;
-					}
-				} 
+				//Error Handle include : session expiry
+				GCONFIG.errorCall(req.table.error);
 
 				$("#wliu-table-error-popup").trigger("ishow");
 			},
@@ -1604,9 +1597,8 @@ WLIU.TABLEACTION.prototype = {
 				} // if(tableRow)
 			}  // for
 
-			if(parseInt(ntable.success)) {
-				$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", ["Submitted Success.", "success"]);
-			} 
+			// save success handle
+			GCONFIG.saveSuccess(theTable.error);
 	},
 	errorCall: function(theTable) {
 		if(theTable.error.errorCode==990) {

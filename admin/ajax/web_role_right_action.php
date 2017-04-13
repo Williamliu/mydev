@@ -1,20 +1,6 @@
 <?php 
-session_start();
-ini_set("display_errors", 0);
-include_once("../../include/config/config.php");
-include_once($CFG["include_path"] . "/wliu/database/database.php");
-include_once($CFG["include_path"] . "/wliu/language/language_ajax.php");
-include_once("../head/full_right.php");
-define("DEBUG", 1);
-$response = array();
 try {
-	/*** common secure : prevent url hack from hack tool ***/
-	$db = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
-	$table = $_REQUEST["table"]; 
-
-	// 1) rights
-	$table["rights"] = $user_right["M11"];
-
+	include_once("include/table_ajax_include.php");
 	// 2) list table : list1, list2, list3, cate1, cate2, cate3
 	//  table1.name == table2.name ;  fkey is parent_id started from 0  as tree root 
 	$listTable = array();
@@ -67,9 +53,10 @@ try {
 	// 5) return 
 	cTREE::clearRows($table);
 	$response["table"] = $table;
+	$db->close();
 	echo json_encode($response);
 	
 } catch(Exception $e ) {
-	include_once("../include/table_error_catch.php");
+	include_once("include/table_error_catch.php");
 }
 ?>

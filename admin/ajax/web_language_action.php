@@ -1,9 +1,6 @@
 <?php 
 try {
-	include_once("../include/table_ajax_include.php");
-	// 1) rights
-	$table["rights"] = $user_right["M11"];
-
+	include_once("include/table_ajax_include.php");
 	// 2) list table : list1, list2, list3, cate1, cate2, cate3
 	//  table1.name == table2.name ;  fkey is parent_id started from 0  as tree root 
 
@@ -47,6 +44,6 @@ try {
 	echo json_encode($response);
 	
 } catch(Exception $e ) {
-	include_once("../include/table_error_catch.php");
+	include_once("include/table_error_catch.php");
 }
 ?>

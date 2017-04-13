@@ -66,7 +66,7 @@ WLIU.FORM.prototype = {
 		} else {
 			$("#wliu-form-message-body", "div[wliu-form-message]").html("");
 			$("div[wliu-form-message]").removeAttr("active");
-			$("#[wliu-form-popup-body", "div[wliu-form-popup]").html("");
+			$("#wliu-form-popup-body", "div[wliu-form-popup]").html("");
 		}
 	},
 	_initData: function() {
@@ -251,29 +251,34 @@ WLIU.FORM.prototype = {
 				}
 				switch(req.table.action) {
 					case "get":
+						_self._syncRow(req.table);
 						break;
 					case "save":
 						_self._updateRow(req.table);
 						break;
 					case "custom":
+						_self._custRow(req.table);
 						break;
 				}
 				
-				//Sesssion Expiry
-				if(req.errorCode==990) {
-					if($("div#wliu-autotip-id[wliu-autotip]").length>0) {
-						$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", [req.errorMessage, "warning", function(){ window.location.href = req.errorField; }]);
-					} else {
-						alert(req.errorMessage);
-						window.location.href = req.errorField;
-					}
-				} 
+				//Error Handle include : session expiry
+				GCONFIG.errorCall(req.table.error);
 			},
 			type: "post",
 			url: _self.url
 		});
 	},
+	_syncRow: function(ntable) {
+	},
 	_updateRow: function(ntable) {
+
+		// save success handle
+		GCONFIG.saveSuccess(ntable.error);
+	},
+	_custRow: function(ntable) {
+
+		// save success handle
+		GCONFIG.saveSuccess(ntable.error);
 	},
 	errorCall: function() {
 		if(this.error.errorCode==990) {

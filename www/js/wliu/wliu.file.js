@@ -231,16 +231,8 @@ WLIU.FILELIST.prototype = {
 				
 				$(_self.errorShow).trigger("errorshow");
 
-				//Sesssion Expiry
-				if(req.errorCode==990) {
-					if($("div#wliu-autotip-id[wliu-autotip]").length>0) {
-						$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", [req.errorMessage, "warning", function(){ window.location.href = req.errorField; }]);
-					} else {
-						alert(req.errorMessage);
-						window.location.href = req.errorField;
-					}
-				} 
-				
+				//Error Handle include : session expiry
+				GCONFIG.errorCall({errorCode: req.errorCode, errorMessage: req.errorMessage});
 			},
 			type: "post",
 			url: _self.url

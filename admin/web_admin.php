@@ -120,8 +120,6 @@ include("include/menu_admin.php");
 				lang:	 	GLang,
 				scope: 		"mytab",
 				url:   		"ajax/web_admin_action.php",
-				wait:   	"ajax_wait",
-				tooltip:	"tool_tip",
 				//rights: 	{detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
                 lists:      {
                             countryList: 	{loaded: 0, keys:{guid:"", name:""}, list:[] },
@@ -337,8 +335,7 @@ include("include/menu_admin.php");
 <br>
 
 <table.popup table="role_table"></table.popup>
-<!-- <div wliu-autotip></div> -->
-<div id="tool_tip" wliu-popup></div>
+<div wliu-autotip></div>
 <div wliu-wait></div>
 
 
