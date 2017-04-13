@@ -6,9 +6,9 @@ try {
 	include_once("../../include/config/config.php");
 	include_once($CFG["include_path"] . "/wliu/database/database.php");
 	include_once($CFG["include_path"] . "/wliu/language/language_ajax.php");
-	include_once($CFG["include_path"] . "/wliu/auth/auth_admin_server.php");
+	//include_once($CFG["include_path"] . "/wliu/auth/auth_admin_server.php");
 	include_once($CFG["include_path"] . "/wliu/secure/secure_server.php");
-	include_once("../head/admin_right.php");
+	include_once("../head/full_right.php");
 	$response = array();
 
 	/*** common secure : prevent url hack from hack tool ***/
@@ -78,6 +78,7 @@ try {
 	$table["navi"]["loading"]       			= 0;
 	$table["error"]["errorCode"] 				= $e->getCode();
 	$table["error"]["errorMessage"] 			= $e->getMessage();
+	$table["error"]["errorField"]		   	 	= $e->getField();
 	$response["table"] 							= $table; 
 
 	$response["errorCode"] 		    			= $e->getCode();

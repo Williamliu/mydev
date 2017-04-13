@@ -11,13 +11,28 @@ try {
 	include_once("../head/full_right.php");
 	$response = array();
 
+	//1) rights
+	$user_right["M11"];
+
 	/*** common secure : prevent url hack from hack tool ***/
 	$db = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
 	$table = $_REQUEST["table"]; 
 	cVALIDATE::validateForm($table);
-	// 1) rights
-	$user_right["M11"];
 
+	switch($table["action"]) {
+		case "get":
+			break;
+		case "save":
+			switch($table["rowstate"]) {
+				case 1:
+					break;
+				case 2:
+					break;
+				case 3:
+					break;
+			}
+			break;
+	}
 
 	cACTION::clearForm($table);
 	$response["table"] = $table;
@@ -26,7 +41,7 @@ try {
 } catch(Exception $e ) {
 	$response 									= array();
 	$table 										= $_REQUEST["table"];
-	unset($table["cols"]);
+	cACTION::clearForm($table);
 	$table["error"]["errorCode"] 				= $e->getCode();
 	$table["error"]["errorMessage"] 			= $e->getMessage();
 	$table["error"]["errorField"]		   	 	= $e->getField();

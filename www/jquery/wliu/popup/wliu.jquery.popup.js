@@ -18,11 +18,111 @@ $.fn.extend({
             if( $(el).has("div[wliu-popup-body]").length<=0 ) $(el).append('<div wliu-popup-body></div>');
         });
         /*** end return ***/
+    },
+
+    wliuColError: function(opts) {
+        var def_settings = {
+        };
+        $.extend(def_settings, opts);
+
+        if( $("#wliu_form_tooltip").length <= 0 ) {
+            $("body").append('<div id="wliu_form_tooltip" wliu-popup></div>');
+        }
+
+        /*** begin return ***/
+        return this.each(function (idx, el) {
+            if( !$(el).hasClass("wliu-btn16") ) $(el).addClass("wliu-btn16");
+            if( !$(el).hasClass("wliu-btn16-error-help") ) $(el).addClass("wliu-btn16-error-help");
+            if( !$(el).hasAttr("popup-target") ) $(el).attr("popup-target","#wliu_form_tooltip");
+            if( !$(el).hasAttr("popup-toggle") ) $(el).attr("popup-toggle","hover");
+            if( !$(el).hasAttr("popup-placement") ) $(el).attr("popup-placement","down");
+            if( !$(el).hasAttr("popup-body") ) $(el).attr("popup-body","");
+        });
+        /*** end return ***/
+    },
+
+    wliuFormMessage: function(opts) {
+        var def_settings = {
+        };
+        $.extend(def_settings, opts);
+        /*** begin return ***/
+        return this.each(function (idx, el) {
+            $(el).attr("id", "wliu-form-message-id");
+            $(el).addClass("card card-danger text-center z-depth-2 mb-1 white-text").css("padding", "10px");
+            var htmlContent = [
+                '<div style="font-size:16px;text-align:left;">',
+                '<i class="fa fa-exclamation-triangle fa-md" aria-hidden="true" style="color:white;"></i> <span style="font-size:16px;">We can\'t process submitted data:</span>',
+                '<div id="wliu-form-message-body" style="margin-top:5px;padding-left:20px;" class="white-text"></div>',
+                '</div>'
+            ].join("");
+            $(el).append(htmlContent);
+        });
+        /*** end return ***/
+    },
+    
+    wliuFormPopup: function(opts) {
+        var def_settings = {
+        };
+        $.extend(def_settings, opts);
+
+        /*** begin return ***/
+        return this.each(function (idx, el) {
+            $(el).attr("id", "wliu-form-popup-id");
+            $(el).attr("wliu-diag","").attr("movable", "").attr("maskable","");
+            var htmlContent = [
+                '<div wliu-diag-head>Message</div>',
+                    '<div wliu-diag-body style="font-size:16px;">',
+                    '<i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true" style="color:red;"></i> <span style="font-size:16px;">We can\'t process submitted data:</span>',
+                    '<div id="wliu-form-popup-body" style="margin-top:5px;"></div>',
+                '</div>',    
+            ].join("");
+            $(el).append(htmlContent);
+        });
+        /*** end return ***/
+    },
+    wliuAutoTip: function(opts) {
+        var def_settings = {
+        };
+        $.extend(def_settings, opts);
+        /*** begin return ***/
+        return this.each(function (idx, el) {
+            $(el).attr("id", "wliu-autotip-id");
+        });
+        /*** end return ***/
+    },
+    wliuWait: function(opts) {
+        var def_settings = {
+        };
+        $.extend(def_settings, opts);
+        /*** begin return ***/
+        return this.each(function (idx, el) {
+            $(el).attr("id", "wliu-wait-id");
+        });
+        /*** end return ***/
     }
 });    
 
 
 $(function(){
+    /*** Form Use ***/
+    $("a[wliu-form-col-error]").wliuColError({});
+    $("div[wliu-form-message]").wliuFormMessage({});
+
+	$("div[wliu-form-popup]").wliuFormPopup({});
+    $("div[wliu-form-popup]").wliuDiag({});
+    /****************/
+
+    /*** FOR ALL USE ***/
+    $("div[wliu-autotip]").wliuAutoTip({});
+    $("div[wliu-autotip]").wliuTips({});
+
+    $("div[wliu-wait]").wliuWait({});
+    $("div[wliu-wait]").wliuLoad({});
+    /*******************/
+
+
+
+    /*** popup ***/
     $("div[wliu-popup]").wliuPopup({});
 
     $(document).off("click", "*[popup-toggle='click']").on("click", "*[popup-toggle='click']", function(evt){
@@ -371,5 +471,5 @@ $(function(){
         $( "div[wliu-popup-head]", $(target_el) ).remove();
         $( "div[wliu-popup-body]", $(target_el) ).empty();
     });
-
+    
 });

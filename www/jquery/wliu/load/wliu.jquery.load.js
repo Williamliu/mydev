@@ -7,7 +7,7 @@
 $.fn.extend({
 	wliuLoad:function( opts ){
 		var def_settings = {
-								title:		"Loading...",
+								title:		"Wait...",
 								maskable:   0
 						   };
 		$.extend(def_settings, opts);

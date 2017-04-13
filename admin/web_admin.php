@@ -4,7 +4,7 @@ ini_set("display_errors", 0);
 include_once("../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
 include_once($CFG["include_path"] . "/wliu/language/language.php");
-include_once($CFG["include_path"] . "/wliu/auth/auth_admin_client.php");
+//include_once($CFG["include_path"] . "/wliu/auth/auth_admin_client.php");
 include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
 include("head/menu_admin.php");
 //print_r($user_right["M11"]);
@@ -121,9 +121,7 @@ include("head/menu_admin.php");
 				scope: 		"mytab",
 				url:   		"ajax/web_admin_action.php",
 				wait:   	"ajax_wait",
-				taberror:	"table_error",
 				tooltip:	"tool_tip",
-				autotip: 	"auto_tips",
 				//rights: 	{detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
                 lists:      {
                             countryList: 	{loaded: 0, keys:{guid:"", name:""}, list:[] },
@@ -326,7 +324,7 @@ include("head/menu_admin.php");
 					</div>
 					<div class="row">
 						<div class="col-md-12">
-							<form.message table="role_table"></form.message>
+							<table.message table="role_table"></table.message>
 						</div>
 					</div>
 				</div>
@@ -338,12 +336,10 @@ include("head/menu_admin.php");
 <!-- container -->
 <br>
 
-
-<div id="table_error" wliu-diag movable maskable></div>
-<div id="auto_tips" wliu-tips></div>
-<div id="ajax_wait" wliu-load></div>
+<table.popup table="role_table"></table.popup>
+<!-- <div wliu-autotip></div> -->
 <div id="tool_tip" wliu-popup></div>
-
+<div wliu-wait></div>
 
 
 <!-- MD Bootstrap 4.0 js -- must place at the end of body -->

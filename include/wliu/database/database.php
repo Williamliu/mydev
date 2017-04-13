@@ -2573,6 +2573,7 @@ class cVALIDATE {
 							if($theCol["value"]=="") {
 								//print_r($theRow);
 								$table["success"] 				= 0;
+								$table["error"]["errorCode"] 	= 1;
 								$theRow["error"]["errorCode"] 	= 1;
 								$theCol["errorCode"] 			= 1;  
 								$theCol["errorMessage"] 		= "Key '" . $dispName . "' is empty.";  
@@ -2587,6 +2588,7 @@ class cVALIDATE {
 								$tmp_confirm 	= trim($theCol["value"]["confirm"])?trim($theCol["value"]["confirm"]):""; 
 								if( $tmp_pass != $tmp_confirm ) {
 									$table["success"] 				= 0;
+									$table["error"]["errorCode"] 	= 1;
 									$theRow["error"]["errorCode"] 	= 1;
 									$theCol["errorCode"] 			= 1;  
 									$theCol["errorMessage"] 		= "'" . $dispName . "' doesn't match confirm one.";  
@@ -2602,6 +2604,7 @@ class cVALIDATE {
 										$theCol["value"] = is_numeric($theCol["value"])?$theCol["value"]:0;
 									} else {
 										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "' is invalid NUMBER type.";  
@@ -2614,6 +2617,7 @@ class cVALIDATE {
 								if($notNull) {
 									if($theCol["value"]=="") {
 										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
@@ -2624,12 +2628,14 @@ class cVALIDATE {
 								if( $theCol["errorCode"]<=0 ) {
 									if( $slen>0 && $minLength>0 && $slen<$minLength ) {
 										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "'($slen chars) less than minimum chars($minLength chars).";  
 									}
 									if( $slen>0 && $maxLength>0 && $slen>$maxLength ) {
 										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "'($slen chars) exceed maximum chars($maxLength chars).";  
@@ -2639,6 +2645,7 @@ class cVALIDATE {
 								if( $theCol["errorCode"]<=0 ) {
 									if( $slen>0 && !preg_match( cVALIDATE::$DATATYPE[$dataType], $theCol["value"]) ) {
 										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "' is invalid ". ucwords($dataType) . " format.";  
@@ -2653,12 +2660,14 @@ class cVALIDATE {
 										$fval 	= is_numeric($theCol["value"])?floatval($theCol["value"]):0;
 										if( $theCol["value"]!=0 && $min!=0 && $fval<$min ) {
 											$table["success"] 				= 0;
+											$table["error"]["errorCode"] 	= 1;
 											$theRow["error"]["errorCode"] 	= 1;
 											$theCol["errorCode"] 			= 1;  
 											$theCol["errorMessage"] 		= "'" . $dispName . "' value " .  $theCol["value"] . " less than minimum value $min";  
 										}
 										if( $theCol["value"]!=0 && $max!=0 && $fval>$max ) {
 											$table["success"] 				= 0;
+											$table["error"]["errorCode"] 	= 1;
 											$theRow["error"]["errorCode"] 	= 1;
 											$theCol["errorCode"] 			= 1;  
 											$theCol["errorMessage"] 		= "'" . $dispName . "' value " .  $theCol["value"] . " large than maximum value $max";  
@@ -2674,6 +2683,7 @@ class cVALIDATE {
 								if($notNull) {
 									if($theCol["value"]=="") {
 										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
@@ -2683,12 +2693,14 @@ class cVALIDATE {
 								if( $theCol["errorCode"]<=0 ) {
 									if( $slen>0 && $minLength>0 && $slen<$minLength ) {
 										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "'($slen chars) less than minimum chars($minLength chars).";  
 									}
 									if( $slen>0 && $maxLength>0 && $slen>$maxLength ) {
 										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "'($slen chars) exceed maximum chars($maxLength chars).";  
@@ -2704,12 +2716,14 @@ class cVALIDATE {
 								if($notNull) {
 									if( !is_array( $theCol["value"] ) )  {
 										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
 									} else {
 										if(count($theCol["value"])<=0) {
 											$table["success"] 				= 0;
+											$table["error"]["errorCode"] 	= 1;
 											$theRow["error"]["errorCode"] 	= 1;
 											$theCol["errorCode"] 			= 1;  
 											$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
@@ -2721,12 +2735,14 @@ class cVALIDATE {
 									$slen = count($theCol["value"]);
 									if( $slen>0 && $minLength>0 && $slen<$minLength ) {
 										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "' require select at least $minLength items.";  
 									}
 									if( $slen>0 && $maxLength>0 && $slen>$maxLength ) {
 										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "' selected items exceed maximum $maxLength items.";  
@@ -2743,6 +2759,7 @@ class cVALIDATE {
 								if($notNull) {
 									if($theCol["value"]=="") {
 										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
@@ -2753,6 +2770,7 @@ class cVALIDATE {
 								if( $theCol["errorCode"]<=0 ) {
 									if( $slen>0 && !preg_match( cVALIDATE::$DATATYPE[ strtoupper($colType) ], $theCol["value"]) ) {
 										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "' is invalid ". ucwords($colType) . " format.";  
@@ -2764,11 +2782,14 @@ class cVALIDATE {
 										$max 	= $theCol["max"]?cTYPE::datetoint($theCol["max"]):0;
 										if( $slen>0 && $min>0 && cTYPE::datetoint($theCol["value"])<$min ) {
 											$table["success"] 				= 0;
+											$table["error"]["errorCode"] 	= 1;
 											$theRow["error"]["errorCode"] 	= 1;
 											$theCol["errorCode"] 			= 1;  
 											$theCol["errorMessage"] 		= "'" . $dispName . "' value " .  $theCol["value"] . " less than minimum value " . $theCol["min"];  
 										}
 										if( $slen>0 && $max>0 && cTYPE::datetoint($theCol["value"])>$max ) {
+											$table["success"] 				= 0;
+											$table["error"]["errorCode"] 	= 1;
 											$theRow["error"]["errorCode"] 	= 1;
 											$theCol["errorCode"] 			= 1;  
 											$theCol["errorMessage"] 		= "'" . $dispName . "' value " .  $theCol["value"] . " large than maximum value ". $theCol["max"];  
@@ -2790,6 +2811,7 @@ class cVALIDATE {
 								if($notNull) {
 									if( trim($theCol["value"])=="") {
 										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
@@ -2806,6 +2828,7 @@ class cVALIDATE {
 								if($notNull) {
 									if(!$theCol["value"]) {
 										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
@@ -2818,6 +2841,7 @@ class cVALIDATE {
   								if($notNull) {
 									if(!$theCol["value"]) {
 										$table["success"] 				= 0;
+										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
 										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  

@@ -8,12 +8,8 @@ WLIU.TABLE = function( opts ) {
 	this.scope  	= opts.scope?opts.scope:"";
 	this.url		= opts.url?opts.url:"";
 	
-	this.wait		= opts.wait?opts.wait:"";
-	this.rowerror   = opts.rowerror?opts.rowerror:"";
-	this.taberror 	= opts.taberror?opts.taberror:"";
-	this.autotip 	= opts.autotip?opts.autotip:"";
 	this.tooltip 	= opts.tooltip?opts.tooltip:"";
-	
+
 	this.firstone 	= opts.firstone?opts.firstone:0;
 	this.current    = ""; // row guid
 	this._rowno 	= -1; // private for rowno
@@ -227,6 +223,9 @@ WLIU.TABLE.prototype = {
 	},
 	getMatchRecords: function(IDKeyValues, callback) {
 		FTABLE.getMatchRecords(this, IDKeyValues, callback);
+	},
+	errorCall: function(theTable) {
+		FTABLE.errorCall(this);
 	},
 	// end of one2many & many2many
 

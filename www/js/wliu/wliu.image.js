@@ -4,7 +4,6 @@ WLIU.IMAGELIST = function( opts ) {
 	this.sc			= null;
 	this.lang       = opts.lang?opts.lang:"cn";
 	this.url		= opts.url?opts.url:"";
-	this.wait		= opts.wait?opts.wait:"";
 	this.autotip 	= opts.autotip?opts.autotip:"";
 	this.errorShow 	= opts.errorShow?opts.errorShow:"";
 	this.infoEditor = opts.infoEditor?opts.infoEditor:"";
@@ -251,7 +250,7 @@ WLIU.IMAGELIST.prototype = {
 	},
 	ajaxCall: function(nimages, callback) {
 		var _self = this;
-		if( _self.wait ) $(_self.wait).trigger("show");
+		$("div#wliu-wait-id[wliu-wait]").trigger("show");
 		if( callback && callback.ajaxBefore && $.isFunction(callback.ajaxBefore) ) callback.ajaxBefore(nimages);
 		//console.log(nimages);
 		$.ajax({
@@ -261,10 +260,10 @@ WLIU.IMAGELIST.prototype = {
 			dataType: "json",  
 			contentType:"application/x-www-form-urlencoded",
 			error: function(xhr, tStatus, errorTh ) {
-				if( _self.wait ) $(_self.wait).trigger("hide");
+				$("div#wliu-wait-id[wliu-wait]").trigger("hide");
 			},
 			success: function(req, tStatus) {
-				if( _self.wait ) $(_self.wait).trigger("hide");
+				$("div#wliu-wait-id[wliu-wait]").trigger("hide");
 				if( callback && callback.ajaxAfter && $.isFunction(callback.ajaxAfter) ) callback.ajaxAfter(req.images);
 
 				switch( req.images.action ) {
@@ -299,8 +298,8 @@ WLIU.IMAGELIST.prototype = {
 
 				//Sesssion Expiry
 				if(req.errorCode==990) {
-					if($("#" + theTable.autotip).length>0) {
-						$("#" + theTable.autotip).trigger("auto", [req.errorMessage, "warning", function(){ window.location.href = req.errorField; }]);
+					if($("div#wliu-autotip-id[wliu-autotip]").length>0) {
+						$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", [req.errorMessage, "warning", function(){ window.location.href = req.errorField; }]);
 					} else {
 						alert(req.errorMessage);
 						window.location.href = req.errorField;

@@ -4150,6 +4150,7 @@ wliu_table.directive("table.htext", function (wliuTableService) {
     }
 });
 
+/* not in used
 wliu_table.directive("table.rowerror", function (wliuTableService) {
     return {
         restrict: "E",
@@ -4191,30 +4192,33 @@ wliu_table.directive("table.rowerror", function (wliuTableService) {
         }
     }
 });
+*/
 
-wliu_table.directive("table.taberror", function (wliuTableService) {
+wliu_table.directive("table.popup", function (wliuTableService) {
     return {
         restrict: "E",
         replace: true,
         scope: {
-            table:      "=",
-            targetid:   "@"
+            table:      "="
         },
         template: [
-                    '<div id="{{targetid}}" wliu-diag movable maskable>',
+                    '<div id="wliu-table-error-popup" wliu-diag movable maskable>',
                         '<div wliu-diag-head>Message</div>',
                             '<div wliu-diag-body style="font-size:16px;">',
                             '<i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true" style="color:red;"></i> <span style="font-size:16px;">We can\'t process submitted data:</span>',
-                            '<div style="margin-top:12px;" ng-bind-html="getHTML()"></div>',
+                            '<div style="margin-top:5px;" ng-bind-html="getHTML()"></div>',
                         '</div>',    
                     '</div>'
                 ].join(''),
         controller: function ($scope, $sce) {
             $scope.getHTML = function() {
-                if( $scope.table.error.errorCode )
-                    return $sce.trustAsHtml($scope.table.error.errorMessage.nl2br1());
-                else 
+                if( $scope.table.error.errorCode || ( $scope.table.getCurrent() && $scope.table.getCurrent().error.errorCode ) ) {
+                    var errMsg = $scope.table.error.errorMessage.nl2br1();
+                    if( $scope.table.getCurrent() ) errMsg += $scope.table.getCurrent().error.errorMessage.nl2br1();
+                    return $sce.trustAsHtml(errMsg);
+                } else { 
                     return $sce.trustAsHtml("");
+                }
             }
         },
         link: function (sc, el, attr) {
@@ -4240,17 +4244,16 @@ wliu_table.directive("table.message", function (wliuTableService) {
         template: [
                     '<div ng-show="table.error.errorCode>0 || table.getCurrent().error.errorCode>0" class="card card-danger text-center z-depth-2 mb-1 white-text" style="padding:10px;">',
                         '<div wliu-diag-body style="font-size:16px;text-align:left;">',
-                        '<i class="fa fa-exclamation-triangle fa-md" aria-hidden="true" style="color:white;"></i> <span style="font-size:16px;">We can\'t process submitted data:</span>',
-
-                        '<p class="white-text mb-0" style="padding-left:20px;" ng-bind-html="getHTML()">',
-                        '</p>',
+                            '<i class="fa fa-exclamation-triangle fa-md" aria-hidden="true" style="color:white;"></i> <span style="font-size:16px;">We can\'t process submitted data:</span>',
+                            '<div style="margin-top:5px;padding-left:20px;" class="white-text" ng-bind-html="getHTML()"></div>',
+                        '</div>',
                     '</div>'
                 ].join(''),
         controller: function ($scope, $sce) {
             $scope.getHTML = function() {
                 if( $scope.table.error.errorCode || ( $scope.table.getCurrent() && $scope.table.getCurrent().error.errorCode ) ) {
                     var errMsg = $scope.table.error.errorMessage.nl2br1();
-                    if( $scope.table.getCurrent() ) errMsg += "<br>" + $scope.table.getCurrent().error.errorMessage.nl2br1();
+                    if( $scope.table.getCurrent() ) errMsg += $scope.table.getCurrent().error.errorMessage.nl2br1();
                     return $sce.trustAsHtml(errMsg);
                 } else { 
                     return $sce.trustAsHtml("");

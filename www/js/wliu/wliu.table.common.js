@@ -1013,6 +1013,12 @@ WLIU.TABLEACTION.prototype = {
 			}
 		}
 	},
+	tableErrorReset: function(theTable) {
+		theTable.error.errorCode = 0;
+		for(var ridx in theTable.rows) {
+			theTable.error.errorCode = Math.max(theTable.error.errorCode, theTable.rows[ridx].error.errorCode);
+		}
+	},
 	tableError: function(theTable, p_error) {
 		if(p_error!=undefined) {
 			theTable.error = p_error;
@@ -1307,6 +1313,7 @@ WLIU.TABLEACTION.prototype = {
 					FROW.cancel(theRow);
 					break;
 			}
+			this.tableErrorReset(theTable);			
 			return theRow;
 		} else {
 			return undefined;
@@ -1413,7 +1420,7 @@ WLIU.TABLEACTION.prototype = {
 	/*** AJAX CALL and Sync Rows */
 	ajaxCall: function(theTable, ntable, callback) {
 		var _self = theTable;
-		if(_self.wait ) $("#" + _self.wait).trigger("show");
+		$("div#wliu-wait-id[wliu-wait]").trigger("show");
 		_self.navi.loading = 1;
 		if(callback && callback.ajaxBefore && $.isFunction(callback.ajaxBefore) ) callback.ajaxBefore(ntable);
 		//if(theTable.xhr && theTable.xhr.readyState != 4 ) theTable.xhr.abort();
@@ -1424,10 +1431,10 @@ WLIU.TABLEACTION.prototype = {
 			dataType: "json",  
 			contentType:"application/x-www-form-urlencoded",
 			error: function(xhr, tStatus, errorTh ) {
-				if(_self.wait ) $("#" + _self.wait).trigger("hide");
+				$("div#wliu-wait-id[wliu-wait]").trigger("hide");
 			},
 			success: function(req, tStatus) {
-				if(_self.wait ) $("#" + _self.wait).trigger("hide");
+				$("div#wliu-wait-id[wliu-wait]").trigger("hide");
 				if(callback && callback.ajaxAfter && $.isFunction(callback.ajaxAfter) ) callback.ajaxAfter(req.table);
 
 				switch(req.table.action) {
@@ -1448,7 +1455,8 @@ WLIU.TABLEACTION.prototype = {
 				} else {
 					if( callback && callback.ajaxError && $.isFunction(callback.ajaxError) ) callback.ajaxError(_self);
 				}
-				$("#" + _self.taberror).trigger("ishow");
+
+				$("#wliu-table-error-popup").trigger("ishow");
 				if( callback && callback.ajaxComplete && $.isFunction(callback.ajaxComplete) ) callback.ajaxComplete(_self);
 
 				_self.navi.loading = 0;
@@ -1458,14 +1466,13 @@ WLIU.TABLEACTION.prototype = {
 				
 				//Sesssion Expiry
 				if(req.errorCode==990) {
-					if($("#" + _self.autotip).length>0) {
-						$("#" + _self.autotip).trigger("auto", [req.errorMessage, "warning", function(){ window.location.href = req.errorField; }]);
+					if($("div#wliu-autotip-id[wliu-autotip]").length>0) {
+						$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", [req.errorMessage, "warning", function(){ window.location.href = req.errorField; }]);
 					} else {
 						alert(req.errorMessage);
 						window.location.href = req.errorField;
 					}
 				} 
-
 			},
 			type: "post",
 			url: _self.url
@@ -1595,8 +1602,13 @@ WLIU.TABLEACTION.prototype = {
 			}  // for
 
 			if(parseInt(ntable.success)) {
-				$("#" + theTable.autotip).trigger("auto", ["Submitted Success.", "success"]);
+				$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", ["Submitted Success.", "success"]);
 			} 
+	},
+	errorCall: function(theTable) {
+		if(theTable.error.errorCode==990) {
+			window.location.href = theTable.error.errorField;
+		} 
 	},
 
 	// Navigation

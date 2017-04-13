@@ -52,15 +52,15 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
 	<link href='<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
     <!-- //wliu components -->
     <script>
-        var col1 = new WLIU.COL({coltype:"hidden", 		name:"id", 			colname:"Lang ID",  	coldesc:"Word ID",          defval: 100});
-        var col2 = new WLIU.COL({coltype:"textbox", 	name:"user_name", 	colname:"User Name", 	coldesc:"Login User",       maxlength:64,   notnull:1, defval:"Wmliu"});
-        var col3 = new WLIU.COL({coltype:"textbox", 	name:"email",		colname:"Email", 		coldesc:"Email Address",    maxlength:256,  notnull:1, datatype:"EMAIL" });
-        var col4 = new WLIU.COL({coltype:"textbox", 	name:"first_name", 	colname:"First Name", 	coldesc:"First Name",		maxlength:64, 	notnull:1,  defval: "William"});
-        var col5 = new WLIU.COL({coltype:"textbox", 	name:"last_name", 	colname:"Last Name", 	coldesc:"Last Name",		maxlength:64, 	notnull:1, defval: "Liu"	});
-        var col6 = new WLIU.COL({coltype:"textbox", 	name:"phone", 	    colname:"Phone", 		coldesc:"Phone", 			maxlength:64,   notnull:0 });
-        var col7 = new WLIU.COL({coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status",    defval: 1});
-        var col8 = new WLIU.COL({coltype:"select", 	    name:"country",		colname:"Country",  	coldesc:"Country",          defval: 2});
-        var col9 = new WLIU.COL({coltype:"passpair", 	name:"password",    colname:"Password", defval:111111});
+        var col1 = new WLIU.COL({key:1, coltype:"hidden", 	name:"id", 			colname:"Lang ID",  	coldesc:"Word ID",          defval: 100});
+        var col2 = new WLIU.COL({key:0, coltype:"textbox", 	name:"user_name", 	colname:"User Name", 	coldesc:"Login User",       maxlength:64,   notnull:1, defval:""});
+        var col3 = new WLIU.COL({key:0, coltype:"textbox", 	name:"email",		colname:"Email", 		coldesc:"Email Address",    maxlength:256,  notnull:1, datatype:"EMAIL" });
+        var col4 = new WLIU.COL({key:0, coltype:"textbox", 	name:"first_name", 	colname:"First Name", 	coldesc:"First Name",		maxlength:64, 	notnull:1,  defval: "William"});
+        var col5 = new WLIU.COL({key:0, coltype:"textbox", 	name:"last_name", 	colname:"Last Name", 	coldesc:"Last Name",		maxlength:64, 	notnull:1, defval: "Liu"	});
+        var col6 = new WLIU.COL({key:0, coltype:"textbox", 	name:"phone", 	    colname:"Phone", 		coldesc:"Phone", 			maxlength:64,   notnull:0 });
+        var col7 = new WLIU.COL({key:0, coltype:"bool", 	name:"status",		colname:"Active?",  	coldesc:"Active Status",    defval: 1});
+        var col8 = new WLIU.COL({key:0, coltype:"select", 	name:"country",		colname:"Country",  	coldesc:"Country",          defval: 2});
+        var col9 = new WLIU.COL({key:0, coltype:"passpair", name:"password",    colname:"Password",     defval:111111});
 
         var cols = [];
         cols.push(col1);
@@ -85,11 +85,11 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
         console.log(form);
     $(function(){
         $('.mdb-select').material_select();
-        form.initData();
+        form.resetData();
     });
 
     function getddd() {
-        form.postData();
+        form.addData();
     }
     </script>
 </head>
@@ -98,6 +98,7 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
 <div class="container">
     <br>
     <button onclick="getddd()">Get Data</button><br>
+    <div wliu-form-message></div>
     <!--Form without header-->
     <div class="row">
         <div class="col-md-2 col-xs-0">
@@ -168,14 +169,20 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
                                 <div class="row">
                                     <div class="col-md-6 col-xs-6">
                                         <div class="md-form">
-                                            <input type="text" scope="register" name="user_name" id="user_name" class="form-control">
-                                            <label for="user_name">Login Name</label>
+                                            <input type="text" scope="register" name="user_name" id="user_name" class="form-control" value="Hello">
+                                            <label for="user_name">
+                                                Login Name
+                                                <a wliu-form-col-error scope="register" name="user_name"></a>
+                                            </label>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-xs-6">
                                         <div class="md-form">
                                             <input type="text" scope="register" name="first_name" id="first_name" class="form-control">
-                                            <label for="first_name">First Name</label>
+                                            <label for="first_name">
+                                                First Name
+                                                <a wliu-form-col-error scope="register" name="first_name"></a>
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -184,13 +191,19 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
                                     <div class="col-md-6 col-xs-6">
                                         <div class="md-form">
                                             <input type="text" scope="register" name="email" id="email" class="form-control">
-                                            <label for="email">Your Email</label>
+                                            <label for="email">
+                                                Your Email
+                                                <a wliu-form-col-error scope="register" name="email"></a>
+                                            </label>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-xs-6">
                                         <div class="md-form">
                                             <input type="text" scope="register" name="last_name" id="last_name" class="form-control">
-                                            <label for="last_name">Last Name</label>
+                                            <label for="last_name">
+                                                Last Name
+                                                <a wliu-form-col-error scope="register" name="last_name"></a>
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -199,13 +212,19 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
                                     <div class="col-md-6 col-xs-6">
                                         <div class="md-form">
                                             <input type="password" scope="register" name="password" id="password" class="form-control">
-                                            <label for="password">Your password</label>
+                                            <label for="password">
+                                                Your password
+                                                <a wliu-form-col-error scope="register" name="password"></a>
+                                            </label>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-xs-6">
                                         <div class="md-form">
                                             <input type="text" scope="register" name="phone" id="phone" class="form-control">
-                                            <label for="phone">Phone</label>
+                                            <label for="phone">
+                                                Phone
+                                                <a wliu-form-col-error scope="register" name="phone"></a>
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -214,13 +233,16 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
                                     <div class="col-md-6 col-xs-6">
                                         <div class="md-form">
                                             <input type="password" scope="register" name="confirm_password" id="confirm_password" class="form-control">
-                                            <label for="confirm_password">Confirm password</label>
+                                            <label for="confirm_password">
+                                                Confirm password
+                                                <a wliu-form-col-error scope="register" name="confirm_password"></a>
+                                            </label>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-xs-6 text-left">
                                             <div style="margin-top:5px;">
                                                 <select class="mdb-select" scope="register" name="country">
-                                                    <option value="" selected>Choose your live in country</option>
+                                                    <option value="">Choose your live in country</option>
                                                     <option value="1">United State</option>
                                                     <option value="2">China</option>
                                                     <option value="3">Canada</option>
@@ -245,9 +267,11 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
     <!--/Form without header-->
 </div>
 
+<div 
 
-<div id="table_error" wliu-diag movable maskable></div>
-<div id="auto_tips" wliu-tips></div>
+<div wliu-form-popup></div>
+<div wliu-autotip></div>
+<div wliu-wait></div>
 
 
 

@@ -107,12 +107,26 @@ div[wliu-popup] div[wliu-popup-head] ~ s[arrow][right] {
     margin-top: 0px;
 }
 
-
-
 div[wliu-popup] s[arrow][active] {
 	display: 			inline-block;
 }
 /********************/
+
+
+/**** col error ****/
+a.wliu-btn16-error-help[wliu-form-col-error] {
+    display: none;
+}
+a.wliu-btn16-error-help[wliu-form-col-error][active] {
+    display: inline-block;
+}
+
+div[wliu-form-message] {
+    display: none;
+}
+div[wliu-form-message][active] {
+    display: block;
+}
 
 
 @keyframes popupFadein {
