@@ -12,11 +12,6 @@ WLIU.TREE = function( opts ) {
 	this.scope  	= opts.scope?opts.scope:"";
 	this.url		= opts.url?opts.url:"";
 
-	this.rowerror   = opts.rowerror?opts.rowerror:"";
-	this.taberror 	= opts.taberror?opts.taberror:"";
-	this.autotip 	= opts.autotip?opts.autotip:"";
-	this.tooltip 	= opts.tooltip?opts.tooltip:"";
-
 	this.rootadd 	= opts.rootadd?opts.rootadd:0;
 	this.pbutton 	= opts.pbutton?opts.pbutton:["add", "save", "cancel", "delete"],
 	this.sbutton	= opts.sbutton?opts.sbutton:["add", "save", "cancel", "delete"],
@@ -258,6 +253,8 @@ WLIU.TREE.prototype = {
 				$("div#wliu-wait-id[wliu-wait]").trigger("hide");
 				if( callback && callback.ajaxAfter && $.isFunction(callback.ajaxAfter) ) callback.ajaxAfter(req.table);
 
+				_self.tableError(req.table.error);
+
 				switch( req.table.action ) {
 					case "get":
 						FTABLE.setLists(_self, req.table.lists);
@@ -280,7 +277,6 @@ WLIU.TREE.prototype = {
 				} else {
 					if(callback && callback.ajaxError && $.isFunction(callback.ajaxError) ) callback.ajaxError(req.table);
 				}
-				$("#" + _self.taberror).trigger("ishow");
 
 				//Sesssion Expiry
 				if(req.errorCode==990) {
@@ -291,7 +287,6 @@ WLIU.TREE.prototype = {
 						window.location.href = req.errorField;
 					}
 				} 
-				
 			},
 			type: "post",
 			url: _self.url
@@ -299,7 +294,6 @@ WLIU.TREE.prototype = {
 	},
 	syncRows: function(table) {
 		this.rights = angular.copy(table.rights);
-		this.tableError(table.error);
 		this.rows = [];
 		
 		if(this.cols.p && this.cols.p.length>0) {
@@ -341,7 +335,6 @@ WLIU.TREE.prototype = {
 
 	updateRow: function(table, theRow, theRows) {
 		this.rights = angular.copy(table.rights);
-		this.tableError(table.error);
 		if( table.rows && table.rows.length > 0) {
 			var nrow = table.rows[0];
 			if( nrow.error.errorCode > 0 ) {
@@ -408,5 +401,9 @@ WLIU.TREE.prototype = {
 					}
 			}
 		}
+
+		if(parseInt(table.success)) {
+			$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", ["Submitted Success.", "success"]);
+		} 
 	}
 }

@@ -229,7 +229,6 @@ WLIU.FORM.prototype = {
 		var _self = this;
 		$("div#wliu-wait-id[wliu-wait]").trigger("show");
 		if( callback && callback.ajaxBefore && $.isFunction(callback.ajaxBefore) ) callback.ajaxBefore(table);
-		console.log(ntable);
 		$.ajax({
 			data: {
 				table:	ntable
@@ -269,9 +268,6 @@ WLIU.FORM.prototype = {
 						window.location.href = req.errorField;
 					}
 				} 
-
-				console.log("ajax done");
-				console.log(req.table);
 			},
 			type: "post",
 			url: _self.url

@@ -1,17 +1,6 @@
 <?php 
-session_start();
-ini_set("display_errors", 0);
-include_once("../../include/config/config.php");
-include_once($CFG["include_path"] . "/wliu/database/database.php");
-define("DEBUG", 1);
-$response = array();
 try {
-	$rights = array("view"=>1, "save"=>1, "add"=>1, "delete"=>1);
-
-	/*** common secure : prevent url hack from hack tool ***/
-	$db = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
-	$table = $_REQUEST["table"]; 
-
+	include_once("../include/table_ajax_include.php");
 	// 1) rights
 	$table["rights"] = $rights;
 
@@ -26,7 +15,6 @@ try {
 	$listTable["tableList"] = $tableList;
 	
 	$table["listTable"] = $listTable;
-
 
 	// 3) table metadata
 	// medium table:   medium.keys->primary.keys   medium.fkeys->second.keys   
@@ -73,19 +61,10 @@ try {
 	// 6) return 
 	cACTION::clearRows($table);
 	$response["table"] = $table;
+	$db->close();
 	echo json_encode($response);
 	
 } catch(Exception $e ) {
-	$table 							= $_REQUEST["table"];
-	$table["navi"]["loading"]       = 0;
-	$table["error"]["errorCode"] 	= $e->getCode();
-	$table["error"]["errorMessage"] = $e->getMessage();
-	$response["table"] 				= $table; 
-
-	$response["errorCode"] 		    			= $e->getCode();
-	$response["errorMessage"] 	    			= $e->getMessage();
-	$response["errorLine"] 		    			= sprintf("File[file:%s, line:%s]", $e->getFile(), $e->getLine());
-	$response["errorField"]		   	 			= $e->getField();
-	echo json_encode($response);
+	include_once("../include/table_error_catch.php");
 }
 ?>

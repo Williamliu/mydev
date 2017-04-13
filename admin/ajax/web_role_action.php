@@ -7,7 +7,7 @@ try {
 	include_once($CFG["include_path"] . "/wliu/database/database.php");
 	include_once($CFG["include_path"] . "/wliu/language/language_ajax.php");
 	include_once($CFG["include_path"] . "/wliu/secure/secure_server.php");
-	include_once("../head/admin_right.php");
+	include_once("../include/admin_right.php");
 	$response = array();
 
 	/*** common secure : prevent url hack from hack tool ***/
@@ -63,17 +63,6 @@ try {
 	echo json_encode($response);
 	
 } catch(Exception $e ) {
-	$response 									= array();
-	$table 										= $_REQUEST["table"];
-	$table["navi"]["loading"]       			= 0;
-	$table["error"]["errorCode"] 				= $e->getCode();
-	$table["error"]["errorMessage"] 			= $e->getMessage();
-	$response["table"] 							= $table; 
-
-	$response["errorCode"] 		    			= $e->getCode();
-	$response["errorMessage"] 	    			= $e->getMessage();
-	$response["errorLine"] 		    			= sprintf("File[file:%s, line:%s]", $e->getFile(), $e->getLine());
-	$response["errorField"]		   	 			= $e->getField();
-	echo json_encode($response);
+	include_once("../include/table_error_catch.php");
 }
 ?>

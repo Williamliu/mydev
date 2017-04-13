@@ -5,7 +5,7 @@ include_once("../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
 include_once($CFG["include_path"] . "/wliu/language/language.php");
 include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
-include("head/menu_admin.php");
+include("include/menu_admin.php");
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">

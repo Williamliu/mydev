@@ -122,13 +122,11 @@ include("head/menu_admin.php");
 				refid:      0,
 				title: 		"Menus",
 				url:   		"ajax/web_menu_action.php",
-				wait:   	"ajax_wait",
-				autotip: 	"myauto",
-				taberror:	"taberror",
-				tooltip: 	"",
 				//rights: {detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
 				//filters:filters,
 				cols: 	 tree_cols,
+
+				rootadd: 1,
 				pbutton: ["add", "save", "cancel", "delete"],
 				sbutton: ["save", "cancel", "delete"],
 				mbutton: ["save", "cancel", "delete"],
@@ -156,11 +154,9 @@ include("head/menu_admin.php");
 <!-- container -->
 <br>
 
-<div id="table_error" wliu-diag movable maskable></div>
-<div id="auto_tips" wliu-tips></div>
-<div id="ajax_wait" wliu-load></div>
 <div id="tool_tip" wliu-popup></div>
-
+<div wliu-autotip></div>
+<div wliu-wait></div>
 
 
 <!-- MD Bootstrap 4.0 js -- must place at the end of body -->

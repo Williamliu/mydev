@@ -4,7 +4,6 @@ WLIU.IMAGELIST = function( opts ) {
 	this.sc			= null;
 	this.lang       = opts.lang?opts.lang:"cn";
 	this.url		= opts.url?opts.url:"";
-	this.autotip 	= opts.autotip?opts.autotip:"";
 	this.errorShow 	= opts.errorShow?opts.errorShow:"";
 	this.infoEditor = opts.infoEditor?opts.infoEditor:"";
 	this.imgViewer  = opts.imgViewer?opts.imgViewer:"";

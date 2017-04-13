@@ -1014,14 +1014,18 @@ WLIU.TABLEACTION.prototype = {
 		}
 	},
 	tableErrorReset: function(theTable) {
-		theTable.error.errorCode = 0;
+		theTable.error.errorCode 	= 0;
+		theTable.error.errorMessage = "";
 		for(var ridx in theTable.rows) {
-			theTable.error.errorCode = Math.max(theTable.error.errorCode, theTable.rows[ridx].error.errorCode);
+			if(theTable.rows[ridx].error.errorCode>0) {
+				theTable.error.errorCode 	= Math.max(theTable.error.errorCode, theTable.rows[ridx].error.errorCode);
+				theTable.error.errorMessage += (theTable.error.errorMessage?"\n":"") + theTable.rows[ridx].error.errorMessage;
+			}
 		}
 	},
 	tableError: function(theTable, p_error) {
 		if(p_error!=undefined) {
-			theTable.error = p_error;
+			theTable.error = angular.copy(p_error);
 		} 
 		return theTable.error; 
 	},
@@ -1437,6 +1441,8 @@ WLIU.TABLEACTION.prototype = {
 				$("div#wliu-wait-id[wliu-wait]").trigger("hide");
 				if(callback && callback.ajaxAfter && $.isFunction(callback.ajaxAfter) ) callback.ajaxAfter(req.table);
 
+				_self.tableError(req.table.error);
+
 				switch(req.table.action) {
 					case "init":
 					case "get": 
@@ -1456,7 +1462,6 @@ WLIU.TABLEACTION.prototype = {
 					if( callback && callback.ajaxError && $.isFunction(callback.ajaxError) ) callback.ajaxError(_self);
 				}
 
-				$("#wliu-table-error-popup").trigger("ishow");
 				if( callback && callback.ajaxComplete && $.isFunction(callback.ajaxComplete) ) callback.ajaxComplete(_self);
 
 				_self.navi.loading = 0;
@@ -1473,13 +1478,14 @@ WLIU.TABLEACTION.prototype = {
 						window.location.href = req.errorField;
 					}
 				} 
+
+				$("#wliu-table-error-popup").trigger("ishow");
 			},
 			type: "post",
 			url: _self.url
 		});
 	},
 	syncRows: function(theTable, ntable) {
-		theTable.tableError(ntable.error);
 		theTable.rows 		= [];
 		theTable.current 	= "";
 		theTable.navi 		= angular.copy(ntable.navi);
@@ -1517,10 +1523,7 @@ WLIU.TABLEACTION.prototype = {
 		}
 	},
 	updateRows: function(theTable, ntable) {
-			//theTable.current = "";
 			theTable.rights = angular.copy(ntable.rights);
-			theTable.tableError(ntable.error);
-			//if(ntable.success <= 0 || ntable.error.errorCode > 0) return;
 			// update primary table information: one2one, one2many, many2many 
 			if( ntable.primary && $.isArray(ntable.primary) ) {
 				if( ntable.primary.length>0 ) {

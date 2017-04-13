@@ -6,7 +6,7 @@ include_once($CFG["include_path"] . "/wliu/database/database.php");
 include_once($CFG["include_path"] . "/wliu/language/language.php");
 //include_once($CFG["include_path"] . "/wliu/auth/auth_admin_client.php");
 include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
-include("head/menu_admin.php");
+include("include/menu_admin.php");
 //print_r($user_right["M11"]);
 ?>
 <!DOCTYPE html>

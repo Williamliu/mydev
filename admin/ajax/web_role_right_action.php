@@ -70,16 +70,6 @@ try {
 	echo json_encode($response);
 	
 } catch(Exception $e ) {
-	$table 							= $_REQUEST["table"];
-	$table["navi"]["loading"]       = 0;
-	$table["error"]["errorCode"] 	= $e->getCode();
-	$table["error"]["errorMessage"] = $e->getMessage();
-	$response["table"] 				= $table; 
-
-	$response["errorCode"] 		    			= $e->getCode();
-	$response["errorMessage"] 	    			= $e->getMessage();
-	$response["errorLine"] 		    			= sprintf("File[file:%s, line:%s]", $e->getFile(), $e->getLine());
-	$response["errorField"]		   	 			= $e->getField();
-	echo json_encode($response);
+	include_once("../include/table_error_catch.php");
 }
 ?>
