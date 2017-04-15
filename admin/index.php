@@ -76,7 +76,7 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
         var registerForm = new WLIU.FORM({
             lang:	 	GLang,
             scope: 		"register",
-            url:   		"ajax/register_admin_action.php",
+            url:   		"ajax/admin_register_action.php",
             cols: 		cols1
         });
 
@@ -88,7 +88,7 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
         var loginForm = new WLIU.FORM({
             lang:	 	GLang,
             scope: 		"login",
-            url:   		"ajax/login_admin_action.php",
+            url:   		"ajax/admin_login_action.php",
             cols: 		cols2
         });        
 
