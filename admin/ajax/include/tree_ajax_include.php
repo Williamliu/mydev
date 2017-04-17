@@ -7,15 +7,15 @@
 	include_once($CFG["include_path"] . "/wliu/language/language_ajax.php");
 	include_once($CFG["include_path"] . "/wliu/auth/auth_admin_server.php");
 	include_once($CFG["include_path"] . "/wliu/secure/secure_server.php");
-	include_once("include/admin_right.php");
+	include_once("include/ajax_admin_right.php");
 	$response = array();
 	$table = $_REQUEST["table"]; 
 
-	if( DEBUG ) $table["session"] = $_SESSION[$sess_name];
+	if( DEBUG ) $table["session"] = $sess_id;
 	if( DEBUG ) $table["webuser"] = $web_user;
 
 	// 1) rights
-	$table["rights"] = $user_right[$current_menu_key];
+	$table["rights"] = $user_right;
 	
 	$db = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
 ?>

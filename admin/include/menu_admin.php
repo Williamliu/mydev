@@ -1,5 +1,7 @@
 <?php
-include("admin_right.php");  // it will redirct to login page
+include("client_admin_right.php");  // it will redirct to login page
+// use  $user_right  to filter menu  with  view right 
+
 $db_menu = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
 $menu_cols      = array();
 $menu_cols[]    = "id";
@@ -23,6 +25,9 @@ while( $row_menu1 = $db_menu->fetch($result_menu1) ) {
         $menu1["detail"]    = cLANG::trans($row_menu1["detail"]);
         $menu1["template"]  = $row_menu1["template"];
         $menu1["url"]       = $row_menu1["url"];
+        $menu1_url          = $menu1["url"]?'href="' . $menu1["url"] .'" target="_blank"':''; 
+        $menu1_url          = $menu1["template"]?'href="' . $menu1["template"] .'"':''; 
+        $menu1["link"]      = '<a ' . $menu1_url . ' class="{class}">' . $menu1["icon"] . ' ' . $menu1["title"] . ' {arrow}</a>';
 
 
         $menu_cols      = array();
@@ -46,6 +51,9 @@ while( $row_menu1 = $db_menu->fetch($result_menu1) ) {
                 $menu2["detail"]    = cLANG::trans($row_menu2["detail"]);
                 $menu2["template"]  = $row_menu2["template"];
                 $menu2["url"]       = $row_menu2["url"];
+                $menu2_url          = $menu2["url"]?'href="' . $menu2["url"] .'" target="_blank"':''; 
+                $menu2_url          = $menu2["template"]?'href="' . $menu2["template"] .'"':''; 
+                $menu2["link"]      = '<a ' . $menu2_url . ' class="{class}">' . $menu2["icon"] . ' ' . $menu2["title"] . ' {arrow}</a>';
                 $menu1["menus"][]   = $menu2;
             }
         }

@@ -4329,7 +4329,6 @@ class cTYPE {
 
 		return $str1;
 	}
-
 	static public function quote( $str ) {
 		//return str_replace(array("'"), array("\'"), $str);
 		return $str;
@@ -4400,7 +4399,6 @@ class cTYPE {
 			return "";
 		}
 	}
-	
 	static public function dhms() {
 		global $GLang;
 		$pnum 	= func_num_args();
@@ -4424,7 +4422,6 @@ class cTYPE {
 			
 		}
 	}
-
 	static public function ydhms() {
 		global $GLang;
 		$pnum 	= func_num_args();
@@ -4453,7 +4450,6 @@ class cTYPE {
 			
 		}
 	}
-	
 	static public function phone($str) {
 		$tp = str_replace(array(" ", "-", ",", "(", ")","."), array("","","","","",""), trim($str));
 		if( strlen($tp) == 10 ) {
@@ -4473,6 +4469,9 @@ class cTYPE {
 			if( $dd=="" || $dd<=0 ) $dd = "xx";
 			return $yy . "-" . substr( "0".$mm, -2) . "-" . substr("0".$dd, -2);	
 		}
+	}
+	static public function template($url_str) {
+		return substr(strrchr( "/".$url_str , "/"), 1);
 	}
 }
 

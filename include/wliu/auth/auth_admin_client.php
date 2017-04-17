@@ -6,7 +6,7 @@
 $sess_name = $_SERVER['HTTP_HOST'] . ".user.session";
 if( $_REQUEST["user_session"] != "" ) $_SESSION[$sess_name] = $_REQUEST["user_session"];
 if( $_SESSION[$sess_name] == "" ) {
-	header("Location: " . $CFG["secure_a_return"]);
+	header("Location: " . $CFG["secure_auth_return"]);
 } else {
 	
 	$sess_db = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
@@ -22,7 +22,7 @@ if( $_SESSION[$sess_name] == "" ) {
 		
 		$result_user = $sess_db->query("SELECT * FROM web_admin WHERE deleted=0 AND status = 1 AND id = '" . $admin_id . "'");
 		if( $sess_db->row_nums($result_user) <= 0 )  {
-			header("Location: " . $CFG["secure_a_return"]);
+			header("Location: " . $CFG["secure_auth_return"]);
 		} else {
             $web_user               = array();
             $row_user               = $sess_db->fetch($result_user);
@@ -46,7 +46,7 @@ if( $_SESSION[$sess_name] == "" ) {
         }
 
 	} else {
-		header("Location: " . $CFG["secure_a_return"]);
+		header("Location: " . $CFG["secure_auth_return"]);
 	}
 }
 

@@ -4,7 +4,7 @@
 /*********************************************************************************/
 $sess_name = $_SERVER['HTTP_HOST'] . ".user.session";
 if( $_SESSION[$sess_name] == "" ) {
-	$gErr->set(990, gwords("website.session.expiry"), $CFG["secure_a_return"]. "?url=" . $_SERVER['HTTP_REFERER']);
+	$gErr->set(990, gwords("website.session.expiry"), $CFG["secure_auth_return"]. "?url=" . $_SERVER['HTTP_REFERER']);
     throw $gErr;
 } else {
 	$sess_db = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
@@ -20,7 +20,7 @@ if( $_SESSION[$sess_name] == "" ) {
 		
 		$result_user = $sess_db->query("SELECT * FROM web_admin WHERE deleted=0 AND status=1 AND id = '" . $admin_id . "'");
 		if( $sess_db->row_nums($result_user) <= 0 )  {
-			$gErr->set(990, gwords("website.session.expiry"), $CFG["secure_a_return"] . "?url=" . $_SERVER['HTTP_REFERER']);
+			$gErr->set(990, gwords("website.session.expiry"), $CFG["secure_auth_return"] . "?url=" . $_SERVER['HTTP_REFERER']);
 			throw $gErr;
 		} else {
             $web_user               = array();
@@ -43,7 +43,7 @@ if( $_SESSION[$sess_name] == "" ) {
 			*/
         }
 	} else {
-		$gErr->set(990, gwords("website.session.expiry"), $CFG["secure_a_return"] . "?url=" . $_SERVER['HTTP_REFERER']);
+		$gErr->set(990, gwords("website.session.expiry"), $CFG["secure_auth_return"] . "?url=" . $_SERVER['HTTP_REFERER']);
 		throw $gErr;
 	}
 }

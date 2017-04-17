@@ -7,7 +7,7 @@
 	include_once($CFG["include_path"] . "/wliu/language/language_ajax.php");
 	include_once($CFG["include_path"] . "/wliu/auth/auth_admin_server.php");
 	include_once($CFG["include_path"] . "/wliu/secure/secure_server.php");
-	include_once("include/full_right.php");  //using full_right: for user register but not required rights to modify and view 
+	include_once("include/ajax_full_right.php");  //using full_right: for user register but not required rights to modify and view 
 	$response = array();
 	$table = $_REQUEST["table"]; 
 
@@ -24,7 +24,7 @@
 	if($table["action"]!="custom") cACTION::formData($table);
 	
 	// 1) rights
-	$table["rights"] = $user_right[$current_menu_key];
+	$table["rights"] = $user_right;
 	
 	$db = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
 ?>

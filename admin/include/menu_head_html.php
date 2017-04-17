@@ -15,32 +15,24 @@
         <li>
             <ul class="collapsible collapsible-accordion">
                 <?php
-                    $current_menu = '';
                     if(count($menus["menus"])>0) {
                             /****** create menu *******/
                             $menu_html = '';
                             foreach($menus["menus"] as $menu1) {
-                                $menu1_url  = $menu1["url"]?'href="' . $menu1["url"] .'" target="_blank"':''; 
-                                $menu1_url  = $menu1["template"]?'href="' . $menu1["template"] .'"':''; 
-
                                 $menu2_selected = false;
                                 if( is_array($menu1["menus"]) ) {
                                     $menu2_html = '<div class="collapsible-body">';
                                     $menu2_html .= '<ul>';
                                         foreach($menu1["menus"] as $menu2) {
-                                            $menu2_url      = $menu2["url"]?'href="' . $menu2["url"] .'" target="_blank"':''; 
-                                            $menu2_url      = $menu2["template"]?'href="' . $menu2["template"] .'"':''; 
-                                            
-                                            if(substr(strrchr('/'.$menu2["template"], "/"), 1)==substr(strrchr($_SERVER["SCRIPT_NAME"], "/"), 1)) {
-                                                $menu2_url      = '';
+                                            $menu2_active = '';
+
+                                            if( $menu2["menu_key"]==$web_user["current"]["menu_key"]) {
                                                 $menu2_selected = true;
-                                                $current_menu = '<a ' . $menu2_url . ' style="font-weight:bold;">' . $menu2["icon"] . ' ' . $menu2["title"] . '</a>';
-                                            } 
-                                            
-                                            $menu2_active = substr(strrchr('/'.$menu2["template"], "/"), 1)==substr(strrchr($_SERVER["SCRIPT_NAME"], "/"), 1)?' active':'InActive';  
+                                                $menu2_active   = 'active';
+                                            }                                           
                                             
                                             $menu2_html .= '<li>';
-                                            $menu2_html .= '<a ' . $menu2_url . ' class="waves-effect' . $menu2_active . '">' . $menu2["icon"] . ' ' . $menu2["title"] . '</a>';
+                                            $menu2_html .= str_replace( array("{class}", "{arrow}"), array("waves-effect $menu2_active", ""),  $menu2["link"]);
                                             $menu2_html .= '</li>';
                                         }
                                     $menu2_html .= '</ul>';
@@ -50,11 +42,13 @@
                                 ////////////////////////////////////////
                                 $menu1_html = '';
 
-                                if($menu2_selected) 
-                                    $menu1_html .= '<li class="active"><a class="collapsible-header waves-effect arrow-r active" ' . $menu1_url . '>' . $menu1["icon"] . ' ' . $menu1["title"] . '<i class="fa fa-angle-down rotate-icon"></i></a>';
-                                else 
-                                    $menu1_html .= '<li><a class="collapsible-header waves-effect arrow-r" ' . $menu1_url . '>' . $menu1["icon"] . ' ' . $menu1["title"] . '<i class="fa fa-angle-down rotate-icon"></i></a>';
-                                
+                                if($menu2_selected) { 
+                                    $menu1_html .= '<li class="active">';
+                                    $menu1_html .= str_replace(array("{class}","{arrow}"), array("collapsible-header waves-effect arrow-r active",'<i class="fa fa-angle-down rotate-icon"></i>'), $menu1["link"]); 
+                                } else { 
+                                    $menu1_html .= '<li class="active">';
+                                    $menu1_html .= str_replace(array("{class}","{arrow}"), array("collapsible-header waves-effect arrow-r",'<i class="fa fa-angle-down rotate-icon"></i>'), $menu1["link"]); 
+                                }
                                 $menu1_html .= $menu2_html;
                                 $menu1_html .= '</li>';
                                 ///////////////////////////////////////
@@ -81,7 +75,7 @@
         </div>
         <!-- Breadcrumb-->
         <div class="breadcrumb-dn mr-auto">
-            <p><span style="font-size:0.9em"><?php echo gwords("you.are.here")?>:</span> <?php echo $current_menu?></p>
+            <p><span style="font-size:0.9em"><?php echo gwords("you.are.here")?>:</span> <?php echo $web_user["current"]["url"]?></p>
         </div>
         <ul class="nav navbar-nav nav-flex-icons ml-auto">
             <li class="nav-item">
@@ -101,7 +95,7 @@
                     <i class="fa fa-user"></i> <span class="hidden-sm-down">Profile</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="<?php echo $CFG["secure_a_return"]?>"><i class="fa fa-sign-out" aria-hidden="true"></i> <?php echo gwords("logout")?></a>
+                    <a class="dropdown-item" href="<?php echo $CFG["secure_auth_return"]?>"><i class="fa fa-sign-out" aria-hidden="true"></i> <?php echo gwords("logout")?></a>
                     <a class="dropdown-item" href="<?php echo $CFG["secure_login_home"]?>"><i class="fa fa-user-circle-o" aria-hidden="true"></i> <?php echo gwords("my.account")?></a>
                 </div>
             </li>
