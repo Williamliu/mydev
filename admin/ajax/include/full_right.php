@@ -8,6 +8,9 @@ $role_right         = array();
 while( $rows_role_right = $db_menu_right->fetch($result_role_right) ) {
     $role_right[$rows_role_right["id"]] = 1;
 }
+// Add cancel, reset right
+$role_right["cancel"]   = 1;
+$role_right["reset"]    = 1;
 
 
 $user_right         = array(); 
@@ -27,19 +30,7 @@ foreach($user_right as $menuKey=>$theRight) {
     $user_right[$menuKey]["reset"] = 1;
 }
 
-
-
-$REF_URL            = $_SERVER['HTTP_REFERER'];
-$REF_TEMP           = substr(strrchr($REF_URL, "/"), 1);
-$result_url         = $db_menu_right->query("SELECT menu_key FROM web_menu1 WHERE status=1 AND deleted=0 AND template='" . $db_menu_right->quote($REF_TEMP) . "'");
-$row_url            = $db_menu_right->fetch($result_url);
-$current_menu_key   = $row_url["menu_key"]; 
-// menu2 is high priority
-$result_url         = $db_menu_right->query("SELECT menu_key FROM web_menu2 WHERE status=1 AND deleted=0 AND template='" . $db_menu_right->quote($REF_TEMP) . "'");
-$row_url            = $db_menu_right->fetch($result_url);
-$current_menu_key   = $row_url["menu_key"]?$row_url["menu_key"]:$current_menu_key; 
-$current_menu_key   = $current_menu_key?$current_menu_key:"full_right"; 
-// even  menu not exists
+$current_menu_key   = "full_right";
 $user_right[$current_menu_key] = $role_right;
 
 /*

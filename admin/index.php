@@ -5,6 +5,8 @@ include_once("../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
 include_once($CFG["include_path"] . "/wliu/language/language.php");
 include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
+$sess_name = $_SERVER['HTTP_HOST'] . ".user.session";
+$_SESSION[$sess_name] = "";
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -26,6 +28,13 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
     <script src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/tether.min.js" type="text/javascript"></script>
     <script src="<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/js/bootstrap.min.js" type="text/javascript"></script>    
     <!-- //Bootstrap -->
+
+    <!--
+    <link href='theme/mdb_pro/css/woocommerce.css' rel='stylesheet' type='text/css'>
+    <link href='theme/mdb_pro/css/woocommerce-layout.css' rel='stylesheet' type='text/css'>
+    <link href='theme/mdb_pro/css/woocommerce-smallscreen.css' rel='stylesheet' type='text/css'>
+    -->
+    <!-- //MD Bootstrap -->
 
     <!-- AngularJS 1.3.15 -->
     <script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular.js" type="text/javascript"></script>
@@ -52,15 +61,14 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
 	<link href='<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
     <!-- //wliu components -->
     <script>
-        var col101 = new WLIU.COL({key:1, coltype:"hidden", 	name:"id", 			colname:"Lang ID",  	coldesc:"Word ID",          defval: 100});
-        var col102 = new WLIU.COL({key:0, coltype:"textbox", 	name:"user_name", 	colname:"User Name", 	coldesc:"Login User",       maxlength:64,   notnull:1, defval:""});
-        var col103 = new WLIU.COL({key:0, coltype:"textbox", 	name:"email",		colname:"Email", 		coldesc:"Email Address",    maxlength:256,  notnull:1, datatype:"EMAIL" });
-        var col104 = new WLIU.COL({key:0, coltype:"textbox", 	name:"first_name", 	colname:"First Name", 	coldesc:"First Name",		maxlength:64, 	notnull:1,  defval: "William"});
-        var col105 = new WLIU.COL({key:0, coltype:"textbox", 	name:"last_name", 	colname:"Last Name", 	coldesc:"Last Name",		maxlength:64, 	notnull:1, defval: "Liu"	});
+        var col101 = new WLIU.COL({key:1, coltype:"hidden", 	name:"id", 			colname:"User ID",  	coldesc:"User ID"});
+        var col102 = new WLIU.COL({key:0, coltype:"textbox", 	name:"user_name", 	colname:"User Name", 	coldesc:"Login User",       maxlength:64,   notnull:1, unique:1, defval:""});
+        var col103 = new WLIU.COL({key:0, coltype:"textbox", 	name:"email",		colname:"Email", 		coldesc:"Email Address",    maxlength:256,  notnull:1, unique:1, datatype:"EMAIL" });
+        var col104 = new WLIU.COL({key:0, coltype:"textbox", 	name:"first_name", 	colname:"First Name", 	coldesc:"First Name",		maxlength:64, 	notnull:1,  defval: ""});
+        var col105 = new WLIU.COL({key:0, coltype:"textbox", 	name:"last_name", 	colname:"Last Name", 	coldesc:"Last Name",		maxlength:64, 	notnull:1, defval: ""	});
         var col106 = new WLIU.COL({key:0, coltype:"textbox", 	name:"phone", 	    colname:"Phone", 		coldesc:"Phone", 			maxlength:64,   notnull:0 });
-        var col107 = new WLIU.COL({key:0, coltype:"bool", 	name:"status",		colname:"Active?",  	coldesc:"Active Status",    defval: 1});
-        var col108 = new WLIU.COL({key:0, coltype:"select", 	name:"country",		colname:"Country",  	coldesc:"Country"});
-        var col109 = new WLIU.COL({key:0, coltype:"passpair", name:"password",    colname:"Password"});
+        var col107 = new WLIU.COL({key:0, coltype:"select", 	name:"country",		colname:"Country",  	coldesc:"Country"});
+        var col108 = new WLIU.COL({key:0, coltype:"passpair",   name:"password",    colname:"Password"});
 
         var cols1 = [];
         cols1.push(col101);
@@ -71,7 +79,6 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
         cols1.push(col106);
         cols1.push(col107);
         cols1.push(col108);
-        cols1.push(col109);
 
         var registerForm = new WLIU.FORM({
             lang:	 	GLang,
@@ -80,11 +87,14 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
             cols: 		cols1
         });
 
-        var col201 = new WLIU.COL({key:0, coltype:"textbox", 	name:"login_user", 	    colname:"Login User",  	    coldesc:"Login User",       maxlength:64,   notnull:1, defval: "wmliu"});
-        var col202 = new WLIU.COL({key:1, coltype:"textbox", 	name:"login_password", 	colname:"Login Password", 	coldesc:"Login Password",   maxlength:16,   notnull:1, defval:""});
+        var col201 = new WLIU.COL({key:0, coltype:"textbox", 	name:"login_user", 	    colname:"Login User",  	    maxlength:64,   notnull:1, defval: ""});
+        var col202 = new WLIU.COL({key:0, coltype:"textbox", 	name:"login_password", 	colname:"Login Password", 	maxlength:16,   notnull:1, defval:""});
+        var col203 = new WLIU.COL({key:0, coltype:"hidden", 	name:"url", 	        colname:"Return URL"});
         var cols2  = [];
         cols2.push(col201);
         cols2.push(col202);
+        cols2.push(col203);
+        
         var loginForm = new WLIU.FORM({
             lang:	 	GLang,
             scope: 		"login",
@@ -133,14 +143,15 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
                             <div class="card-block">
                                     <!--Header-->
                                     <div class="text-center">
-                                        <h3><i class="fa fa-lock"></i> Login:</h3>
+                                        <h3><i class="fa fa-lock"></i> <?php echo gwords("login")?></h3>
                                         <hr class="mt-2 mb-2">
                                     </div>
 
                                     <!--Body-->
                                     <div class="md-form text-left">
                                         <i class="fa fa-envelope prefix"></i>
-                                        <input type="text" scope="login" name="login_user" id="login_user" class="form-control">
+                                        <input type="hidden"    scope="login"   name="url" value="<?php echo $_REQUEST["url"];?>">
+                                        <input type="text"      scope="login"   name="login_user" id="login_user" class="form-control">
                                         <label for="login_user">
                                             Your Email or User Name
                                             <a wliu-form-col-error scope="login" name="login_user"></a>
@@ -161,8 +172,8 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
                                     </div>
 
                                 <!--Triggering button-->
-                                <a class="rotate-btn" data-card="card-1"><i class="fa fa-repeat"></i> Not a member? <span style="color:#0275d8;">Sign Up</span></a>
-                                <p>Forgot <a href="#">Password?</a></p>
+                                <a class="rotate-btn" data-card="card-1"><i class="fa fa-repeat"></i>&nbsp;&nbsp;<?php echo gwords("not.a.member")?> ? <span style="color:#0275d8;"><?php echo gwords("register")?></span></a>
+                                <p><?php echo gwords("forget")?> <a href="#"><?php echo gwords("password")?> ?</a></p>
 
                             </div>
                         </div>
@@ -179,14 +190,14 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
                             <div class="card-block">
                                 <!--Header-->
                                 <div class="text-center">
-                                    <h3><i class="fa fa-user"></i> Register:</h3>
+                                    <h3><i class="fa fa-user"></i> <?php echo gwords("register")?></h3>
                                     <input type="hidden" scope="register" name="id" value="" />
                                 </div>
                                 <!--Body-->
                                 <div class="row">
                                     <div class="col-md-6 col-xs-6">
                                         <div class="md-form">
-                                            <input type="text" scope="register" name="user_name" id="user_name" class="form-control" value="Hello">
+                                            <input type="text" scope="register" name="user_name" id="user_name" class="form-control" value="">
                                             <label for="user_name">
                                                 Login Name
                                                 <a wliu-form-col-error scope="register" name="user_name"></a>
@@ -271,7 +282,7 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
                                     <button class="btn btn-indigo" onclick="addData()">Sign up</button>
                                 </div>
 
-                                <a class="rotate-btn" data-card="card-1"><i class="fa fa-undo"></i> Click here back to <span style="color:#0275d8;">login</span></a>
+                                <a class="rotate-btn" data-card="card-1"><i class="fa fa-undo"></i>&nbsp;&nbsp;<?php echo gwords("click.here.back.to")?> <span style="color:#0275d8;"><?php echo gwords("login")?></span></a>
                             </div>
                         </div>
                         <!--/.Back Side-->

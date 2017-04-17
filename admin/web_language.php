@@ -4,6 +4,9 @@ ini_set("display_errors", 0);
 include_once("../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
 include_once($CFG["include_path"] . "/wliu/language/language.php");
+include_once($CFG["include_path"] . "/wliu/auth/auth_admin_client.php");
+include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
+include("include/menu_admin.php");
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -11,34 +14,21 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 		<meta charset="utf8" />
 		<!-- JQuery3.1.1 -->
 		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery.cookie.1.4.1.js"></script>
 		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
 		<link href='<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
 		<!-- //JQuery -->
+
+	    <!-- Font Awesome & BS & MDB -->
+		<link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
+		<link 	href='<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/css/bootstrap.min.css' type='text/css' rel='stylesheet' />
+		<link href='<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/css/mdb.css' type='text/css' rel='stylesheet' />
 		
 		<!-- Bootstrap3.3 -->
-		<link 	href='<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/css/bootstrap.min.css' type='text/css' rel='stylesheet' />
-		<script src="<?php echo $CFG["web_domain"]?>/theme/mdb4.0/js/tether.js" type="text/javascript"></script>
+		<script src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/tether.min.js" type="text/javascript"></script>
 		<script src="<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/js/bootstrap.min.js" type="text/javascript"></script>    
 		<!-- //Bootstrap -->
 		
-		<!-- MD Bootstrap 4.0 -->
-		<link href='<?php echo $CFG["web_domain"]?>/theme/mdb4.0/css/mdb.wliu.css' type='text/css' rel='stylesheet' />
-		<link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
-
-
-		<!--
-		<link href='theme/font-awesome-4.6.3/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
-		<link href='theme/mdb_pro/css/woocommerce.css' rel='stylesheet' type='text/css'>
-		<link href='theme/mdb_pro/css/woocommerce-layout.css' rel='stylesheet' type='text/css'>
-		<link href='theme/mdb_pro/css/woocommerce-smallscreen.css' rel='stylesheet' type='text/css'>
-		-->
-		<!-- //MD Bootstrap -->
-
-		<!-- 3rd Party Component -->
-        <!-- <script src="jquery/plugin/ckeditor_full/ckeditor.js" type="text/javascript"></script> -->
-		<!-- //3rd Party Component -->
-
-
 		<!-- AngularJS 1.3.15 -->
 		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular.js" type="text/javascript"></script>
 		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular-cookies.js" type="text/javascript"></script>
@@ -98,10 +88,7 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 		    var table = new WLIU.TABLE({
 				scope: 		"mytab",
 				url:   		"ajax/web_language_action.php",
-				wait:   	"ajax_wait",
-				taberror:	"table_error",
 				tooltip:	"tool_tip",
-				autotip: 	"auto_tips",
 				rights: 	{detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
 				navi:   	{pagesize:20, match: 1, orderby:"last_updated", sortby:"DESC"},
 				filters: 	filters,
@@ -111,16 +98,17 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
             var app = angular.module("myApp", ["wliuTable"]);
             app.controller("myForm", function ($scope) {
 				table.setScope( $scope, "lang_table" );
-				table.getRecords();
 		    });
 
 			$(function(){
+				table.getRecords();
 			});
 		</script>
 </head>
-<body ng-app="myApp" ng-controller="myForm">
-<!-- container -->
-<div class="container">
+<body ng-app="myApp" ng-controller="myForm" class="fixed-sn mdb-skin">
+
+<?php include("include/menu_head_html.php");?>
+	<div style="min-height:720px;">
 			<fieldset>
 				<legend><?php echo $words["search by"];?></legend>
 				<filter.label table="lang_table" name="content"></filter.label> : 	<filter.textbox class="input-medium" table="lang_table" name="content"></filter.textbox>
@@ -197,17 +185,17 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 					</tr>
 				</table>
 			</div>
-</div>
-<!-- container -->
+	</div>
+<?php include("include/menu_foot_html.php");?>
 
-<div id="table_error" wliu-diag movable maskable></div>
-<div id="auto_tips" wliu-tips></div>
-<div id="ajax_wait" wliu-load></div>
+<table.popup table="lang_table"></table.popup>
+<div wliu-autotip></div>
+<div wliu-wait></div>
 <div id="tool_tip" wliu-popup></div>
 
 
 <!-- MD Bootstrap 4.0 js -- must place at the end of body -->
-<script type="text/javascript" src="theme/mdb4.0/js/mdb.min.js"></script>
+<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/mdb.min.js"></script>
 <!-- <script type="text/javascript" src="theme/mdb_pro/js/woocommerce.min.js"></script> -->
 <!-- //MD Bootstrap 4.0 js -->
 </body>

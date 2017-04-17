@@ -12,7 +12,10 @@ var GCONFIG = {
 			case 980:
 			case 990:
 				if($("div#wliu-autotip-id[wliu-autotip]").length>0) {
-					$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", [errorObj.errorMessage, "warning", function(){ window.location.href = errorObj.errorField; }]);
+					$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", [errorObj.errorMessage, "warning", function(){ 
+						//alert(errorObj.errorMessage);
+						window.location.href = errorObj.errorField; 
+					}]);
 				} else {
 					alert(errorObj.errorMessage);
 					window.location.href = errorObj.errorField;
@@ -22,7 +25,16 @@ var GCONFIG = {
 	},
 	saveSuccess: function(errorObj) {
 		if(parseInt(errorObj.errorCode)==0) {
-			$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", ["Submitted Success.", "success"]);
+			var callback = undefined;
+			if(errorObj.errorField) {
+				//alert(errorObj.errorField);
+				window.location.href = errorObj.errorField;
+			}
+			
+			if( errorObj.errorMessage)
+				$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", [errorObj.errorMessage.nl2br1(), "success"]);
+			else 
+				$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", ["Submitted Success.", "success"]);
 		} 
 	}
 };

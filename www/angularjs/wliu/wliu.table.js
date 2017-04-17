@@ -1402,6 +1402,31 @@ wliu_table.directive("table.bool", function () {
     }
 });
 
+wliu_table.directive("table.booltext", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            row:        "=",
+            name:       "@",
+            yes:        "@",
+            no:         "@"
+        },
+        template: [
+                    '<span ',
+                        common_ng_hide,
+                    '>',
+                        '{{ table.getCol(row, name)?(table.getCol(row, name).value?yes?yes:\'Yes\':no?no:\'No\'):\'\' }}',
+                    '</span>'
+                ].join(''),
+        controller: function ($scope) {
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
 wliu_table.directive("table.datetime", function () {
     return {
         restrict: "E",

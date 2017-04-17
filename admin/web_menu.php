@@ -4,7 +4,9 @@ ini_set("display_errors", 0);
 include_once("../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
 include_once($CFG["include_path"] . "/wliu/language/language.php");
-include("head/menu_admin.php");
+include_once($CFG["include_path"] . "/wliu/auth/auth_admin_client.php");
+include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
+include("include/menu_admin.php");
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -27,11 +29,6 @@ include("head/menu_admin.php");
 		<script src="<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/js/bootstrap.min.js" type="text/javascript"></script>    
 		<!-- //Bootstrap -->
 		
-		<!-- 3rd Party Component -->
-        <!-- <script src="jquery/plugin/ckeditor_full/ckeditor.js" type="text/javascript"></script> -->
-		<!-- //3rd Party Component -->
-
-
 		<!-- AngularJS 1.3.15 -->
 		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular.js" type="text/javascript"></script>
 		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular-cookies.js" type="text/javascript"></script>
@@ -46,6 +43,7 @@ include("head/menu_admin.php");
 		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.js" type="text/javascript"></script>
 		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.form.js" type="text/javascript"></script>
 		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.tree.js" type="text/javascript"></script>
+		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.list.js" type="text/javascript"></script>
 		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.filter.js" type="text/javascript"></script>
 	
 		<script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/diag/wliu.jquery.diag.js" type="text/javascript"></script>
@@ -56,36 +54,39 @@ include("head/menu_admin.php");
 		<link 	href="<?php echo $CFG["web_domain"]?>/jquery/wliu/load/wliu.jquery.load.css" type='text/css' rel='stylesheet' />
 		<script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/tree/wliu.jquery.tree.js" type="text/javascript"></script>
 		<link 	href="<?php echo $CFG["web_domain"]?>/jquery/wliu/tree/wliu.jquery.tree.css" type='text/css' rel='stylesheet' />
+		<script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/tab/wliu.jquery.tab.js" type="text/javascript"></script>
+		<link 	href="<?php echo $CFG["web_domain"]?>/jquery/wliu/tab/wliu.jquery.tab.css" type='text/css' rel='stylesheet' />
 
-
+		
 		<link href='<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.common.css' type='text/css' rel='stylesheet' />
 		<link href='<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
 		<!-- //wliu components -->
 
-
         <script language="javascript" type="text/javascript">
 			var col101 = new WLIU.COL({key:1, table:"p",	coltype:"hidden", 		name:"id", 			colname:"Menu ID", coldesc:"Menu's ID"});
 		   	var col103 = new WLIU.COL({key:0, table:"p", 	coltype:"bool", 		name:"status", 		colname:"Status", 	tooltip:"tool_tip"});
-		   	var col104 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	coldesc:"Menu Key", 			unique:1,	notnull:1, tooltip:"tool_tip"});
-		   	var col105 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title", 	trans:1,	colname:"Title(EN)",coldesc:"Title English",		notnull:1, tooltip:"tool_tip"});
-		   	var col106 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"detail", 	trans:1, 	colname:"Desc(EN)",	coldesc:"Description English",	tooltip:"tool_tip"});
+		   	var col104 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	coldesc:"Menu Key", 		unique:1,	notnull:1, tooltip:"tool_tip"});
+		   	var col105 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_en", 	colname:"Title(EN)",coldesc:"Title English",		notnull:1, tooltip:"tool_tip"});
+		   	var col106 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"detail_en", 	colname:"Desc(EN)",	coldesc:"Description English",	tooltip:"tool_tip"});
 		   	var col107 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_cn", 	colname:"Title(CN)",coldesc:"Title Chinese",		notnull:1, tooltip:"tool_tip"});
 		   	var col108 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"detail_cn", 	colname:"Desc(CN)",	coldesc:"Description Chinese", 	tooltip:"tool_tip"});
 		   	var col109 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"template", 	colname:"Template",	coldesc:"Template",				css:"input-medium",			tooltip:"tool_tip"});
 		   	var col110 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"url",			colname:"URL",		coldesc:"URL",					tooltip:"tool_tip"});
-		   	var col111 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"orderno", 	colname:"Sort", 	css:"input-tiny text-md-center", 	datatype:"NUMBER",  notnull:1, tooltip:"tool_tip"});
+		   	var col111 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"icon", 		colname:"Icon",		coldesc:"Icon", 				tooltip:"tool_tip"});
+		   	var col112 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"orderno", 	colname:"Sort", 	css:"input-tiny text-md-center", 	datatype:"NUMBER",  notnull:1, tooltip:"tool_tip"});
 
 			var col201 = new WLIU.COL({key:1, table:"s",	coltype:"hidden", 		name:"id", 			colname:"Menu ID"});
 		   	var col202 = new WLIU.COL({key:0, table:"s", 	coltype:"hidden", 		name:"parent_id",	colname:"Menu Parent ID"});
 		   	var col203 = new WLIU.COL({key:0, table:"s", 	coltype:"bool", 		name:"status", 		colname:"Status", 	tooltip:"tool_tip"});
-		   	var col204 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	coldesc:"Menu Key", 			unique:1,	notnull:1, tooltip:"tool_tip"});
-		   	var col205 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"title", 		trans:1, colname:"Title(EN)",coldesc:"Title English",		notnull:1, tooltip:"tool_tip"});
-		   	var col206 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"detail", 		trans:1, colname:"Desc(EN)",	coldesc:"Description English",	tooltip:"tool_tip"});
+		   	var col204 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"menu_key", 	colname:"Menu Key",	coldesc:"Menu Key", 	unique:1,	notnull:1, tooltip:"tool_tip"});
+		   	var col205 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"title_en",    colname:"Title(EN)",coldesc:"Title English",		notnull:1, tooltip:"tool_tip"});
+		   	var col206 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"detail_en",   colname:"Desc(EN)",	coldesc:"Description English",	tooltip:"tool_tip"});
 		   	var col207 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"title_cn", 	colname:"Title(CN)",coldesc:"Title Chinese",		notnull:1, tooltip:"tool_tip"});
 		   	var col208 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"detail_cn", 	colname:"Desc(CN)",	coldesc:"Description Chinese", 	tooltip:"tool_tip"});
 		   	var col209 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"template", 	colname:"Template",	coldesc:"Template",				css:"input-medium",	tooltip:"tool_tip"});
 		   	var col210 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"url",			colname:"URL",		coldesc:"URL",					tooltip:"tool_tip"});
-		   	var col211 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"orderno", 	colname:"Sort", 	css:"input-tiny text-md-center", 	datatype:"NUMBER",  notnull:1, tooltip:"tool_tip"});
+		   	var col211 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"icon", 		colname:"Icon",		coldesc:"Icon", 				tooltip:"tool_tip"});
+		   	var col212 = new WLIU.COL({key:0, table:"s", 	coltype:"textbox", 		name:"orderno", 	colname:"Sort", 	css:"input-tiny text-md-center", 	datatype:"NUMBER",  notnull:1, tooltip:"tool_tip"});
 
 
 		   	var tree_cols = {};
@@ -100,6 +101,7 @@ include("head/menu_admin.php");
 			tree_cols.p.push(col109);
 			tree_cols.p.push(col110);
 			tree_cols.p.push(col111);
+			tree_cols.p.push(col112);
 		   	
 			tree_cols.s = [];
 			tree_cols.s.push(col201);
@@ -113,6 +115,7 @@ include("head/menu_admin.php");
 		   	tree_cols.s.push(col209);
 		   	tree_cols.s.push(col210);
 		   	tree_cols.s.push(col211);
+		   	tree_cols.s.push(col212);
 			
 		    var tree = new WLIU.TREE({
 				lang:		GLang,
@@ -120,7 +123,7 @@ include("head/menu_admin.php");
 				treeid:     "lemon",
 				rootid: 	0,
 				refid:      0,
-				title: 		"Menus",
+				title: 		gwords("website.menu.root"),
 				url:   		"ajax/web_menu_action.php",
 				//rights: {detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
 				//filters:filters,
@@ -144,16 +147,16 @@ include("head/menu_admin.php");
 			});
 		</script>
 </head>
-<body ng-app="myApp" ng-controller="myForm">
-<!-- container -->
-<div class="container">
-			<br>
-			Website Admin Menu<br>
-			<table.tree table="menu_tree"></table.tree>
-</div>
-<!-- container -->
-<br>
+<body ng-app="myApp" ng-controller="myForm" class="fixed-sn mdb-skin">
 
+<?php include("include/menu_head_html.php");?>
+	<div style="min-height:720px;">
+		<?php echo gwords("website.admin.menu")?><br>
+		<table.tree table="menu_tree"></table.tree>
+	</div>
+<?php include("include/menu_foot_html.php");?>
+
+<br>
 <div id="tool_tip" wliu-popup></div>
 <div wliu-autotip></div>
 <div wliu-wait></div>

@@ -2,6 +2,11 @@
 session_start();
 ini_set("display_errors", 0);
 include_once("../include/config/config.php");
+include_once($CFG["include_path"] . "/wliu/database/database.php");
+include_once($CFG["include_path"] . "/wliu/language/language.php");
+include_once($CFG["include_path"] . "/wliu/auth/auth_admin_client.php");
+include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
+include("include/menu_admin.php");
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -9,34 +14,21 @@ include_once("../include/config/config.php");
 		<meta charset="utf8" />
 		<!-- JQuery3.1.1 -->
 		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery.cookie.1.4.1.js"></script>
 		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
 		<link href='<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
 		<!-- //JQuery -->
+
+	    <!-- Font Awesome & BS & MDB -->
+		<link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
+		<link 	href='<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/css/bootstrap.min.css' type='text/css' rel='stylesheet' />
+		<link href='<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/css/mdb.css' type='text/css' rel='stylesheet' />
 		
 		<!-- Bootstrap3.3 -->
-		<link 	href='<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/css/bootstrap.min.css' type='text/css' rel='stylesheet' />
-		<script src="<?php echo $CFG["web_domain"]?>/theme/mdb4.0/js/tether.js" type="text/javascript"></script>
+		<script src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/tether.min.js" type="text/javascript"></script>
 		<script src="<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/js/bootstrap.min.js" type="text/javascript"></script>    
 		<!-- //Bootstrap -->
 		
-		<!-- MD Bootstrap 4.0 -->
-		<link href='<?php echo $CFG["web_domain"]?>/theme/mdb4.0/css/mdb.wliu.css' type='text/css' rel='stylesheet' />
-		<link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
-
-
-		<!--
-		<link href='theme/font-awesome-4.6.3/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
-		<link href='theme/mdb_pro/css/woocommerce.css' rel='stylesheet' type='text/css'>
-		<link href='theme/mdb_pro/css/woocommerce-layout.css' rel='stylesheet' type='text/css'>
-		<link href='theme/mdb_pro/css/woocommerce-smallscreen.css' rel='stylesheet' type='text/css'>
-		-->
-		<!-- //MD Bootstrap -->
-
-		<!-- 3rd Party Component -->
-        <!-- <script src="jquery/plugin/ckeditor_full/ckeditor.js" type="text/javascript"></script> -->
-		<!-- //3rd Party Component -->
-
-
 		<!-- AngularJS 1.3.15 -->
 		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular.js" type="text/javascript"></script>
 		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular-cookies.js" type="text/javascript"></script>
@@ -68,8 +60,8 @@ include_once("../include/config/config.php");
 		   	var col2 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"table_name",	colname:"Table Name", 	coldesc:"Table Name", 			sort:"ASC", maxlength:64,	notnull:1,	unique:1});
 		   	var col3 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_en", 	colname:"Title.EN", 	coldesc:"Title English",  		sort:"ASC", maxlength:64, 	notnull:1	});
 		   	var col4 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"title_cn", 	colname:"Title.CN", 	coldesc:"Title Chinese",  		sort:"ASC", maxlength:64,  	notnull:1,  });
-		   	var col5 = new WLIU.COL({key:0, table:"p", 	coltype:"textarea", 	name:"desc_en", 	colname:"Detail.EN",   	coldesc:"Description English",	sort:"ASC", maxlength:256 });
-		   	var col6 = new WLIU.COL({key:0, table:"p", 	coltype:"textarea", 	name:"desc_cn", 	colname:"Detail.CN",   	coldesc:"Description Chinese",	sort:"ASC", maxlength:256 });
+		   	var col5 = new WLIU.COL({key:0, table:"p", 	coltype:"textarea", 	name:"detail_en", 	colname:"Detail.EN",   	coldesc:"Description English",	sort:"ASC", maxlength:256 });
+		   	var col6 = new WLIU.COL({key:0, table:"p", 	coltype:"textarea", 	name:"detail_cn", 	colname:"Detail.CN",   	coldesc:"Description Chinese",	sort:"ASC", maxlength:256 });
 		   	var col7 = new WLIU.COL({key:0, table:"p", 	coltype:"bool", 		name:"status",		colname:"Active?",  	coldesc:"Active Status", 		defval: true});
 		   	var col8 = new WLIU.COL({key:0, table:"p", 	coltype:"textbox", 		name:"orderno", 	colname:"Order", 		coldesc:"Order No.",  			sort:"Desc", min:0, max:999, defval:0, datatype:"NUMBER" });
 
@@ -92,12 +84,9 @@ include_once("../include/config/config.php");
 		    var table = new WLIU.TABLE({
 				scope: 		"mytab",
 				url:   		"ajax/web_table_action.php",
-				wait:   	"ajax_wait",
-				taberror:	"table_error",
 				tooltip:	"tool_tip",
-				autotip: 	"auto_tips",
 				rights: 	{detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
-				navi:   	{pagesize:20, match: 1, orderby:"last_updated", sortby:"DESC"},
+				navi:   	{pagesize:20, match: 1, orderby:"p.last_updated", sortby:"DESC"},
 				filters: 	filters,
 				cols: 		cols
 			});
@@ -112,96 +101,95 @@ include_once("../include/config/config.php");
 			});
 		</script>
 </head>
-<body ng-app="myApp" ng-controller="myForm" style="padding-top:80px;position:relative;">
-<!-- container -->
-<div class="container">
-		<div class="row">
+<body ng-app="myApp" ng-controller="myForm" class="fixed-sn mdb-skin">
+<?php include("include/menu_head_html.php");?>
+	<div style="min-height:720px;">
+
 			<fieldset>
 				<legend>Search By</legend>
 				<filter.label table="web_table" name="table_name"></filter.label> : <filter.textbox class="input-medium" table="web_table" name="table_name"></filter.textbox>
 				<filter.label table="web_table" name="content"></filter.label> : 	<filter.textbox class="input-medium" table="web_table" name="content"></filter.textbox>
-			</feildset>
+				<br>
+				<table.tablebutton table="web_table" name="search" actname="Search" outline=1 style="margin-top:10px; margin-left:60px;"></table.tablebutton>
+			</fieldset>
 			<div style="margin-top:20px;">
-			<table.tablebutton table="web_table" name="search" actname="Search" outline=1></table.tablebutton>
+				<table.navi table="web_table"></table.navi>
+				<table class="table table-condensed">
+					<tr style="background-color:#eeeeee;"> 
+						<td width=50>
+							<table.hicon table="web_table" name="add" 		actname="Add New"></table.hicon>
+							<table.hicon table="web_table" name="save" 		actname="Save"></table.hicon>
+							<table.hicon table="web_table" name="cancel" 	actname="Undo"></table.hicon>
+						</td>
+						<td width=40 align="center">
+							<table.head table="web_table" name="SN"></table.head>
+						</td>
+						<td>
+							<table.head table="web_table" name="table_name"></table.head>
+						</td>
+						<td>
+							<table.head table="web_table" name="title_en"></table.head>
+						</td>
+						<td>
+							<table.head table="web_table"  name="detail_en"></table.head>
+						</td>
+						<td>
+							<table.head table="web_table"  name="title_cn"></table.head>
+						</td>
+						<td>
+							<table.head table="web_table"  name="detail_cn"></table.head>
+						</td>
+						<td>
+							<table.head table="web_table"  name="orderno"></table.head>
+						</td>
+						<td>
+							<table.head table="web_table"  name="status"></table.head>
+						</td>
+					</tr>	
+					<tr ng-repeat="row in web_table.rows">
+						<td style="white-space:nowrap; width:40px;">
+							<table.bicon table="web_table" name="save"  	actname="Save" 		row="row"></table.bicon>
+							<table.bicon table="web_table" name="cancel"	actname="Cancel" 	row="row"></table.bicon>
+							<table.bicon table="web_table" name="delete" 	actname="Delete" 	row="row"></table.bicon>
+						</td>
+						<td width=30 align="center">
+							<table.rowno table="web_table"  row="row"></table.rowno>
+						</td>
+						<td>
+							<table.textbox class="input-auto" table="web_table" name="table_name" row="row"></table.textbox>
+						</td>
+						<td>
+							<table.textbox class="input-auto" table="web_table" name="title_en" row="row"></table.textbox>
+						</td>
+						<td>
+							<table.textarea class="input-large" table="web_table" name="detail_en" row="row"></table.textarea>
+						</td>
+						<td>
+							<table.textbox class="input-auto" table="web_table" name="title_cn" row="row"></table.textbox>
+						</td>
+						<td>
+							<table.textarea class="input-large" table="web_table" name="detail_cn" row="row"></table.textarea>
+						</td>
+						<td>
+							<table.textbox class="input-tiny" table="web_table" name="orderno" row="row" style="text-align:center;"></table.textbox>
+						</td>
+						<td>
+							<table.bool table="web_table" name="status" row="row"></table.bool>
+						</td>
+					</tr>
+				</table>
 			</div>
-			<br>
-			<table.navi table="web_table"></table.navi>
-			<table class="table table-condensed">
-				<tr style="background-color:#eeeeee;"> 
-					<td width=50>
-						<table.hicon table="web_table" name="add" 		actname="Add New"></table.hicon>
-						<table.hicon table="web_table" name="save" 		actname="Save"></table.hicon>
-						<table.hicon table="web_table" name="cancel" 	actname="Undo"></table.hicon>
-					</td>
-					<td width=40 align="center">
-						<table.head table="web_table" name="SN"></table.head>
-					</td>
-					<td>
-						<table.head table="web_table" name="table_name"></table.head>
-					</td>
-					<td>
-						<table.head table="web_table" name="title_en"></table.head>
-					</td>
-					<td>
-						<table.head table="web_table"  name="title_cn"></table.head>
-					</td>
-					<td>
-						<table.head table="web_table"  name="desc_en"></table.head>
-					</td>
-					<td>
-						<table.head table="web_table"  name="desc_cn"></table.head>
-					</td>
-					<td>
-						<table.head table="web_table"  name="orderno"></table.head>
-					</td>
-					<td>
-						<table.head table="web_table"  name="status"></table.head>
-					</td>
-				</tr>	
-				<tr ng-repeat="row in web_table.rows">
-					<td style="white-space:nowrap; width:40px;">
-						<table.bicon table="web_table" name="save"  	actname="Save" 		row="row"></table.bicon>
-						<table.bicon table="web_table" name="cancel"	actname="Cancel" 	row="row"></table.bicon>
-						<table.bicon table="web_table" name="delete" 	actname="Delete" 	row="row"></table.bicon>
-					</td>
-					<td width=30 align="center">
-						<table.rowno table="web_table"  row="row"></table.rowno>
-					</td>
-					<td width="100px">
-						<table.textbox class="input-auto" table="web_table" name="table_name" row="row"></table.textbox>
-					</td>
-					<td width="100px">
-						<table.textbox class="input-auto" table="web_table" name="title_en" row="row"></table.textbox>
-					</td>
-					<td>
-						<table.textbox class="input-small" table="web_table" name="title_cn" row="row"></table.textbox>
-					</td>
-					<td>
-						<table.textarea class="input-large" table="web_table" name="desc_en" row="row"></table.textarea>
-					</td>
-					<td>
-						<table.textarea class="input-large" table="web_table" name="desc_cn" row="row"></table.textarea>
-					</td>
-					<td>
-						<table.textbox class="input-tiny" table="web_table" name="orderno" row="row" style="text-align:center;"></table.textbox>
-					</td>
-					<td>
-						<table.bool table="web_table" name="status" row="row"></table.bool>
-					</td>
-				</tr>
-			</table>
-		</div>
-</div>
-<!-- container -->
+	</div>
+<?php include("include/menu_foot_html.php");?>
 
-<div id="table_error" wliu-diag movable maskable></div>
-<div id="auto_tips" wliu-tips></div>
-<div id="ajax_wait" wliu-load></div>
+<table.popup table="web_table"></table.popup>
+<div wliu-autotip></div>
+<div wliu-wait></div>
 <div id="tool_tip" wliu-popup></div>
 
 
 <!-- MD Bootstrap 4.0 js -- must place at the end of body -->
-<script type="text/javascript" src="theme/mdb4.0/js/mdb.min.js"></script>
+<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/mdb.min.js"></script>
 <!-- <script type="text/javascript" src="theme/mdb_pro/js/woocommerce.min.js"></script> -->
 <!-- //MD Bootstrap 4.0 js -->
 </body>

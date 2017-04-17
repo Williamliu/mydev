@@ -75,6 +75,7 @@ include_once("website_a_auth.php");
                         cols: {
                             pptable: [
                                 { col: "menu_key", 	type: "textbox", 	title: 	words["menu.key"], 	style:"width:50px;", required: 1 },
+                                { col: "icon", 	    type: "textbox", 	title: 	words["icon"], 	    style:"width:50px;", required: 1 },
                                 { col: "title_cn", 	type: "textbox", 	title: 	words["title.cn"], 	style:"width:50px;", required: 1 },
                                 { col: "desc_cn", 	type: "textbox", 	title: 	words["desc.cn"], 	css: "", style: "" },
                                 { col: "title_en", 	type: "textbox", 	title: 	words["title.en"], 	style:"width:50px;", required: 1 },
@@ -87,6 +88,7 @@ include_once("website_a_auth.php");
                            ],
                             sstable: [
                                 { col: "menu_key", 	type: "textbox", 	title: 	words["menu.key"], 	style:"width:50px;", required: 1 },
+                                { col: "icon", 	    type: "textbox", 	title: 	words["icon"], 	    style:"width:50px;", required: 1 },
                                 { col: "title_cn", 	type: "textbox", 	title: words["title.cn"], 	style:"width:50px;", required: 1 },
                                 { col: "desc_cn", 	type: "textbox", 	title: words["desc.cn"], 	css: "", style: "" },
                                 { col: "title_en", 	type: "textbox", 	title: words["title.en"], 	style:"width:50px;", required: 1 },

@@ -5,7 +5,7 @@ try {
 	//  table1.name == table2.name ;  fkey is parent_id started from 0  as tree root 
 	$tableList = array(
 		"type"=>"list1",
-		"table1"=>array("name"=>"web_basic_table", 	"key"=>"id", "fkey"=>"", "value"=>"title_cn", "desc"=>"desc_cn"),
+		"table1"=>array("name"=>"web_basic_table", 	"key"=>"id", "fkey"=>"", "value"=>"title_cn", "desc"=>"detail_cn"),
 		"table2"=>array(),
 		"table3"=>array()
 	);
@@ -35,7 +35,7 @@ try {
 							"name"=>"web_basic_info", 
 							"keys"=>array("id"),  
 							"fkeys"=>array("ref_id"), 
-							"cols"=>array("id","ref_id", "title_en", "title_cn", "desc_en", "desc_cn", "status", "orderno", "last_updated"), 
+							"cols"=>array("id","ref_id", "title_en", "title_cn", "detail_en", "detail_cn", "status", "orderno", "last_updated"), 
 							"insert"=>array("last_updated"=>time()), 
 							"update"=>array()  
 		)
@@ -56,10 +56,7 @@ try {
 	*/
 	
 	// 6) return 
-	cACTION::clearRows($table);
-	$response["table"] = $table;
-	$db->close();
-	echo json_encode($response);
+	include_once("include/table_ajax_response.php");
 	
 } catch(Exception $e ) {
 	include_once("include/table_error_catch.php");

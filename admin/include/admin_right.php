@@ -1,4 +1,5 @@
 <?php
+$sess_name = $_SERVER['HTTP_HOST'] . ".user.session";
 $db_menu_right = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
 /*** Menu Right for User ***/
 $user_right         = array(); 
@@ -17,7 +18,7 @@ INNER JOIN web_admin_session e ON (a.id = e.admin_id)
 WHERE 
 a.deleted=0 AND a.status=1 AND 
 d.deleted=0 AND d.status=1 AND 
-e.session_id = '" . $db_menu_right->quote($_SESSION[$_SERVER['HTTP_HOST'] . ".user.session"]) . "' AND  e.status = 1 AND e.deleted = 0
+e.session_id = '" . $db_menu_right->quote($_SESSION[$sess_name]) . "' AND  e.status = 1 AND e.deleted = 0
 ";
 $result_menu_right  = $db_menu_right->query($query_menu_right);
 while( $rows_menu_right = $db_menu_right->fetch($result_menu_right) ) {
@@ -39,7 +40,7 @@ INNER JOIN web_admin_session e ON (a.id = e.admin_id)
 WHERE 
 a.deleted=0 AND a.status=1 AND 
 d.deleted=0 AND d.status=1 AND 
-e.session_id = '" . $db_menu_right->quote($_SESSION[$_SERVER['HTTP_HOST'] . ".user.session"]) . "' AND  e.status = 1 AND e.deleted = 0
+e.session_id = '" . $db_menu_right->quote($_SESSION[$sess_name]) . "' AND  e.status = 1 AND e.deleted = 0
 ";
 $result_menu_right  = $db_menu_right->query($query_menu_right);
 while( $rows_menu_right = $db_menu_right->fetch($result_menu_right) ) {
@@ -50,17 +51,34 @@ foreach($user_right as $menuKey=>$theRight) {
     $user_right[$menuKey]["reset"] = 1;
 }
 
-$REF_URL            = $_SERVER["SCRIPT_NAME"];
+$REF_URL            = "/" . $_SERVER["SCRIPT_NAME"];
 $REF_TEMP           = substr(strrchr($REF_URL, "/"), 1);
-$result_url         = $db_menu_right->query("SELECT menu_key FROM web_menu1 WHERE status=1 AND deleted=0 AND template='" . $db_menu_right->quote($REF_TEMP) . "'");
+$result_url         = $db_menu_right->query("SELECT menu_key, icon, " . cLANG::col("title") . ", template, url FROM web_menu1 WHERE status=1 AND deleted=0 AND template='" . $db_menu_right->quote($REF_TEMP) . "'");
 $row_url            = $db_menu_right->fetch($result_url);
 $current_menu_key   = $row_url["menu_key"]; 
 
-$result_url         = $db_menu_right->query("SELECT menu_key FROM web_menu2 WHERE status=1 AND deleted=0 AND template='" . $db_menu_right->quote($REF_TEMP) . "'");
+$web_cur_url      = $row_url["url"]?'href="' . $row_url["url"] .'" target="_blank"':''; 
+$web_cur_url      = $row_url["template"]?'href="' . $row_url["template"] .'"':''; 
+$current_menu = '<a ' . $web_cur_url . ' style="font-weight:bold;">' . $row_url["icon"] . ' ' . $row_url["title"] . '</a>';
+$web_user["current"]["menu_key"]    = $row_url["menu_key"];
+$web_user["current"]["url"]         = $current_menu;
+$web_user["current"]["title"]       = $row_url["title"];
+
+
+
+$result_url         = $db_menu_right->query("SELECT menu_key, icon, " . cLANG::col("title") . ", template, url FROM web_menu2 WHERE status=1 AND deleted=0 AND template='" . $db_menu_right->quote($REF_TEMP) . "'");
 $row_url            = $db_menu_right->fetch($result_url);
 $current_menu_key   = $row_url["menu_key"]?$row_url["menu_key"]:$current_menu_key; 
 
+$web_cur_url      = $row_url["url"]?'href="' . $row_url["url"] .'" target="_blank"':''; 
+$web_cur_url      = $row_url["template"]?'href="' . $row_url["template"] .'"':''; 
+$current_menu = '<a ' . $web_cur_url . ' style="font-weight:bold;">' . $row_url["icon"] . ' ' . $row_url["title"] . '</a>';
+$web_user["current"]["menu_key"]    = $row_url["menu_key"];
+$web_user["current"]["url"]         = $current_menu;
+$web_user["current"]["title"]       = $row_url["title"];
+
 $web_user["rights"]  = $user_right[$current_menu_key];
+
 /*
 echo "$current_menu_key<pre>";
 print_r($web_user);
@@ -69,6 +87,11 @@ echo "<pre>";
 print_r($user_right);
 echo "</pre>";
 */
+
 //////////////////////////////////////////////////////////////////////////////////////////
 $db_menu_right->close();
+
+if(!$web_user["rights"]["view"]) { 
+	header("Location: " . $CFG["secure_invalid_page"]);
+}
 ?>

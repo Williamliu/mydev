@@ -1,6 +1,6 @@
 <?php 
 try {
-	include_once("include/table_ajax_include.php");
+	include_once("include/tree_ajax_include.php");
 	// 2) list table : list1, list2, list3, cate1, cate2, cate3
 	//  table1.name == table2.name ;  fkey is parent_id started from 0  as tree root 
 	$listTable = array();
@@ -51,10 +51,7 @@ try {
 	cTREE::action($db, $table);
 
 	// 5) return 
-	cTREE::clearRows($table);
-	$response["table"] = $table;
-	$db->close();
-	echo json_encode($response);
+	include_once("include/tree_ajax_response.php");
 	
 } catch(Exception $e ) {
 	include_once("include/table_error_catch.php");

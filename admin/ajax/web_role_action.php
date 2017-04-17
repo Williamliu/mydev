@@ -42,10 +42,7 @@ try {
 	*/
 	
 	// 6) return 
-	cACTION::clearRows($table);
-	$response["table"] = $table;
-	$db->close();
-	echo json_encode($response);
+	include_once("include/table_ajax_response.php");
 	
 } catch(Exception $e ) {
 	include_once("../include/table_error_catch.php");

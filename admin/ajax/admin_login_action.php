@@ -1,54 +1,92 @@
 <?php 
 try {
-	include_once("include/table_ajax_include.php");
-	cVALIDATE::validateForm($table);
+	include_once("include/login_ajax_include.php");
 
+	/**************************************************/
 	switch($table["action"]) {
 		case "get":
-			if($table["rights"]["view"]) {
-				$data["login_user"] 	= "Hello World";
-				$data["login_password"] = "222 333";
-				$table["data"] = $data;
-			} else {
-				$table["error"]["errorCode"] 	= 1;
-				$table["error"]["errorMessage"] = "You don't have right to view data.";
-			}
 			break;
 		case "save":
 			switch($table["rowstate"]) {
 				case 1:
-					if($table["rights"]["save"]) {
-						$table["data"][1]["value"] = "this is pass";
-					} else {
-						$table["error"]["errorCode"] 	= 1;
-						$table["error"]["errorMessage"] = "You don't have right to update data.";
-					}
 					break;
 				case 2:
 					if($table["rights"]["add"]) {
-						$table["data"][1]["value"] = "this is pass";
+						$sess_name = $_SERVER['HTTP_HOST'] . ".user.session";
+						$user = $db->quote($table["formData"]["login_user"]);
+						$pass = $db->quote($table["formData"]["login_password"]);
+						$url  = $table["formData"]["url"];
+
+						// unlock account after x minutes
+						$query = "UPDATE web_admin SET status = 1 WHERE deleted<>1 AND status=0 AND (user_name='" . $user . "' OR email = '" . $user . "') AND last_updated <= " . ( time() - $CFG["secure_lock_timeout"] ); 
+						$db->query($query);
+
+						$query 	= "SELECT id, user_name, email FROM web_admin WHERE deleted <> 1 AND status = 1 AND (user_name = '" . $user . "' OR email = '" . $user . "') AND password = '" . $pass . "'";
+						$result = $db->query($query);
+						if( $db->row_nums($result) > 0 )  {
+							$row = $db->fetch($result);
+							$admin_id = $row["id"];
+							$login_time = time();
+							$sess_id  = md5($admin_id . $login_time . rand(65535, 6553500));
+							$_SESSION[$sess_name] = $sess_id;
+
+							$fields = array();
+							$fields["admin_id"] 	= $admin_id;
+							$fields["session_id"] 	= $sess_id;
+							$fields["user_agent"] 	= $_SERVER['HTTP_USER_AGENT']; 
+
+							$browser 				= new Browser();
+							$fields["platform"] 	= $browser->getPlatform(); 
+							$fields["browser"] 		= $browser->getBrowser(); 
+							$fields["version"] 		= $browser->getVersion(); 
+							$fields["is_mobile"] 	= $browser->isMobile()?1:0; 
+							
+							$fields["ip_address"] 	= $_SERVER['REMOTE_ADDR']; 
+							$fields["created_time"]	= $login_time;
+							$fields["last_updated"] = $login_time;
+							$fields["status"] 		= 1;
+							$fields["deleted"] 		= 0;
+
+							$db->insert("web_admin_session", $fields);
+							$db->query("UPDATE web_admin SET hits = hits + 1, login_count = 0, last_login = '". time() ."' WHERE deleted <> 1 AND status = 1 AND id = '" . $admin_id . "'");	
+							$table["data"]["session_id"] = $sess_id;
+
+							$table["error"]["errorCode"] 	= 0;
+							$table["error"]["errorMessage"] = "Login Successful";
+							$table["error"]["errorField"] 	= $url?$url:$CFG["secure_login_home"];
+						} else {
+							$login_max 	= $CFG["secure_login_max"];
+							$login_lock = $CFG["secure_lock_timeout"];
+							$query = "UPDATE web_admin SET status = IF(login_count >=" . $login_max . ",0, status), login_count =IF( login_count >=" . $login_max . " OR status = 0, 0, login_count + 1 ), last_updated = '" . time() . "' WHERE deleted <> 1  AND ( user_name = '" . $user . "' OR email = '" . $user . "')";
+							$db->query($query);
+
+							$query = "SELECT id, user_name, email FROM web_admin WHERE deleted <> 1 AND status <> 1 AND (user_name = '" . $user . "' OR email = '" . $user . "')";
+							$result_count = $db->query( $query );
+							if($db->row_nums($result_count) > 0) {
+								$table["error"]["errorCode"] 	= 1;
+								$table["error"]["errorMessage"] = "You failed to login for $login_max times, your account has been locked and try again after " . ($login_lock/60) . " minutes.";
+							} else {
+								$table["error"]["errorCode"] 	= 1;
+								$table["error"]["errorMessage"] = "You failed to login, please make sure your user name and password is correct.";
+							}
+						} 
+						
 					} else {
 						$table["error"]["errorCode"] 	= 1;
 						$table["error"]["errorMessage"] = "You don't have right to add data.";
 					}
 					break;
 				case 3:
-					if($table["rights"]["delete"]) {
-					} else {
-						$table["error"]["errorCode"] 	= 1;
-						$table["error"]["errorMessage"] = "You don't have right to delete data.";
-					}
 					break;
 			}
 			break;
 		case "custom":
-			//$table["data"][1]["value"] = "this is pass";
-			$table["error"]["errorCode"] 	= 1;
-			$table["error"]["errorMessage"] = "You don't have right to custom data.";
 			break;
 	}
+	/**************************************************/
 
-	include_once("include/table_ajax_response.php");
+	include_once("include/form_ajax_response.php");
+
 } catch(Exception $e ) {
 	include_once("include/table_error_catch.php");
 }

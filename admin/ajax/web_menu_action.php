@@ -1,6 +1,6 @@
 <?php 
 try {
-	include_once("include/table_ajax_include.php");
+	include_once("include/tree_ajax_include.php");
 	// 2) list table : list1, list2, list3, cate1, cate2, cate3
 	//  table1.name == table2.name ;  fkey is parent_id started from 0  as tree root 
 	$table["listTable"] = $listTable;
@@ -18,7 +18,7 @@ try {
 							"name"=>"web_menu1", 
 							"keys"=>array("id"),  
 							"fkeys"=>array("parent_id"), 
-							"cols"=>array("id","parent_id","menu_key","title_en","detail_en","title_cn","detail_cn","template","url","seo_title","seo_keyword","seo_description","status","orderno"), 
+							"cols"=>array("id","parent_id","menu_key","icon","title_en","detail_en","title_cn","detail_cn","template","url","seo_title","seo_keyword","seo_description","status","orderno"), 
 							"insert"=>array(), 
 							"update"=>array()
 					),
@@ -27,7 +27,7 @@ try {
 							"name"=>"web_menu2", 
 							"keys"=>array("id"),  
 							"fkeys"=>array("parent_id"), 
-							"cols"=>array("id","parent_id", "menu_key", "title_en", "detail_en","title_cn","detail_cn","template","url","seo_title","seo_keyword","seo_description","status", "orderno"), 
+							"cols"=>array("id","parent_id", "menu_key","icon","title_en", "detail_en","title_cn","detail_cn","template","url","seo_title","seo_keyword","seo_description","status", "orderno"), 
 							"insert"=>array(), 
 							"update"=>array()
 		 )
@@ -38,10 +38,7 @@ try {
 	cTREE::action($db, $table);
 
 	// 5) return 
-	cTREE::clearRows($table);
-	$response["table"] = $table;
-	$db->close();
-	echo json_encode($response);
+	include_once("include/tree_ajax_response.php");
 	
 } catch(Exception $e ) {
 	include_once("include/table_error_catch.php");

@@ -1259,6 +1259,30 @@ wliu_table.directive("form.bool", function () {
     }
 });
 
+wliu_table.directive("form.booltext", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            name:       "@",
+            yes:        "@",
+            no:         "@"
+        },
+        template: [
+                    '<span ',
+                        form_ng_hide,
+                    '>',
+                        '{{  table.getColCurrent(name)?( table.getColCurrent(name).value?yes?yes:\'Yes\':no?no:\'No\'):\'\' }}',
+                    '</span>'
+                ].join(''),
+        controller: function ($scope) {
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
 wliu_table.directive("form.datetime", function () {
     return {
         restrict: "E",
@@ -3237,7 +3261,7 @@ wliu_table.directive("form.button", function (wliuTableService) {
             after:      "&"
         },
         template: [
-                    '<div class="white-block">',
+                    '<div style="display:inline-block;position:relative;background-color:#ffffff;vertical-align:middle;">',
                         '<button class="btn btn{{ outline==1?\'-outline\':\'\'}}-{{ buttonStyle() }} waves-effect" ',
                             'style="min-width:60px;{{!buttonState(name, table.getCurrent().rowstate)?\'border-color:grey;\':\'\'}}" ',
                             'title="{{table.colMeta(name).coldesc?table.colMeta(name).coldesc:table.colMeta(name).colname}}"',

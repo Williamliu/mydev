@@ -4,10 +4,9 @@ ini_set("display_errors", 0);
 include_once("../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
 include_once($CFG["include_path"] . "/wliu/language/language.php");
-//include_once($CFG["include_path"] . "/wliu/auth/auth_admin_client.php");
+include_once($CFG["include_path"] . "/wliu/auth/auth_admin_client.php");
 include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
 include("include/menu_admin.php");
-//print_r($user_right["M11"]);
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -140,199 +139,199 @@ include("include/menu_admin.php");
 			});
 		</script>
 </head>
-<body ng-app="myApp" ng-controller="myForm">
-<!-- container -->
-<div class="container">
-	<div class="row">
-		<div class="col-md-4">
-			<table.list table="role_table" title="<?php echo gwords("website.admin")?>" searchcol="user_name,first_name,last_name,email,phone,cell" displaycolx="user_name,email,first_name,last_name,phone,cell,role_id,last_login,hits,status"></table.list>
-		</div>
-		<div class="col-md-8">
-			<!---Admin Detail -->
-			<ul wliu-tab9 color-purple>
-				<li><span><?php echo gwords("admin.detail")?></span><s></s></li>
-			</ul>
-			<div wliu-tab9-body>
-				<div class="selected" style="padding:15px;">
-					<div class="row">
-						<div class="col-md-6" style="height:auto;">
-								<!-- login information -->
+<body ng-app="myApp" ng-controller="myForm" class="fixed-sn mdb-skin">
+
+<?php include("include/menu_head_html.php");?>
+	<div style="min-height:720px;">
+		<div class="row">
+			<div class="col-md-4">
+				<table.list table="role_table" title="<?php echo gwords("website.admin")?>" searchcol="user_name,first_name,last_name,email,phone,cell" displaycolx="user_name,email,first_name,last_name,phone,cell,role_id,last_login,hits,status"></table.list>
+			</div>
+			<div class="col-md-8">
+				<!---Admin Detail -->
+				<ul wliu-tab9 color-purple>
+					<li><span><?php echo gwords("admin.detail")?></span><s></s></li>
+				</ul>
+				<div wliu-tab9-body>
+					<div class="selected" style="padding:15px;">
+						<div class="row">
+							<div class="col-md-6" style="height:auto;">
+									<!-- login information -->
+									<div class="row">
+										<div class="col-md-4 text-nowrap">
+											<form.label table="role_table" name="user_name"></form.label>
+										</div>
+										<div class="col-md-8">
+											<form.readonly table="role_table" name="user_name" class="input-auto"></form.readonly>			
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4 text-nowrap">
+											<form.label table="role_table" name="email"></form.label>
+										</div>
+										<div class="col-md-8">
+											<form.textbox table="role_table" name="email" class="input-auto"></form.textbox>		
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4 text-nowrap">
+											<form.label table="role_table" name="password"></form.label>
+										</div>
+										<div class="col-md-8">
+											<form.passpair table="role_table" name="password" class="input-auto"></form.passpair>		
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4 text-nowrap">
+											<form.label table="role_table" name="role_id"></form.label>
+										</div>
+										<div class="col-md-8">
+											<form.checkbox table="role_table" name="role_id" colnum=1></form.checkbox>		
+										</div>
+									</div>
+									<!-- //login information -->
+							</div>
+							<div class="col-md-6">
+								<!-- Admin information -->
 								<div class="row">
 									<div class="col-md-4 text-nowrap">
-										<form.label table="role_table" name="user_name"></form.label>
+										<form.label table="role_table" name="first_name"></form.label>
 									</div>
 									<div class="col-md-8">
-										<form.readonly table="role_table" name="user_name" class="input-auto"></form.readonly>			
+										<form.textbox table="role_table" name="first_name" class="input-auto"></form.textbox>		
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-md-4 text-nowrap">
-										<form.label table="role_table" name="email"></form.label>
+										<form.label table="role_table" name="last_name"></form.label>
 									</div>
 									<div class="col-md-8">
-										<form.textbox table="role_table" name="email" class="input-auto"></form.textbox>		
+										<form.textbox table="role_table" name="last_name" class="input-auto"></form.textbox>		
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-md-4 text-nowrap">
-										<form.label table="role_table" name="password"></form.label>
+										<form.label table="role_table" name="phone"></form.label>
 									</div>
 									<div class="col-md-8">
-										<form.passpair table="role_table" name="password" class="input-auto"></form.passpair>		
+										<form.textbox table="role_table" name="phone" class="input-auto"></form.textbox>		
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-md-4 text-nowrap">
-										<form.label table="role_table" name="role_id"></form.label>
+										<form.label table="role_table" name="cell"></form.label>
 									</div>
 									<div class="col-md-8">
-										<form.checkbox table="role_table" name="role_id" colnum=1></form.checkbox>		
+										<form.textbox table="role_table" name="cell" class="input-auto"></form.textbox>		
 									</div>
 								</div>
-								<!-- //login information -->
+								<div class="row">
+									<div class="col-md-4 text-nowrap">
+										<form.label table="role_table" name="address"></form.label>
+									</div>
+									<div class="col-md-8">
+										<form.textbox table="role_table" name="address" class="input-auto"></form.textbox>		
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4 text-nowrap">
+										<form.label table="role_table" name="city"></form.label>
+									</div>
+									<div class="col-md-8">
+										<form.textbox table="role_table" name="city" class="input-auto"></form.textbox>		
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4 text-nowrap">
+										<form.label table="role_table" name="state"></form.label>
+									</div>
+									<div class="col-md-8">
+										<form.textbox table="role_table" name="state" class="input-auto"></form.textbox>		
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4 text-nowrap">
+										<form.label table="role_table" name="country"></form.label>
+									</div>
+									<div class="col-md-8">
+										<form.select table="role_table" name="country" class="input-auto"></form.select>	
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4 text-nowrap">
+										<form.label table="role_table" name="postal"></form.label>
+									</div>
+									<div class="col-md-8">
+										<form.textbox table="role_table" name="postal" class="input-auto"></form.textbox>		
+									</div>
+								</div>
+								<!-- \\Admin information -->
+								<!-- other information -->
+								<div class="row">
+									<div class="col-md-4 text-nowrap">
+										<form.label table="role_table" name="created_time"></form.label>
+									</div>
+									<div class="col-md-8">
+										<form.intdate table="role_table" name="created_time"></form.intdate>		
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4 text-nowrap">
+										<form.label table="role_table" name="last_updated"></form.label>
+									</div>
+									<div class="col-md-8">
+										<form.intdate table="role_table" name="last_updated"></form.intdate>		
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4 text-nowrap">
+										<form.label table="role_table" name="last_login"></form.label>
+									</div>
+									<div class="col-md-8">
+										<form.intdate table="role_table" name="last_login"></form.intdate>		
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4 text-nowrap">
+										<form.label table="role_table" name="hits"></form.label>
+									</div>
+									<div class="col-md-8">
+										<form.text table="role_table" name="hits"></form.text>		
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4 text-nowrap">
+										<form.label table="role_table" name="status"></form.label>
+									</div>
+									<div class="col-md-8">
+										<form.bool table="role_table" name="status"></form.bool>		
+									</div>
+								</div>
+								<!-- \\other information -->
+							</div>
 						</div>
-						<div class="col-md-6">
-							<!-- Admin information -->
-							<div class="row">
-								<div class="col-md-4 text-nowrap">
-									<form.label table="role_table" name="first_name"></form.label>
-								</div>
-								<div class="col-md-8">
-									<form.textbox table="role_table" name="first_name" class="input-auto"></form.textbox>		
-								</div>
+						<div class="row">
+							<div class="col-md-4">
+								<form.button table="role_table" name="add" 	outline=1 	actname="Add"></form.button>	
+								<form.button table="role_table" name="delete" 	outline=1 	actname="Delete"></form.button>
 							</div>
-							<div class="row">
-								<div class="col-md-4 text-nowrap">
-									<form.label table="role_table" name="last_name"></form.label>
-								</div>
-								<div class="col-md-8">
-									<form.textbox table="role_table" name="last_name" class="input-auto"></form.textbox>		
-								</div>
+							<div class="col-md-8">
+								<form.button table="role_table" name="save"		outline=1 	actname="Save"></form.button>		
+								<form.button table="role_table" name="cancel" 	outline=1 	actname="Cancel"></form.button>
 							</div>
-							<div class="row">
-								<div class="col-md-4 text-nowrap">
-									<form.label table="role_table" name="phone"></form.label>
-								</div>
-								<div class="col-md-8">
-									<form.textbox table="role_table" name="phone" class="input-auto"></form.textbox>		
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4 text-nowrap">
-									<form.label table="role_table" name="cell"></form.label>
-								</div>
-								<div class="col-md-8">
-									<form.textbox table="role_table" name="cell" class="input-auto"></form.textbox>		
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4 text-nowrap">
-									<form.label table="role_table" name="address"></form.label>
-								</div>
-								<div class="col-md-8">
-									<form.textbox table="role_table" name="address" class="input-auto"></form.textbox>		
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4 text-nowrap">
-									<form.label table="role_table" name="city"></form.label>
-								</div>
-								<div class="col-md-8">
-									<form.textbox table="role_table" name="city" class="input-auto"></form.textbox>		
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4 text-nowrap">
-									<form.label table="role_table" name="state"></form.label>
-								</div>
-								<div class="col-md-8">
-									<form.textbox table="role_table" name="state" class="input-auto"></form.textbox>		
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4 text-nowrap">
-									<form.label table="role_table" name="country"></form.label>
-								</div>
-								<div class="col-md-8">
-									<form.select table="role_table" name="country" class="input-auto"></form.select>	
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4 text-nowrap">
-									<form.label table="role_table" name="postal"></form.label>
-								</div>
-								<div class="col-md-8">
-									<form.textbox table="role_table" name="postal" class="input-auto"></form.textbox>		
-								</div>
-							</div>
-							<!-- \\Admin information -->
-							<!-- other information -->
-							<div class="row">
-								<div class="col-md-4 text-nowrap">
-									<form.label table="role_table" name="created_time"></form.label>
-								</div>
-								<div class="col-md-8">
-									<form.intdate table="role_table" name="created_time"></form.intdate>		
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4 text-nowrap">
-									<form.label table="role_table" name="last_updated"></form.label>
-								</div>
-								<div class="col-md-8">
-									<form.intdate table="role_table" name="last_updated"></form.intdate>		
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4 text-nowrap">
-									<form.label table="role_table" name="last_login"></form.label>
-								</div>
-								<div class="col-md-8">
-									<form.intdate table="role_table" name="last_login"></form.intdate>		
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4 text-nowrap">
-									<form.label table="role_table" name="hits"></form.label>
-								</div>
-								<div class="col-md-8">
-									<form.text table="role_table" name="hits"></form.text>		
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4 text-nowrap">
-									<form.label table="role_table" name="status"></form.label>
-								</div>
-								<div class="col-md-8">
-									<form.bool table="role_table" name="status"></form.bool>		
-								</div>
-							</div>
-							<!-- \\other information -->
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-4">
-							<form.button table="role_table" name="add" 	outline=1 	actname="Add"></form.button>	
-							<form.button table="role_table" name="delete" 	outline=1 	actname="Delete"></form.button>
-						</div>
-						<div class="col-md-8">
-							<form.button table="role_table" name="save"		outline=1 	actname="Save"></form.button>		
-							<form.button table="role_table" name="cancel" 	outline=1 	actname="Cancel"></form.button>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<table.message table="role_table"></table.message>
+						<div class="row">
+							<div class="col-md-12">
+								<table.message table="role_table"></table.message>
+							</div>
 						</div>
 					</div>
 				</div>
+				<!-- \\Admin Detail -->
 			</div>
-			<!-- \\Admin Detail -->
 		</div>
 	</div>
-</div>
-<!-- container -->
-<br>
+<?php include("include/menu_foot_html.php");?>
 
 <table.popup table="role_table"></table.popup>
 <div wliu-autotip></div>

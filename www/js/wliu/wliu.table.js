@@ -10,7 +10,7 @@ WLIU.TABLE = function( opts ) {
 	
 	this.tooltip 	= opts.tooltip?opts.tooltip:"";
 
-	this.firstone 	= opts.firstone?opts.firstone:0;
+	this.firstone 	= opts.firstone?opts.firstone:0;  // very important for form set current to first one row;
 	this.current    = ""; // row guid
 	this._rowno 	= -1; // private for rowno
 	this.action		= "get";

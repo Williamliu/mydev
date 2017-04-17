@@ -47,6 +47,7 @@ try {
 			$fields["platform"] 	= $browser->getPlatform(); 
 			$fields["browser"] 		= $browser->getBrowser(); 
 			$fields["version"] 		= $browser->getVersion(); 
+			$fields["is_mobile"] 	= $browser->isMobile(); 
 			
 			$fields["ip_address"] 	= $_SERVER['REMOTE_ADDR']; 
 			$fields["created_time"]	= $login_time;

@@ -3,7 +3,6 @@
 /* website authentication :  verify user session is available,  if sesssion invalid,  it redirect to login webpage */
 /*********************************************************************************/
 $sess_name = $_SERVER['HTTP_HOST'] . ".user.session";
-$_SESSION[$sess_name] = "abcd";
 if( $_SESSION[$sess_name] == "" ) {
 	$gErr->set(990, gwords("website.session.expiry"), $CFG["secure_a_return"]. "?url=" . $_SERVER['HTTP_REFERER']);
     throw $gErr;
@@ -11,15 +10,15 @@ if( $_SESSION[$sess_name] == "" ) {
 	$sess_db = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
 	$sess_id = $sess_db->quote($_SESSION[$sess_name]);
     // expiry 
-	$sess_db->query("UPDATE web_admin_session SET deleted = 1 WHERE deleted <> 1 AND last_updated < '" . (time() - $CFG["secure_timeout"]) . "'");
+	$sess_db->query("UPDATE web_admin_session SET deleted = 1 WHERE deleted=0 AND last_updated < '" . (time() - $CFG["secure_timeout"]) . "'");
 	
-	$result_sess = $sess_db->query("SELECT admin_id, session_id FROM web_admin_session WHERE status = 1 AND deleted <> 1 AND session_id = '" . $sess_id . "'");
+	$result_sess = $sess_db->query("SELECT admin_id, session_id FROM web_admin_session WHERE status = 1 AND deleted = 0 AND session_id = '" . $sess_id . "'");
 	if( $sess_db->row_nums($result_sess) > 0 )  {
 		$row_sess = $sess_db->fetch($result_sess);
-		$sess_db->query("UPDATE web_admin_session SET last_updated = '" . time() . "' WHERE status = 1 AND deleted <> 1 AND session_id = '" . $sess_id . "'");
+		$sess_db->query("UPDATE web_admin_session SET last_updated = '" . time() . "' WHERE status = 1 AND deleted = 0 AND session_id = '" . $sess_id . "'");
 		$admin_id = $row_sess["admin_id"];
 		
-		$result_user = $sess_db->query("SELECT * FROM web_admin WHERE deleted <> 1 AND status = 1 AND id = '" . $admin_id . "'");
+		$result_user = $sess_db->query("SELECT * FROM web_admin WHERE deleted=0 AND status=1 AND id = '" . $admin_id . "'");
 		if( $sess_db->row_nums($result_user) <= 0 )  {
 			$gErr->set(990, gwords("website.session.expiry"), $CFG["secure_a_return"] . "?url=" . $_SERVER['HTTP_REFERER']);
 			throw $gErr;
@@ -36,6 +35,7 @@ if( $_SESSION[$sess_name] == "" ) {
             $web_user["country"]    = $row_user["country"];
             $web_user["hits"]       = $row_user["hits"];
             $web_user["last_login"] = $row_user["last_login"];
+            $web_user["session"] 	= $_SESSION[$sess_name];
 			/*
 			echo "<pre>";
 			print_r($web_user);
@@ -43,7 +43,7 @@ if( $_SESSION[$sess_name] == "" ) {
 			*/
         }
 	} else {
-		$gErr->set(990, gwords("website.session.expiry"), $CFG["secure_a_return"]. "?url=" . $_SERVER['HTTP_REFERER']);
+		$gErr->set(990, gwords("website.session.expiry"), $CFG["secure_a_return"] . "?url=" . $_SERVER['HTTP_REFERER']);
 		throw $gErr;
 	}
 }

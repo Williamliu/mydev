@@ -88,14 +88,31 @@ div.picker__footer {
 	padding:    		5px 15px;
 }
 
-div.white-block {
-	display: 			inline-block;
-	position: 			relative;
-	background-color: 	#ffffff;
-	vertical-align:     middle;
-}
 /***** input element: overwrite bootstrap *****************************/
 
+/*** override MDB side nav ***/
+@media (max-width: 1440px) {
+  .fixed-sn .double-nav,
+  .fixed-sn main,
+  .fixed-sn footer {
+    padding-left: 0; } }
+
+@media (min-width: 768px) {
+  .fixed-sn main {
+    margin-left: 2%;
+    margin-right: 2%; } }
+
+@media (min-width: 992px) {
+  .fixed-sn main {
+    margin-left: 5%;
+    margin-right: 5%; } }
+
+@media (min-width: 1400px) {
+  .fixed-sn main {
+    margin-left: 6%;
+    margin-right: 6%; } }
+
+/*****************************/
 
 input {
 	padding: 			2px 1px;
@@ -248,12 +265,16 @@ span.radio > input[type="radio"]:checked + label:before,
 input[type="radio"]:checked + label:before
 {
     background-position:        0px -120px;
+	border-bottom: 				0px solid #33b5e5;
+    border-right: 				0px solid #33b5e5;
 }
 
 span.checkbox > input[type="checkbox"]:checked + label:before,
 input[type="checkbox"]:checked + label:before
 {
     background-position:        0px -100px;
+	border-bottom: 				0px solid #33b5e5;
+    border-right: 				0px solid #33b5e5;
 }
 
 span.radio > input[type="radio"]:checked + label,

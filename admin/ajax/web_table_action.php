@@ -17,7 +17,7 @@ try {
 							"name"=>"web_basic_table", 
 							"keys"=>array("id"),  
 							"fkeys"=>array(), 
-							"cols"=>array("id", "table_name", "title_en", "title_cn", "desc_en", "desc_cn", "status", "orderno", "last_updated"), 
+							"cols"=>array("id", "table_name", "title_en", "title_cn", "detail_en", "detail_cn", "status", "orderno", "last_updated"), 
 							"insert"=>array("last_updated"=>time()), 
 							"update"=>array()  
 					)
@@ -38,10 +38,7 @@ try {
 	*/
 	
 	// 6) return 
-	cACTION::clearRows($table);
-	$response["table"] = $table;
-	$db->close();
-	echo json_encode($response);
+	include_once("include/table_ajax_response.php");
 
 } catch(Exception $e ) {
 	include_once("include/table_error_catch.php");

@@ -1,10 +1,10 @@
 <?php
 /*********************************************************************************/
 /* website authentication :  verify user session is available,  if sesssion invalid,  it redirect to login webpage */
+/* Only take care of user login or not.  but not handle admin role and right
 /*********************************************************************************/
 $sess_name = $_SERVER['HTTP_HOST'] . ".user.session";
-if( $_REQUEST["user_session"] != "" ) $_SESSION[$sess_name] 	= $_REQUEST["user_session"];
-$_SESSION[$sess_name] = "abc";
+if( $_REQUEST["user_session"] != "" ) $_SESSION[$sess_name] = $_REQUEST["user_session"];
 if( $_SESSION[$sess_name] == "" ) {
 	header("Location: " . $CFG["secure_a_return"]);
 } else {
@@ -20,7 +20,7 @@ if( $_SESSION[$sess_name] == "" ) {
 		$sess_db->query("UPDATE web_admin_session SET last_updated = '" . time() . "' WHERE status = 1 AND deleted <> 1 AND session_id = '" . $sess_id . "'");
 		$admin_id = $row_sess["admin_id"];
 		
-		$result_user = $sess_db->query("SELECT * FROM web_admin WHERE deleted <> 1 AND status = 1 AND id = '" . $admin_id . "'");
+		$result_user = $sess_db->query("SELECT * FROM web_admin WHERE deleted=0 AND status = 1 AND id = '" . $admin_id . "'");
 		if( $sess_db->row_nums($result_user) <= 0 )  {
 			header("Location: " . $CFG["secure_a_return"]);
 		} else {
@@ -36,7 +36,9 @@ if( $_SESSION[$sess_name] == "" ) {
             $web_user["country"]    = $row_user["country"];
             $web_user["hits"]       = $row_user["hits"];
             $web_user["last_login"] = $row_user["last_login"];
-			/*
+            $web_user["session"] 	= $_SESSION[$sess_name];
+
+			/*			
 			echo "<pre>";
 			print_r($web_user);
 			echo "</pre>";
@@ -47,5 +49,7 @@ if( $_SESSION[$sess_name] == "" ) {
 		header("Location: " . $CFG["secure_a_return"]);
 	}
 }
+
+//echo "sess name: " . $sess_name . "  sess:" . $_SESSION[$sess_name] . "<br>";
 $sess_db->close();
 ?>

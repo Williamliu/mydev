@@ -4,6 +4,7 @@ ini_set("display_errors", 0);
 include_once("../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
 include_once($CFG["include_path"] . "/wliu/language/language.php");
+include_once($CFG["include_path"] . "/wliu/auth/auth_admin_client.php");
 include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
 include("include/menu_admin.php");
 ?>
@@ -27,19 +28,6 @@ include("include/menu_admin.php");
 		<script src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/tether.min.js" type="text/javascript"></script>
 		<script src="<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/js/bootstrap.min.js" type="text/javascript"></script>    
 		<!-- //Bootstrap -->
-		
-		<!--
-		<link href='theme/font-awesome-4.6.3/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
-		<link href='theme/mdb_pro/css/woocommerce.css' rel='stylesheet' type='text/css'>
-		<link href='theme/mdb_pro/css/woocommerce-layout.css' rel='stylesheet' type='text/css'>
-		<link href='theme/mdb_pro/css/woocommerce-smallscreen.css' rel='stylesheet' type='text/css'>
-		-->
-		<!-- //MD Bootstrap -->
-
-		<!-- 3rd Party Component -->
-        <!-- <script src="jquery/plugin/ckeditor_full/ckeditor.js" type="text/javascript"></script> -->
-		<!-- //3rd Party Component -->
-
 
 		<!-- AngularJS 1.3.15 -->
 		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular.js" type="text/javascript"></script>
@@ -110,9 +98,7 @@ include("include/menu_admin.php");
 				scope: 		"mytab",
 				url:   		"ajax/web_role_action.php",
 				wait:   	"role_ajax_wait",
-				taberror:	"table_error",
 				tooltip:	"tool_tip",
-				autotip: 	"auto_tips",
 				rights: 	{detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
                 lists:      {
                             roleLevel: {loaded: 0, keys:{guid:"", name:""}, list:[] }
@@ -156,11 +142,8 @@ include("include/menu_admin.php");
 				treeid:     "lemon",
 				rootid: 	0,
 				refid:      0,
-				title: 		"Menus",
+				title: 		gwords("website.menu.root"),
 				url:   		"ajax/web_role_right_action.php",
-				wait:   	"tree_ajax_wait",
-				autotip: 	"myauto",
-				taberror:	"taberror",
 				tooltip: 	"",
 				//rights: {detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
 				//filters:filters,
@@ -192,113 +175,112 @@ include("include/menu_admin.php");
 			});
 		</script>
 </head>
-<body ng-app="myApp" ng-controller="myForm">
-<!-- container -->
-<div class="container">
-	<br>
-	<div class="row">
-			<div class="col-md-4">
-				<table.list table="role_table" title="<?php echo gwords("website.role")?>" searchcol="title_en,title_cn" displaycol="title_en,detail_en,title_cn,detail_cn,level,status,orderno,created_time"></table.list>
-			</div>
-			<div class="col-md-8">
-				<ul wliu-tab9 color-purple>
-					<li><span><?php echo gwords("role.detail")?></span><s></s></li>
-				</ul>
-				<div wliu-tab9-body>
-					<div class="selected" style="padding:15px;">
-						<div class="row">
-							<div class="col-md-2 text-nowrap">
-								<form.label table="role_table" name="title_en"></form.label>
-							</div>
-							<div class="col-md-4">
-								<form.textbox table="role_table" name="title_en" class="input-auto"></form.textbox>
-							</div>
-							<div class="col-md-2 text-nowrap">
-								<form.label table="role_table" name="title_cn"></form.label>
-							</div>
-							<div class="col-md-4">
-								<form.textbox table="role_table" name="title_cn" class="input-auto"></form.textbox>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-2 text-nowrap">
-								<form.label table="role_table" name="detail_en"></form.label>
-							</div>
-							<div class="col-md-4">
-								<form.textarea table="role_table" name="detail_en" class="input-auto"></form.textarea>
-							</div>
-							<div class="col-md-2 text-nowrap">
-								<form.label table="role_table" name="detail_cn"></form.label>
-							</div>
-							<div class="col-md-4">
-								<form.textarea table="role_table" name="detail_cn" class="input-auto"></form.textarea>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-2 text-nowrap">
-								<form.label table="role_table" name="level"></form.label>
-							</div>
-							<div class="col-md-4">
-								<form.select table="role_table" name="level" class="input-auto"></form.select>
-							</div>
-							<div class="col-md-1 text-nowrap">
-								<form.label table="role_table" name="status"></form.label>
-							</div>
-							<div class="col-md-2">
-								<form.bool table="role_table" name="status"></form.bool>
-							</div>
-							<div class="col-md-1 text-nowrap">
-								<form.label table="role_table" name="orderno"></form.label>
-							</div>
-							<div class="col-md-2">
-								<form.textbox table="role_table" name="orderno" class="input-tiny"></form.textbox>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-4">
-								<form.button table="role_table" name="add" 	outline=1 	actname="Add"></form.button>	
-								<form.button table="role_table" name="delete" 	outline=1 	actname="Delete"></form.button>
-							</div>
-							<div class="col-md-8">
-								<form.button table="role_table" name="save"		outline=1 	actname="Save"></form.button>		
-								<form.button table="role_table" name="cancel" 	outline=1 	actname="Cancel"></form.button>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<form.message table="role_table"></form.message>
-							</div>
-						</div>
-					</div>
-				</div>
+<body ng-app="myApp" ng-controller="myForm" class="fixed-sn mdb-skin">
 
-				<ul wliu-tab9 color-purple>
-					<li><span>Role Menu Rights</span><s></s></li>
-				</ul>
-				<div wliu-tab9-body>
-					<div class="selected" style="padding:15px;">
-						<div class="row">
-							<div class="col-md-12">
-								Menu Rights:<br>
-								<table.tree table="menu_tree"></table.tree>
+<?php include("include/menu_head_html.php");?>
+	<div style="min-height:720px;">
+		<div class="row">
+				<div class="col-md-4">
+					<table.list table="role_table" title="<?php echo gwords("website.role")?>" searchcol="title_en,title_cn" displaycol="title_en,detail_en,title_cn,detail_cn,level,status,orderno,created_time"></table.list>
+				</div>
+				<div class="col-md-8">
+					<ul wliu-tab9 color-purple>
+						<li><span><?php echo gwords("role.detail")?></span><s></s></li>
+					</ul>
+					<div wliu-tab9-body>
+						<div class="selected" style="padding:15px;">
+							<div class="row">
+								<div class="col-md-2 text-nowrap">
+									<form.label table="role_table" name="title_en"></form.label>
+								</div>
+								<div class="col-md-4">
+									<form.textbox table="role_table" name="title_en" class="input-auto"></form.textbox>
+								</div>
+								<div class="col-md-2 text-nowrap">
+									<form.label table="role_table" name="title_cn"></form.label>
+								</div>
+								<div class="col-md-4">
+									<form.textbox table="role_table" name="title_cn" class="input-auto"></form.textbox>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2 text-nowrap">
+									<form.label table="role_table" name="detail_en"></form.label>
+								</div>
+								<div class="col-md-4">
+									<form.textarea table="role_table" name="detail_en" class="input-auto"></form.textarea>
+								</div>
+								<div class="col-md-2 text-nowrap">
+									<form.label table="role_table" name="detail_cn"></form.label>
+								</div>
+								<div class="col-md-4">
+									<form.textarea table="role_table" name="detail_cn" class="input-auto"></form.textarea>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2 text-nowrap">
+									<form.label table="role_table" name="level"></form.label>
+								</div>
+								<div class="col-md-4">
+									<form.select table="role_table" name="level" class="input-auto"></form.select>
+								</div>
+								<div class="col-md-1 text-nowrap">
+									<form.label table="role_table" name="status"></form.label>
+								</div>
+								<div class="col-md-2">
+									<form.bool table="role_table" name="status"></form.bool>
+								</div>
+								<div class="col-md-1 text-nowrap">
+									<form.label table="role_table" name="orderno"></form.label>
+								</div>
+								<div class="col-md-2">
+									<form.textbox table="role_table" name="orderno" class="input-tiny"></form.textbox>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-4">
+									<form.button table="role_table" name="add" 	outline=1 	actname="Add"></form.button>	
+									<form.button table="role_table" name="delete" 	outline=1 	actname="Delete"></form.button>
+								</div>
+								<div class="col-md-8">
+									<form.button table="role_table" name="save"		outline=1 	actname="Save"></form.button>		
+									<form.button table="role_table" name="cancel" 	outline=1 	actname="Cancel"></form.button>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<form.message table="role_table"></form.message>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<ul wliu-tab9 color-purple>
+						<li><span><?php echo gwords("role.menu.rights")?></span><s></s></li>
+					</ul>
+					<div wliu-tab9-body>
+						<div class="selected" style="padding:15px;">
+							<div class="row">
+								<div class="col-md-12">
+									<?php echo gwords("menu.rights.setup")?>:<br>
+									<table.tree table="menu_tree"></table.tree>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+		</div>
 	</div>
-</div>
-<!-- container -->
-<br>
+<?php include("include/menu_foot_html.php");?>
+
+
+
+
 <tree.checkdiag1 table="menu_tree" targetid="rightDiag1" name="rightCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></tree.checkdiag1>
-
-<div id="table_error" wliu-diag movable maskable></div>
-<div id="auto_tips" wliu-tips></div>
-<div id="role_ajax_wait" maskable wliu-load></div>
-<div id="tree_ajax_wait" maskable wliu-load></div>
+<table.popup table="menu_tree"></table.popup>
+<div wliu-autotip></div>
+<div wliu-wait></div>
 <div id="tool_tip" wliu-popup></div>
-
-
 
 <!-- MD Bootstrap 4.0 js -- must place at the end of body -->
 <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/mdb.min.js"></script>
