@@ -74,12 +74,12 @@ switch(ENVIR) {
 			break;
 
 	case PRODUCTION:
-			$CFG["mysql"]["host"] 		= "localhost";
+			$CFG["mysql"]["host"] 		= "127.0.0.1";
 			$CFG["mysql"]["database"]  	= "wliu_maindb";
 			$CFG["mysql"]["user"] 		= "root";
 			$CFG["mysql"]["pwd"] 		= "Liu011225";
 
-			$CFG["image"]["host"] 		= "localhost";
+			$CFG["image"]["host"] 		= "127.0.0.1";
 			$CFG["image"]["database"]  	= "wliu_files";
 			$CFG["image"]["user"] 		= "root";
 			$CFG["image"]["pwd"] 		= "Liu011225";
