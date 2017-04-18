@@ -170,7 +170,7 @@ WLIU.TABLE.prototype = {
 
 	// set row col value to empty or defval if it has default value
 	resetRow: function(theRow) {
-		return FROW.resetRow(theRow);
+		return FTABLE.resetRow(this, theRow);
 	},
 	removeRow: function(theRow) {
 		return FTABLE.removeRow(this, theRow);
@@ -208,6 +208,9 @@ WLIU.TABLE.prototype = {
 	},
 	formNew: function(IDKeyValues, callback) {
 		FTABLE.formNew(this, IDKeyValues, callback);
+	},
+	formReset:function() {
+		FTABLE.formReset(this);
 	},
 	formGet: function(IDKeyValues, callback) {
 		FTABLE.formGet(this, IDKeyValues, callback);

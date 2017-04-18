@@ -7,11 +7,6 @@ include_once($CFG["include_path"] . "/wliu/language/language.php");
 include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
 $sess_name = $_SERVER['HTTP_HOST'] . ".user.session";
 $_SESSION[$sess_name] = "";
-
-$a = "/dkdkd.php?id=39343";
-$b = substr($a, 0, strpos($a, "?"));
-echo "b= $b <br>";
-
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">

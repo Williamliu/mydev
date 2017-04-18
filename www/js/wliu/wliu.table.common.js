@@ -1206,12 +1206,16 @@ WLIU.TABLEACTION.prototype = {
 	changeCol: function(theTable, theRow, col_name) {
 		var t_row = this.getRow(theTable, theRow);
 		var t_col = this.getCol(theTable, t_row, col_name);
-		return FROW.colChange(t_row, t_col);
+		var col = FROW.colChange(t_row, t_col);
+		this.tableErrorReset(theTable);
+		return col;
 	},
 	changeColCurrent: function(theTable, col_name) {
 		var t_row = this.getCurrent(theTable);
 		var t_col = this.getCol(theTable, t_row, col_name);
-		return FROW.colChange(t_row, t_col);
+		var col = FROW.colChange(t_row, t_col);
+		this.tableErrorReset(theTable);
+		return col;
 	},
 	changeColByGuid: function(theTable, guid, col_name) {
 		var t_row = this.getRowByGuid(theTable, guid);
@@ -1266,6 +1270,12 @@ WLIU.TABLEACTION.prototype = {
 				if(callback) if($.isFunction(callback)) callback(theTable);
 			}
 		});
+	},
+	formReset: function(theTable) {
+		if( this.colRelation(theTable) ) this.colRelation(theTable).defval = true; 
+		theTable.rows = [];
+		theTable.addRow();
+		this.tableErrorReset(theTable);
 	},
 	formGet: function(theTable, IDKeyValues, callback) {
 		if( this.colRelation(theTable) ) this.colRelation(theTable).defval = true; 
@@ -1322,6 +1332,10 @@ WLIU.TABLEACTION.prototype = {
 		} else {
 			return undefined;
 		}
+	},
+	resetRow: function(theTable, theRow) {
+		FROW.resetRow(theRow);
+		this.tableErrorReset(theTable);			
 	},
 	cancelRows: function(theTable) {
 		for(var i = theTable.rows.length-1; i>=0; i--) {
@@ -1472,7 +1486,7 @@ WLIU.TABLEACTION.prototype = {
 				//Error Handle include : session expiry
 				GCONFIG.errorCall(req.table.error);
 				//popup error message
-				$("#wliu-table-error-popup").trigger("ishow");
+				$("#wliu-table-error-popup[scope='" + _self.scope + "']").trigger("ishow");
 			},
 			type: "post",
 			url: _self.url

@@ -3258,7 +3258,8 @@ wliu_table.directive("form.button", function (wliuTableService) {
             outline:    "@",
             icon:       "@",
             before:     "&",
-            after:      "&"
+            after:      "&",
+            success:    "&"
         },
         template: [
                     '<div style="display:inline-block;position:relative;background-color:#ffffff;vertical-align:middle;">',
@@ -3309,7 +3310,7 @@ wliu_table.directive("form.button", function (wliuTableService) {
                         break;
                     case "save":
                         $scope.table.saveRow(theRow, {
-                            ajaxComplete: $scope.action
+                            ajaxSuccess: function() { $scope.success(); }
                         });
                         break;
                     case "cancel":
