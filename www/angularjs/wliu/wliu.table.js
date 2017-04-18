@@ -3824,7 +3824,17 @@ wliu_table.directive("table.rowbutton", function (wliuTableService) {
 
             $scope.buttonState = function(name, rowstate) {
                 var right = $scope.table.rights?(parseInt($scope.table.rights[name])?true:false):false;
-                if( name=="add" && rowstate==undefined ) return true;
+                if( name=="add") {
+                    if( parseInt($scope.table.rights[name]) ) {
+                        rowstate = rowstate?rowstate:0;
+                        if(rowstate<1)
+                            return true;
+                        else
+                            return false;
+                    } else {
+                        return false;
+                    }
+                } 
                 return  wliuTableService.buttonState(name, rowstate) && right;
             };
         },

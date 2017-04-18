@@ -36,6 +36,22 @@ if( $_SESSION[$sess_name] == "" ) {
             $web_user["hits"]       = $row_user["hits"];
             $web_user["last_login"] = $row_user["last_login"];
             $web_user["session"] 	= $_SESSION[$sess_name];
+
+			$query_level ="
+							SELECT 
+							" . cLANG::col("d.title", "", "title") . ",
+							MAX(d.weight) as weight 
+							FROM web_admin a 
+							INNER JOIN web_admin_role b on ( a.id = b.admin_id)
+							INNER JOIN web_role c on (b.role_id = c.id) 
+							INNER JOIN web_role_level d on (c.level = d.id)
+							WHERE admin_id = '" .  $web_user["id"] . "'
+						";
+			$result_level 	= $sess_db->query($query_level);
+			$row_level 		= $sess_db->fetch($result_level);
+            $web_user["level"]["title"]		= $row_level["title"]?$row_level["title"]:"";
+            $web_user["level"]["weight"]	= $row_level["weight"]?$row_level["weight"]:0;
+
 			/*
 			echo "<pre>";
 			print_r($web_user);

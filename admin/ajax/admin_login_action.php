@@ -18,10 +18,10 @@ try {
 						$url  = $table["formData"]["url"];
 
 						// unlock account after x minutes
-						$query = "UPDATE web_admin SET status = 1 WHERE deleted<>1 AND status=0 AND (user_name='" . $user . "' OR email = '" . $user . "') AND last_updated <= " . ( time() - $CFG["secure_lock_timeout"] ); 
+						$query = "UPDATE web_admin SET locked=0 WHERE deleted=0 AND status=1 AND locked=1 AND (user_name='" . $user . "' OR email = '" . $user . "') AND last_updated <= " . ( time() - $CFG["secure_lock_timeout"] ); 
 						$db->query($query);
 
-						$query 	= "SELECT id, user_name, email FROM web_admin WHERE deleted <> 1 AND status = 1 AND (user_name = '" . $user . "' OR email = '" . $user . "') AND password = '" . $pass . "'";
+						$query 	= "SELECT id, user_name, email FROM web_admin WHERE deleted=0 AND status=1 AND locked=0 AND (user_name = '" . $user . "' OR email = '" . $user . "') AND password = '" . $pass . "'";
 						$result = $db->query($query);
 						if( $db->row_nums($result) > 0 )  {
 							$row = $db->fetch($result);
@@ -48,7 +48,7 @@ try {
 							$fields["deleted"] 		= 0;
 
 							$db->insert("web_admin_session", $fields);
-							$db->query("UPDATE web_admin SET hits = hits + 1, login_count = 0, last_login = '". time() ."' WHERE deleted <> 1 AND status = 1 AND id = '" . $admin_id . "'");	
+							$db->query("UPDATE web_admin SET hits = hits + 1, login_count = 0, last_login = '". time() ."' WHERE deleted=0 AND status = 1 AND id = '" . $admin_id . "'");	
 							$table["data"]["session_id"] = $sess_id;
 
 							$table["error"]["errorCode"] 	= 0;
@@ -57,17 +57,22 @@ try {
 						} else {
 							$login_max 	= $CFG["secure_login_max"];
 							$login_lock = $CFG["secure_lock_timeout"];
-							$query = "UPDATE web_admin SET status = IF(login_count >=" . $login_max . ",0, status), login_count =IF( login_count >=" . $login_max . " OR status = 0, 0, login_count + 1 ), last_updated = '" . time() . "' WHERE deleted <> 1  AND ( user_name = '" . $user . "' OR email = '" . $user . "')";
+							$query = "UPDATE web_admin SET locked = IF(login_count >=" . $login_max . ", 1, locked), login_count =IF( login_count >=" . $login_max . " OR locked=1, 0, login_count + 1 ), last_updated = '" . time() . "' WHERE deleted=0 AND status=1 AND ( user_name = '" . $user . "' OR email = '" . $user . "')";
 							$db->query($query);
 
-							$query = "SELECT id, user_name, email FROM web_admin WHERE deleted <> 1 AND status <> 1 AND (user_name = '" . $user . "' OR email = '" . $user . "')";
-							$result_count = $db->query( $query );
-							if($db->row_nums($result_count) > 0) {
+							$query = "SELECT id, user_name, email FROM web_admin WHERE deleted=0 AND status=1 AND locked=1 AND (user_name = '" . $user . "' OR email = '" . $user . "')";
+							if($db->exists($query) > 0) {
 								$table["error"]["errorCode"] 	= 1;
 								$table["error"]["errorMessage"] = "You failed to login for $login_max times, your account has been locked and try again after " . ($login_lock/60) . " minutes.";
 							} else {
-								$table["error"]["errorCode"] 	= 1;
-								$table["error"]["errorMessage"] = "You failed to login, please make sure your user name and password is correct.";
+								$query = "SELECT id, user_name, email FROM web_admin WHERE deleted=0 AND status=0 AND (user_name = '" . $user . "' OR email = '" . $user . "')";
+								if( $db->exists($query) ) {
+									$table["error"]["errorCode"] 	= 1;
+									$table["error"]["errorMessage"] = "You account is inactived, please contact website administrator.";
+								} else {
+									$table["error"]["errorCode"] 	= 1;
+									$table["error"]["errorMessage"] = "You failed to login, please make sure your user name and password is correct.";
+								}
 							}
 						} 
 						

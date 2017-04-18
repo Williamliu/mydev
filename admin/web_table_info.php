@@ -11,50 +11,7 @@ include("include/menu_admin.php");
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-		<meta charset="utf8" />
-		<!-- JQuery3.1.1 -->
-		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery-3.1.1.min.js"></script>
-		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery.cookie.1.4.1.js"></script>
-		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-		<link href='<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
-		<!-- //JQuery -->
-
-	    <!-- Font Awesome & BS & MDB -->
-		<link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
-		<link 	href='<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/css/bootstrap.min.css' type='text/css' rel='stylesheet' />
-		<link href='<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/css/mdb.css' type='text/css' rel='stylesheet' />
-		
-		<!-- Bootstrap3.3 -->
-		<script src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/tether.min.js" type="text/javascript"></script>
-		<script src="<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/js/bootstrap.min.js" type="text/javascript"></script>    
-		<!-- //Bootstrap -->
-		
-		<!-- AngularJS 1.3.15 -->
-		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular.js" type="text/javascript"></script>
-		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular-cookies.js" type="text/javascript"></script>
-		<script src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular-sanitize.min.js" type="text/javascript"></script>
-		<!-- //AngularJS -->
-
-		<!-- wliu components -->
-		<script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.common.js" type="text/javascript"></script>
-		<script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.table.js" type="text/javascript"></script>
-		<script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.table.common.js" type="text/javascript"></script>
-		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.js" type="text/javascript"></script>
-		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.filter.js" type="text/javascript"></script>
-	
-		<script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/diag/wliu.jquery.diag.js" type="text/javascript"></script>
-		<link 	href='<?php echo $CFG["web_domain"]?>/jquery/wliu/diag/wliu.jquery.diag.css' type='text/css' rel='stylesheet' />
-		<script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/popup/wliu.jquery.popup.js" type="text/javascript"></script>
-		<link 	href='<?php echo $CFG["web_domain"]?>/jquery/wliu/popup/wliu.jquery.popup.css' type='text/css' rel='stylesheet' />
-		<script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/load/wliu.jquery.load.js" type="text/javascript"></script>
-		<link 	href="<?php echo $CFG["web_domain"]?>/jquery/wliu/load/wliu.jquery.load.css" type='text/css' rel='stylesheet' />
-
-
-		<link href='<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.common.css' type='text/css' rel='stylesheet' />
-		<link href='<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
-		<!-- //wliu components -->
-
-
+		<?php include("include/html_head_include.php"); ?>
         <script language="javascript" type="text/javascript">
 		   	var col1 = new WLIU.COL({key:1, 	table:"p",	coltype:"hidden", 		name:"tid", 		col:"id", 	colname:"Table ID",  	coldesc:"Table ID", defval: 1 });
 		   	var col2 = new WLIU.COL({key:0, 	table:"p",	coltype:"textbox", 		name:"table_name",	colname:"Table Name", 	coldesc:"Table Name" });
@@ -110,7 +67,7 @@ include("include/menu_admin.php");
 </head>
 <body ng-app="myApp" ng-controller="myForm" class="fixed-sn mdb-skin">
 <?php include("include/menu_head_html.php");?>
-	<div style="min-height:720px;">
+	<div class="wliuCommon-page-height">
 			<fieldset>
 				<legend>Search By</legend>
 				<filter.label table="web_table" name="tid"></filter.label> :        <filter.bind class="input-medium" 		table="web_table" name="tid"></filter.bind>
@@ -193,10 +150,5 @@ include("include/menu_admin.php");
 <div wliu-wait></div>
 <div id="tool_tip" wliu-popup></div>
 
-
-<!-- MD Bootstrap 4.0 js -- must place at the end of body -->
-<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/mdb.min.js"></script>
-<!-- <script type="text/javascript" src="theme/mdb_pro/js/woocommerce.min.js"></script> -->
-<!-- //MD Bootstrap 4.0 js -->
 </body>
 </html>

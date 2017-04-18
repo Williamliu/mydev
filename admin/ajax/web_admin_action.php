@@ -29,7 +29,7 @@ try {
 							"name"=>"web_admin", 
 							"keys"=>array("id"),  
 							"fkeys"=>array(), 
-							"cols"=>array("id", "user_name", "email", "password", "first_name", "last_name", "phone", "cell", "status", "address", "city", "state","country", "postal", "hits", "created_time", "last_updated", "last_login", "role_id"), 
+							"cols"=>array("id", "user_name", "email", "password", "first_name", "last_name", "phone", "cell", "status", "locked", "address", "city", "state","country", "postal", "hits", "created_time", "last_updated", "last_login", "role_id"), 
 							"insert"=>array("last_updated"=>time()), 
 							"update"=>array(),
 							"role_id"=>array( "name"=>"web_admin_role", value=>"role_id", keys=>array("admin_id") ) 

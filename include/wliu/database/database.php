@@ -4471,7 +4471,9 @@ class cTYPE {
 		}
 	}
 	static public function template($url_str) {
-		return substr(strrchr( "/".$url_str , "/"), 1);
+		$ret_str = substr(strrchr( "/".$url_str , "/"), 1);
+		if( strpos($ret_str, "?")!==false )	$ret_str = substr($ret_str, 0, strpos($ret_str, "?"));
+		return $ret_str;
 	}
 }
 

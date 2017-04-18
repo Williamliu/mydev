@@ -20,7 +20,7 @@ if( $_SESSION[$sess_name] == "" ) {
 		$sess_db->query("UPDATE web_admin_session SET last_updated = '" . time() . "' WHERE status = 1 AND deleted <> 1 AND session_id = '" . $sess_id . "'");
 		$admin_id = $row_sess["admin_id"];
 		
-		$result_user = $sess_db->query("SELECT * FROM web_admin WHERE deleted=0 AND status = 1 AND id = '" . $admin_id . "'");
+		$result_user = $sess_db->query("SELECT * FROM web_admin WHERE deleted=0 AND status=1 AND id = '" . $admin_id . "'");
 		if( $sess_db->row_nums($result_user) <= 0 )  {
 			header("Location: " . $CFG["secure_auth_return"]);
 		} else {
@@ -38,6 +38,21 @@ if( $_SESSION[$sess_name] == "" ) {
             $web_user["last_login"] = $row_user["last_login"];
             $web_user["session"] 	= $_SESSION[$sess_name];
 
+			$query_level ="
+							SELECT 
+							" . cLANG::col("d.title", "", "title") . ",
+							MAX(d.weight) as weight 
+							FROM web_admin a 
+							INNER JOIN web_admin_role b on ( a.id = b.admin_id)
+							INNER JOIN web_role c on (b.role_id = c.id) 
+							INNER JOIN web_role_level d on (c.level = d.id)
+							WHERE admin_id = '" .  $web_user["id"] . "'
+						";
+			$result_level 	= $sess_db->query($query_level);
+			$row_level 		= $sess_db->fetch($result_level);
+            $web_user["level"]["title"]		= $row_level["title"]?$row_level["title"]:"";
+            $web_user["level"]["weight"]	= $row_level["weight"]?$row_level["weight"]:0;
+			
 			/*			
 			echo "<pre>";
 			print_r($web_user);

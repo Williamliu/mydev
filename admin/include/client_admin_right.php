@@ -84,6 +84,7 @@ if( $db_menu_right->exists($query_menu_current) ) {
 }
 
 $web_user["rights"]  = $user_right[$web_user["current"]["menu_key"]];
+
 /*
 echo "menu right query: " . $query_menu_current . "<br>";
 echo "url: $menu_url  template: $menu_temp\n"; 

@@ -11,57 +11,7 @@ include("include/menu_admin.php");
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-		<meta charset="utf8" />
-		<!-- JQuery3.1.1 -->
-		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery-3.1.1.min.js"></script>
-		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery.cookie.1.4.1.js"></script>
-		<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-		<link href='<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
-		<!-- //JQuery -->
-
-	    <!-- Font Awesome & BS & MDB -->
-		<link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
-		<link 	href='<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/css/bootstrap.min.css' type='text/css' rel='stylesheet' />
-		<link href='<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/css/mdb.css' type='text/css' rel='stylesheet' />
-		
-		<!-- Bootstrap3.3 -->
-		<script src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/tether.min.js" type="text/javascript"></script>
-		<script src="<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/js/bootstrap.min.js" type="text/javascript"></script>    
-		<!-- //Bootstrap -->
-		
-		<!-- AngularJS 1.3.15 -->
-		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular.js" type="text/javascript"></script>
-		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular-cookies.js" type="text/javascript"></script>
-		<script src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular-sanitize.min.js" type="text/javascript"></script>
-		<!-- //AngularJS -->
-
-		<!-- wliu components -->
-		<script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.common.js" type="text/javascript"></script>
-		<script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.table.common.js" type="text/javascript"></script>
-		<script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.table.js" type="text/javascript"></script>
-		<script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.tree.js" type="text/javascript"></script>
-		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.js" type="text/javascript"></script>
-		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.form.js" type="text/javascript"></script>
-		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.tree.js" type="text/javascript"></script>
-		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.list.js" type="text/javascript"></script>
-		<script	src="<?php echo $CFG["web_domain"]?>/angularjs/wliu/wliu.table.filter.js" type="text/javascript"></script>
-	
-		<script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/diag/wliu.jquery.diag.js" type="text/javascript"></script>
-		<link 	href='<?php echo $CFG["web_domain"]?>/jquery/wliu/diag/wliu.jquery.diag.css' type='text/css' rel='stylesheet' />
-		<script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/popup/wliu.jquery.popup.js" type="text/javascript"></script>
-		<link 	href='<?php echo $CFG["web_domain"]?>/jquery/wliu/popup/wliu.jquery.popup.css' type='text/css' rel='stylesheet' />
-		<script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/load/wliu.jquery.load.js" type="text/javascript"></script>
-		<link 	href="<?php echo $CFG["web_domain"]?>/jquery/wliu/load/wliu.jquery.load.css" type='text/css' rel='stylesheet' />
-		<script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/tree/wliu.jquery.tree.js" type="text/javascript"></script>
-		<link 	href="<?php echo $CFG["web_domain"]?>/jquery/wliu/tree/wliu.jquery.tree.css" type='text/css' rel='stylesheet' />
-		<script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/tab/wliu.jquery.tab.js" type="text/javascript"></script>
-		<link 	href="<?php echo $CFG["web_domain"]?>/jquery/wliu/tab/wliu.jquery.tab.css" type='text/css' rel='stylesheet' />
-
-
-		<link href='<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.common.css' type='text/css' rel='stylesheet' />
-		<link href='<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
-		<!-- //wliu components -->
-
+		<?php include("include/html_head_include.php"); ?>
 
         <script language="javascript" type="text/javascript">
 		   	var col1 = new WLIU.COL({key:1, table:"p",	coltype:"hidden", 		name:"id", 			colname:"Lang ID",  	coldesc:"Word ID",  defval:0 });
@@ -84,8 +34,9 @@ include("include/menu_admin.php");
 		   	var col18 = new WLIU.COL({key:0, table:"p",	coltype:"textbox", 		name:"login_count", colname:"Login Count",  coldesc:"Login Count",  min:0 , max:5, maxlength:1 });
 		   	var col19 = new WLIU.COL({key:0, table:"p",	coltype:"checkbox", 	name:"role_id", 	colname:"Role",  		coldesc:"Admin Role", 	list:"roleList" });
 		   	var col20 = new WLIU.COL({key:0, table:"p",	coltype:"passpair", 	name:"password", 	colname:"Password",  	coldesc:"Login Password", minlength:6, maxlength:16, need:1, notnull:1 });
-		   	var col21 = new WLIU.COL({key:0, table:"p",	coltype:"custom", 		name:"listflag",		colname:"<a class='wliu-btn16 wliu-btn16-status-{status}'></a> "});
-		   	var col22 = new WLIU.COL({key:0, table:"p",	coltype:"custom", 		name:"listinfo",		colname:"{first_name} {last_name} - {user_name}"});
+		   	var col21 = new WLIU.COL({key:0, table:"p",	coltype:"custom", 		name:"listflag",	colname:"<a class='wliu-btn16 wliu-btn16-status-{status}'></a> "});
+		   	var col22 = new WLIU.COL({key:0, table:"p",	coltype:"custom", 		name:"listinfo",	colname:"{first_name} {last_name} - {user_name}"});
+		   	var col23 = new WLIU.COL({key:0, table:"p",	coltype:"bool", 		name:"locked",		colname:"Locked?",  	coldesc:"Account locked" });
 			
 		   	var cols = [];
 		   	cols.push(col1);
@@ -110,6 +61,7 @@ include("include/menu_admin.php");
 		   	cols.push(col20);
 		   	cols.push(col21);
 		   	cols.push(col22);
+		   	cols.push(col23);
 
 			var filter1 = new WLIU.FILTER({name:"content", 		coltype:"textbox",		cols:"user_name,email,first_name,last_name",  	colname:"Content",  	coldesc:"search by Content"});
 			var filters = [];
@@ -119,6 +71,7 @@ include("include/menu_admin.php");
 				lang:	 	GLang,
 				scope: 		"mytab",
 				url:   		"ajax/web_admin_action.php",
+				tooltip:	"tool_tip",
 				//rights: 	{detail:1, add:1, save:1, cancel:1, clear:1, delete:1, print:1, output:1},
                 lists:      {
                             countryList: 	{loaded: 0, keys:{guid:"", name:""}, list:[] },
@@ -142,13 +95,20 @@ include("include/menu_admin.php");
 <body ng-app="myApp" ng-controller="myForm" class="fixed-sn mdb-skin">
 
 <?php include("include/menu_head_html.php");?>
-	<div style="min-height:720px;">
+	<div class="wliuCommon-page-height">
 		<div class="row">
 			<div class="col-md-4">
-				<table.list table="role_table" title="<?php echo gwords("website.admin")?>" searchcol="user_name,first_name,last_name,email,phone,cell" displaycolx="user_name,email,first_name,last_name,phone,cell,role_id,last_login,hits,status"></table.list>
+				<table.list table="role_table" title="<?php echo gwords("website.admin")?>" searchcol="user_name,first_name,last_name,email,phone,cell" displaycol="user_name,email,first_name,last_name,phone,cell,role_id,last_login,hits,status,locked"></table.list>
 			</div>
 			<div class="col-md-8">
 				<!---Admin Detail -->
+				<div class="row">
+					<div class="col-md-12 text-center">
+						<form.button table="role_table" name="add" 		outline=1 	actname="Add"></form.button>	
+						<form.button table="role_table" name="delete" 	outline=1 	actname="Delete"></form.button>
+					</div>
+				</div>
+				
 				<ul wliu-tab9 color-purple>
 					<li><span><?php echo gwords("admin.detail")?></span><s></s></li>
 				</ul>
@@ -187,6 +147,25 @@ include("include/menu_admin.php");
 										</div>
 										<div class="col-md-8">
 											<form.checkbox table="role_table" name="role_id" colnum=1></form.checkbox>		
+										</div>
+									</div>
+									<br>
+									<span class="wliuCommon-page-title"><?php echo gwords("account.status")?></span>									
+									<hr class="wliuCommon-line" />
+									<div class="row">
+										<div class="col-md-4 text-nowrap">
+											<form.label table="role_table" name="status"></form.label>
+										</div>
+										<div class="col-md-8">
+											<form.bool table="role_table" name="status"></form.bool>		
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4 text-nowrap">
+											<form.label table="role_table" name="locked"></form.label>
+										</div>
+										<div class="col-md-8">
+											<form.bool table="role_table" name="locked"></form.bool>		
 										</div>
 									</div>
 									<!-- //login information -->
@@ -299,23 +278,11 @@ include("include/menu_admin.php");
 										<form.text table="role_table" name="hits"></form.text>		
 									</div>
 								</div>
-								<div class="row">
-									<div class="col-md-4 text-nowrap">
-										<form.label table="role_table" name="status"></form.label>
-									</div>
-									<div class="col-md-8">
-										<form.bool table="role_table" name="status"></form.bool>		
-									</div>
-								</div>
 								<!-- \\other information -->
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-md-4">
-								<form.button table="role_table" name="add" 	outline=1 	actname="Add"></form.button>	
-								<form.button table="role_table" name="delete" 	outline=1 	actname="Delete"></form.button>
-							</div>
-							<div class="col-md-8">
+							<div class="col-md-12 text-center">
 								<form.button table="role_table" name="save"		outline=1 	actname="Save"></form.button>		
 								<form.button table="role_table" name="cancel" 	outline=1 	actname="Cancel"></form.button>
 							</div>
@@ -336,11 +303,7 @@ include("include/menu_admin.php");
 <table.popup table="role_table"></table.popup>
 <div wliu-autotip></div>
 <div wliu-wait></div>
+<div id="tool_tip" wliu-popup></div>
 
-
-<!-- MD Bootstrap 4.0 js -- must place at the end of body -->
-<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/mdb.min.js"></script>
-<!-- <script type="text/javascript" src="theme/mdb_pro/js/woocommerce.min.js"></script> -->
-<!-- //MD Bootstrap 4.0 js -->
 </body>
 </html>

@@ -42,9 +42,5 @@ echo "</pre>";
     <span style="color:red;font-size:36px;">You don't have right to access your request web page.</span>
 </div>
 
-<!-- MD Bootstrap 4.0 js -- must place at the end of body -->
-<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/mdb.min.js"></script>
-<!-- <script type="text/javascript" src="theme/mdb_pro/js/woocommerce.min.js"></script> -->
-<!-- //MD Bootstrap 4.0 js -->
 </body>
 </html>
