@@ -457,11 +457,16 @@ div.wliu-underline {
 a.wliu-website-lang-options {
 	font-size:    14px;
 	color:        #ffffff;
+	text-shadow:  1px 1px #000000; 
+	padding: 	  2px 4px;
 }
 
-.navbar.navbar-dark .navbar-nav .nav-item a.wliu-lang-selected[lang] {
-	color:        #ff4444;
-	font-weight:  bold;
+.navbar.navbar-dark .navbar-nav .nav-item a.wliu-lang-selected[lang],
+a.wliu-lang-selected[lang] {
+	background-color: #ff4444; 
+	border-radius:    4px;
+	font-size: 		  14px;
+	font-weight:      bold;
 }
 
 span.seperator {

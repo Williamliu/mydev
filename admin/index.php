@@ -62,12 +62,19 @@ $_SESSION[$sess_name] = "";
     <style>
         a.wliu-website-lang-options {
             font-size:    14px;
-            color:        #ffffff;
+            color:        #000000;
+            text-shadow:  1px 1px #ffffff; 
+            padding: 	  2px 4px;
         }
 
-        a.wliu-lang-selected[lang] {
-            color:        #ff4444;
-            font-weight:  bold;
+        a.wliu-lang-selected[lang],
+        a.wliu-lang-selected[lang]:hover {
+            color:            #ffffff;
+            background-color: #ff4444; 
+            text-shadow:  1px 1px #000000; 
+            border-radius:    4px;
+            font-size: 		  14px;
+            font-weight:      bold;
         }
     </style>
     <!-- //wliu components -->
