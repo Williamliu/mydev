@@ -14,8 +14,8 @@ include("include/menu_admin.php");
 		<?php include("include/html_head_include.php"); ?>
         <script language="javascript" type="text/javascript">
 		   	var col1 = new WLIU.COL({key:1, 	table:"p",	coltype:"hidden", 		name:"tid", 		col:"id", 	colname:"Table ID",  	coldesc:"Table ID", defval: 1 });
-		   	var col2 = new WLIU.COL({key:0, 	table:"p",	coltype:"textbox", 		name:"table_name",	colname:"Table Name", 	coldesc:"Table Name" });
-		   	var col3 = new WLIU.COL({key:1, 	table:"s", 	coltype:"hidden", 		name:"bid", 		col:"id", 	    colname:"Info ID",  coldesc:"Info ID", 	defval:"" });
+		   	var col2 = new WLIU.COL({key:0, 	table:"p",	coltype:"textbox", 		name:"title",		trans:1, 	colname:"Table Name", 	coldesc:"Table Name" });
+		   	var col3 = new WLIU.COL({key:1, 	table:"s", 	coltype:"hidden", 		name:"bid", 		col:"id", 	colname:"Info ID",  coldesc:"Info ID", 	defval:"" });
 		   	var col4 = new WLIU.COL({key:0, 	table:"s", 	coltype:"hidden", 		name:"ref_tid", 	col:"ref_id",   colname:"Ref ID",  	coldesc:"Ref ID", 	defval:"" });
 		   	var col5 = new WLIU.COL({key:0, 	table:"s", 	coltype:"textbox", 		name:"title_en", 	colname:"Title.EN", 	coldesc:"Title English",  		sort:"ASC", maxlength:64, 	notnull:1, unique:1	});
 		   	var col6 = new WLIU.COL({key:0, 	table:"s", 	coltype:"textbox", 		name:"title_cn", 	colname:"Title.CN", 	coldesc:"Title Chinese",  		sort:"ASC", maxlength:64,  	notnull:1,  });
@@ -61,7 +61,7 @@ include("include/menu_admin.php");
 		    });
 
 			$(function(){
-				table.init();
+				table.getRecords();
 			});
 		</script>
 </head>
@@ -88,7 +88,7 @@ include("include/menu_admin.php");
 							<table.head table="web_table" name="SN"></table.head>
 						</td>
 						<td>
-							<table.head table="web_table" name="table_name"></table.head>
+							<table.head table="web_table" name="title"></table.head>
 						</td>
 						<td>
 							<table.head table="web_table" name="title_en"></table.head>
@@ -119,7 +119,7 @@ include("include/menu_admin.php");
 							<table.rowno table="web_table"  row="row"></table.rowno>
 						</td>
 						<td width="100px">
-							<table.text class="input-auto" table="web_table" name="table_name" row="row"></table.text>
+							<table.text class="input-auto" table="web_table" name="title" row="row"></table.text>
 						</td>
 						<td width="100px">
 							<table.textbox class="input-auto" table="web_table" name="title_en" row="row"></table.textbox>

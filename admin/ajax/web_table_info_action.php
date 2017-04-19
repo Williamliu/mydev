@@ -26,7 +26,7 @@ try {
 							"name"=>"web_basic_table", 
 							"keys"=>array("id"),  
 							"fkeys"=>array(), 
-							"cols"=>array("id", "table_name"), 
+							"cols"=>array("id", "title"), 
 							"insert"=>array("last_updated"=>time()), 
 							"update"=>array()  
 					),
