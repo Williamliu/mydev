@@ -1,0 +1,45 @@
+<?php
+session_start();
+ini_set("display_errors", 0);
+include_once("../include/config/config.php");
+include_once($CFG["include_path"] . "/wliu/database/database.php");
+include_once($CFG["include_path"] . "/wliu/language/language.php");
+include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<?php include("public_head.php"); ?>
+<script>
+</script>
+<style>
+    div[wliu-dropdown] {
+        display:       inline-block;
+        position:      relative;
+        height:             26px;
+        line-height:        24px;
+        padding:            0px 20px;
+        box-sizing:         border-box;
+        background-color: #cccccc;
+        border:             1px solid #aaaaaa;
+        border-radius:      16px;
+        font-size:          14px;
+    }
+    div:after {
+        display:    inline-block;
+        position:   absolute;
+        right:      12px;
+        font-size:  8px;
+        font-weight: 900;
+    
+        color:       #ffffff;
+        content: "V";
+    }
+</style>
+</head>
+<body>
+
+<br>
+<div wliu-dropdown>Langguage Select</div> 
+</body>
+</html>
