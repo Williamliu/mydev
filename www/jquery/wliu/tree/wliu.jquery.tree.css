@@ -1,0 +1,119 @@
+ul[wliu-tree] {
+	display: 				block;
+	list-style-type:		none;
+	list-style-image:		none;
+	list-style-position:	outside;
+	margin:					0px;
+	padding:				0px;
+	padding-left:			20px;
+}
+
+/***  li common ***/
+ul[wliu-tree] > li {
+	cursor:					pointer;
+	display: 				block;
+	padding: 				0px;
+	white-space:			nowrap;
+    overflow: 				hidden;
+    text-overflow:      	ellipsis;
+    box-sizing:         	border-box;
+
+	background-position: 	0px 0px;
+	background-color:		#ffffff;
+	background-repeat:		repeat-y; 
+	background-image:		url(image/wliu-tree-ln.png);
+
+    font-size:          	14px;
+}
+ul[wliu-tree] > li:last-child {
+	background-repeat:		no-repeat; 
+	background-image:		url(image/wliu-tree-node-last-ln.png);
+}
+
+/*** node open / close  line ***/
+ul[wliu-tree] > li:before {
+	content: 				" ";
+	display: 				inline-block;
+	width:    				22px;
+	height:  				20px;
+	vertical-align: 		middle;
+
+	background-position: 	0px 0px;
+	background-color:		#ffffff;
+	background-repeat:		no-repeat; 
+	background-image:		url(image/wliu-tree-node-ln.png);
+}
+ul[wliu-tree] > li:last-child:before {
+	background-image:		url(image/wliu-tree-node-last-ln.png);
+}
+ul[wliu-tree] > li[nodes][open]:before {
+	background-image:		url(image/wliu-tree-nodes-open-ln.png);
+}
+ul[wliu-tree] > li[nodes][close]:before {
+	background-image:		url(image/wliu-tree-nodes-close-ln.png);
+}
+ul[wliu-tree] > li[nodes][open]:last-child:before {
+	background-image:		url(image/wliu-tree-nodes-last-open-ln.png);
+}
+ul[wliu-tree] > li[nodes][close]:last-child:before {
+	background-image:		url(image/wliu-tree-nodes-last-close-ln.png);
+}
+
+
+/*** default tree open | close icon here:  default is folder  ***/
+ul[wliu-tree] > li > s {
+	cursor:					pointer;
+	display: 				inline-block;
+	vertical-align:			middle;
+
+	background-color:		#ffffff;
+	background-repeat:		no-repeat; 
+	background-position: 	left 1px;
+}
+
+ul[wliu-tree] > li[node] > s[folder] {
+	width:	 				22px;
+	height:					20px;
+	background-image:		url(image/wliu-tree-item.png);
+}
+ul[wliu-tree] > li[nodes] > s[folder] {
+	width:	 				22px;
+	height:					20px;
+	background-image:		url(image/wliu-tree-folder-close.png);
+}
+ul[wliu-tree] > li[nodes][open] > s[folder] {
+	background-image:		url(image/wliu-tree-folder-open.png);
+}
+ul[wliu-tree] > li[nodes][close] > s[folder] {
+	background-image:		url(image/wliu-tree-folder-close.png);
+}
+
+/*** custome tree open | close icon here ***/
+ul[wliu-tree] > li[node] > s[xxxx] {
+	width:	 				22px;
+	height:					20px;
+	background-image:		url(image/wliu-tree-xxxx.png);
+}
+ul[wliu-tree] > li[nodes] > s[xxxx] {
+	width:	 				22px;
+	height:					20px;
+	background-image:		url(image/wliu-tree-xxxx-close.png);
+}
+ul[wliu-tree] > li[nodes][open] > s[xxxx] {
+	background-image:		url(image/wliu-tree-xxxx-open.png);
+}
+ul[wliu-tree] > li[nodes][close] > s[xxxx] {
+	background-image:		url(image/wliu-tree-xxxx-close.png);
+}
+
+/*** nodes open | close ***/
+ul[wliu-tree] > li[nodes][close] > ul[wliu-tree] {
+	display: 				none;
+}
+ul[wliu-tree] > li[nodes][open] > ul[wliu-tree] {
+	display: 				block;
+}
+
+ul[wliu-tree][root] {
+	padding-left:			0px;
+}

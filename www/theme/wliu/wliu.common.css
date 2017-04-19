@@ -1,4 +1,29 @@
 /*** fix  bootstrap and mdbootstrap  problem : overwrite their css ***/
+fieldset {
+	display: 		block;
+	width: 			100%;
+	padding:        0px 10px 10px 10px;
+	background-color: #efefef;
+	box-sizing: 	border-box;
+	border-radius: 	5px;
+}
+
+fieldset legend {
+	display: 		inline-block;
+	width: 			auto;
+	font-size: 		16px;
+	font-weight: 	500;
+	color: 			#ffffff;
+	padding:        2px 10px;
+	border-radius:  8px;
+	background-color: #888888;
+}
+
+table {
+	empty-cells: 			show;
+	border-collapse:		collapse;
+}
+
 table td, table th,
 .table td, .table th {
 	padding: 		5px 2px;
@@ -16,12 +41,16 @@ table td, table th,
 
 .btn {
 	margin: 		0px;
-	padding: 		3px 12px;
-	line-height: 	20px;
+	padding: 		8px 12px;
+	line-height: 	100%;
 	box-sizing:     content-box;
 	border-radius:  5px;
+	/* text-shadow:    1px 1px #000000; */
 }
 
+.btn-row {
+	padding: 		3px 12px;
+}
 .checkbox label, .radio label {
     cursor: 		pointer;
     font-weight: 	400;
@@ -58,11 +87,39 @@ div.picker__header {
 div.picker__footer {
 	padding:    		5px 15px;
 }
+
 /***** input element: overwrite bootstrap *****************************/
 
+/*** override MDB side nav ***/
+@media (max-width: 1440px) {
+  .fixed-sn .double-nav,
+  .fixed-sn main,
+  .fixed-sn footer {
+    padding-left: 0; } }
+
+@media (min-width: 768px) {
+  .fixed-sn main {
+    margin-left: 2%;
+    margin-right: 2%; } }
+
+@media (min-width: 992px) {
+  .fixed-sn main {
+    margin-left: 5%;
+    margin-right: 5%; } }
+
+@media (min-width: 1400px) {
+  .fixed-sn main {
+    margin-left: 6%;
+    margin-right: 6%; } }
+
+/*****************************/
+
 input {
-	padding: 0px;
-	margin:  0px;
+	padding: 			2px 1px;
+	margin:  			1px;
+	font-size:          14px;
+	box-sizing: 		content-box;
+	height:  			20px;
 }
 
 div.row {
@@ -80,21 +137,21 @@ textarea
 	background-color: 	rgb(255,255,255);
 	color: 				rgb(85,85,85);
 	box-shadow: 		rgba(0,​ 0,​ 0,​ 0.075) 0px 1px 1px 0px inset;
-	margin: 			2px 2px;
-	padding-top: 		2px;
-	padding-bottom: 	2px;
-	padding-left: 		6px;
-	padding-right: 		6px;
+	margin: 			1px 1px;
+	padding: 			2px 1px;
 	border-radius: 		4px;
 	border: 			1px solid rgb(204,204,204);
 	vertical-align: 	middle;
-	height:  			auto;
+	height:  			20px;
 	width:  			auto;
+
+	font-size:          14px;
+	box-sizing: 		content-box;
 }
 
 textarea {
-	padding-left: 		2px;
-	padding-right: 		2px;
+	padding-left: 		1px;
+	padding-right: 		1px;
 	min-height: 		60px;
 	width: 				250px;
 }
@@ -119,101 +176,111 @@ span.radio,
 span.checkbox {
 	display: 		inline-block;
 	white-space: 	nowrap;
-	padding:     	0px;
-	margin: 	 	5px;
+	/*
 	height:         20px;
 	line-height:    20px;
+	*/
+	padding:     	0px;
+	margin: 	 	3px 4px;
+	box-sizing: 	content-box;
 }
 span.radio > label,
 span.checkbox > label,
-[type="checkbox"] + label,
-[type="radio"] + label
+input[type="checkbox"] + label,
+input[type="radio"] + label
 {
-	display: 	inline-block;
+	display: 		inline-block;
+	/*
 	height:         20px;
 	line-height:    20px;
+	*/
 	vertical-align: middle;
 } 
 
 
 span.radio > input[type="radio"],
 span.checkbox > input[type="checkbox"],
-[type="checkbox"],
-[type="radio"]
+span.checkbox > input[type="checkbox"],
+span.checkbox > input[type="radio"]
 {
 	display: 		none;
-	position: 		absolute;
-	vertical-align: middle;
+	position: 		relative;
+	vertical-align: bottom;
 } 
 
 span.radio > label:before,
 span.checkbox > label:before, 
-[type="checkbox"] + label:before,
-[type="radio"] + label:before
+input[type="checkbox"] + label:before,
+input[type="radio"] + label:before
 {
-	display: 	inline-block;
-	position: 	relative;
-	width:  	16px;
-	height: 	16px;
-	margin-right: 2px;
-	content: 	" ";
-	vertical-align: middle;
+	display: 		inline-block;
+	position: 		relative;
+	width:  		16px;
+	height: 		16px;
+	margin-top: 	3px;
+	margin-right: 	2px;
+	content: 		" ";
+	vertical-align: top;
 
     background-color:           transparent;
     background-image:           url(wliu.buttons/wliu-buttons-16.png);
 }
 span.radio > label:before,
-[type="radio"] + label:before
+input[type="radio"] + label:before
 {
-	margin-top:   -4px;
+	margin-top:   3px;
 }
 span.checkbox > label:before,
-[type="checkbox"] + label:before
+input[type="checkbox"] + label:before
 {
-	margin-top:   -2px;
+	margin-top:   3px;
 }
 
 
 span.radio > label:before,
-[type="radio"] + label:before
+input[type="radio"] + label:before
 {
     background-position:        -40px -120px;
 }
 
 span.checkbox > label:before,
-[type="checkbox"] + label:before
+input[type="checkbox"] + label:before
 {
     background-position:        -40px -100px;
 }
 
 span.radio:hover > label:before,
-[type="radio"]:hover + label:before
+input[type="radio"]:hover + label:before
 {
     background-position:        -20px -120px;
 }
 
 span.checkbox:hover > label:before,
-[type="checkbox"]:hover + label:before
+input[type="checkbox"]:hover + label:before
 {
     background-position:        -20px -100px;
 }
 
 span.radio > input[type="radio"]:checked + label:before,
-[type="radio"]:checked + label:before
+input[type="radio"]:checked + label:before
 {
     background-position:        0px -120px;
+	border-bottom: 				0px solid #33b5e5;
+    border-right: 				0px solid #33b5e5;
 }
 
 span.checkbox > input[type="checkbox"]:checked + label:before,
-[type="checkbox"]:checked + label:before
+input[type="checkbox"]:checked + label:before
 {
     background-position:        0px -100px;
+	border-bottom: 				0px solid #33b5e5;
+    border-right: 				0px solid #33b5e5;
 }
 
 span.radio > input[type="radio"]:checked + label,
 span.checkbox > input[type="checkbox"]:checked + label,
-[type="radio"]:checked + label,
-[type="checkbox"]:checked + label
+input[type="radio"]:checked + label,
+input[type="checkbox"]:checked + label
 {
 	color: 		#A807C4;
 }
@@ -231,17 +298,68 @@ abbr {
 	text-decoration: underline;
 }
 
-.wliuCommon-label {
+.wliuCommon-header {
 	display: 		inline-block;
 	position: 		relative;
 	padding: 		0px;
-	margin: 		0px;
-	font-size: 		0.9em;
+	font-size: 		14px; /* 0.9em */
 	font-weight: 	400;
-	margin: 		2px;
+	margin: 		3px;
 	white-space:    nowrap;
 	overflow: 		hidden;
 	vertical-align: middle;
+}
+
+
+.wliuCommon-label {
+	display: 		inline-block;
+	position: 		relative;
+	font-size: 		14px; /* 0.9em */
+	font-weight: 	400;
+	vertical-align: middle;
+	margin: 		3px 0px;
+	/*
+	height: 		20px;
+	line-height: 	20px;
+	padding: 		2px 0px;
+	margin: 		1px;
+	*/
+}
+
+.wliuCommon-page-height {
+	min-height: 	840px;
+}
+
+.wliuCommon-page-title {
+	font-size: 	16px;
+	color: 		#333333;
+	font-weight: 500px;
+}
+.wliuCommon-line {
+	display: 	block;
+	width: 		100%;
+	height: 	0px;
+	border: 	none;
+	border-bottom: 1px solid #cccccc;
+	padding: 	0px;
+	margin: 	2px 0px;
+}
+.wliuCommon-tips:before {
+	content:"* ";
+}
+.wliuCommon-tips {
+	display: 		inline-block;
+	position: 		relative;
+	font-size: 		14px; /* 0.9em */
+	font-style:     italic;
+	font-weight: 	400;
+	vertical-align: middle;
+	margin:  		3px 0px;
+	/*
+	height: 		20px;
+	padding: 		2px 0px;
+	margin: 		1px;
+	*/
 }
 
 a.wliuCommon-sort {
@@ -259,8 +377,8 @@ a.wliuCommon-sort {
 input.wliuCommon-checklist {
 	cursor: 			pointer;
 	display: 			inline-block;
-	height:  			24px;
-	line-height: 		24px;
+	height:  			20px;
+	line-height: 		20px;
 	padding: 			0px;
 	padding-top: 		2px;
 	padding-bottom: 	2px;
@@ -278,8 +396,8 @@ input.wliuCommon-checklist {
 input.wliuCommon-radiolist {
 	cursor: 			pointer;
 	display: 			inline-block;
-	height: 			24px;
-	line-height: 		24px;
+	height: 			20px;
+	line-height: 		20px;
 	padding: 			0px;
 	padding-top: 		2px;
 	padding-bottom: 	2px;
@@ -298,8 +416,8 @@ input.wliuCommon-search {
     display:        inline-block;
     position:       relative;
     width:          100px;
-    height:         24px;
-    line-height:    24px;
+    height:         20px;
+    line-height:    20px;
     padding:        0px;
     padding-left:   20px;
     margin:         2px;
@@ -313,8 +431,8 @@ select.wliuCommon-filter {
     display:        inline-block;
     position:       relative;
     min-width:      120px;
-    height:         24px;
-    line-height:    24px;
+    height:         20px;
+    line-height:    20px;
     padding:        0px;
     padding-left:   20px;
     margin:         2px;
@@ -334,6 +452,31 @@ div.wliu-underline {
     margin-bottom:  2px;
     margin-left:     0px;
     margin-right:   0px;
+}
+
+a.wliu-website-lang-options {
+	font-size:    12px;
+	color:        #ffffff;
+	text-shadow:  1px 1px #000000; 
+	padding: 	  2px;
+}
+
+.navbar.navbar-dark .navbar-nav .nav-item a.wliu-lang-selected[lang],
+a.wliu-lang-selected[lang] {
+	background-color: #ff4444; 
+	border-radius:    4px;
+	border: 		  1px solid #ff4444;
+	font-size: 		  12px;
+	font-weight:      bold;
+	padding: 		  4px;
+	text-shadow:  	  none;
+}
+
+span.seperator {
+	color:  	#cccccc;
+	font-size: 	0.8em;
+	font-weight: 300;
+	vertical-align:  middle;
 }
 
 /********* table button **************/
@@ -485,41 +628,41 @@ li.wliu-orderlist-active:hover {
 input.wliuCommon-datepicker {
 	cursor: 			pointer;
 	display: 			inline-block;
-	height:  			24px;
-	line-height: 		24px;
+	height:  			20px;
+	line-height: 		20px;
 	padding: 			0px;
 	padding-top: 		2px;
 	padding-bottom: 	2px;
 	padding-left: 		20px;
 	font-size: 			1em;
 	width:  			90px;
-	margin: 			2px 0px;
+	margin: 			1px;
 	border: 			0px;
 	border-bottom: 		1px solid rgb(204,204,204);
 	border-radius: 		0px;
 	background: 		0px center url(wliu.common/wliu-date-16.png) no-repeat;
 	vertical-align: 	middle;
-	box-sizing: content-box;
+	box-sizing: 		content-box;
 }
 
 input.wliuCommon-timepicker {
 	cursor: 			pointer;
 	display: 			inline-block;
-	height:  			24px;
-	line-height: 		24px;
+	height:  			20px;
+	line-height: 		20px;
 	padding: 			0px;
 	padding-top: 		2px;
 	padding-bottom: 	2px;
 	padding-left: 		20px;
 	font-size: 			1em;
 	width:  			50px;
-	margin: 			0px 2px;
+	margin: 			1px;
 	border: 			0px;
 	border-bottom: 		1px solid rgb(204,204,204);
 	border-radius: 		0px;
 	background: 		0px center url(wliu.common/wliu-clock-16.png) no-repeat;
 	vertical-align: 	middle;
-	box-sizing: content-box;
+	box-sizing: 		content-box;
 }
 /***************************************************/
 
@@ -533,6 +676,8 @@ ul.wliuCommon-list-group {
 }
 
 ul.wliuCommon-list-group li.list-group-item {
+	display: 		block;
+	width: 			100%;
 	box-shadow: 	none; 
 	border-left: 	0px;
 	border-right: 	0px;
@@ -704,6 +849,7 @@ div.wliu-image-crop + img[src=''] {
 	display:	none;
 }
 
+/*** File upload and list ****/
 /*** overwrite resize handle ***/
 div.ui-resizable-se {
 	background-image: url("wliu.common/wliu-resize.png");
@@ -714,6 +860,12 @@ div.ui-resizable-se {
 	margin-top:       -12px;
 	top:              100%;
 	left:             100%;
+}
+
+.wliu-background-1 {
+	background-position: 	center center;
+	background-repeat: 		repeat;
+	background-image: 		url("wliu.background/wliu-bg-1.jpg");
 }
 
 /***  Highest Priority ****/
@@ -732,6 +884,7 @@ input.wliuCommon-text-error
 	color:					red;
 }
 
+label.input-tiny,
 span.input-tiny,
 input.input-tiny, 
 input.input-tiny,
@@ -740,6 +893,7 @@ textarea.input-tiny {
 	width:              50px;
 }
 
+label.input-short,
 span.input-short,
 input.input-short, 
 input.input-short,
@@ -748,6 +902,7 @@ textarea.input-short {
 	width: 				80px;
 }
 
+label.input-small,
 span.input-small,
 input.input-small, 
 input.input-small,
@@ -756,6 +911,7 @@ textarea.input-small {
 	width: 				120px;
 }
 
+label.input-medium,
 span.input-medium,
 input.input-medium, 
 input.input-medium,
@@ -764,6 +920,7 @@ textarea.input-medium {
 	width: 				160px;
 }
 
+label.input-large,
 span.input-large,
 input.input-large, 
 input.input-large,
@@ -772,6 +929,7 @@ textarea.input-large {
 	width: 				250px;
 }
 
+label.input-long,
 span.input-long,
 input.input-long, 
 input.input-long,
@@ -780,8 +938,13 @@ textarea.input-long {
 	width: 				300px;
 }
 
-select {
-	box-sizing: content-box;
+label.input-auto,
+span.input-auto,
+input.input-auto, 
+input.input-auto,
+select.input-auto,
+textarea.input-auto {
+	width: 				100%;
 }
 
 

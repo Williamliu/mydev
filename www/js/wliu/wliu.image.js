@@ -1,562 +1,322 @@
-/******* Table & ArraySearch  *******/
 var WLIU = WLIU || {};
-WLIU.FILE = function( opts ) {
-	this.file = {
-		state: 0,
-		error:      {errorCode:0, errorMessage:0},
-
-		key:		0,
-		fkey:		0,
-		fkey1:		0,
-		filter:     "",
-
-		public:		0,
-		main:		0,
-		status:	 	1,
-		title_en:   "",
-		title_cn:   "",
-		detail_en:  "",
-		detail_cn:  "",
-
-		name:		"",
-		full:		"",
-		short:		"",
-		ext:    	"",
-		type:		"",
-		mime:		"",
-		data: 		"",		
-	}
-	$.extend(this.file, opts);
-	return this.file;
-}
-
-WLIU.FILEACTION = function( opts ) {
-	this.allowType 	= ["PDF", "XLS", "XLSX", "DOC", "DOCX", "TXT"];
-	this.file       = new WLIU.FILE({
-		key: opts.key,
-		fkey: opts.fkey,
-		fkey1: opts.fkey1,
-		filter: opts.filter		
-	});
-    if(opts.allowType) this.allowType = opts.allowType;
-	var _self 	= this;
-	// class constructor
-	var _constructor = function() {
-
-	}();
-}
-
-WLIU.FILEACTION.prototype = {
-	getImage: function() {
-		return this.file;
-	},
-	setImage: function(fileObj) {
-		this.file = fileObj;
-	},
-	fileMime: function() {
-		return this.file.mime;
-	},
-	mimeType: function(dataURL) {
-		return this._mimeType(dataURL);
-	},
-
-	fromFile: function( file, callback ) {
-		this.file.name = file.name.fileName();
-		this.file.ext = file.name.extName();
-		this.file.short = file.name.fullName();
-		this.file.full = file.name;
-		this.file.mime = file.type;
-		this.file.type = file.name.extName();
-		if( this.allowType.indexOf( this.file.type.toUpperCase()) >= 0  ) {
-			this._fromBlob(file, callback);
-		} else {
-			this.file.error.errorCode 		= 1;
-			this.file.error.errorMessage 	= "Only image type: [" + this.allowType.join(", ") + "] allow to upload."; 
-			if( callback && $.isFunction(callback) ) callback(this.file, this.file.error);
-		}
-	},
-	exportFile: function() {
-		window.open(this.file.data);
-	},
-	exportBlob: function(blob) {
-		this._fromBlob(blob, function(dataURL){
-			window.open(dataURL);
-		});
-	},
-	exportDataURL: function(dataURL) {
-		window.open(dataURL);
-	},
-	//data:MimeType;base64, + base64_str
-	exportBase64: function( base64_str, mimeType) {
-		if( mimeType )
-			window.open(this.toBase64(base64_str, mimeType));
-		else 
-			window.open(base64_str);
-	},
-	exportHTML: function(html) {
-		this.exportDataURL( this._string2DataURL(html, "text/html") );
-	},
-	fromBlob: function(blob, callback) {
-		this._fromBlob(file, callback);
-	},
-	toBlob: function( dataURL ) {
-	 	return this._dataURL2Blob(dataURL);
-	},
-	toDataURL: function( str, mimeType ) {
-		return this._string2DataURL(str, mimeType);
-	},
-	toBase64: function( bstr, mimeType ) {
-		return this._base64DataURL(bstr, mimeType);
-	},
-	/*** private methods ***/
-	// file = blob
-	// DataURL format: data:mimeType;base64,base64_string 
-	_fromBlob: function(file, callback) {
-		var _self = this;
-		var fs = new FileReader();
-		fs.onload = function(ev1) {
-			_self.file.data = ev1.target.result;
-			if( callback && $.isFunction(callback) ) callback(ev1.target.result);
-		}                
-		fs.readAsDataURL(file);
-	},
-	_mimeType: function(dataURL) {
-		try {
-			var arr = dataURL.split(','); 
-			var mime = arr[0].match(/:(.*?);/)[1];
-			return mime;
-		} catch(err) {
-			return "";
-		}
-	},
-	_dataURL2Blob : function( dataURL ) {
-		try {
-			var arr = dataURL.split(','); 
-			var mime = arr[0].match(/:(.*?);/)[1];
-			var bstr = atob(arr[1]);
-			var n = bstr.length;
-			var u8arr = new Uint8Array(n);
-			
-			while(n--){
-				u8arr[n] = bstr.charCodeAt(n);
-			}
-			return new Blob([u8arr], {type:mime});
-		}
-		catch(err) {
-		}
-	},
-	_string2DataURL: function(str, mimeType ) {
-		// convert string to base64,  then plus mime type = DataURL
-		var base64_str = btoa(str);
-		return "data:" + mimeType + ";base64," + base64_str;
-	},
-	_base64DataURL: function(base64_str , mimeType) {
-		return "data:" + mimeType + ";base64," + base64_str;
-	}
-}
-
-
-WLIU.IMAGE = function( opts ) {
-	this.image 		= {
-		state: 		0,
-		scale:		0,
-		error:      {errorCode:0, errorMessage:0},
-
-		key:		0,
-		fkey:		0,
-		fkey1:		0,
-		filter:     "",
-
-		public:		0,
-		main:		0,
-		status:	 	1,
-		title_en:   "",
-		title_cn:   "",
-		detail_en:  "",
-		detail_cn:  "",
-
-		name:		"",
-		full:		"",
-		short:		"",
-		ext:    	"",
-		type:		"",
-		mime:		"",
-		resize:     {
-			 origin:	{ ww: 1200, 	hh:1200, 	width:0, height:0, length:0, name:"", size: "", data:"" },
-			 thumb: 	{ ww: 60, 		hh:60, 		width:0, height:0, length:0, name:"", size: "", data:"" },
-			 tiny: 		{ ww: 120, 		hh:120, 	width:0, height:0, length:0, name:"", size: "", data:"" },
-			 small: 	{ ww: 200, 		hh:200, 	width:0, height:0, length:0, name:"", size: "", data:"" },
-			 medium: 	{ ww: 400, 		hh:400, 	width:0, height:0, length:0, name:"", size: "", data:"" },
-			 large:		{ ww: 800, 		hh:800, 	width:0, height:0, length:0, name:"", size: "", data:"" }
-		}
-	};
-	$.extend(this.image, opts);
-	return this.image;
-}
-
+// Table Object
 WLIU.IMAGELIST = function( opts ) {
 	this.sc			= null;
-
-	this.fkey 		= 0;
-	this.fkey1 		= 0;
-	this.filter		= "";
-
-	this.lang       = opts.lang?opts.lan:"cn";
-	this.scope  	= opts.scope?opts.scope:"";
+	this.lang       = opts.lang?opts.lang:"cn";
 	this.url		= opts.url?opts.url:"";
-	
-	this.wait		= opts.wait?opts.wait:"";
-	this.rowerror   = opts.rowerror?opts.rowerror:"";
-	this.taberror 	= opts.taberror?opts.taberror:"";
-	this.tooltip 	= opts.tooltip?opts.tooltip:"";
-	this.tips 		= opts.tips?opts.tips:"";
-	
-	this._rindex 	= -1; // private for rowno
+	this.errorShow 	= opts.errorShow?opts.errorShow:"";
+	this.infoEditor = opts.infoEditor?opts.infoEditor:"";
+	this.imgViewer  = opts.imgViewer?opts.imgViewer:"";
+	this.imgEditor  = opts.imgEditor?opts.imgEditor:"";
 	this.action		= "get";
-	this.error		= {errorCode:0, errorMessage:""};  // table level error : action rights 
-	this.rights 	= {view:1, save:0, cancel:1, clear:1, delete:0, add:1, detail:1, output:0, print:1};
-	this.navi		= { paging:1, pageno: 0, pagesize:20, pagetotal:0, recordtotal:0, loading:0, orderby: "", sortby:"" };
-	this.filters 	= [];
-	this.rows		= [];  
-	this.callback   = {ajaxBefore: null, ajaxAfter: null, ajaxComplete: null, ajaxError: null,  ajaxSuccess: null};
+	// keys required by server side database config file
+	this.keys 		= {key1:"", key2:"", key3:""};
+	this.config     = {
+						mode: 		"",
+						scope: 		"",
+						thumb:  	opts.thumb?opts.thumb:"tiny",						
+						view: 		opts.view?opts.view:"medium",
+						max_length: 0,
+						max_size: 	0
+	};
+	this.current 		= "";
+	this.errorCode  	= 0;
+	this.errorMessage 	= "";  // images level error 
+	this.rows 			= [];
 	
-	$.extend(this.rights, opts.rights);
-	$.extend(this.cols, opts.cols);
-	$.extend(this.navi, opts.navi);
-	$.extend(this.filters, opts.filters);
-	$.extend(this.rows, opts.rows);
-	$.extend(this.callback, opts.callback);
 }
 
 WLIU.IMAGELIST.prototype = {
-	setScope: function(p_scope) {
-		p_scope.table = this;
+	setScope: function(p_scope, imgList) {
+		if( imgList ) {
+			p_scope[imgList] = this;
+		} else {
+			p_scope.imgList = this;
+		}
 		this.sc = p_scope;
 	},
-	rowno: function(p_ridx) {
-		if(p_ridx!=undefined) {
-			if(p_ridx<0) this._rindex = -1;
-			if(p_ridx >= this.rows.length) this._rindex = this.rows.length - 1;
-			if(p_ridx>=0 && p_ridx < this.rows.length) this._rindex = p_ridx;
-			return this._rindex;
+	index: function(guid) {
+		return FCOLLECT.indexByKV(this.rows, {guid:guid});
+	},
+	currentIndex: function() {
+		var curImg = this.getCurrent();
+		if(curImg) 
+			return this.index(curImg.guid);
+		else 
+			return -1;
+	},
+	getImage: function(guid) {
+		var rowidx = this.index(guid);
+		if(rowidx>=0 && rowidx < this.rows.length) {
+			return this.rows[rowidx];
 		} else {
-			return this._rindex;
+			return undefined;
 		}
 	},
-	
-}
-
-
-// Table Object
-WLIU.IMAGEACTION = function( opts ) {
-	this.allowType 	= ["BMP", "JPG", "JPEG", "PNG", "ICO", "GIF"];
-	this.scale 		= opts.scale?opts.scale:0;
-	this.view  		= opts.view?opts.view:"medium";  
-
-	this.image          = new WLIU.IMAGE({
-		key: opts.key,
-		fkey: opts.fkey,
-		fkey1: opts.fkey1,
-		filter: opts.filter		
-	});
-	if( opts.resize ) 		this.image.resize = opts.resize;
-	if( opts.allowType ) 	this.allowType = opts.allowType;
-	
-
-	var _self 	= this;
-	// class constructor
-	this._fromImage = null;
-	opts.allowType = this.allowType;
-	var _constructor = function() {
-		_self.FILEACT = new WLIU.FILEACTION(opts);
-	}();
-}
-
-WLIU.IMAGEACTION.prototype = {
-	getImage: function() {
-		return this.image;
+	getCurrent: function() {
+		return this.getImage(this.current);
 	},
-	setImage: function(imgObj) {
-		this.image = imgObj;
+	navLeft: function(callback) {
+		var rowidx = this.currentIndex();
+    	if(rowidx>0) rowidx--;
+		if( this.rows[rowidx] ) {
+			this.current = this.rows[rowidx].guid;
+		} else {
+			this.current = "";
+		}
+		if(callback) if($.isFunction(callback)) callback(this.rows[rowidx]);
 	},
-	fromFile: function(file, callback) {
+	navLeftState: function() {
+		if(this.rows.length <= 1) return false; 
+		if(this.currentIndex() <= 0) return false; 
+		return true;
+	},
+	navRight: function(callback) {
+		var rowidx = this.currentIndex();
+    	if(rowidx<this.rows.length-1) rowidx++;
+		if( this.rows[rowidx] ) {
+			this.current = this.rows[rowidx].guid;
+		} else {
+			this.current = "";
+		}
+		if(callback) if($.isFunction(callback)) callback(this.rows[rowidx]);
+	},
+	navRightState: function() {
+		if(this.rows.length <= 1) return false; 
+		if(this.currentIndex() >= this.rows.length -1 ) return false; 
+		return true;
+	},
+	thumbImageData: function(oImg) {
+		if(oImg) return oImg.resize && oImg.resize[this.config.thumb]?oImg.resize[this.config.thumb].data:"";
+	},
+	currentThumbData: function() {
+		return this.thumbImageData(this.getCurrent());
+	},
+	viewImageData: function(oImg) {
+		if(oImg) return oImg.resize && oImg.resize[this.config.view]?oImg.resize[this.config.view].data:"";
+	},
+	currentViewData: function() {
+		return this.viewImageData(this.getCurrent());
+	},
+	originImageData: function(oImg) {
+		if(oImg) return oImg.resize && oImg.resize["origin"]?oImg.resize["origin"].data:"";
+	},
+	currentOriginData: function() {
+		return this.originImageData(this.getCurrent());
+	},
+	saveText: function(oImg, callback) {
+		if( oImg ) {
+			this.errorCode 		= 0;
+			this.errorMessage 	= "";
+			var nimage = {};
+			nimage.id 			= oImg.id;
+			nimage.guid			= oImg.guid;
+			nimage.scope 		= oImg.scope;
+			nimage.title_en 	= oImg.title_en;
+			nimage.title_cn 	= oImg.title_cn;
+			nimage.detail_en 	= oImg.detail_en;
+			nimage.detail_cn 	= oImg.detail_cn;
+			nimage.orderno 		= oImg.orderno;
+			nimage.status 		= oImg.status?1:0;
+			nimage.action 		= "savetext";
+			nimage.errorCode 	= this.errorCode;
+			nimage.errorMessage = this.errorMessage;
+			this.ajaxCall(nimage, callback);
+		} else {
+			return false;
+		}
+	},
+	saveOrder: function(callback) {
+		this.errorCode 		= 0;
+		this.errorMessage 	= "";
+		var nimages = {};
+		nimages.action 			= "saveorder";
+		nimages.errorCode   	= this.errorCode;
+		nimages.errorMessage   	= this.errorMessage;
+		nimages.rows = [];
+		for(var idx in this.rows) {
+			var imgobj = {};
+			imgobj.id = this.rows[idx].id;
+			imgobj.sn = this.rows[idx].sn;
+			nimages.rows.push(imgobj);
+		}
+		this.ajaxCall(nimages, callback);
+	},
+	deleteImage: function( oImg ) {
 		var _self = this;
-		_self.FILEACT.fromFile(file, function(dataURL, error){
-			if( error && error.errorCode == 1) {
-				_self.image.error.errorCode 	= _self.FILEACT.file.error.errorCode;
-				_self.image.error.errorMessage 	= _self.FILEACT.file.error.errorMessage;
-				if( callback && $.isFunction(callback) ) callback(_self.image, _self.image.error);
-			} else {
-				_self.image.name = _self.FILEACT.file.name;
-				_self.image.ext = _self.FILEACT.file.ext;
-				_self.image.full = _self.FILEACT.file.full;
-				_self.image.short = _self.FILEACT.file.short;
-				_self.image.mime = _self.FILEACT.file.mime;
-				_self.image.type = _self.FILEACT.file.type;
-
-				_self._imageDataURL(dataURL, callback);
+		if( oImg ) {
+			this.errorCode 		= 0;
+			this.errorMessage 	= "";
+			var nimages = {};
+			nimages.action 		= "delete";
+			nimages.id 			= oImg.id;
+			nimages.guid		= oImg.guid;
+			nimages.scope 		= oImg.scope;
+			nimages.errorCode 	= this.errorCode;
+			nimages.errorMessage = this.errorMessage;
+			this.ajaxCall(nimages, {
+				ajaxSuccess: function(nimages) {
+					var ridx = FCOLLECT.indexByKV( _self.rows, {id: nimages.id});
+					if( ridx >= 0 && ridx < _self.rows.length ) {
+						_self.rows.splice(ridx, 1);
+						_self.sc.$apply();
+					}	
+				}
+			})
+		
+		
+		}
+	},
+	saveImage: function( oImg, callback ) {
+		var _self = this;
+		this.errorCode 		= 0;
+		this.errorMessage 	= "";
+		var nimages  		= angular.copy(oImg);
+		oImg.errorCode 		= this.errorCode;
+		oImg.errorMessage 	= this.errorMessage;
+		
+		nimages.action 		= "save";
+		nimages.errorCode  	= oImg.errorCode;
+		nimages.errorMessage= oImg.errorMessage;
+		
+		this.ajaxCall(nimages, {
+			ajaxAfter: function() {
+				if(callback) if($.isFunction(callback)) callback();
+			},
+			ajaxSuccess: function(oimages) {
+				//console.log(oimages);
+				_self.sc.$apply();
 			}
+		})
+	},
+	addImage: function( oImg ) {
+		var _self = this;
+		this.errorCode 		= 0;
+		this.errorMessage 	= "";
+		oImg.scope 			= this.config.scope;
+		oImg.key1 			= this.keys.key1?this.keys.key1:0;
+		oImg.key2 			= this.keys.key2?this.keys.key2:0;
+		oImg.key3 			= this.keys.key3?this.keys.key3:0;
+		oImg.status	    	= 1;
+		oImg.orderno 		= parseInt(this.rows.length) + 1;
+		
+		var nimages = {};
+		nimages.action 		= "add";
+		nimages.id 			= 0;
+		nimages.guid		= oImg.guid;
+		nimages.scope 		= oImg.scope;
+		nimages.key1 		= oImg.key1;
+		nimages.key2 		= oImg.key2;
+		nimages.key3 		= oImg.key3;
+		nimages.full_name 	= oImg.full_name; 
+		nimages.short_name 	= oImg.short_name; 
+		nimages.ext_name 	= oImg.ext_name; 
+		nimages.mime_type 	= oImg.mime_type; 
+		nimages.status 		= oImg.status;
+		nimages.orderno 	= oImg.orderno;
+		nimages.guid 		= oImg.guid;
+		nimages.token		= oImg.token;
+		nimages.resize 		= angular.copy(oImg.resize);
+		nimages.errorCode  	= this.errorCode;
+		nimages.errorMessage = this.errorMessage;
+
+		this.ajaxCall(nimages, {
+			ajaxSuccess: function(oimages) {
+				oImg.id 		= oimages.id;
+				oImg.scope 		= oimages.scope;
+				oImg.access 	= oimages.access;
+				oImg.url 		= oimages.url;
+				_self.rows.push(oImg);
+				_self.sc.$apply();
+			}
+		})
+	},
+	getRecord: function(IDKeyValues, callback) {
+		this.keys = IDKeyValues;
+		this.getImages(callback);
+	},
+	getImages: function(callback) {
+		this.errorCode 		= 0;
+		this.errorMessage 	= "";
+		var nimages = {};
+		nimages.action 	= "get";
+		nimages.keys  	= this.keys;
+		nimages.config  = this.config;
+		nimages.errorCode 		= this.errorCode;
+		nimages.errorMessage 	= this.errorMessage;
+		nimages.rows = [];
+		this.ajaxCall(nimages, callback);
+	},
+	ajaxCall: function(nimages, callback) {
+		var _self = this;
+		$("div#wliu-wait-id[wliu-wait]").trigger("show");
+		if( callback && callback.ajaxBefore && $.isFunction(callback.ajaxBefore) ) callback.ajaxBefore(nimages);
+		//console.log(nimages);
+		$.ajax({
+			data: {
+				images:	nimages
+			},
+			dataType: "json",  
+			contentType:"application/x-www-form-urlencoded",
+			error: function(xhr, tStatus, errorTh ) {
+				$("div#wliu-wait-id[wliu-wait]").trigger("hide");
+			},
+			success: function(req, tStatus) {
+				$("div#wliu-wait-id[wliu-wait]").trigger("hide");
+				if( callback && callback.ajaxAfter && $.isFunction(callback.ajaxAfter) ) callback.ajaxAfter(req.images);
+
+				switch( req.images.action ) {
+					case "get":
+						_self.syncRows(req.images);
+						break;
+					case "savetext":
+						_self.syncError(req.images);
+						break;
+					case "saveorder":
+						_self.syncError(req.images);
+						break;
+					case "delete":
+						_self.syncError(req.images);
+						break;
+					case "add":
+						_self.syncError(req.images);
+						break;
+					case "save":
+						_self.syncError(req.images);
+						break;
+				}
+				if(!_self.sc.$$phase) _self.sc.$apply();
+
+				if( parseInt(req.images.errorCode) == 0 ) {
+					if(callback && callback.ajaxSuccess && $.isFunction(callback.ajaxSuccess) ) callback.ajaxSuccess(req.images);
+				} else {
+					if(callback && callback.ajaxError && $.isFunction(callback.ajaxError) ) callback.ajaxError(req.images);
+				}
+				
+				$(_self.errorShow).trigger("errorshow");
+
+				//Error Handle include : session expiry
+				
+				GCONFIG.errorCall({errorCode: req.errorCode, errorMessage: req.errorMessage});
+				
+			},
+			type: "post",
+			url: _self.url
 		});
 	},
-	fromImage: function(img, callback) {
-		this.image.full 	= this.image.full?this.image.full:img.name.fullName(32);
-		this.image.name 	= this.image.name?this.image.name:img.name.fileName();
-		this.image.ext  	= this.image.ext?this.image.ext:this.image.full.extName();
-		this.image.short 	= this.image.short?this.image.short:this.image.full.fullName();
-		this.image.type 	= this.image.type?this.image.type:this.image.ext.toUpperCase();
-		this._imageDataURL(img.src, callback);
-	},
-	rotate: function(callback) {
-		this._rotateAll(callback);
-	},
-	draw: function(canvas, rname, callback) {
-		if(!rname) rname = this.view;
-		var _self = this;
-		var ctx = canvas.getContext("2d");
-		this._clearCanvas(canvas);
-
-		var t_img = new Image();
-		t_img.onload = function() {
-			canvas.width 	= t_img.width;
-			canvas.height 	= t_img.height;
-			ctx.drawImage(t_img,0,0, t_img.width, t_img.height, 0, 0, canvas.width, canvas.height); 
-			if( callback && $.isFunction(callback) && _self.view==rname ) callback(this.image.resize[rname]);
-		}
-		t_img.src = this.image.resize[rname].data;		
-	},
-	crop: function(ww,hh,x,y,nw,nh, callback) {
-		this._cropLarge(ww,hh,x,y,nw,nh, callback);
-	},
-	cropDiv: function( frame_div, crop_div, callback ) {
-        console.log( frame_div.width() + " : " + frame_div.height());
-        console.log( crop_div.outerWidth() + " : " + crop_div.outerHeight());
-        console.log(crop_div.position() );
-
-		this._cropLarge(frame_div.width(), frame_div.height(), crop_div.position().left, crop_div.position().top, crop_div.outerWidth(), crop_div.outerHeight(), callback );
-	},
-	cropDivReset: function( crop_div ) {
-		crop_div.css({left: "5%", top:"5%", width:"90%", height:"90%"});
-	},
-	cropReset: function(callback) {
-		this._cropReset(callback);
-	},
-	export: function(rname) {
-		if(!rname) rname = this.view;
-		if( this.image.resize[rname].data !="" )
-			window.open( this.image.resize[rname].data );
-	},
-	exportBlob: function(blob) {
-		this.FILEACT.exportBlob(blob);
-	},
-	exportBase64: function( bstr, mimeType ) {
-		this.FILEACT.exportBase64(bstr, mimeType);
-	},
-	exportHTML: function(html) {
-		this.FILEACT.exportHTML(html);
-	},
-	imageDataURL: function(rname) {
-		if(!rname) rname = this.view;
-		return  this.image.resize[rname].data;
-	},
-	imageBlob: function(rname) {
-		return this.FILEACT.toBlob(this.imageDataURL(rname));
-	},
-
-	/*** private methods ***/
-	_imageDataURL: function(dataURL, callback) {
-		var _self = this;
-		var t_img = new Image();
-		t_img.onload = function() {
-			_self._initImage(t_img, callback);
-		}
-		t_img.src = dataURL;
-	},
-
-	_initImage:  function(t_img, callback) {
-		var _self = this;
-
-		var originImg = this.image.resize.origin;
-		var canvas 	= document.createElement("canvas");
-		var ctx 	= canvas.getContext("2d");
-		var ratio_ww = 1;
-		var ratio_hh = 1;
-		if( _self.scale ) {
-			if(originImg.ww > 0 ) ratio_ww = originImg.ww / t_img.width;
-			if(originImg.hh > 0 ) ratio_hh = originImg.hh / t_img.height;
-		} else {
-			if(originImg.ww > 0 && t_img.width > originImg.ww) ratio_ww = originImg.ww / t_img.width;
-			if(originImg.hh > 0 && t_img.height > originImg.hh) ratio_hh = originImg.hh / t_img.height;
-		}
-		var ratio = Math.min(ratio_ww, ratio_hh);
-		canvas.width 	= t_img.width * ratio;
-		canvas.height 	= t_img.height * ratio;
-		ctx.drawImage(t_img,0,0, t_img.width, t_img.height, 0, 0, canvas.width, canvas.height); 
-		
-		var imgType = _self.FILEACT.mimeType(t_img.src)?_self.FILEACT.mimeType(t_img.src):("image/"+_self.image.ext.toLowerCase());
-		var imgDataURL = canvas.toDataURL( imgType );
-		
-		originImg.width 	= canvas.width;
-		originImg.height 	= canvas.height;
-		originImg.data 		= imgDataURL;
-		originImg.length 	= imgDataURL.length;
-		originImg.size	    = originImg.length.toSize();
-		originImg.name	    = _self.image.key + "_origin." + _self.image.ext;
-		
-		_self.image.mime 	= imgType;
-		canvas = null;
-		_self._resizeAll(callback);
-		if( callback && $.isFunction(callback) && _self.view=="origin" ) callback(originImg);
-	},
-	_cropLarge: function(ww, hh, x, y, nw, nh, callback) {
-		console.log("crop Large:[" + ww + ":" + hh + "][" + x + ":" + y +"][" + nw + ":" + nh + "]" );
-		var _self = this;
-		var largeImg = this.image.resize.large;
-		if( largeImg.data != "") {
-			console.log("crop here");
-			var t_img = new Image();
-			t_img.onload = function() {
-				var ratio_ww = 1;
-				var ratio_hh = 1;
-				ratio_ww = t_img.width / ww;
-				ratio_hh = t_img.height / hh;
-
-				x 	= x * ratio_ww;
-				y 	= y * ratio_hh;
-				nw 	= nw * ratio_ww;
-				nh  = nh * ratio_hh;
-				if(x<0) x = 0;
-				if(y<0) y = 0;
-				if(x+nw>t_img.width) nw = t_img.width - x;
-				if(y+nh>t_img.height) nh = t_img.height - y;
-
-				var canvas 	= document.createElement("canvas");
-				var ctx 	= canvas.getContext("2d");
-				canvas.width 	= nw;
-				canvas.height	= nh;
-				
-				ctx.drawImage(t_img, x, y, nw, nh, 0, 0, canvas.width, canvas.height); 
-
-				var imgType = _self.FILEACT.mimeType(t_img.src)?_self.FILEACT.mimeType(t_img.src):("image/"+_self.image.ext.toLowerCase());
-				var imgDataURL = canvas.toDataURL( imgType );
-
-				largeImg.width 		= canvas.width;
-				largeImg.height 	= canvas.height;
-				largeImg.data 		= imgDataURL;
-				largeImg.length 	= imgDataURL.length;
-				largeImg.size	    = largeImg.length.toSize();
-				largeImg.name	    = _self.image.key + "_origin." + _self.image.ext;
-
-
-				if( callback && $.isFunction(callback) && _self.view=="large" ) callback(largeImg);
-				
-				_self._cropAll(callback);
-			}
-			t_img.src = largeImg.data;
-		}
-
-	},
-	_cropAll: function(callback) {
-		var _self = this;
-		var largeImg = this.image.resize.large;
-
-		var resizeImgs = this.image.resize;
-		for(var rname in resizeImgs) {
-			if(rname!="origin" && rname!="large") this._resizeImage(largeImg, resizeImgs[rname], rname, callback);
+	syncRows: function(nimages) {
+		this.errorCode 		= nimages.errorCode;
+		this.errorMessage 	= nimages.errorMessage;
+		this.config = angular.copy(nimages.config);
+		this.rows = [];
+		for(var ridx in nimages.rows) {
+			var theRow 		= nimages.rows[ridx];
+			theRow.sn  		= parseInt(nimages.rows[ridx].orderno);
+			this.rows.push( new WLIU.IMAGE(theRow) );	
 		}
 	},
-	_cropReset: function(callback) {
-		this._resizeAll(callback);
-	},
-	_rotateAll: function(callback) {
-		for(var rname in this.image.resize) {
-			if( rname !="origin" )	this._rotateImage( this.image.resize[rname], rname, callback );
-		}
-	},
-	_rotateImage : function(resizeImg, rname, callback) {
-		var _self 	= this;
-		var degree 	= 90;
-		var t_img 	= new Image();
-		t_img.onload = function() {
-			var canvas 	= document.createElement("canvas");
-			var ctx 	= canvas.getContext("2d");
-			// important: different 180 and 90
-			if( degree % 180 == 0 ) {
-				canvas.width    = t_img.width;
-				canvas.height   = t_img.height;
-			} else {
-				canvas.width    = t_img.height;
-				canvas.height   = t_img.width;
-			}
-			ctx.translate( canvas.width/2, canvas.height/2 );
-			ctx.rotate(degree*Math.PI/180);
-			ctx.drawImage(t_img, - t_img.width/2, -t_img.height/2);
-			var imgType  		= _self.FILEACT.mimeType(t_img.src);
-			var imgDataURL 		= canvas.toDataURL( imgType );
-			resizeImg.data 		= imgDataURL;
-			resizeImg.width 	= canvas.width;
-			resizeImg.height 	= canvas.height;
-			resizeImg.length 	= imgDataURL.length;
-			resizeImg.size 		= resizeImg.length.toSize();
-			
-			canvas = null;
-
-			// important :  img is old img,  imgDataURL is transform image
-			if( callback && $.isFunction(callback) && _self.view==rname ) callback(resizeImg);
-		}
-		t_img.src = resizeImg.data;
-	},
-
-	// resize base on origin image which alreay resize to 1200 * 1200 from selected image 
-	_resizeAll: function(callback) {
-		var _self = this;
-		var originImg = this.image.resize.origin;
-
-		var resizeImgs = this.image.resize;
-		for(var rname in resizeImgs) {
-			if(rname!="origin") {
-				this._resizeImage(originImg, resizeImgs[rname], rname, callback);
-			} 
-		}
-	},
-	_resizeImage: function(originImg, resizeImg, rname, callback) {
-		var _self = this;
-		var t_img = new Image();
-		t_img.onload = function() {
-			var canvas 	= document.createElement("canvas");
-			var ctx 	= canvas.getContext("2d");
-			var ratio_ww = 1;
-			var ratio_hh = 1;
-			if( _self.scale ) {
-				if(resizeImg.ww > 0 ) ratio_ww = resizeImg.ww / t_img.width;
-				if(resizeImg.hh > 0 ) ratio_hh = resizeImg.hh / t_img.height;
-			} else {
-				if(resizeImg.ww > 0 && t_img.width > resizeImg.ww) ratio_ww = resizeImg.ww / t_img.width;
-				if(resizeImg.hh > 0 && t_img.height > resizeImg.hh) ratio_hh = resizeImg.hh / t_img.height;
-			}
-			var ratio = Math.min(ratio_ww, ratio_hh);
-			canvas.width 	= t_img.width * ratio;
-			canvas.height 	= t_img.height * ratio;
-			ctx.drawImage(t_img,0,0, t_img.width, t_img.height, 0, 0, canvas.width, canvas.height); 
-			
-			var imgType = _self.FILEACT.mimeType(t_img.src);
-			var imgDataURL = canvas.toDataURL( imgType );
-			
-			resizeImg.width 	= canvas.width;
-			resizeImg.height 	= canvas.height;
-			resizeImg.data 		= imgDataURL;
-			resizeImg.length 	= imgDataURL.length;
-			resizeImg.size	    = resizeImg.length.toSize();
-			resizeImg.name	    = _self.image.key + "_" + rname + "." + _self.image.ext;
-			
- 			if( callback && $.isFunction(callback) && _self.view==rname ) callback(resizeImg);
- 			canvas = null;
-		}
-		t_img.src = originImg.data;
-	},
-	_clearCanvas: function(canvas) {
-		var ctx     = canvas.getContext("2d");
-		//important: clear canvas code,  must reset transform to clear entire canvas. perfect solution 
-		ctx.setTransform(1, 0, 0, 1, 0, 0);
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-    },
+	syncError: function(nimages) {
+		this.errorCode 		= nimages.errorCode;
+		this.errorMessage 	= nimages.errorMessage;
+	}
 }

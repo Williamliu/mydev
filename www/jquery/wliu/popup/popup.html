@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf8" />
+    <!-- JQuery3.1.1 -->
+    <script type="text/javascript" src="/jquery/min/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <link href='/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
+    <!-- //JQuery -->
+
+    <!-- Bootstrap3.3 -->
+    <link 	href='/theme/bootstrap4.0/css/bootstrap.min.css' type='text/css' rel='stylesheet' />
+    <script src="/theme/mdb4.0/js/tether.js" type="text/javascript"></script>
+    <script src="/theme/bootstrap4.0/js/bootstrap.min.js" type="text/javascript"></script>    
+    <!-- //Bootstrap3.3 -->
+    
+    <!-- MD Bootstrap 4.0 -->
+    <link href='/theme/mdb4.0/css/mdb.wliu.css' type='text/css' rel='stylesheet' />
+    <link href='/theme/font-awesome-4.6.3/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
+    <!-- //MD Bootstrap 4.0 -->
+
+
+
+	<script src="/js/wliu/wliu.common.js" type="text/javascript"></script>
+
+	<script src="wliu.jquery.popup.js" type="text/javascript"></script>
+	<link 	href="wliu.jquery.popup.css" type='text/css' rel='stylesheet' />
+
+	<link href='/theme/wliu/wliu.common.css' type='text/css' rel='stylesheet' />
+	<link href='/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
+    <script>
+        function show() {
+            $("div[wliu-loading]").trigger("show");
+        }
+        function hide() {
+             $("div[wliu-loading]").trigger("hide");
+        }
+        function showtip1() {
+            $("#tip1").trigger("auto", ["good day", "warning"]);
+        }
+        function showtip2() {
+            $("#tip2").trigger("auto",["hello world"]);
+        }
+        function showtip3() {
+            $("#tip3").trigger("auto");
+        }
+        function showtip4() {
+            $("#tip4").trigger("auto",["Successful.", "success"]);
+        }
+    </script>
+
+</head>
+<body style="padding:30px">
+<button popup-toggle="click" popup-target="#tip1" popup-placement="up" popup-head="Hello" popup-body="this is good day">Show Loading</button>
+<button popup-toggle="hover" popup-target="#tip1" popup-placement="left" popup-head="this is not hell0" popup-body="this is good day">Show Loading</button>
+
+<button popup-toggle="hover" popup-target="#tip1" popup-placement="right" popup-body="this is good day">Show Loading</button>
+
+<input type="textbox" popup-toggle="focus" popup-target="#tip1" popup-body="this is good day" value="Show Loading" />
+
+    
+
+<div wliu-loading>
+</div>
+
+<div id="tip1" wliu-popup>
+</div>
+
+<div id="tip2" wliu-popup>
+</div>
+
+<div id="tip3" wliu-popup>
+Great Ideas.
+</div>
+
+<div id="tip4" wliu-popup>
+</div>
+</body>
+</html>

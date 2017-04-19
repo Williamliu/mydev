@@ -353,6 +353,72 @@ a.wliu-btn16 {
     background-position:        -40px -460px;
 }
 
+/*** 24 mix button : help , upload, crop *****/
+.wliu-btn16-error-help {
+    background-position:        0px -480px;
+}
+.wliu-btn16-upload {
+    background-position:        -20px -480px;
+}
+.wliu-btn16-crop {
+    background-position:        -40px -480px;
+}
+
+/*** 25 mix button : rotate , undo, okey *****/
+.wliu-btn16-rotate-right {
+    background-position:        0px -500px;
+}
+.wliu-btn16-restore {
+    background-position:        -20px -500px;
+}
+.wliu-btn16-okey {
+    background-position:        -40px -500px;
+}
+
+/*** 26 mix button : dispose *****/
+.wliu-btn16-dispose {
+    background-position:        0px -520px;
+}
+.wliu-btn16-empty {
+    background-position:        -20px -520px;
+}
+.wliu-btn16-image {
+    background-position:        -40px -520px;
+}
+
+/*** 27 mix button : img-print, upload, comments *****/
+.wliu-btn16-img-print {
+    background-position:        0px -540px;
+}
+.wliu-btn16-file-upload {
+    background-position:        -20px -540px;
+}
+.wliu-btn16-comments {
+    background-position:        -40px -540px;
+}
+
+/*** 28 mix button : notes, nav-left, nav-right *****/
+.wliu-btn16-notes {
+    background-position:        0px -560px;
+}
+.wliu-btn16-nav-left {
+    background-position:        -20px -560px;
+}
+.wliu-btn16-nav-right {
+    background-position:        -40px -560px;
+}
+
+/*** 29 mix button : download,  *****/
+.wliu-btn16-download {
+    background-position:        0px -580px;
+}
+.wliu-btn16-status-true {
+    background-position:        -20px -580px;
+}
+.wliu-btn16-status-,
+.wliu-btn16-status-false {
+    background-position:        -40px -580px;
+}
 
 /****************************************************************/
 i.wliu-btn24, 
@@ -684,7 +750,7 @@ a.wliu-btn24 {
 }
 
 
-/*** 22 Navi Go *****/
+/*** 23 Navi Go *****/
 .wliu-btn24-go {
     background-position:        0px -690px;
 }
@@ -696,6 +762,73 @@ a.wliu-btn24 {
 }
 .wliu-btn24-go-disabled:hover {
     background-position:        -60px -690px;
+}
+
+/*** 24 Mix button : help, upload *****/
+.wliu-btn24-error-help {
+    background-position:        0px -720px;
+}
+.wliu-btn24-upload {
+    background-position:        -30px -720px;
+}
+.wliu-btn24-crop {
+    background-position:        -60px -720px;
+}
+
+/*** 25 mix button : rotate , undo, okey *****/
+.wliu-btn24-rotate-right {
+    background-position:        0px -750px;
+}
+.wliu-btn24-restore {
+    background-position:        -30px -750px;
+}
+.wliu-btn24-okey {
+    background-position:        -60px -750px;
+}
+
+/*** 26 mix button : dispose , undo *****/
+.wliu-btn24-dispose {
+    background-position:        0px -780px;
+}
+.wliu-btn24-empty {
+    background-position:        -30px -780px;
+}
+.wliu-btn24-image {
+    background-position:        -60px -780px;
+}
+
+/*** 27 mix button : img-print, upload, comments *****/
+.wliu-btn24-img-print {
+    background-position:        0px -810px;
+}
+.wliu-btn24-file-upload {
+    background-position:        -30px -810px;
+}
+.wliu-btn24-comments {
+    background-position:        -60px -810px;
+}
+
+/*** 28 mix button : notes, nav-left, nav-right *****/
+.wliu-btn24-notes {
+    background-position:        0px -840px;
+}
+.wliu-btn24-nav-left {
+    background-position:        -30px -840px;
+}
+.wliu-btn24-nav-right {
+    background-position:        -60px -840px;
+}
+
+/*** 29 mix button : download,  *****/
+.wliu-btn24-download {
+    background-position:        0px -870px;
+}
+.wliu-btn24-status-true {
+    background-position:        -30px -870px;
+}
+.wliu-btn24-status-,
+.wliu-btn24-status-false {
+    background-position:        -60px -870px;
 }
 
 .wliu-button-na {

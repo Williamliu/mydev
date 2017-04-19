@@ -1,4 +1,7 @@
 /****** Filter  ******/
+var filter_ng_class     = 'ng-class="{\'wliuCommon-input-invalid\':table.filterMeta(name).errorCode}" ';
+var filter_ng_disabled  = 'ng-disabled="table.filterMeta(name)==undefined" '; 
+var filter_title        = 'title="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():\'\'}}" ';
 /** label, textbox, select, bool, datetime, date, time */
 wliu_table.directive("filter.label", function () {
     return {
@@ -6,11 +9,10 @@ wliu_table.directive("filter.label", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
-                    '<label class="wliuCommon-label" scope="{{ table.scope }}" ',
+                    '<label class="wliuCommon-label" ',
                         'title="{{table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname?table.filterMeta(name).colname:name}}"',
                     '>',
                     '<span style="vertival-align:middle;">{{ table.filterMeta(name).colname?table.filterMeta(name).colname:name }}</span>',
@@ -29,19 +31,15 @@ wliu_table.directive("filter.textbox", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
-                    '<input type="textbox" scope="{{ table.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
+                    '<input type="textbox" ',
                         'ng-keypress="keypress($event)" ',
                         'ng-model="table.filterMeta(name).value" ',
-                        'ng-disabled="table.filterMeta(name)==undefined" ',
-                        'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 0, blur:0} }" ',
-
-                        'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
+                        filter_ng_class,
+                        filter_ng_disabled,
+                        filter_title,
                     '/>'
                 ].join(''),
         controller: function ($scope) {
@@ -56,6 +54,34 @@ wliu_table.directive("filter.textbox", function () {
     }
 });
 
+// for one2many, many2many, primary table id defval selection 
+wliu_table.directive("filter.bind", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            table:      "=",
+            name:       "@"
+        },
+        template: [
+			    '<select ',
+                        'ng-model="table.colMeta(name).defval" ',
+                        'ng-change="table.allRows()" ',
+                        'ng-options="sObj.key as sObj.value for sObj in table.lists[table.filterMeta(name).list].list" ',                        
+                        filter_ng_class,
+                        filter_ng_disabled,
+                        filter_title,
+                 '>',
+                 '<option value=""></option>',
+                 '</select>'
+                ].join(''),
+        controller: function ($scope) {
+        },
+        link: function (sc, el, attr) {
+        }
+    }
+});
+
 wliu_table.directive("filter.select", function () {
     return {
         restrict: "E",
@@ -63,16 +89,15 @@ wliu_table.directive("filter.select", function () {
         scope: {
             table:      "=",
             name:       "@",
-            tooltip:    "@"
+            action:     "&"
         },
         template: [
-			    '<select scope="{{ table.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
+			    '<select ',
                         'ng-model="table.filterMeta(name).value" ',
-                        'ng-disabled="table.filterMeta(name)==undefined" ',
                         'ng-options="sObj.key as sObj.value for sObj in table.lists[table.filterMeta(name).list].list" ',                        
-                        'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}"',
+                        filter_ng_class,
+                        filter_ng_disabled,
+                        filter_title,
                  '>',
                  '<option value=""></option>',
                  '</select>'
@@ -91,23 +116,20 @@ wliu_table.directive("filter.bool", function () {
         scope: {
             table:      "=",
             name:       "@",
-            label:      "@",
-            tooltip:    "@"
+            label:      "@"
         },
         template: [
-                    '<span class="checkbox" scope="{{ table.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
-                        'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
+                    '<span class="checkbox" ',
+                        filter_ng_class,
+                        filter_title,
                     '>',
 
-                            '<input type="checkbox" scope="{{ table.scope }}" id="filter_{{table.scope}}_{{name}}" ',
+                            '<input type="checkbox" id="filter_{{table.scope}}_{{name}}" ',
                                 'ng-model="table.filterMeta(name).value" ng-value="1"  ',
-                                'ng-disabled="table.filterMeta(name)==undefined" ',
+                                filter_ng_disabled,
                             '/>',
 
                             '<label for="filter_{{table.scope}}_{{name}}" title="{{table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname?table.filterMeta(name).colname:name}}">',
-                                //'<abbr title="{{rdObj.desc}}" ng-if="rdObj.desc!=\'\'">{{ rdObj.value }}</abbr>',
                                 '{{ label.toLowerCase()=="default"?table.filterMeta(name).colname:label?label:"" }}',
                             '</label>',
 
@@ -126,25 +148,21 @@ wliu_table.directive("filter.datetime", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
                     '<span ',
-                        //'ng-init="table.filterMeta(name).value=$.isPlainObject(table.filterMeta(name).value)?table.filterMeta(name).value:{}" ',
-                        'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}"',                    
+                        filter_title,
                     '>',
-                        '<input type="textbox" class="wliuCommon-datepicker" scope="{{ table.scope }}" placeholder="yyyy-mm-dd" ',
-                            'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
+                        '<input type="textbox" class="wliuCommon-datepicker" placeholder="yyyy-mm-dd" ',
                             'ng-model="table.filterMeta(name).value.date" ',
-                            'ng-disabled="table.filterMeta(name)==undefined" ',
+                            filter_ng_class,
+                            filter_ng_disabled,
                         '/>',
-                        '<input type="textbox" class="wliuCommon-timepicker" scope="{{ table.scope }}" placeholder="hh:mm" ',
-                            //'ng-init="col=table.colByIndex(rowsn, name)" ',
-                            'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
+                        '<input type="textbox" class="wliuCommon-timepicker" placeholder="hh:mm" ',
                             'ng-model="table.filterMeta(name).value.time" ',
-                            'ng-disabled="table.filterMeta(name)==undefined" ',
+                            filter_ng_class,
+                            filter_ng_disabled,
                         '/>',
                     '</span>'
                 ].join(''),
@@ -161,7 +179,7 @@ wliu_table.directive("filter.datetime", function () {
                     //disable: [ {from:[2016,9,1], to:[2016,9,10]} , [2016,10,5] ],
                     //min: new Date(2015,3,20),
                     //max: new Date(2016,11,14),
-                    selectYears: 200,
+                    selectYears: 100,
                     min: new Date(today.getFullYear()-90,1,1),
                     max: new Date(today.getFullYear()+10,12,31)
                 });
@@ -181,41 +199,38 @@ wliu_table.directive("filter.datetimerange", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
                     '<span>',
                     '<span style="vertical-align:middle">From: </span>',
                         '<span ',
-                            'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                            'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}"',                    
+                            filter_title,
                         '>',
-                            '<input type="textbox" class="wliuCommon-datepicker" scope="{{ table.scope }}" placeholder="yyyy-mm-dd" ',
-                                'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
+                            '<input type="textbox" class="wliuCommon-datepicker" placeholder="yyyy-mm-dd" ',
                                 'ng-model="table.filterMeta(name).value.from.date" ',
-                                'ng-disabled="table.filterMeta(name)==undefined" ',
+                                filter_ng_class,
+                                filter_ng_disabled,
                             '/>',
-                            '<input type="textbox" class="wliuCommon-timepicker" scope="{{ table.scope }}" placeholder="hh:mm" ',
-                                'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
+                            '<input type="textbox" class="wliuCommon-timepicker" placeholder="hh:mm" ',
                                 'ng-model="table.filterMeta(name).value.from.time" ',
-                                'ng-disabled="table.filterMeta(name)==undefined" ',
+                                filter_ng_class,
+                                filter_ng_disabled,
                             '/>',
                         '</span>',
                     '<span style="vertical-align:middle"> To: </span>',
                         '<span ',
-                            'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                            'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}"',                    
+                            filter_title,
                         '>',
                             '<input type="textbox" class="wliuCommon-datepicker" scope="{{ table.scope }}" placeholder="yyyy-mm-dd" ',
-                                'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
                                 'ng-model="table.filterMeta(name).value.to.date" ',
-                                'ng-disabled="table.filterMeta(name)==undefined" ',
+                                filter_ng_class,
+                                filter_ng_disabled,
                             '/>',
                             '<input type="textbox" class="wliuCommon-timepicker" scope="{{ table.scope }}" placeholder="hh:mm" ',
-                                'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
                                 'ng-model="table.filterMeta(name).value.to.time" ',
-                                'ng-disabled="table.filterMeta(name)==undefined" ',
+                                filter_ng_class,
+                                filter_ng_disabled,
                             '/>',
                         '</span>',
                     '</span>'
@@ -235,7 +250,7 @@ wliu_table.directive("filter.datetimerange", function () {
                     //disable: [ {from:[2016,9,1], to:[2016,9,10]} , [2016,10,5] ],
                     //min: new Date(2015,3,20),
                     //max: new Date(2016,11,14),
-                    selectYears: 200,
+                    selectYears: 100,
                     min: new Date(today.getFullYear()-90,1,1),
                     max: new Date(today.getFullYear()+10,12,31)
                 });
@@ -255,16 +270,14 @@ wliu_table.directive("filter.date", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
-                    '<input type="textbox" class="wliuCommon-datepicker" scope="{{ table.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
+                    '<input type="textbox" class="wliuCommon-datepicker" ',
                         'ng-model="table.filterMeta(name).value" ',
-                        'ng-disabled="table.filterMeta(name)==undefined" ',
-                        'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
+                        filter_ng_class,
+                        filter_ng_disabled,
+                        filter_title,
                     '/>'
                 ].join(''),
         controller: function ($scope) {
@@ -279,7 +292,7 @@ wliu_table.directive("filter.date", function () {
                     //disable: [ {from:[2016,9,1], to:[2016,9,10]} , [2016,10,5] ],
                     //min: new Date(2015,3,20),
                     //max: new Date(2016,11,14),
-                    selectYears: 200,
+                    selectYears: 100,
                     min: new Date(today.getFullYear()-90,1,1),
                     max: new Date(today.getFullYear()+10,12,31)
                 });
@@ -294,26 +307,23 @@ wliu_table.directive("filter.daterange", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
                     '<span>',
                     '<span style="vertical-align:middle">From: </span>',
-                    '<input type="textbox" class="wliuCommon-datepicker" scope="{{ table.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
+                    '<input type="textbox" class="wliuCommon-datepicker" ',
                         'ng-model="table.filterMeta(name).value.from" ',
-                        'ng-disabled="table.filterMeta(name)==undefined" ',
-                        'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
+                        filter_ng_class,
+                        filter_ng_disabled,
+                        filter_title,
                     '/>',
                     '<span style="vertical-align:middle"> To: </span>',
-                    '<input type="textbox" class="wliuCommon-datepicker" scope="{{ table.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
+                    '<input type="textbox" class="wliuCommon-datepicker" ',
                         'ng-model="table.filterMeta(name).value.to" ',
-                        'ng-disabled="table.filterMeta(name)==undefined" ',
-                        'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
+                        filter_ng_class,
+                        filter_ng_disabled,
+                        filter_title,
                     '/>',
                     '</span>'
                 ].join(''),
@@ -330,7 +340,7 @@ wliu_table.directive("filter.daterange", function () {
                     //disable: [ {from:[2016,9,1], to:[2016,9,10]} , [2016,10,5] ],
                     //min: new Date(2015,3,20),
                     //max: new Date(2016,11,14),
-                    selectYears: 200,
+                    selectYears: 100,
                     min: new Date(today.getFullYear()-90,1,1),
                     max: new Date(today.getFullYear()+10,12,31)
                 });
@@ -346,16 +356,14 @@ wliu_table.directive("filter.time", function () {
         scope: {
             table:      "=",
             rowsn:      "@",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
-                    '<input type="textbox" class="wliuCommon-timepicker" scope="{{ table.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
+                    '<input type="textbox" class="wliuCommon-timepicker" ',
                         'ng-model="table.filterMeta(name).value" ',
-                        'ng-disabled="table.filterMeta(name)==undefined" ',
-                        'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
+                        filter_ng_class,
+                        filter_ng_disabled,
+                        filter_title,
                     '/>'
                 ].join(''),
         controller: function ($scope) {
@@ -378,26 +386,23 @@ wliu_table.directive("filter.timerange", function () {
         scope: {
             table:      "=",
             rowsn:      "@",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
                     '<span>',
                     '<span style="vertical-align:middle">From: </span>',
-                    '<input type="textbox" class="wliuCommon-timepicker" scope="{{ table.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
+                    '<input type="textbox" class="wliuCommon-timepicker" ',
                         'ng-model="table.filterMeta(name).value.from" ',
-                        'ng-disabled="table.filterMeta(name)==undefined" ',
-                        'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
+                        filter_ng_class,
+                        filter_ng_disabled,
+                        filter_title,
                     '/>',
                     '<span style="vertical-align:middle"> To: </span>',
-                    '<input type="textbox" class="wliuCommon-timepicker" scope="{{ table.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
+                    '<input type="textbox" class="wliuCommon-timepicker" ',
                         'ng-model="table.filterMeta(name).value.to" ',
-                        'ng-disabled="table.filterMeta(name)==undefined" ',
-                        'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
+                        filter_ng_class,
+                        filter_ng_disabled,
+                        filter_title,
                     '/>',
                     '</span>'
                 ].join(''),
@@ -421,34 +426,27 @@ wliu_table.directive("filter.range", function () {
         replace: true,
         scope: {
             table:      "=",
-            name:       "@",
-            tooltip:    "@"
+            name:       "@"
         },
         template: [
                     '<span>',
                     '<span style="vertical-align:middle">From: </span>',
-                    '<input type="textbox" scope="{{ table.scope }}" ',
+                    '<input type="textbox" ',
                         'style="width:80px;border-top:0px;border-left:0px;border-right:0px;border-radius:0px" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
                         'ng-keypress="keypress($event)" ',
                         'ng-model="table.filterMeta(name).value.from" ',
-                        'ng-disabled="table.filterMeta(name)==undefined" ',
-                        'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 0, blur:0} }" ',
-
-                        'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
+                        filter_ng_class,
+                        filter_ng_disabled,
+                        filter_title,
                     '/>',
                     '<span style="vertical-align:middle"> To: </span>',
-                    '<input type="textbox" scope="{{ table.scope }}" ',
+                    '<input type="textbox" ',
                         'style="width:80px;border-top:0px;border-left:0px;border-right:0px;border-radius:0px" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
                         'ng-keypress="keypress($event)" ',
                         'ng-model="table.filterMeta(name).value.to" ',
-                        'ng-disabled="table.filterMeta(name)==undefined" ',
-                        'ng-model-options="{ updateOn:\'default blur\', debounce:{default: 0, blur:0} }" ',
-
-                        'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
+                        filter_ng_class,
+                        filter_ng_disabled,
+                        filter_title,
                     '/>',
                     '</span>'
                 ].join(''),
@@ -472,27 +470,22 @@ wliu_table.directive("filter.checkbox", function () {
         scope: {
             table:      "=",
             name:       "@",
-            colnum:     "@",
-            tooltip:    "@"
+            colnum:     "@"
         },
         template: [
-                    '<div scope="{{ table.scope }}" style="border:0px solid #cccccc;" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
-                        'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
+                    '<div style="display:inline-block;border:0px solid #cccccc;" ',
+                        filter_ng_class,
                     '>',
                         '<span ',
-                            'ng-repeat="rdObj in table.lists[table.filterMeta(name).list].list">',
+                                'ng-repeat="rdObj in table.lists[table.filterMeta(name).list].list">',
                                 '<span class="checkbox">',
                                         '<input type="checkbox" scope="{{ table.scope }}" id="filter_{{table.scope}}_{{name}}_{{rdObj.key}}" ',
                                             'ng-model="table.filterMeta(name).value[rdObj.key]" ng-value="rdObj.key"  ',
-                                            'ng-disabled="table.filterMeta(name)==undefined" ',
+                                            filter_ng_disabled,
                                         '/>',
-
                                         '<label for="filter_{{table.scope}}_{{name}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
                                             '{{ rdObj.value }}',
                                         '</label>',
-
                                 '</span>',
                                 '<br ng-if="colnum>0?(($index+1)%colnum)==0:false" />',
                         '</span>',
@@ -512,22 +505,21 @@ wliu_table.directive("filter.checkbox1", function () {
         scope: {
             table:      "=",
             name:       "@",
-            targetid:   "@",
-            tooltip:    "@"
+            targetid:   "@"
         },
         template: [
-                    '<input type="text" readonly scope="{{ table.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ',
+                    '<input type="text" readonly class="wliuCommon-checklist" value="{{ valueText() }}" ',
                             'ng-click="change(name)" ',
-                            'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
                             'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
-                            'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():valueText()?valueText():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                            'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:valueText()?valueText():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
+                            'title="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():valueText()?valueText():\'\'}}" ',
+                            filter_ng_class,
+                            filter_ng_disabled,
                     '/>'
                 ].join(''),
         controller: function ($scope) {
             $scope.table.lists[ $scope.table.filterMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.filterMeta($scope.name).list ].keys || {};
             $scope.change = function(name) {
-                $scope.table.lists[ $scope.table.filterMeta($scope.name).list ].keys.rowsn = -1; // don't need rowsn for filter
+                $scope.table.lists[ $scope.table.filterMeta($scope.name).list ].keys.guid = ""; // don't need guid for filter
                 $scope.table.lists[ $scope.table.filterMeta($scope.name).list ].keys.name = name;
             }
             $scope.valueText = function() {
@@ -557,13 +549,12 @@ wliu_table.directive("filter.checkdiag1", function () {
         scope: {
             table:      "=",
             name:       "@",
-            targetid:   "@",
             colnum:     "@",
             bar:        "@",
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag" scope="{{ table.scope }}" ',
+                    '<div id="{{targetid}}" class="wliu-diag" ',
                     '>',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
@@ -576,7 +567,9 @@ wliu_table.directive("filter.checkdiag1", function () {
                             '</div>',
                         '</a>',
 
-                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
+                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-show="bar==1" ',
+                            common_ng_options,
+                        '/>',
                         '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(table.lists[name].keys.name)" title="check all"  ng-show="bar==1"></a>',
                         '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(table.lists[name].keys.name)" title="remove all"  ng-show="bar==1"></a>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
@@ -584,16 +577,13 @@ wliu_table.directive("filter.checkdiag1", function () {
                         '<span ',
                             'ng-repeat="rdObj in table.lists[name].list|filter:search">',
                                 '<span class="checkbox">',
-
                                         '<input type="checkbox" scope="{{ table.scope }}" id="filter_{{table.scope}}_{{name}}_{{rdObj.key}}" ',
                                             'ng-model="table.filterMeta( table.lists[name].keys.name ).value[rdObj.key]" ng-value="rdObj.key"  ',
                                             'ng-disabled="table.filterMeta(table.lists[name].keys.name )==undefined" ',
                                         '/>',
-
                                         '<label for="filter_{{table.scope}}_{{name}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
                                             '{{ rdObj.value }}',
                                         '</label>',
-
                                 '</span>',
                                 '<br ng-if="colnum>0?(($index+1)%colnum)==0:false" />',
                         '</span>',
@@ -654,22 +644,18 @@ wliu_table.directive("filter.checklist1", function () {
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" style="" scope="{{ table.scope }}" ',
-                    '>',
+                    '<div class="col-md-12">',
                         '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall()" title="check all" ng-show="bar==1"></a>',
                         '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall()" title="remove all" ng-show="bar==1"></a>',
                         '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
-                        //'<div class="wliu-underline"></div>',
                         '<div class="wliu-diag-content" style="height:{{height?height:\'auto\'}};min-width:240px;overflow-y:auto;border:1px solid #cccccc;border-radius:5px;overflow-y:auto;">',
                         '<span ',
                             'ng-repeat="rdObj in table.lists[table.filterMeta(name).list].list|filter:search">',
                                 '<span class="checkbox">',
-
                                         '<input type="checkbox" scope="{{ table.scope }}" id="filter_{{table.scope}}_{{name}}_{{rdObj.key}}" ',
                                             'ng-model="table.filterMeta(name).value[rdObj.key]" ng-value="rdObj.key"  ',
-                                            'ng-disabled="table.filterMeta(name)==undefined" ',
+                                            filter_ng_disabled,
                                         '/>',
-
                                         '<label for="filter_{{table.scope}}_{{name}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
                                             '{{ rdObj.value }}',
                                         '</label>',
@@ -700,7 +686,6 @@ wliu_table.directive("filter.checklist1", function () {
     }
 });
 
-
 wliu_table.directive("filter.checkbox2", function () {
     return {
         restrict: "E",
@@ -709,22 +694,19 @@ wliu_table.directive("filter.checkbox2", function () {
             table:      "=",
             name:       "@",
             targetid:   "@",
-            tooltip:    "@"
         },
         template: [
-                        '<input type="text" readonly scope="{{ table.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ',
+                        '<input type="text" readonly class="wliuCommon-checklist" value="{{ valueText() }}" ',
                                 'ng-click="change(name)" ',
-                                'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
-
                                 'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
-                                'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():valueText()?valueText():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                                'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:valueText()?valueText():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
+                                'title="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():valueText()?valueText():\'\'}}" ',
+                                filter_ng_class,
                         '/>'
                 ].join(''),
         controller: function ($scope) {
             $scope.table.lists[ $scope.table.filterMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.filterMeta($scope.name).list ].keys || {};
             $scope.change = function(name) {
-                $scope.table.lists[ $scope.table.filterMeta($scope.name).list ].keys.rowsn = -1;
+                $scope.table.lists[ $scope.table.filterMeta($scope.name).list ].keys.guid = ""; // don't need guid 
                 $scope.table.lists[ $scope.table.filterMeta($scope.name).list ].keys.name = name;
             }
             $scope.valueText = function() {
@@ -732,15 +714,14 @@ wliu_table.directive("filter.checkbox2", function () {
                 for(var key in $scope.table.lists[$scope.table.filterMeta($scope.name).list].list) {
                     var dList = $scope.table.lists[$scope.table.filterMeta($scope.name).list].list[key].list;
                     var text = $.map( dList , function(n) {
-                        if( $scope.table.filterMeta($scope.name )!=undefined ) {
-                            if($scope.table.filterMeta($scope.name ).value[n.key]) 
+                        if( $scope.table.filterMeta($scope.name)!=undefined ) {
+                            if($scope.table.filterMeta($scope.name).value[n.key]) 
                                     return n.value;
                             else
                                     return null;
                         } else {
                             return null;
                         }
-
                     }).join("; ");
                     ret_text += (ret_text && text?"; ":"") + text;
                 }
@@ -766,8 +747,7 @@ wliu_table.directive("filter.checkdiag2", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ table.scope }}" ',
-                    '>',
+                    '<div id="{{targetid}}" class="wliu-diag container">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
@@ -778,7 +758,9 @@ wliu_table.directive("filter.checkdiag2", function () {
                                 '</ul>',
                             '</div>',
                         '</a>',
-                        '<input type="textbox" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
+                        '<input type="textbox" class="wliuCommon-search" ng-model="search" ng-show="bar==1" ',
+                            common_ng_options,
+                        '/>',
                         '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(table.lists[name].keys.name)" title="check all" ng-show="bar==1"></a>',
                         '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(table.lists[name].keys.name)" title="remove all" ng-show="bar==1"></a>',
                         '<div class="wliu-underline" ng-show="bar==1"></div>',
@@ -795,11 +777,9 @@ wliu_table.directive("filter.checkdiag2", function () {
                                                                         'ng-model="table.filterMeta(table.lists[name].keys.name).value[tdObj.key]" ng-value="tdObj.key"  ',
                                                                         'ng-disabled="table.filterMeta(table.lists[name].keys.name)==undefined" ',
                                                                     '/>',
-
                                                                     '<label for="filter_{{table.scope}}_{{name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
-
                                                             '</span>',
                                                             '<br ng-if="colnum1>0?(($index+1)%colnum1)==0:false" />',  
                                                         '</span>',                                                  
@@ -873,12 +853,12 @@ wliu_table.directive("filter.checklist2", function () {
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" scope="{{ table.scope }}" ',
-                    '>',
+                    '<div class="col-md-12">',
                         '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall()" title="check all" ng-show="bar==1"></a>',
                         '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall()" title="remove all" ng-show="bar==1"></a>',
-                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
-                        //'<div class="wliu-underline"></div>',
+                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-show="bar==1" ',
+                            common_ng_options,
+                        '/>',
                         '<div class="wliu-diag-content"  style="height:{{height?height:\'auto\'}}; overflow-y:auto; border:1px solid #cccccc;border-radius:5px;overflow-y:auto;">',
                             '<span style="display:none;" ng-repeat-start="rdObj in table.lists[table.filterMeta(name).list].list|filter:search"></span>',
                                     '<div class="col-md-{{colnum}} col-sm-{{colnum}} col-xs-12" ng-if="rdObj.list && rdObj.list.length>0">',
@@ -890,13 +870,11 @@ wliu_table.directive("filter.checklist2", function () {
                                                             '<span class="checkbox">',
                                                                     '<input type="checkbox" scope="{{ table.scope }}" id="filter_{{table.scope}}_{{name}}_{{tdObj.key}}" ',
                                                                         'ng-model="table.filterMeta( name ).value[tdObj.key]" ng-value="tdObj.key"  ',
-                                                                        'ng-disabled="table.filterMeta( name )==undefined" ',
+                                                                        filter_ng_disabled,
                                                                     '/>',
-
                                                                     '<label for="filter_{{table.scope}}_{{name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
-
                                                             '</span>',
                                                             '<br ng-if="colnum1>0?(($index+1)%colnum1)==0:false" />',  
                                                         '</span>',                                                  
@@ -939,23 +917,20 @@ wliu_table.directive("filter.checkbox3", function () {
         scope: {
             table:      "=",
             name:       "@",
-            targetid:   "@",
-            tooltip:    "@"
+            targetid:   "@"
         },
         template: [
-                    '<input type="text" readonly scope="{{ table.scope }}" class="wliuCommon-checklist" value="{{ valueText() }}" ',
+                    '<input type="text" readonly class="wliuCommon-checklist" value="{{ valueText() }}" ',
                             'ng-click="change(name)" ',
-                            'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
-
                             'wliu-diag  diag-target="{{targetid}}" diag-toggle="click" ',
-                            'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():valueText()?valueText():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                            'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:valueText()?valueText():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
+                            'title="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():valueText()?valueText():\'\'}}" ',
+                            filter_ng_class,
                     '/>'
                 ].join(''),
         controller: function ($scope) {
             $scope.table.lists[ $scope.table.filterMeta($scope.name).list ].keys = $scope.table.lists[ $scope.table.filterMeta($scope.name).list ].keys || {};
             $scope.change = function(name) {
-                $scope.table.lists[ $scope.table.filterMeta($scope.name).list ].keys.rowsn = -1;
+                $scope.table.lists[ $scope.table.filterMeta($scope.name).list ].keys.guid = "";  // don't need 
                 $scope.table.lists[ $scope.table.filterMeta($scope.name).list ].keys.name = name;
             }
             $scope.valueText = function() {
@@ -1000,8 +975,7 @@ wliu_table.directive("filter.checkdiag3", function () {
             title:      "@"
         },
         template: [
-                    '<div id="{{targetid}}" class="wliu-diag container" scope="{{ table.scope }}" ',
-                    '>',
+                    '<div id="{{targetid}}" class="wliu-diag container">',
                         '<a class="wliu-btn24 wliu-btn24-selectlist" ng-show="bar==1">',
                             '<div class="wliu-selectlist">',
                                 '<div class="wliu-selectlist-title info-color text-center">SELECTED</div>',
@@ -1012,10 +986,11 @@ wliu_table.directive("filter.checkdiag3", function () {
                                 '</ul>',
                             '</div>',
                         '</a>',
-                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
+                        '<input type="text" class="wliuCommon-search" ng-model="search" ng-show="bar==1" ',
+                            common_ng_options,
+                        '/>',
                         '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall(table.lists[name].keys.name)" title="check all" ng-show="bar==1"></a>',
                         '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall(table.lists[name].keys.name)" title="remove all" ng-show="bar==1"></a>',
-                        
                         '<select class="wliuCommon-filter" ',
                                 'ng-model="listFilter.key" ',
                                 'ng-options="sObj.key as sObj.value for sObj in table.lists[name].list" ',                        
@@ -1037,11 +1012,9 @@ wliu_table.directive("filter.checkdiag3", function () {
                                                                         'ng-model="table.filterMeta(table.lists[name].keys.name).value[tdObj.key]" ng-value="tdObj.key"  ',
                                                                         'ng-disabled="table.filterMeta(table.lists[name].keys.name)==undefined" ',
                                                                     '/>',
-
                                                                     '<label for="filter_{{table.scope}}_{{name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
-
                                                             '</span>',
                                                             '<br ng-if="colnum1>0?(($index+1)%colnum1)==0:false" />',  
                                                         '</span>',                                                  
@@ -1133,8 +1106,7 @@ wliu_table.directive("filter.checklist3", function () {
             title:      "@"
         },
         template: [
-                    '<div class="col-md-12" scope="{{ table.scope }}" ',
-                    '>',
+                    '<div class="col-md-12">',
                         '<input type="text" class="wliuCommon-search" ng-model="search" ng-model-options="{ updateOn:\'default blur\', debounce:{default: 500, blur:0} }" ng-show="bar==1" />',
                         '<a class="wliu-btn24 wliu-btn24-checkall" ng-click="checkall()" title="check all" ng-show="bar==1"></a>',
                         '<a class="wliu-btn24 wliu-btn24-removeall" ng-click="removeall()" title="remove all" ng-show="bar==1"></a>',
@@ -1144,7 +1116,6 @@ wliu_table.directive("filter.checklist3", function () {
                         ' ng-show="bar==1">',
                         '<option value=""></option>',
                         '</select>',
-                        //'<div class="wliu-underline"></div>',
                         '<div class="wliu-diag-content" style="height:{{height?height:\'auto\'}}; overflow-y:auto; border:1px solid #cccccc;border-radius:5px;overflow-y:auto;">',
                             '<span style="display:none;" ng-repeat-start="bbObj in table.lists[table.filterMeta(name).list].list|filter:getListFilter()"></span>',
                             '<span style="display:none;" ng-repeat-start="rdObj in bbObj.list|filter:search"></span>',
@@ -1157,13 +1128,11 @@ wliu_table.directive("filter.checklist3", function () {
                                                             '<span class="checkbox">',
                                                                     '<input type="checkbox" scope="{{ table.scope }}" id="filter_{{table.scope}}_{{name}}_{{tdObj.key}}" ',
                                                                         'ng-model="table.filterMeta( name ).value[tdObj.key]" ng-value="tdObj.key"  ',
-                                                                        'ng-disabled="table.filterMeta( name )==undefined" ',
+                                                                        filter_ng_disabled,
                                                                     '/>',
-
                                                                     '<label for="filter_{{table.scope}}_{{name}}_{{tdObj.key}}" title="{{tdObj.desc?tdObj.desc:tdObj.value}}">',
                                                                         '{{ tdObj.value }}',
                                                                     '</label>',
-
                                                             '</span>',
                                                             '<br ng-if="colnum1>0?(($index+1)%colnum1)==0:false" />',  
                                                         '</span>',                                                  
@@ -1217,30 +1186,24 @@ wliu_table.directive("filter.radio", function () {
         replace: true,
         scope: {
             table:      "=",
-            colnum:     "@",
             name:       "@",
-            tooltip:    "@"
+            colnum:     "@"
         },
         template: [
-                    '<div scope="{{ table.scope }}" ',
-                        'ng-class="{ \'wliuCommon-input-invalid\': table.filterMeta(name).errorCode }" ',
-                        'wliu-popup popup-target="{{tooltip}}" popup-toggle="hover" popup-content="{{table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage.nl2br():table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
-                        'title="{{tooltip?\'\':table.filterMeta(name).errorCode?table.filterMeta(name).errorMessage:table.filterMeta(name).coldesc?table.filterMeta(name).coldesc:table.filterMeta(name).colname}}" ',
+                    '<div ',
+                        filter_ng_class,
+                        filter_title,
                     '>',
                         '<span ',
                             'ng-repeat="rdObj in table.lists[table.filterMeta(name).list].list">',
                                 '<span class="radio">',
-
-                                        '<input type="radio"  scope="{{ table.scope }}" id="filter_{{table.scope}}_{{name}}_{{rdObj.key}}" ',
+                                        '<input type="radio" id="filter_{{table.scope}}_{{name}}_{{rdObj.key}}" ',
                                             'ng-model="table.filterMeta(name).value" ng-value="rdObj.key"  ',
-                                            'ng-disabled="table.filterMeta(name)==undefined" ',
+                                            filter_ng_disabled,
                                         '/>',
-
                                         '<label scope="{{ table.scope }}" for="filter_{{table.scope}}_{{name}}_{{rdObj.key}}" title="{{rdObj.desc?rdObj.desc:rdObj.value}}">',
-                                            //'<abbr title="{{rdObj.desc}}" ng-if="rdObj.desc!=\'\'">{{ rdObj.value }}</abbr>',
                                             '{{ rdObj.value }}',
                                         '</label>',
-
                                 '</span>',
                                 '<br ng-if="colnum>0?(($index+1)%colnum)==0:false" />',
                         '</span>',

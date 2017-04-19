@@ -2,230 +2,354 @@
 session_start();
 ini_set("display_errors", 0);
 include_once("../include/config/config.php");
-include_once($CFG["include_path"] . "/lib/database/database.php");
-$sess_db = new cMYSQL($CFG["mysql"]["host"], $CFG["mysql"]["user"], $CFG["mysql"]["pwd"], $CFG["mysql"]["database"]);
-$sess_id = $sess_db->quote( $_SESSION[$_SERVER['HTTP_HOST'] . ".adminsite_session"] );
-$sess_db->query("UPDATE website_admin_session SET deleted = 1, last_updated = '" . time() . "' WHERE deleted <> 1 AND session_id = '" . $sess_id  . "';");
-
-$_SESSION[$_SERVER['HTTP_HOST'] . ".adminsite_session"] = "";
-$_SESSION[$_SERVER['HTTP_HOST'] . ".adminsite_secure"] = "";
-//session_destroy();
-//session_start();
-include_once("website_a_secure.php");
+include_once($CFG["include_path"] . "/wliu/database/database.php");
+include_once($CFG["include_path"] . "/wliu/language/language.php");
+include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
+$sess_name = $_SERVER['HTTP_HOST'] . ".user.session";
+$_SESSION[$sess_name] = "";
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<meta name="copyright" content="Copyright Bodhi Meditation, All Rights Reserved." />
-		<meta name="description" content="Bodhi Meditation Vancouver Site" />
-		<meta name="keywords" content="Bodhi Meditation Vancouver" />
-		<meta name="rating" content="general" />
-		<meta name="language" content="english" />
-		<meta name="robots" content="index" />
-		<meta name="robots" content="follow" />
-		<meta name="revisit-after" content="1 days" />
-		<meta name="classification" content="" />
-		<link rel="icon" type="image/gif" href="bodhi.gif" />
-		<title>Website Language</title>
-        <?php require("website_a_include.php");?>
+    <meta charset="utf8" />
+    <!-- JQuery3.1.1 -->
+    <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery.cookie.1.4.1.js"></script>
+    <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <link href='<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
+    <!-- //JQuery -->
 
-		<script type="text/javascript" 	src="<?php echo $CFG["web_domain"]?>/jquery/myplugin/jquery.lwh.tab.js"></script>
-        <link 	type="text/css" 	   href="<?php echo $CFG["web_domain"]?>/jquery/myplugin/css/light/jquery.lwh.tab.css" rel="stylesheet" />
+    <!-- Font Awesome & BS & MDB -->
+    <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
+    <link 	href='<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/css/bootstrap.min.css' type='text/css' rel='stylesheet' />
+    <link href='<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/css/mdb.css' type='text/css' rel='stylesheet' />
+    
+    <!-- Bootstrap3.3 -->
+    <script src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/tether.min.js" type="text/javascript"></script>
+    <script src="<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/js/bootstrap.min.js" type="text/javascript"></script>    
+    <!-- //Bootstrap -->
 
-        <script language="javascript" type="text/javascript">
-		var register = null;
-		var sign = null;
-		$(function(){
-			$("#my").lwhTab9({height:240, border:false, expand:true});
-			
-			$("#lwhDivBox-myaccount").lwhDivBox();
-	
-			sign = new LWH.FORM({
-						head: {
-							lang:		GLang,
-							scope: 		"sign",
-							url:		"func/website_login.php"
-						},
-						func: {
-							after: function(req) {
-								if( req.errorCode <= 0 ) {
-									$("form[name=adminsite_postform]").attr("action", "<?php echo $CFG["admin_welcome_webpage"]?>");
-									$("#adminsite_session").val( req.data.sess_id );
-									adminsite_postform.submit();
-									tool_tips(req.errorMessage);
-								}
-							}
-						}
-					});
-			
-			
-			
-			register = new LWH.FORM({
-						head: {
-							lang:		GLang,
-							scope: 		"register",
-							url:		"func/website_myaccount_apply.php"
-						},
-						func: {
-							after: function(req) {
-								if(req.errorCode <= 0) {
-									tool_tips(words["account.register.ok"]);
-									register.clear();
-			
-									$("form[name=adminsite_postform]").attr("action", "<?php echo $CFG["admin_welcome_webpage"]?>");
-									$("#adminsite_session").val( req.data.sess_id );
-									adminsite_postform.submit();
-									tool_tips(req.errorMessage);
-								}
-							}
-						}
-					});
+    <!--
+    <link href='theme/mdb_pro/css/woocommerce.css' rel='stylesheet' type='text/css'>
+    <link href='theme/mdb_pro/css/woocommerce-layout.css' rel='stylesheet' type='text/css'>
+    <link href='theme/mdb_pro/css/woocommerce-smallscreen.css' rel='stylesheet' type='text/css'>
+    -->
+    <!-- //MD Bootstrap -->
 
-			$("#btn-register-user").bind("click", function(ev) {
-				$("#div_login").hide();
-				$("#div_register").show();
-			});
-		
-		});
-		
-		function cancel_ajax() {
-			$("#div_login").show();
-			$("#div_register").hide();
-		}
-        </script>
+    <!-- AngularJS 1.3.15 -->
+    <script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular.js" type="text/javascript"></script>
+    <script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular-cookies.js" type="text/javascript"></script>
+    <script src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular-sanitize.min.js" type="text/javascript"></script>
+    <!-- //AngularJS -->
+
+
+    <!-- wliu components -->
+    <script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.common.js" type="text/javascript"></script>
+    <script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.table.common.js" type="text/javascript"></script>
+    <script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.form.js" type="text/javascript"></script>
+  
+
+    <script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/diag/wliu.jquery.diag.js" type="text/javascript"></script>
+    <link 	href='<?php echo $CFG["web_domain"]?>/jquery/wliu/diag/wliu.jquery.diag.css' type='text/css' rel='stylesheet' />
+    <script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/popup/wliu.jquery.popup.js" type="text/javascript"></script>
+    <link 	href='<?php echo $CFG["web_domain"]?>/jquery/wliu/popup/wliu.jquery.popup.css' type='text/css' rel='stylesheet' />
+    <script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/load/wliu.jquery.load.js" type="text/javascript"></script>
+    <link 	href="<?php echo $CFG["web_domain"]?>/jquery/wliu/load/wliu.jquery.load.css" type='text/css' rel='stylesheet' />
+
+    <!-- wliu components -->
+    <script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.common.js" type="text/javascript"></script>
+	<link href='<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
+    <style>
+        a.wliu-website-lang-options {
+            font-size:    12px;
+            color:        #000000;
+            text-shadow:  1px 1px #ffffff; 
+            padding: 	  2px;
+        }
+
+        a.wliu-lang-selected[lang],
+        a.wliu-lang-selected[lang]:hover {
+            color:            #ffffff;
+            background-color: #ff4444; 
+            text-shadow:      none; 
+            border:           1px solid #ff4444; 
+            border-radius:    4px;
+            font-size: 		  12px;
+            font-weight:      bold;
+            padding: 	      2px 4px;
+            text-shadow:      none; /* 1px 1px #000000; */ 
+        }
+    </style>
+    <!-- //wliu components -->
+    <script>
+        var col101 = new WLIU.COL({key:1, coltype:"hidden", 	name:"id", 			colname:"User ID",  	coldesc:"User ID"});
+        var col102 = new WLIU.COL({key:0, coltype:"textbox", 	name:"user_name", 	colname:"User Name", 	coldesc:"Login User",       maxlength:64,   notnull:1, unique:1, defval:""});
+        var col103 = new WLIU.COL({key:0, coltype:"textbox", 	name:"email",		colname:"Email", 		coldesc:"Email Address",    maxlength:256,  notnull:1, unique:1, datatype:"EMAIL" });
+        var col104 = new WLIU.COL({key:0, coltype:"textbox", 	name:"first_name", 	colname:"First Name", 	coldesc:"First Name",		maxlength:64, 	notnull:1,  defval: ""});
+        var col105 = new WLIU.COL({key:0, coltype:"textbox", 	name:"last_name", 	colname:"Last Name", 	coldesc:"Last Name",		maxlength:64, 	notnull:1, defval: ""	});
+        var col106 = new WLIU.COL({key:0, coltype:"textbox", 	name:"phone", 	    colname:"Phone", 		coldesc:"Phone", 			maxlength:64,   notnull:0 });
+        var col107 = new WLIU.COL({key:0, coltype:"select", 	name:"country",		colname:"Country",  	coldesc:"Country"});
+        var col108 = new WLIU.COL({key:0, coltype:"passpair",   name:"password",    colname:"Password"});
+
+        var cols1 = [];
+        cols1.push(col101);
+        cols1.push(col102);
+        cols1.push(col103);
+        cols1.push(col104);
+        cols1.push(col105);
+        cols1.push(col106);
+        cols1.push(col107);
+        cols1.push(col108);
+
+        var registerForm = new WLIU.FORM({
+            lang:	 	GLang,
+            scope: 		"register",
+            url:   		"ajax/admin_register_action.php",
+            cols: 		cols1
+        });
+
+        var col201 = new WLIU.COL({key:0, coltype:"textbox", 	name:"login_user", 	    colname:"Login User",  	    maxlength:64,   notnull:1, defval: ""});
+        var col202 = new WLIU.COL({key:0, coltype:"textbox", 	name:"login_password", 	colname:"Login Password", 	maxlength:16,   notnull:1, defval:""});
+        var col203 = new WLIU.COL({key:0, coltype:"hidden", 	name:"url", 	        colname:"Return URL"});
+        var cols2  = [];
+        cols2.push(col201);
+        cols2.push(col202);
+        cols2.push(col203);
+        
+        var loginForm = new WLIU.FORM({
+            lang:	 	GLang,
+            scope: 		"login",
+            url:   		"ajax/admin_login_action.php",
+            cols: 		cols2
+        });        
+
+        console.log(registerForm);
+    $(function(){
+        $('.mdb-select').material_select();
+        registerForm.resetData();
+        loginForm.resetData();
+    });
+    function login() {
+        loginForm.addData();
+    }
+    function addData() {
+        registerForm.addData();
+    }
+    </script>
 </head>
 <body>
-<?php 
-	require("website_a_header.php");
-	LANG::hit("Admin", "用户登录", "用户登录"." :".$admin_user["user_name"]);
-?>
-<div class="main-content"><div class="frame-center">
-<!------------------------------------------------ Begin of website content --------------------------------------------->
-<center>	
-			<div id="div_login">
-                    <div class="lwhTab9 lwhTab9-mint" style="display:inline-block;">
-                        <ul >
-                            <li class="selected"><?php echo $words["exist.account.login"]; ?><s></s></li>
-                        </ul>   
-                        <div class="lwhTab9-border" style="display:block; padding:30px 120px 30px 100px;">
-                                        <table id="admin_login">
-                                            <tr>
-                                                <td align="right"><span class="required">*</span> <?php echo $words["user_name"]?>: </td>
-                                                <td><input type="text" scope="sign" coltype="textbox" name="user_name" colname="<?php echo $words["name.email.phone"]?>" class="short" need="1" notnull="1" placeholder="<?php echo $words["name.email.phone"] ?>" value="" /></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><span class="required">*</span> <?php echo $words["password"]?>: </td>
-                                                <td><input type="password" scope="sign" coltype="textbox" name="password" class="short" colname="<?php echo $words["password.confirm"]?>" need="1" notnull=1 value="" /></td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="2" align="center"><input type="button" scope="sign" coltype="save" value="<?php echo $words["login"]?>" /></td>
-                                            </tr>
-                                        </table>
-                                        <br />
-                                        <a class="label-text" id="btn-register-user" style="cursor:pointer; font-size:14px; color:blue; text-decoration:underline;"><?php echo $words["register.new.user"] ?> </a><br /><br />
-                                        <a class="label-text" style="cursor:pointer; font-size:14px; color:blue; text-decoration:underline;"><?php echo $words["forget password"] ?> </a>
+<!-- container -->
+<div class="container">
+    <!--<div wliu-form-message></div>-->
+    <!--Form without header-->
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <div id="wliuWebsite-lang" style="margin-top:6px;display:inline-block;">
+                <a class="wliu-website-lang-options <?php echo $GLang=="en"?"wliu-lang-selected":"" ?>" lang="en">English</a>
+                <span class="seperator">|</span>
+                <a class="wliu-website-lang-options <?php echo $GLang=="cn"?"wliu-lang-selected":"" ?>" lang="cn">简体版</a>
+                <span class="seperator">|</span>
+                <a class="wliu-website-lang-options <?php echo $GLang=="tw"?"wliu-lang-selected":"" ?>" lang="tw">繁体版</a>
+            </div>
+        </div>
+    </div>
+    <form name="wliuWebsiteLang" action="<?php echo $_SERVER["REQUEST_URI"];?>" method="get">
+        <input type="hidden" name="lang" id="wliu-website-lang" value="<?php echo $GLang;?>" />
+    </form>
+    <script type="text/javascript" language="javascript">
+        $(function(){
+            $("a.wliu-website-lang-options", "div#wliuWebsite-lang").bind("click", function(ev) {
+                $("#wliu-website-lang").val( $(this).attr("lang") );
+                wliuWebsiteLang.submit();
+            });
+        });
+    </script>
+    
+    <div class="row">
+        <div class="col-md-2 col-xs-0">
+        </div>
+        <div class="col-md-8 col-xs-12">
+                <!--Rotating card-->
+                <div class="card-wrapper">
+                    <div id="card-1" class="card-rotating effect__click">
+
+                        <!--Front Side-->
+                        <div class="face front" style="height:720px;">
+
+                            <!-- Image-->
+                            <div class="card-up" style="height:100px;padding:15px;">
+                                <img src="<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.background/wliu-cloud-1.jpg" class="img-fluid">
+                            </div>
+                            <!--Avatar-->
+                            <div class="avatar"><img src="<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.common/login-user.png" class="rounded-circle img-responsive">
+                            </div>
+                            <!--Content-->
+                            <div class="card-block">
+                                    <!--Header-->
+                                    <div class="text-center">
+                                        <h3><i class="fa fa-lock"></i> <?php echo gwords("login")?></h3>
+                                        <hr class="mt-2 mb-2">
+                                    </div>
+
+                                    <!--Body-->
+                                    <div class="md-form text-left">
+                                        <i class="fa fa-envelope prefix"></i>
+                                        <input type="hidden"    scope="login"   name="url" value="<?php echo $_REQUEST["url"];?>">
+                                        <input type="text"      scope="login"   name="login_user" id="login_user" class="form-control">
+                                        <label for="login_user">
+                                            Your Email or User Name
+                                            <a wliu-form-col-error scope="login" name="login_user"></a>
+                                        </label>
+                                    </div>
+
+                                    <div class="md-form  text-left">
+                                        <i class="fa fa-lock prefix"></i>
+                                        <input type="password" scope="login" name="login_password" id="login_password" class="form-control">
+                                        <label for="login_password">
+                                            Your password
+                                            <a wliu-form-col-error scope="login" name="login_password"></a>
+                                        </label>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button class="btn btn-deep-purple" onclick="login()">Login</button>
+                                    </div>
+
+                                <!--Triggering button-->
+                                <a class="rotate-btn" data-card="card-1"><i class="fa fa-repeat"></i>&nbsp;&nbsp;<?php echo gwords("not.a.member")?> ? <span style="color:#0275d8;"><?php echo gwords("register")?></span></a>
+                                <p><?php echo gwords("forget")?> <a href="#"><?php echo gwords("password")?> ?</a></p>
+
+                            </div>
                         </div>
+                        <!--/.Front Side-->
+
+                        <!--Back Side-->
+                        <div class="face back" style="height:720px;">
+
+                            <!-- Image-->
+                            <div class="card-up" style="height:100px;">
+                                <img src="<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.background/wliu-flower-1.jpg" class="img-fluid">
+                            </div>
+
+                            <div class="card-block">
+                                <!--Header-->
+                                <div class="text-center">
+                                    <h3><i class="fa fa-user"></i> <?php echo gwords("register")?></h3>
+                                    <input type="hidden" scope="register" name="id" value="" />
+                                </div>
+                                <!--Body-->
+                                <div class="row">
+                                    <div class="col-md-6 col-xs-6">
+                                        <div class="md-form">
+                                            <input type="text" scope="register" name="user_name" id="user_name" class="form-control" value="">
+                                            <label for="user_name">
+                                                Login Name
+                                                <a wliu-form-col-error scope="register" name="user_name"></a>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xs-6">
+                                        <div class="md-form">
+                                            <input type="text" scope="register" name="first_name" id="first_name" class="form-control">
+                                            <label for="first_name">
+                                                First Name
+                                                <a wliu-form-col-error scope="register" name="first_name"></a>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 col-xs-6">
+                                        <div class="md-form">
+                                            <input type="text" scope="register" name="email" id="email" class="form-control">
+                                            <label for="email">
+                                                Your Email
+                                                <a wliu-form-col-error scope="register" name="email"></a>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xs-6">
+                                        <div class="md-form">
+                                            <input type="text" scope="register" name="last_name" id="last_name" class="form-control">
+                                            <label for="last_name">
+                                                Last Name
+                                                <a wliu-form-col-error scope="register" name="last_name"></a>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 col-xs-6">
+                                        <div class="md-form">
+                                            <input type="password" scope="register" name="password" id="password" class="form-control">
+                                            <label for="password">
+                                                Your password
+                                                <a wliu-form-col-error scope="register" name="password"></a>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xs-6">
+                                        <div class="md-form">
+                                            <input type="text" scope="register" name="phone" id="phone" class="form-control">
+                                            <label for="phone">
+                                                Phone
+                                                <a wliu-form-col-error scope="register" name="phone"></a>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 col-xs-6">
+                                        <div class="md-form">
+                                            <input type="password" scope="register" name="confirm_password" id="confirm_password" class="form-control">
+                                            <label for="confirm_password">
+                                                Confirm password
+                                                <a wliu-form-col-error scope="register" name="confirm_password"></a>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xs-6 text-left">
+                                            <div style="margin-top:5px;">
+                                                <select class="mdb-select" scope="register" name="country">
+                                                    <option value="">Choose your live in country</option>
+                                                    <option value="1">United State</option>
+                                                    <option value="2">China</option>
+                                                    <option value="3">Canada</option>
+                                                </select>
+                                            </div>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <button class="btn btn-indigo" onclick="addData()">Sign up</button>
+                                </div>
+
+                                <a class="rotate-btn" data-card="card-1"><i class="fa fa-undo"></i>&nbsp;&nbsp;<?php echo gwords("click.here.back.to")?> <span style="color:#0275d8;"><?php echo gwords("login")?></span></a>
+                            </div>
+                        </div>
+                        <!--/.Back Side-->
+
                     </div>
-             </div>
+                </div>
+                <!--/.Rotating card-->               
+        </div>
+    </div>
+    <!--/Form without header-->
+</div>
 
-			<div id="div_register" style="display:none;">
-                    <div class="lwhTab9 lwhTab9-fuzzy" style="display:inline-block;">
-                        <ul >
-                            <li class="selected"><?php echo $words["account.register"]; ?><s></s></li>
-                        </ul> 
-                        <div class="lwhTab9-border" style="display:block; padding:30px 120px 30px 100px;">
-                                        <table id="admin_form">
-                                            <tr>
-                                                <td align="right"><span class="required">*</span> <?php echo $words["email"]?>: </td>
-                                                <td><input type="text" scope="register" coltype="textbox" name="email" datatype="email" colname="<?php echo $words["email"]?>" class="medium" maxlength="256" notnull=1  value="" /></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><span class="required">*</span> <?php echo $words["user_name"]?>: </td>
-                                                <td><input type="text" scope="register" coltype="textbox" name="user_name" colname="<?php echo $words["user_name"]?>" class="medium" maxlength="64" notnull=1  value="" /></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><span class="required">*</span> <?php echo $words["password"]?>: </td>
-                                                <td>
-                                                    <input type="password" scope="register" coltype="password" name="password" colname="<?php echo $words["password"]?>" class="short" minlength=6 maxlength="16" notnull=1 value="" />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><span class="required">*</span> <?php echo $words["password.confirm"]?>: </td>
-                                                <td>
-                                                    <input type="password" scope="register" coltype="password_confirm" name="password_confirm" colname="<?php echo $words["password.confirm"]?>" class="short" minlength=6 maxlength="16" notnull=1 value="" />
-                                                </td>
-                                            </tr>
-                                            
-                                            <tr><td colspan="2"><br /></td></tr>
-                                            <tr>
-                                                <td valign="top"  align="right"><span class="required">*</span> <?php echo $words["full_name"]?>: </td>
-                                                <td><input type="text" scope="register" coltype="textbox" name="full_name" colname="<?php echo $words["full_name"]?>" class="medium" maxlength="256" notnull=1 value="" /></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><?php echo $words["phone"]?>: </td>
-                                                <td><input type="text" scope="register" coltype="textbox" name="phone" colname="<?php echo $words["phone"]?>" class="medium" maxlength="64" value="" /></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><?php echo $words["cell"]?>: </td>
-                                                <td><input type="text" scope="register" coltype="textbox" name="cell" colname="<?php echo $words["cell"]?>" class="medium" maxlength="64" value="" /></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><?php echo $words["address"]?>: </td>
-                                                <td><input type="text" scope="register" coltype="textbox" name="address" colname="<?php echo $words["address"]?>" class="medium" maxlength="256" value="" /></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><?php echo $words["city"]?>: </td>
-                                                <td><input type="text" scope="register" coltype="textbox" name="city" colname="<?php echo $words["city"]?>" class="medium" maxlength="64" value="" /></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><?php echo $words["state"]?>: </td>
-                                                <td><input type="text" scope="register" coltype="textbox" name="state" colname="<?php echo $words["state"]?>" class="medium" maxlength="64" value="" /></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><?php echo $words["country"]?>: </td>
-                                                <td>
-                                                    <?php 
-                                                        
-                                                        $colObj = array();
-                                                        $colObj["scope"] 	= "register";
-                                                        $colObj["name"] 	= "country";
-                                                        $colObj["colname"] 	= $words["country"];
-                                                        $colObj["coltype"] 	= "select";
-                                                        
-                                                        $colObj["stable"] 	= "website_country";
-                                                        $colObj["scol"] 	= "id";
-                                                        $colObj["stitle"] 	= LANG::langCol("country", $GLang);
-                                                        $colObj["sdesc"] 	= "";
-                                                        
-                                                        $colObj["sn"] 		= 0;
-                                                        $colObj["notnull"] 	= 0;
-                                                        $colObj["width"] 	= "120px;";
-                                                        
-                                                        echo HTML::select($db, $GLang, $colObj);
-                                                        
-                                                    ?>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><?php echo $words["postal"]?>: </td>
-                                                <td><input type="text" scope="register" coltype="textbox" name="postal" colname="<?php echo $words["postal"]?>" class="short" maxlength="16" value="" /></td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="2" align="center">
-                                                    <br />
-                                                    <input type="button" scope="register" coltype="add" 	value="<?php echo $words["save"]?>" />
-                                                    <input type="button" scope="register" coltype="cancel" 	onclick="cancel_ajax()" value="<?php echo $words["cancel"]?>" />
-                                                </td>
-                                            </tr>
-                                        </table>
-                        </div>
-                    </div>                          
-			</div>                          
-</center>
+<div 
 
-<!------------------------------------------------ End of website content --------------------------------------------->
-</div></div>
-<?php include_once("website_a_common.php");?>
+<div wliu-form-popup></div>
+<div wliu-autotip></div>
+<div wliu-wait></div>
+
+
+
+<!-- MD Bootstrap 4.0 js -- must place at the end of body -->
+<script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/mdb.min.js"></script>
+<!-- <script type="text/javascript" src="theme/mdb_pro/js/woocommerce.min.js"></script> -->
+<!-- //MD Bootstrap 4.0 js -->
 </body>
 </html>
