@@ -141,6 +141,7 @@ $temp_name = substr($_SERVER["SCRIPT_NAME"],  strrpos($_SERVER["SCRIPT_NAME"], "
 
 		$scope.postSuccess = function() {
 			form.formReset();
+			$("#contactus").trigger("hide");
 		}
 	});
 

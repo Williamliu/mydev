@@ -19,9 +19,10 @@
                             /****** create menu *******/
                             $menu_html = '';
                             foreach($menus["menus"] as $menu1) {
+                                $menu2_html = '';
                                 $menu2_selected = false;
                                 if( is_array($menu1["menus"]) ) {
-                                    $menu2_html = '<div class="collapsible-body">';
+                                    $menu2_html .= '<div class="collapsible-body">';
                                     $menu2_html .= '<ul>';
                                         foreach($menu1["menus"] as $menu2) {
                                             $menu2_active = '';
@@ -44,10 +45,18 @@
 
                                 if($menu2_selected) { 
                                     $menu1_html .= '<li class="active">';
-                                    $menu1_html .= str_replace(array("{class}","{arrow}"), array("collapsible-header waves-effect arrow-r active",'<i class="fa fa-angle-down rotate-icon"></i>'), $menu1["link"]); 
+                                    $menu1_arrow = is_array($menu1["menus"])?'<i class="fa fa-angle-down rotate-icon"></i>':'';
+                                    $menu1_html .= str_replace(array("{class}","{arrow}"), array("collapsible-header waves-effect arrow-r active", $menu1_arrow), $menu1["link"]); 
                                 } else { 
-                                    $menu1_html .= '<li class="active">';
-                                    $menu1_html .= str_replace(array("{class}","{arrow}"), array("collapsible-header waves-effect arrow-r",'<i class="fa fa-angle-down rotate-icon"></i>'), $menu1["link"]); 
+                                    if($menu1["menu_key"]==$web_user["current"]["menu_key"]) {
+                                        $menu1_html .= '<li class="active">';
+                                        $menu1_arrow = is_array($menu1["menus"])?'<i class="fa fa-angle-down rotate-icon"></i>':'';
+                                        $menu1_html .= str_replace(array("{class}","{arrow}"), array("collapsible-header waves-effect arrow-r active", $menu1_arrow), $menu1["link"]); 
+                                    } else {
+                                        $menu1_html .= '<li>';
+                                        $menu1_arrow = is_array($menu1["menus"])?'<i class="fa fa-angle-down rotate-icon"></i>':'';
+                                        $menu1_html .= str_replace(array("{class}","{arrow}"), array("collapsible-header waves-effect arrow-r", $menu1_arrow), $menu1["link"]); 
+                                    }
                                 }
                                 $menu1_html .= $menu2_html;
                                 $menu1_html .= '</li>';
@@ -79,16 +88,13 @@
         </div>
         <ul class="nav navbar-nav nav-flex-icons ml-auto">
             <li class="nav-item">
-                <a class="nav-link"> <span class="badge red z-depth-1">2</span> <i class="fa fa-shopping-cart"></i> <span class="hidden-sm-down">Cart</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link"><i class="fa fa-envelope"></i> <span class="hidden-sm-down">Contact</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link"><i class="fa fa-comments-o"></i> <span class="hidden-sm-down">Support</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link"><i class="fa fa-sign-in"></i> <span class="hidden-sm-down">Register</span></a>
+                <div id="wliuWebsite-lang" style="margin-top:6px;">
+                    <a class="wliu-website-lang-options <?php echo $GLang=="en"?"wliu-lang-selected":"" ?>" lang="en">English</a>
+                    <span class="seperator">|</span>
+                    <a class="wliu-website-lang-options <?php echo $GLang=="cn"?"wliu-lang-selected":"" ?>" lang="cn">简体版</a>
+                    <span class="seperator">|</span>
+                    <a class="wliu-website-lang-options <?php echo $GLang=="tw"?"wliu-lang-selected":"" ?>" lang="tw">繁体版</a>
+                </div>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -113,3 +119,15 @@
             <div class="row">
                 <div class="col-md-12">
 <!--Main layout-->
+
+<form name="wliuWebsiteLang" action="<?php echo $_SERVER["REQUEST_URI"];?>" method="post">
+	<input type="hidden" name="lang" id="wliu-website-lang" value="<?php echo $public_user["lang"];?>" />
+</form>
+<script type="text/javascript" language="javascript">
+	$(function(){
+		$("a.wliu-website-lang-options", "div#wliuWebsite-lang").bind("click", function(ev) {
+			$("#wliu-website-lang").val( $(this).attr("lang") );
+			wliuWebsiteLang.submit();
+		});
+	});
+</script>

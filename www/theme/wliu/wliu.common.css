@@ -454,6 +454,23 @@ div.wliu-underline {
     margin-right:   0px;
 }
 
+a.wliu-website-lang-options {
+	font-size:    14px;
+	color:        #ffffff;
+}
+
+.navbar.navbar-dark .navbar-nav .nav-item a.wliu-lang-selected[lang] {
+	color:        #ff4444;
+	font-weight:  bold;
+}
+
+span.seperator {
+	color:  	#cccccc;
+	font-size: 	0.8em;
+	font-weight: 300;
+	vertical-align:  middle;
+}
+
 /********* table button **************/
 a.wliuCommon-table-btn16 {
 	display: 				inline-block;

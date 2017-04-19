@@ -22,8 +22,8 @@ try {
 							"keys"=>array("id"),  
 							"fkeys"=>array(), 
 							"cols"=>array("id","full_name", "email", "phone", "detail"), 
-							"insert"=>array("status"=>1), 
-							"update"=>array()  
+							"insert"=>array("status"=>1, created_time=>time()), 
+							"update"=>array(last_updated=>time())  
 					),
 		"s"=>array( ),
 		"m"=>array( )

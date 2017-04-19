@@ -59,6 +59,17 @@ $_SESSION[$sess_name] = "";
     <!-- wliu components -->
     <script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.common.js" type="text/javascript"></script>
 	<link href='<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
+    <style>
+        a.wliu-website-lang-options {
+            font-size:    14px;
+            color:        #ffffff;
+        }
+
+        a.wliu-lang-selected[lang] {
+            color:        #ff4444;
+            font-weight:  bold;
+        }
+    </style>
     <!-- //wliu components -->
     <script>
         var col101 = new WLIU.COL({key:1, coltype:"hidden", 	name:"id", 			colname:"User ID",  	coldesc:"User ID"});
@@ -121,6 +132,29 @@ $_SESSION[$sess_name] = "";
 <div class="container">
     <!--<div wliu-form-message></div>-->
     <!--Form without header-->
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <div id="wliuWebsite-lang" style="margin-top:6px;display:inline-block;">
+                <a class="wliu-website-lang-options <?php echo $GLang=="en"?"wliu-lang-selected":"" ?>" lang="en">English</a>
+                <span class="seperator">|</span>
+                <a class="wliu-website-lang-options <?php echo $GLang=="cn"?"wliu-lang-selected":"" ?>" lang="cn">简体版</a>
+                <span class="seperator">|</span>
+                <a class="wliu-website-lang-options <?php echo $GLang=="tw"?"wliu-lang-selected":"" ?>" lang="tw">繁体版</a>
+            </div>
+        </div>
+    </div>
+    <form name="wliuWebsiteLang" action="<?php echo $_SERVER["REQUEST_URI"];?>" method="post">
+        <input type="hidden" name="lang" id="wliu-website-lang" value="<?php echo $public_user["lang"];?>" />
+    </form>
+    <script type="text/javascript" language="javascript">
+        $(function(){
+            $("a.wliu-website-lang-options", "div#wliuWebsite-lang").bind("click", function(ev) {
+                $("#wliu-website-lang").val( $(this).attr("lang") );
+                wliuWebsiteLang.submit();
+            });
+        });
+    </script>
+    
     <div class="row">
         <div class="col-md-2 col-xs-0">
         </div>

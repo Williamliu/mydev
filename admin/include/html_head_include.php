@@ -1,4 +1,4 @@
-<meta charset="utf8" />
+<meta charset="utf-8" />
 <!-- JQuery3.1.1 -->
 <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery.cookie.1.4.1.js"></script>

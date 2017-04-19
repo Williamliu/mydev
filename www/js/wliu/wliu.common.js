@@ -13,12 +13,11 @@ var GCONFIG = {
 			case 990:
 				if($("div#wliu-autotip-id[wliu-autotip]").length>0) {
 					$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", [errorObj.errorMessage, "warning", function(){ 
-						//alert(errorObj.errorMessage);
-						window.location.href = errorObj.errorField; 
+						if(errorObj.errorField && !$.isArray(errorObj.errorField))	window.location.href = errorObj.errorField; 
 					}]);
 				} else {
 					alert(errorObj.errorMessage);
-					window.location.href = errorObj.errorField;
+					if(errorObj.errorField && !$.isArray(errorObj.errorField)) window.location.href = errorObj.errorField;
 				}
 				break;
 		}

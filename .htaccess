@@ -1,0 +1,35 @@
+# Use PHP56 Single php.ini as default
+AddHandler application/x-httpd-php56s .php
+
+RewriteEngine on
+
+RewriteCond %{HTTP_HOST} ^dushuguoji\.net$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.dushuguoji\.net$
+RewriteRule ^(.*)$ "http\:\/\/www\.dushuguoji\.com\/$1" [R=301,L]
+
+
+# HostMonster.com
+# .htaccess main domain to subdirectory redirect
+# Do not change this line.
+# Change example.com to be your main domain.
+RewriteCond %{HTTP_HOST} ^(www.)?dushuguoji.com$
+# Change 'subdirectory' to be the directory you will use for your main domain.
+RewriteCond %{REQUEST_URI} !^/www/
+# Don't change the following two lines.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# Change 'subdirectory' to be the directory you will use for your main domain.
+RewriteRule ^(.*)$ /www/$1
+# Change example.com to be your main domain again.
+# Change 'subdirectory' to be the directory you will use for your main domain
+# followed by / then the main file for your site, index.php, index.html, etc.
+RewriteCond %{HTTP_HOST} ^(www.)?dushuguoji.com$
+RewriteRule ^(/)?$ www/index.php [L]
+
+# File modified on Thu Feb 16 01:46:57 2017 by server
+# For security reasons, mod_php is not used on this server. Use a php.ini file for php directives
+# php_value memory_limit 256M
+# For security reasons, mod_php is not used on this server. Use a php.ini file for php directives
+# php_value max_input_vars 5000 
+
+LimitRequestBody 0

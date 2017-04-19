@@ -5,9 +5,8 @@
 	include_once("../../include/config/config.php");
 	include_once($CFG["include_path"] . "/wliu/database/database.php");
 	include_once($CFG["include_path"] . "/wliu/language/language_ajax.php");
-	include_once($CFG["include_path"] . "/wliu/auth/auth_admin_server.php");
 	include_once($CFG["include_path"] . "/wliu/secure/secure_server.php");
-	include_once("include/ajax_admin_right.php");
+	include_once("include/ajax_full_right.php");
 	$response = array();
 	$table = $_REQUEST["table"]; 
 
