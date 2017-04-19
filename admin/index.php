@@ -61,20 +61,23 @@ $_SESSION[$sess_name] = "";
 	<link href='<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
     <style>
         a.wliu-website-lang-options {
-            font-size:    14px;
+            font-size:    12px;
             color:        #000000;
             text-shadow:  1px 1px #ffffff; 
-            padding: 	  2px 4px;
+            padding: 	  2px;
         }
 
         a.wliu-lang-selected[lang],
         a.wliu-lang-selected[lang]:hover {
             color:            #ffffff;
             background-color: #ff4444; 
-            text-shadow:  1px 1px #000000; 
+            text-shadow:      none; 
+            border:           1px solid #ff4444; 
             border-radius:    4px;
-            font-size: 		  14px;
+            font-size: 		  12px;
             font-weight:      bold;
+            padding: 	      2px 4px;
+            text-shadow:      none; /* 1px 1px #000000; */ 
         }
     </style>
     <!-- //wliu components -->
@@ -150,8 +153,8 @@ $_SESSION[$sess_name] = "";
             </div>
         </div>
     </div>
-    <form name="wliuWebsiteLang" action="<?php echo $_SERVER["REQUEST_URI"];?>" method="post">
-        <input type="hidden" name="lang" id="wliu-website-lang" value="<?php echo $public_user["lang"];?>" />
+    <form name="wliuWebsiteLang" action="<?php echo $_SERVER["REQUEST_URI"];?>" method="get">
+        <input type="hidden" name="lang" id="wliu-website-lang" value="<?php echo $GLang;?>" />
     </form>
     <script type="text/javascript" language="javascript">
         $(function(){

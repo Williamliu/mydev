@@ -52,7 +52,7 @@ include("include/menu_admin.php");
                 lists:      {
                             roleLevel: {loaded: 0, keys:{guid:"", name:""}, list:[] }
                 },
-				navi:   	{pagesize:20, match: 1, orderby:"last_updated", sortby:"DESC"},
+				navi:   	{pagesize:20, match: 1, orderby:"orderno", sortby:"DESC"},
 				filters: 	filters,
 				cols: 		cols
 			});

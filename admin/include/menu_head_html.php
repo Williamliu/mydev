@@ -120,8 +120,8 @@
                 <div class="col-md-12">
 <!--Main layout-->
 
-<form name="wliuWebsiteLang" action="<?php echo $_SERVER["REQUEST_URI"];?>" method="post">
-	<input type="hidden" name="lang" id="wliu-website-lang" value="<?php echo $public_user["lang"];?>" />
+<form name="wliuWebsiteLang" action="<?php echo $_SERVER["REQUEST_URI"];?>" method="get">
+	<input type="hidden" name="lang" id="wliu-website-lang" value="<?php echo $Glang;?>" />
 </form>
 <script type="text/javascript" language="javascript">
 	$(function(){
