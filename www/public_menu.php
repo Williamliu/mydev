@@ -1,6 +1,42 @@
 <?php 
 $temp_name = substr($_SERVER["SCRIPT_NAME"],  strrpos($_SERVER["SCRIPT_NAME"], "/")!==false?strrpos($_SERVER["SCRIPT_NAME"], "/")+1:0 );
 ?>
+<div wliu-nav-bg fixed>
+    <div class="container">
+        <div wliu-nav>
+            <div head>
+                <a logo><img src='theme/wliu/company/readings-logo.png' ></a>
+                <a menu-button><i class="wliu-btn24 wliu-btn24-menubar"></i></a>
+            </div>
+            <div menu>
+                <ul left>
+                    <li style="width:20px;"></li>
+						<li>
+							<a href="index.php" title="读书国际首页">首页</a>
+						</li>
+						<li>
+							<a href="aboutus.php" title="关于我们">关于我们</a>
+						</li>
+						<li>
+							<a href="nxservice.php" title="家长放心服务">家长放心服务</a>
+						</li>
+						<li>
+							<a href="services.php" title="精品境外服务">精品境外服务</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);" title="联系我们" wliu-diag  diag-target="#contactus" diag-toggle="click">联系我们</a>
+						</li>
+                </ul>
+                <ul right>
+					<li><a href="#" style="padding-left:5px;padding-right:5px;"><span class="glyphicon glyphicon-user"></span> 注册账号</a></li>
+					<li><a href="#" style="padding-left:5px;padding-right:5px;"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>                
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--
 
 <nav id="main_menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
 	<div class="container">
@@ -21,7 +57,7 @@ $temp_name = substr($_SERVER["SCRIPT_NAME"],  strrpos($_SERVER["SCRIPT_NAME"], "
                 <li>
 					<a href="aboutus.php" title="关于我们">关于我们</a>
 				</li>
-				<!--
+
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" title="学校介绍">官方代理</a>
 					<ul class="dropdown-menu">
@@ -36,7 +72,8 @@ $temp_name = substr($_SERVER["SCRIPT_NAME"],  strrpos($_SERVER["SCRIPT_NAME"], "
 						</li>
 					</ul>
 				</li>
-				-->
+
+
 				<li>
 					<a href="nxservice.php" title="家长放心服务">家长放心服务</a>
 				</li>
@@ -54,7 +91,7 @@ $temp_name = substr($_SERVER["SCRIPT_NAME"],  strrpos($_SERVER["SCRIPT_NAME"], "
 		</div>
 	</div>
 </nav>
-
+-->
 
 
 <div ng-controller="DSGJ_CONTACTUS">

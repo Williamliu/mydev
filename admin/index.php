@@ -143,7 +143,9 @@ $_SESSION[$sess_name] = "";
     <!--<div wliu-form-message></div>-->
     <!--Form without header-->
     <div class="row">
-        <div class="col-md-12 text-right">
+        <div class="col-md-2 col-xs-0">
+        </div>
+        <div class="col-md-8 text-right">
             <div id="wliuWebsite-lang" style="margin-top:6px;display:inline-block;">
                 <a class="wliu-website-lang-options <?php echo $GLang=="en"?"wliu-lang-selected":"" ?>" lang="en">English</a>
                 <span class="seperator">|</span>
@@ -216,8 +218,8 @@ $_SESSION[$sess_name] = "";
                                     </div>
 
                                 <!--Triggering button-->
-                                <a class="rotate-btn" data-card="card-1"><i class="fa fa-repeat"></i>&nbsp;&nbsp;<?php echo gwords("not.a.member")?> ? <span style="color:#0275d8;"><?php echo gwords("register")?></span></a>
-                                <p><?php echo gwords("forget")?> <a href="#"><?php echo gwords("password")?> ?</a></p>
+                                <a class="rotate-btn" data-card="card-1" style="font-size:24px;"><i class="fa fa-repeat"></i>&nbsp;&nbsp;<?php echo gwords("not.a.member")?> <span style="color:#0275d8;"><?php echo gwords("register")?></span></a>
+                                <p style="font-size:24px;"><?php echo gwords("forget")?> <a href="#"><?php echo gwords("password")?> ?</a></p>
 
                             </div>
                         </div>
@@ -326,7 +328,7 @@ $_SESSION[$sess_name] = "";
                                     <button class="btn btn-indigo" onclick="addData()">Sign up</button>
                                 </div>
 
-                                <a class="rotate-btn" data-card="card-1"><i class="fa fa-undo"></i>&nbsp;&nbsp;<?php echo gwords("click.here.back.to")?> <span style="color:#0275d8;"><?php echo gwords("login")?></span></a>
+                                <a class="rotate-btn" data-card="card-1" style="font-size:24px;"><i class="fa fa-undo"></i>&nbsp;&nbsp;<?php echo gwords("click.here.back.to")?> <span style="color:#0275d8;"><?php echo gwords("login")?></span></a>
                             </div>
                         </div>
                         <!--/.Back Side-->

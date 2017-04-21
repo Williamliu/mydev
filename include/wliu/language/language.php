@@ -27,6 +27,9 @@ function gwords($keyword) {
         return ucwords(strtolower($keyword));
     }
 }
+
+$menu_url   = $_SERVER["SCRIPT_NAME"]?$_SERVER["SCRIPT_NAME"]:"xxxxxxxx";
+$url_name   = cTYPE::template($menu_url);
 ?>
 <script language="javascript" type="text/javascript">
 	var words = <?php echo json_encode($words); ?>;
@@ -40,4 +43,5 @@ function gwords($keyword) {
             return (""+keyword).capital();
         }
     }
+    var url_name = "<?php echo $url_name;?>";
 </script>

@@ -6,20 +6,16 @@
 <script type="text/javascript" src="jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
 <link href='jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
 
-<link href='theme/bootstrap3.3/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
-<link href='theme/bootstrap3.3/css/bootstrap-theme.min.css' rel='stylesheet' type='text/css'>
+<link href='theme/bootstrap4.0/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
 
-<link href='theme/mdb_pro/css/wliu.mdb.css' rel='stylesheet' type='text/css'>
-<link href='theme/mdb_pro/css/wliu.mdb.compiled.css' rel='stylesheet' type='text/css'>
-<link href='theme/mdb_pro/css/woocommerce.css' rel='stylesheet' type='text/css'>
-<link href='theme/mdb_pro/css/woocommerce-layout.css' rel='stylesheet' type='text/css'>
-<link href='theme/mdb_pro/css/woocommerce-smallscreen.css' rel='stylesheet' type='text/css'>
+<link href='theme/mdb4.3.1/css/mdb.css' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
 <link rel="icon" href="http://www.dushuguoji.net/theme/wliu/company/favicon.jpg" type="image/jpeg" />
 <link rel="shortcut icon" href="http://www.dushuguoji.net/theme/wliu/company/favicon.jpg" type="image/jpeg" />
 
-<script type="text/javascript" src="theme/bootstrap3.3/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="theme/mdb4.3.1/js/tether.min.js"></script>
+<script type="text/javascript" src="theme/bootstrap4.0/js/bootstrap.min.js"></script>
 
 <script type="text/javascript" 	src="angularjs/angular-1.3.15/angular.js"></script>
 <script type="text/javascript" 	src="angularjs/angular-1.3.15/angular-cookies.js"></script>
@@ -46,6 +42,8 @@
 <link 	href="<?php echo $CFG["web_domain"]?>/jquery/wliu/tree/wliu.jquery.tree.css" type='text/css' rel='stylesheet' />
 <script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/tab/wliu.jquery.tab.js" type="text/javascript"></script>
 <link 	href="<?php echo $CFG["web_domain"]?>/jquery/wliu/tab/wliu.jquery.tab.css" type='text/css' rel='stylesheet' />
+<script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/navi/wliu.jquery.navi.js" type="text/javascript"></script>
+<link 	href='<?php echo $CFG["web_domain"]?>/jquery/wliu/navi/wliu.jquery.navi.css' type='text/css' rel='stylesheet' />
 
 
 <link href='<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.common.css' type='text/css' rel='stylesheet' />

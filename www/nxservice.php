@@ -11,7 +11,7 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
 <head>
 <?php include("public_head.php"); ?>
 </head>
-<body ng-app="myApp" ng-controller="DSGJ">
+<body ng-app="myApp">
 <?php include("public_menu.php"); ?>
 
 <div style="clear:both;"></div>

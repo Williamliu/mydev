@@ -1,4 +1,3 @@
-
 <!--Double navigation-->
 <header>
     <!-- Sidebar navigation -->
