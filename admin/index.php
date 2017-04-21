@@ -13,9 +13,6 @@ $_SESSION[$sess_name] = "";
 <head>
     <meta charset="utf8" />
     <!-- JQuery3.1.1 -->
-    <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery-3.1.1.min.js"></script>
-    <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery.cookie.1.4.1.js"></script>
-    <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
     <link href='<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
     <!-- //JQuery -->
 
@@ -23,11 +20,6 @@ $_SESSION[$sess_name] = "";
     <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
     <link 	href='<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/css/bootstrap.min.css' type='text/css' rel='stylesheet' />
     <link href='<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/css/mdb.css' type='text/css' rel='stylesheet' />
-    
-    <!-- Bootstrap3.3 -->
-    <script src="<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/js/tether.min.js" type="text/javascript"></script>
-    <script src="<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/js/bootstrap.min.js" type="text/javascript"></script>    
-    <!-- //Bootstrap -->
 
     <!--
     <link href='theme/mdb_pro/css/woocommerce.css' rel='stylesheet' type='text/css'>
@@ -36,29 +28,17 @@ $_SESSION[$sess_name] = "";
     -->
     <!-- //MD Bootstrap -->
 
-    <!-- AngularJS 1.3.15 -->
-    <script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular.js" type="text/javascript"></script>
-    <script	src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular-cookies.js" type="text/javascript"></script>
-    <script src="<?php echo $CFG["web_domain"]?>/angularjs/angular-1.3.15/angular-sanitize.min.js" type="text/javascript"></script>
-    <!-- //AngularJS -->
-
-
-    <!-- wliu components -->
-    <script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.common.js" type="text/javascript"></script>
-    <script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.table.common.js" type="text/javascript"></script>
-    <script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.form.js" type="text/javascript"></script>
-  
-
-    <script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/diag/wliu.jquery.diag.js" type="text/javascript"></script>
     <link 	href='<?php echo $CFG["web_domain"]?>/jquery/wliu/diag/wliu.jquery.diag.css' type='text/css' rel='stylesheet' />
-    <script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/popup/wliu.jquery.popup.js" type="text/javascript"></script>
     <link 	href='<?php echo $CFG["web_domain"]?>/jquery/wliu/popup/wliu.jquery.popup.css' type='text/css' rel='stylesheet' />
-    <script src="<?php echo $CFG["web_domain"]?>/jquery/wliu/load/wliu.jquery.load.js" type="text/javascript"></script>
     <link 	href="<?php echo $CFG["web_domain"]?>/jquery/wliu/load/wliu.jquery.load.css" type='text/css' rel='stylesheet' />
+	<link href='<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
 
     <!-- wliu components -->
-    <script src="<?php echo $CFG["web_domain"]?>/js/wliu/wliu.common.js" type="text/javascript"></script>
-	<link href='<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
+    <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery.cookie.1.4.1.js"></script>
+    <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <script src="<?php echo $CFG["web_domain"]?>/js/wliu2.0.js" type="text/javascript"></script>
+
     <style>
         a.wliu-website-lang-options {
             font-size:    12px;
@@ -123,18 +103,18 @@ $_SESSION[$sess_name] = "";
             cols: 		cols2
         });        
 
-        console.log(registerForm);
-    $(function(){
-        $('.mdb-select').material_select();
-        registerForm.resetData();
-        loginForm.resetData();
-    });
-    function login() {
-        loginForm.addData();
-    }
-    function addData() {
-        registerForm.addData();
-    }
+
+        $(function(){
+            $('.mdb-select').material_select();
+            registerForm.resetData();
+            loginForm.resetData();
+        });
+        function login() {
+            loginForm.addData();
+        }
+        function addData() {
+            registerForm.addData();
+        }
     </script>
 </head>
 <body>
@@ -218,8 +198,8 @@ $_SESSION[$sess_name] = "";
                                     </div>
 
                                 <!--Triggering button-->
-                                <a class="rotate-btn" data-card="card-1" style="font-size:24px;"><i class="fa fa-repeat"></i>&nbsp;&nbsp;<?php echo gwords("not.a.member")?> <span style="color:#0275d8;"><?php echo gwords("register")?></span></a>
-                                <p style="font-size:24px;"><?php echo gwords("forget")?> <a href="#"><?php echo gwords("password")?> ?</a></p>
+                                <a class="rotate-btn" data-card="card-1" style="font-size:20px;"><i class="fa fa-repeat"></i>&nbsp;&nbsp;<?php echo gwords("not.a.member")?> <span style="color:#0275d8;"><?php echo gwords("register")?></span></a>
+                                <p style="font-size:20px;"><?php echo gwords("forget")?> <a href="#"><?php echo gwords("password")?> ?</a></p>
 
                             </div>
                         </div>
@@ -328,7 +308,7 @@ $_SESSION[$sess_name] = "";
                                     <button class="btn btn-indigo" onclick="addData()">Sign up</button>
                                 </div>
 
-                                <a class="rotate-btn" data-card="card-1" style="font-size:24px;"><i class="fa fa-undo"></i>&nbsp;&nbsp;<?php echo gwords("click.here.back.to")?> <span style="color:#0275d8;"><?php echo gwords("login")?></span></a>
+                                <a class="rotate-btn" data-card="card-1" style="font-size:20px;"><i class="fa fa-undo"></i>&nbsp;&nbsp;<?php echo gwords("click.here.back.to")?> <span style="color:#0275d8;"><?php echo gwords("login")?></span></a>
                             </div>
                         </div>
                         <!--/.Back Side-->

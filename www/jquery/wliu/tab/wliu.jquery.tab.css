@@ -117,7 +117,7 @@ ul[wliu-tab9] > li {
 	font-size:				12px;
 	
 	background-repeat:		no-repeat;
-	background-image:  		url(wliu-tab-all.png);
+	background-image:  		url(image/wliu-tab-all.png);
 	background-position:	-4px -80px;
 	min-width:				40px;
     max-width:				210px;
@@ -188,7 +188,7 @@ ul[wliu-tab9] > li > s {
 	height:					100%;
 	
 	background-repeat:		no-repeat;
-	background-image:  		url(wliu-tab-all.png);
+	background-image:  		url(image/wliu-tab-all.png);
 	background-position:	-212px -80px;
 }
 ul[wliu-tab9] > li:hover {

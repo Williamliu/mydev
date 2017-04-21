@@ -44,7 +44,7 @@ div[wliu-popup] s[arrow] {
     display:            inline-block;
     position:           absolute;
     background-color:   transparent;
-    background-image:   url(wliu-popup-arrow.png);
+    background-image:   url(image/wliu-popup-arrow.png);
     background-repeat:  no-repeat;
 }
 

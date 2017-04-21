@@ -229,8 +229,8 @@ include("include/menu_admin.php");
 
 
 <tree.checkdiag1 table="menu_tree" targetid="rightDiag1" name="rightCategory" colnum="0" colnum1="0" bar="1" title="Please Select"></tree.checkdiag1>
-<table.popup table="menu_tree"></table.popup>
-<!-- <div wliu-autotip></div> -->
+
+<table.popup table="role_table"></table.popup>
 <div wliu-wait></div>
 <div id="tool_tip" wliu-popup></div>
 
