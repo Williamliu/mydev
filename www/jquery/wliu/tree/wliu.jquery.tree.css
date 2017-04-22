@@ -8,7 +8,6 @@ ul[wliu-tree] {
 	padding-left:			20px;
 }
 
-/***  li common ***/
 ul[wliu-tree] > li {
 	cursor:					pointer;
 	display: 				block;
@@ -30,7 +29,6 @@ ul[wliu-tree] > li:last-child {
 	background-image:		url(image/wliu-tree-node-last-ln.png);
 }
 
-/*** node open / close  line ***/
 ul[wliu-tree] > li:before {
 	content: 				" ";
 	display: 				inline-block;

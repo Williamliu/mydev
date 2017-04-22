@@ -4,9 +4,9 @@ include_once($CFG["include_path"] . "/wliu/minifier/jsmin.php");
 
 $js = "";
 //Merge jquery
-//$js .= JSMin::minify(file_get_contents("../jquery/min/jquery-3.2.1.js"));
-//$js .= JSMin::minify(file_get_contents("../jquery/min/jquery.cookie.1.4.1.js"));
-//$js .= JSMin::minify(file_get_contents("../jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"));
+$js .= JSMin::minify(file_get_contents("../jquery/min/jquery-3.2.1.min.js"));
+$js .= JSMin::minify(file_get_contents("../jquery/min/jquery.cookie.1.4.1.js"));
+$js .= JSMin::minify(file_get_contents("../jquery/min/jquery-ui.js"));
 
 
 //Merge Bootstrap
@@ -43,31 +43,29 @@ $js .= JSMin::minify(file_get_contents("../jquery/wliu/popup/wliu.jquery.popup.j
 $js .= JSMin::minify(file_get_contents("../jquery/wliu/load/wliu.jquery.load.js"));
 $js .= JSMin::minify(file_get_contents("../jquery/wliu/tree/wliu.jquery.tree.js"));
 $js .= JSMin::minify(file_get_contents("../jquery/wliu/tab/wliu.jquery.tab.js"));
-//$js .= JSMin::minify(file_get_contents("../jquery/wliu/navi/wliu.jquery.navi.js"));
+$js .= JSMin::minify(file_get_contents("../jquery/wliu/navi/wliu.jquery.navi.js"));
 
 file_put_contents("../js/wliu2.0.js", $js);
 
 
 // CSS 
-//$css = "";
+$css = "";
 // Merge JQuery 
-//$css .= JSMin::minify(file_get_contents("../jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css"));
-
-// Merge Bootstrap
-//$css .= JSMin::minify(file_get_contents("../theme/bootstrap4.0/css/bootstrap.min.css"));
-//$css .= JSMin::minify(file_get_contents("../theme/mdb4.3.1/css/mdb.css"));
+$css .= file_get_contents("../jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css");
+$css .= file_get_contents("../theme/bootstrap4.0/css/bootstrap.min.css");
+$css .= file_get_contents("../theme/mdb4.3.1/css/mdb.css");
 
 // Merge JQuery/Wliu
-//$css .= JSMin::minify(file_get_contents("../jquery/wliu/diag/wliu.jquery.diag.css"));
-//$css .= JSMin::minify(file_get_contents("../jquery/wliu/popup/wliu.jquery.popup.css"));
-//$css .= JSMin::minify(file_get_contents("../jquery/wliu/load/wliu.jquery.load.css"));
-//$css .= JSMin::minify(file_get_contents("../jquery/wliu/tree/wliu.jquery.tree.css"));
-//$css .= JSMin::minify(file_get_contents("../jquery/wliu/tab/wliu.jquery.tab.css"));
-//$css .= JSMin::minify(file_get_contents("../jquery/wliu/navi/wliu.jquery.navi.css"));
+$css .= file_get_contents("../jquery/wliu/diag/wliu.jquery.diag.css");
+$css .= file_get_contents("../jquery/wliu/popup/wliu.jquery.popup.css");
+$css .= file_get_contents("../jquery/wliu/load/wliu.jquery.load.css");
+$css .= file_get_contents("../jquery/wliu/tree/wliu.jquery.tree.css");
+$css .= file_get_contents("../jquery/wliu/tab/wliu.jquery.tab.css");
+$css .= file_get_contents("../jquery/wliu/navi/wliu.jquery.navi.css");
 
 // Merge Common/Wliu
-//$css .= JSMin::minify(file_get_contents("../theme/wliu/wliu.buttons.css"));
-//$css .= JSMin::minify(file_get_contents("../theme/wliu/wliu.common.css"));
+$css .= file_get_contents("../theme/wliu/wliu.buttons.css");
+$css .= file_get_contents("../theme/wliu/wliu.common.css");
 
-//file_put_contents("../theme/wliu/wliu2.0.css", $css);
+file_put_contents("../theme/wliu/wliu2.0.css", $css);
 ?>
