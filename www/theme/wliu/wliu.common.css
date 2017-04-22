@@ -288,7 +288,9 @@ input[type="checkbox"]:checked + label
 /*** end of fix  bootstrap and mdbootstrap  problem : overwrite their css ***/
 
 
-
+img {
+	display:    inline-block;
+}
 img[src=''] {
 	display:	none;
 }

@@ -14157,9 +14157,12 @@ ul[wliu-tree] > li {
 	display: 				block;
 	padding: 				0px;
 	white-space:			nowrap;
-    overflow: 				hidden;
+    overflow: 				visible;
+	/*
+	overflow: 				hidden;
     text-overflow:      	ellipsis;
-    box-sizing:         	border-box;
+    */
+	box-sizing:         	border-box;
 
 	background-position: 	0px 0px;
 	background-color:		#ffffff;
@@ -16770,7 +16773,9 @@ input[type="checkbox"]:checked + label
 /*** end of fix  bootstrap and mdbootstrap  problem : overwrite their css ***/
 
 
-
+img {
+	display:    inline-block;
+}
 img[src=''] {
 	display:	none;
 }
