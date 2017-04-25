@@ -29,7 +29,7 @@ $temp_name = substr($_SERVER["SCRIPT_NAME"],  strrpos($_SERVER["SCRIPT_NAME"], "
                 </ul>
                 <ul right>
 					<li><a href="#" style="padding-left:5px;padding-right:5px;"><span class="glyphicon glyphicon-user"></span> 注册账号</a></li>
-					<li><a href="#" style="padding-left:5px;padding-right:5px;"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>                
+					<li highlight><a href="#" style="padding-left:5px;padding-right:5px;"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>                
                 </ul>
             </div>
         </div>

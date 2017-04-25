@@ -129,6 +129,13 @@ String.prototype.subName = function(n) {
 	}
 	return name;
 }
+String.prototype.tempName = function() {
+	var ret_name = '' + this.toString();
+	ret_name = ret_name.substring(ret_name.lastIndexOf('/')+1);
+	ret_name = ret_name?ret_name:"index";
+	if(ret_name.indexOf('?')>=0) ret_name = ret_name.substring(0, ret_name.indexOf('?'));
+	return ret_name;
+}
 String.prototype.toDate = function() {
 	if( isNaN(this) || parseInt(this) <= 0  ) {
 		return new Date(0);

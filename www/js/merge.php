@@ -68,4 +68,6 @@ $css .= file_get_contents("../theme/wliu/wliu.buttons.css");
 $css .= file_get_contents("../theme/wliu/wliu.common.css");
 
 file_put_contents("../theme/wliu/wliu2.0.css", $css);
+
+echo "Create Minifile For JS and CSS.";
 ?>

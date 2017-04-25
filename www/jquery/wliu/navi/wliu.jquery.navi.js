@@ -7,6 +7,8 @@
 
 // var url_name   come from include/wliu/language/language.php    
 $(function(){
+	var url_name = window.location.href.tempName();
+	
 	$("li>*[href*='" + url_name + "']", "div[wliu-nav]>div[menu]").parents("li", "div[wliu-nav]>div[menu]").addAttr("active");
 
 	$(document).off("click.wliu-dropdown", "div[wliu-dropdown]").on("click.wliu-dropdown", "div[wliu-dropdown]", function(evt){
