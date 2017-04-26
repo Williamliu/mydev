@@ -20,6 +20,7 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
         <div wliu-nav>
             <div head>
                 <a logo><img src='theme/wliu/company/readings-logo.png' ></a>
+                <a text>Administration</a>
                 <a menu-button><i class="wliu-btn24 wliu-btn24-menubar"></i></a>
             </div>
             <div menu>

@@ -15388,7 +15388,7 @@ ul[wliu-tab9][border-grey] + div[wliu-tab9-body] {
         border-bottom:      0px solid #cccccc; 
         background-color:   #ffffff;
         box-shadow:         0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-		z-index: 			999;
+		z-index: 			9999;
     }
     div[wliu-nav-bg][fixed] {
         width:              100%;
@@ -15396,53 +15396,54 @@ ul[wliu-tab9][border-grey] + div[wliu-tab9-body] {
         top:                0px;
     } 
     div[wliu-nav] {
-        display:        block;
-        height:         60px;
-        box-sizing:     border-box;
-        padding:        0px;
-        margin:         0px;   
+        display:            block;
+        height:             60px;
+        box-sizing:         border-box;
+        padding:            0px;
+        margin:             0px;   
     }
 
     div[wliu-nav] > div[head] {
-        display:        block;
-        float:          left;
-        height:         100%;
-        /*
-        border:         1px solid green;
-        */
+        display:            block;
+        float:              left;
+        height:             100%;
     }
     
     div[wliu-nav] > div[head] > a:before {
-        display:        inline-block;
-        content:        " ";
-        width:          0px;
-        height:         100%;
-        vertical-align: middle;
+        display:            inline-block;
+        content:            " ";
+        width:              0px;
+        height:             100%;
+        vertical-align:     middle;
     }
-
     div[wliu-nav] > div[head] > a > * {
-        vertical-align: middle;
+        vertical-align:     middle;
     }
     
+    div[wliu-nav] > div[head] > a {
+        text-decoration:    none;
+        vertical-align:     middle;
+        height:             100%;
+        color:              #666666;  
+    }    
+
     div[wliu-nav] > div[head] > a[logo] {
-        display:        block;
-        float:          left;
-        font-size:      24px;
-        font-weight:    bold;
-        height:         100%;
-        /*
-        border:         1px solid yellow;
-        */
-        vertical-align: middle;
+        display:            block;
+        float:              left;
+        margin-right:       10px;
+    }
+    div[wliu-nav] > div[head] > a[text] {
+        display:            block;
+        float:              left;
+        font-size:          24px;
+        font-weight:        bold;
     }
     div[wliu-nav] > div[head] > a[menu-button] {
-        display:        none;
-        float:          right;
-        height:         100%;
+        display:            none;
+        float:              right;
         /*
-        border:         1px solid red;
+        border:             1px solid red;
         */
-        vertical-align: middle;
     }
 
     div[wliu-nav] > div[menu] {
@@ -15454,7 +15455,7 @@ ul[wliu-tab9][border-grey] + div[wliu-tab9-body] {
         background-color:   #ffffff;
         vertical-align:     middle;
         box-shadow:         0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-        z-index:            999;
+        z-index:            9999;
         
     }
 
@@ -15479,32 +15480,34 @@ ul[wliu-tab9][border-grey] + div[wliu-tab9-body] {
     }    
 
     div[wliu-nav] > div[menu] > ul {
-        display:        block;
-        padding:        0px;
-        margin:         0px;
-        margin-top:     14px;
-        vertical-align: middle;
+        display:            block;
+        padding:            0px;
+        margin:             0px;
+        vertical-align:     middle;
         /*
-        border:         1px solid red;
+        border:             1px solid red;
         */
+        margin-top:         14px;
     }
 
     div[wliu-nav] > div[menu] > ul[left] {
-        float:          left;
+        float:              left;
     }
     div[wliu-nav] > div[menu] > ul[right] {
-        float:          right;
+        float:              right;
     }
     div[wliu-nav] > div[menu] > ul > li {
        display:             block;
        float:               left;
        vertical-align:      middle;
        border:              1px solid #ffffff;
-       /*
-       border:              1px solid yellow;
-       */
        color:               #666666;
        cursor:              pointer;
+
+       margin:              0px;
+       margin-left:         2px;
+       margin-right:        2px;
+       
     }
     div[wliu-nav] > div[menu] > ul > li:hover {
        color:               #000000;
@@ -15534,7 +15537,7 @@ ul[wliu-tab9][border-grey] + div[wliu-tab9-body] {
        display:             block;
        font-size:           16px;
        font-weight:         600;
-       padding:             4px 8px; 
+       padding:             4px 10px; 
        /*
        border:          1px solid green;
        */
@@ -15552,12 +15555,13 @@ div[wliu-dropdown] > ul {
     display:                    none;
     position:                   absolute;
     padding:                    0px;
-    left:                       -4px;
+    left:                       -2px;
     margin-top:                 5px;
     background-color:           #ffffff;
     list-style-type:            none;
     box-shadow:                 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-    z-index:                    999;
+    z-index:                    9999;
+    min-width:                  140px;
 
     animation-name:             example_navi;
     animation-duration:         0.6s;
@@ -15565,72 +15569,76 @@ div[wliu-dropdown] > ul {
 }
 
 div[wliu-dropdown] > ul > li {
-    display:            block;
-    position:           relative;
-    padding:            5px 8px 5px 16px;
+    display:                block;
+    position:               relative;
+    padding:                5px 8px 5px 16px;
     /*
-    margin:             4px;
+    margin:                 4px;
     */
-    background-color:   #ffffff;
-    list-style-type:    none;
-    white-space:        nowrap;
-    color:              #666666;
-    font-size:          16px;
-    font-weight:        500;
+    background-color:       #ffffff;
+    list-style-type:        none;
+    white-space:            nowrap;
+    color:                  #666666;
+    font-size:              16px;
+    font-weight:            500;
 }
 
 div[wliu-dropdown] > ul > li:hover {
-    color:              #000000;
-    background-color:   #eeeeee;
+    color:                  #000000;
+    background-color:       #eeeeee;
 }
 
 div[wliu-dropdown] > ul > li[active],
 div[wliu-dropdown] > ul > li[active]:hover
 {
-    color:              #ffffff;
-    background-color:   #33b5e5;
-    border:             1px solid #cccccc;
+    color:                  #ffffff;
+    background-color:       #33b5e5;
+    border:                 1px solid #cccccc;
 }
 
 
 div[wliu-dropdown][active] > ul {
-    display:            block;
+    display:                block;
 }
 
 @media (max-width: 992px) {
     div[wliu-nav] > div[head] {
-        display:        block;
-        float:          none;
+        display:            block;
+        float:              none;
         /*
-        border:         1px solid orange;
+        border:             1px solid orange;
         */
     }
  
     div[wliu-nav] > div[head] > a[menu-button] {
-        display:        block;
+        display:            block;
     }
+    div[wliu-nav] > div[head] > a[logo] + a[text] {
+        display:            none;
+    }
+    
     div[wliu-nav] > div[menu] {
-        display:        none;
+        display:            none;
     }
     div[wliu-nav] > div[menu] > ul {
-        margin:         0px;
+        margin:             0px;
     }
     div[wliu-nav] > div[menu] > ul[left] {
-        float:          none;
-        margin:         0px;
+        float:              none;
+        margin:             0px;
     }
     div[wliu-nav] > div[menu] > ul[right] {
-        float:          none;
+        float:              none;
     }
     div[wliu-nav] > div[menu] > ul > li {
-       float:           none;
+       float:               none;
     }
 
 
     div[wliu-dropdown] > ul {
-        position:       relative;
-        box-shadow:     none;
-        margin-top:     0px;
+        position:           relative;
+        box-shadow:         none;
+        margin-top:         0px;
     }
 }
 
