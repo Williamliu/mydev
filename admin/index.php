@@ -11,34 +11,7 @@ $_SESSION[$sess_name] = "";
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf8" />
-    <!-- JQuery3.1.1 -->
-    <link href='<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
-    <!-- //JQuery -->
-
-    <!-- Font Awesome & BS & MDB -->
-    <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' type='text/css' rel='stylesheet' />
-    <link 	href='<?php echo $CFG["web_domain"]?>/theme/bootstrap4.0/css/bootstrap.min.css' type='text/css' rel='stylesheet' />
-    <link href='<?php echo $CFG["web_domain"]?>/theme/mdb4.3.1/css/mdb.css' type='text/css' rel='stylesheet' />
-
-    <!--
-    <link href='theme/mdb_pro/css/woocommerce.css' rel='stylesheet' type='text/css'>
-    <link href='theme/mdb_pro/css/woocommerce-layout.css' rel='stylesheet' type='text/css'>
-    <link href='theme/mdb_pro/css/woocommerce-smallscreen.css' rel='stylesheet' type='text/css'>
-    -->
-    <!-- //MD Bootstrap -->
-
-    <link 	href='<?php echo $CFG["web_domain"]?>/jquery/wliu/diag/wliu.jquery.diag.css' type='text/css' rel='stylesheet' />
-    <link 	href='<?php echo $CFG["web_domain"]?>/jquery/wliu/popup/wliu.jquery.popup.css' type='text/css' rel='stylesheet' />
-    <link 	href="<?php echo $CFG["web_domain"]?>/jquery/wliu/load/wliu.jquery.load.css" type='text/css' rel='stylesheet' />
-	<link href='<?php echo $CFG["web_domain"]?>/theme/wliu/wliu.buttons.css' type='text/css' rel='stylesheet' />
-
-    <!-- wliu components -->
-    <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery-3.1.1.min.js"></script>
-    <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/min/jquery.cookie.1.4.1.js"></script>
-    <script type="text/javascript" src="<?php echo $CFG["web_domain"]?>/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-    <script src="<?php echo $CFG["web_domain"]?>/js/wliu2.0.js" type="text/javascript"></script>
-
+    <?php include("include/index_head_include.php"); ?>
     <style>
         a.wliu-website-lang-options {
             font-size:    12px;

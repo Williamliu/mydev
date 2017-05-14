@@ -35,4 +35,12 @@ $(function(){
 			$("div[wliu-dropdown][active]").removeAttr("active");
 		}
 	});
+
+	$("body").unbind("click.wliu-nav").bind("click.wliu-nav", function (evt) {
+	    //console.log("body click: " + $(evt.target).hasAttr("wliu-dropdown") + " : " + $(evt.target).parents("[wliu-dropdown]").length);
+	    if (!$(evt.target).hasAttr("wliu-nav") && $(evt.target).parents("[wliu-nav]").length <= 0) {
+	        $("div[wliu-nav]>div[menu][active]").removeAttr("active");
+	    }
+	});
+	
 });
