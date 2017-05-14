@@ -313,7 +313,7 @@ include("include/menu_admin.php");
 							<table.rowno table="student_table"  row="row"></table.rowno>
 						</td>
 						<td>
-							<table.readonly class="input-small" table="student_table" name="stu_fname" row="row"></table.readonly>
+							<table.textbox class="input-small" table="student_table" name="stu_fname" row="row"></table.textbox>
 						</td>
 						<td>
 							<table.textbox class="input-medium" table="student_table" name="stu_lname" row="row"></table.textbox>
