@@ -2640,7 +2640,7 @@ class cVALIDATE {
 									$table["error"]["errorCode"] 	= 1;
 									$theRow["error"]["errorCode"] 	= 1;
 									$theCol["errorCode"] 			= 1;  
-									$theCol["errorMessage"] 		= "'" . $dispName . "' doesn't match confirm one.";  
+									$theCol["errorMessage"] 		= gwords("'{0}' doesn't match confirm one.", array($dispName));
 								}
 								$theCol["value"] = $tmp_pass;
 							case "hidden":
@@ -2656,7 +2656,7 @@ class cVALIDATE {
 										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= "'" . $dispName . "' is invalid NUMBER type.";  
+										$theCol["errorMessage"] 		= gwords("'{0}' is invalid NUMBER type.", array($dispName));
 									}
 								} 
 
@@ -2669,7 +2669,7 @@ class cVALIDATE {
 										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
+										$theCol["errorMessage"] 		= gwords("'{0}' is required.", array($dispName));  
 									}
 								}
 								
@@ -2680,14 +2680,14 @@ class cVALIDATE {
 										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= "'" . $dispName . "'($slen chars) less than minimum chars($minLength chars).";  
+										$theCol["errorMessage"] 		= gwords("'{0}'({1} chars) less than minimum chars({2} chars).", array($dispName, $slen, $minLength));  
 									}
 									if( $slen>0 && $maxLength>0 && $slen>$maxLength ) {
 										$table["success"] 				= 0;
 										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= "'" . $dispName . "'($slen chars) exceed maximum chars($maxLength chars).";  
+										$theCol["errorMessage"] 		= gwords("'{0}'({1} chars) exceed maximum chars({2} chars).", array($dispName, $slen, $maxLength));  
 									}
 								}
 
@@ -2697,7 +2697,7 @@ class cVALIDATE {
 										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= "'" . $dispName . "' is invalid ". ucwords($dataType) . " format.";  
+										$theCol["errorMessage"] 		= gwords("'{0}' is invalid {1} format.", array($dispName,ucwords($dataType)) );  
 										//print_r($theCol);
 									}
 								}
@@ -2712,14 +2712,14 @@ class cVALIDATE {
 											$table["error"]["errorCode"] 	= 1;
 											$theRow["error"]["errorCode"] 	= 1;
 											$theCol["errorCode"] 			= 1;  
-											$theCol["errorMessage"] 		= "'" . $dispName . "' value " .  $theCol["value"] . " less than minimum value $min";  
+											$theCol["errorMessage"] 		= gwords("'{0}' value {1} less than minimum value {2}", array($dispName,$theCol["value"],$min));  
 										}
 										if( $theCol["value"]!=0 && $max!=0 && $fval>$max ) {
 											$table["success"] 				= 0;
 											$table["error"]["errorCode"] 	= 1;
 											$theRow["error"]["errorCode"] 	= 1;
 											$theCol["errorCode"] 			= 1;  
-											$theCol["errorMessage"] 		= "'" . $dispName . "' value " .  $theCol["value"] . " large than maximum value $max";  
+											$theCol["errorMessage"] 		= gwords("'{0}' value {1} large than maximum value {2}", array($dispName,$theCol["value"],$max));  
 										}
 									}
 								}
@@ -2735,7 +2735,7 @@ class cVALIDATE {
 										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
+										$theCol["errorMessage"] 		= gwords("'{0}' is required.", array($dispName));  
 									}
 								}
 								$slen = mb_strlen($theCol["value"]);
@@ -2745,14 +2745,14 @@ class cVALIDATE {
 										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= "'" . $dispName . "'($slen chars) less than minimum chars($minLength chars).";  
+										$theCol["errorMessage"] 		= gwords("'{0}'({1} chars) less than minimum chars({2} chars).", array($dispName, $slen, $minLength));
 									}
 									if( $slen>0 && $maxLength>0 && $slen>$maxLength ) {
 										$table["success"] 				= 0;
 										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= "'" . $dispName . "'($slen chars) exceed maximum chars($maxLength chars).";  
+										$theCol["errorMessage"] 		= gwords("'{0}'({1} chars) exceed maximum chars({2} chars).", array($dispName, $slen, $maxLength)); 
 									}
 								}
 								break;
@@ -2768,14 +2768,14 @@ class cVALIDATE {
 										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
+										$theCol["errorMessage"] 		= gwords("'{0}' is required.", array($dispName));  
 									} else {
 										if(count($theCol["value"])<=0) {
 											$table["success"] 				= 0;
 											$table["error"]["errorCode"] 	= 1;
 											$theRow["error"]["errorCode"] 	= 1;
 											$theCol["errorCode"] 			= 1;  
-											$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
+											$theCol["errorMessage"] 		= gwords("'{0}' is required.", array($dispName));  
 										}
 									}
 								}
@@ -2787,14 +2787,14 @@ class cVALIDATE {
 										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= "'" . $dispName . "' require select at least $minLength items.";  
+										$theCol["errorMessage"] 		= gwords("'{0}' require select at least {1} items.", array($dispName, $minLength) );  
 									}
 									if( $slen>0 && $maxLength>0 && $slen>$maxLength ) {
 										$table["success"] 				= 0;
 										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= "'" . $dispName . "' selected items exceed maximum $maxLength items.";  
+										$theCol["errorMessage"] 		= gwords("'{0}' selected items exceed maximum {1} items.", array($dispName, $maxLength) );  
 									}
 								}
 								
@@ -2811,7 +2811,7 @@ class cVALIDATE {
 										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
+										$theCol["errorMessage"] 		= gwords("'{0}' is required.", array($dispName));  
 									}
 								}
 
@@ -2822,7 +2822,7 @@ class cVALIDATE {
 										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= "'" . $dispName . "' is invalid ". ucwords($colType) . " format.";  
+										$theCol["errorMessage"] 		= gwords("'{0}' is invalid {1} format.", array($dispName, ucwords($colType)) );  
 									}
 								}
 
@@ -2834,14 +2834,14 @@ class cVALIDATE {
 											$table["error"]["errorCode"] 	= 1;
 											$theRow["error"]["errorCode"] 	= 1;
 											$theCol["errorCode"] 			= 1;  
-											$theCol["errorMessage"] 		= "'" . $dispName . "' value " .  $theCol["value"] . " less than minimum value " . $theCol["min"];  
+											$theCol["errorMessage"] 		= gwords("'{0}' value {1} less than minimum value {2}", array($dispName,$theCol["value"],$theCol["min"]));  
 										}
 										if( $slen>0 && $max>0 && cTYPE::datetoint($theCol["value"])>$max ) {
 											$table["success"] 				= 0;
 											$table["error"]["errorCode"] 	= 1;
 											$theRow["error"]["errorCode"] 	= 1;
 											$theCol["errorCode"] 			= 1;  
-											$theCol["errorMessage"] 		= "'" . $dispName . "' value " .  $theCol["value"] . " large than maximum value ". $theCol["max"];  
+											$theCol["errorMessage"] 		= gwords("'{0}' value {1} large than maximum value {2}", array($dispName,$theCol["value"],$theCol["max"]));
 										}
 								}
 								
@@ -2863,7 +2863,7 @@ class cVALIDATE {
 										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
+										$theCol["errorMessage"] 		= gwords("'{0}' is required.", array($dispName));  
 									}
 								}
 								if(!$theCol["value"])  $theCol["value"]=0;
@@ -2880,7 +2880,7 @@ class cVALIDATE {
 										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
+										$theCol["errorMessage"] 		= gwords("'{0}' is required.", array($dispName));  
 									}
 								}
 								break;
@@ -2893,7 +2893,7 @@ class cVALIDATE {
 										$table["error"]["errorCode"] 	= 1;
 										$theRow["error"]["errorCode"] 	= 1;
 										$theCol["errorCode"] 			= 1;  
-										$theCol["errorMessage"] 		= "'" . $dispName . "' is required.";  
+										$theCol["errorMessage"] 		= gwords("'{0}' is required.", array($dispName));  
 									}
 								}
 								break;
@@ -2950,7 +2950,7 @@ class cVALIDATE {
 									$table["success"] 				= 0;
 									$table["error"]["errorCode"] 	= 1;
 									$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-									$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' doesn't match confirm one.";  
+									$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}' doesn't match confirm one.", array($dispName)); 
 								}
 								$colVal = $tmp_pass;
 							case "hidden":
@@ -2964,7 +2964,7 @@ class cVALIDATE {
 										$table["success"] 				= 0;
 										$table["error"]["errorCode"] 	= 1;
 										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is invalid NUMBER type.";  
+										$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}' is invalid NUMBER type.", array($dispName)); 
 									}
 								} 
 
@@ -2976,7 +2976,7 @@ class cVALIDATE {
 										$table["success"] 				= 0;
 										$table["error"]["errorCode"] 	= 1;
 										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
+										$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}' is required.", array($dispName));  
 									}
 								}
 								
@@ -2986,13 +2986,13 @@ class cVALIDATE {
 										$table["success"] 				= 0;
 										$table["error"]["errorCode"] 	= 1;
 										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "'($slen chars) less than minimum chars($minLength chars).";  
+										$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}'({1} chars) less than minimum chars({2} chars).", array($dispName, $slen, $minLength));
 									}
 									if( $slen>0 && $maxLength>0 && $slen>$maxLength ) {
 										$table["success"] 				= 0;
 										$table["error"]["errorCode"] 	= 1;
 										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "'($slen chars) exceed maximum chars($maxLength chars).";  
+										$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}'({1} chars) exceed maximum chars({2} chars).", array($dispName, $slen, $maxLength));
 									}
 								}
 
@@ -3001,7 +3001,7 @@ class cVALIDATE {
 										$table["success"] 				= 0;
 										$table["error"]["errorCode"] 	= 1;
 										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is invalid ". ucwords($dataType) . " format.";  
+										$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}' is invalid {1} format.", array($dispName, ucwords($dataType) )); 
 										//print_r($theCol);
 									}
 								}
@@ -3015,13 +3015,13 @@ class cVALIDATE {
 											$table["success"] 				= 0;
 											$table["error"]["errorCode"] 	= 1;
 											$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-											$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' value " .  $colVal . " less than minimum value $min";  
+											$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}' value {1} less than minimum value {2}", array($dispName, $colVal, $min));  
 										}
 										if( $colVal!=0 && $max!=0 && $fval>$max ) {
 											$table["success"] 				= 0;
 											$table["error"]["errorCode"] 	= 1;
 											$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-											$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' value " .  $colVal . " large than maximum value $max";  
+											$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}' value {1} large than maximum value {2}", array($dispName,$colVal,$max));  
 										}
 									}
 								}
@@ -3037,13 +3037,13 @@ class cVALIDATE {
 										$table["success"] 				= 0;
 										$table["error"]["errorCode"] 	= 1;
 										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
+										$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}' is required.", array($dispName));  
 									} else {
 										if(count($colVal)<=0) {
 											$table["success"] 				= 0;
 											$table["error"]["errorCode"] 	= 1;
 											$table["data"][$tmpIdx]["errorCode"] 		= 1;  
-											$table["data"][$tmpIdx]["errorMessage"] 	= "'" . $dispName . "' is required.";  
+											$table["data"][$tmpIdx]["errorMessage"] 	= gwords("'{0}' is required.", array($dispName));  
 										}
 									}
 								}
@@ -3054,13 +3054,13 @@ class cVALIDATE {
 										$table["success"] 				= 0;
 										$table["error"]["errorCode"] 	= 1;
 										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' require select at least $minLength items.";  
+										$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}' require select at least {1} items.", array($dispName, $minLength) );
 									}
 									if( $slen>0 && $maxLength>0 && $slen>$maxLength ) {
 										$table["success"] 				= 0;
 										$table["error"]["errorCode"] 	= 1;
 										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' selected items exceed maximum $maxLength items.";  
+										$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}' selected items exceed maximum {1} items.", array($dispName, $maxLength) );
 									}
 								}
 								
@@ -3075,7 +3075,7 @@ class cVALIDATE {
 										$table["success"] 				= 0;
 										$table["error"]["errorCode"] 	= 1;
 										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
+										$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}' is required.", array($dispName));  
 									}
 								}
 
@@ -3085,7 +3085,7 @@ class cVALIDATE {
 										$table["success"] 				= 0;
 										$table["error"]["errorCode"] 	= 1;
 										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is invalid ". ucwords($colType) . " format.";  
+										$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}' is invalid {1} format.", array($dispName, ucwords($colType) )); 
 									}
 								}
 
@@ -3096,13 +3096,13 @@ class cVALIDATE {
 											$table["success"] 				= 0;
 											$table["error"]["errorCode"] 	= 1;
 											$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-											$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' value " .  $colVal . " less than minimum value " . $theCol["min"];  
+											$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}' value {1} less than minimum value {2}", array($dispName,$colVal,$theCol["min"]));
 										}
 										if( $slen>0 && $max>0 && cTYPE::datetoint($colVal)>$max ) {
 											$table["success"] 				= 0;
 											$table["error"]["errorCode"] 	= 1;
 											$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-											$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' value " .  $colVal . " large than maximum value ". $theCol["max"];  
+											$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}' value {1} large than maximum value {2}", array($dispName,$colVal,$theCol["max"]));
 										}
 								}
 								
@@ -3119,7 +3119,7 @@ class cVALIDATE {
 										$table["success"] 				= 0;
 										$table["error"]["errorCode"] 	= 1;
 										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
+										$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}' is required.", array($dispName));  
 									}
 								}
 								if(!$colVal)  $colVal=0;
@@ -3132,7 +3132,7 @@ class cVALIDATE {
 										$table["success"] 				= 0;
 										$table["error"]["errorCode"] 	= 1;
 										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
+										$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}' is required.", array($dispName));  
 									}
 								}
 								break;
@@ -3143,7 +3143,7 @@ class cVALIDATE {
 										$table["success"] 				= 0;
 										$table["error"]["errorCode"] 	= 1;
 										$table["data"][$tmpIdx]["errorCode"] 			= 1;  
-										$table["data"][$tmpIdx]["errorMessage"] 		= "'" . $dispName . "' is required.";  
+										$table["data"][$tmpIdx]["errorMessage"] 		= gwords("'{0}' is required.", array($dispName));  
 									}
 								}
 								break;

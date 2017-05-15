@@ -33,7 +33,7 @@ var GCONFIG = {
 			if( errorObj.errorMessage)
 				$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", [errorObj.errorMessage.nl2br1(), "success"]);
 			else 
-				$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", ["Submitted Success.", "success"]);
+				$("div#wliu-autotip-id[wliu-autotip]").trigger("auto", [gwords("Submitted Success."), "success"]);
 		} 
 	}
 };

@@ -51,7 +51,9 @@ $.fn.extend({
             $(el).addClass("card card-danger text-center z-depth-2 mb-1 white-text").css("padding", "10px");
             var htmlContent = [
                 '<div style="font-size:16px;text-align:left;">',
-                '<i class="fa fa-exclamation-triangle fa-md" aria-hidden="true" style="color:white;"></i> <span style="font-size:16px;">We can\'t process submitted data:</span>',
+                '<i class="fa fa-exclamation-triangle fa-md" aria-hidden="true" style="color:white;"></i> <span style="font-size:16px;">',
+                gwords("We cant process submitted data:"),
+                '</span>',
                 '<div id="wliu-form-message-body" style="margin-top:5px;padding-left:20px;" class="white-text"></div>',
                 '</div>'
             ].join("");
@@ -70,9 +72,13 @@ $.fn.extend({
             $(el).attr("id", "wliu-form-popup-id");
             $(el).attr("wliu-diag","").attr("movable", "").attr("maskable","");
             var htmlContent = [
-                '<div wliu-diag-head>Message</div>',
+                '<div wliu-diag-head>',
+                    gwords("Message"),
+                '</div>',
                     '<div wliu-diag-body style="font-size:16px;">',
-                    '<i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true" style="color:red;"></i> <span style="font-size:16px;">We can\'t process submitted data:</span>',
+                    '<i class="fa fa-exclamation-triangle fa-lg" aria-hidden="true" style="color:red;"></i> <span style="font-size:16px;">',
+                    gwords("We cant process submitted data:"),
+                    '</span>',
                     '<div id="wliu-form-popup-body" style="margin-top:5px;"></div>',
                 '</div>',    
             ].join("");

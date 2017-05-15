@@ -68,17 +68,17 @@ try {
 								$query = "SELECT id, user_name, email FROM web_admin WHERE deleted=0 AND status=0 AND (user_name = '" . $user . "' OR email = '" . $user . "')";
 								if( $db->exists($query) ) {
 									$table["error"]["errorCode"] 	= 1;
-									$table["error"]["errorMessage"] = "You account is inactived, please contact website administrator.";
+									$table["error"]["errorMessage"] = gwords("You account is inactived, please contact website administrator.");
 								} else {
 									$table["error"]["errorCode"] 	= 1;
-									$table["error"]["errorMessage"] = "You failed to login, please make sure your user name and password is correct.";
+									$table["error"]["errorMessage"] = gwords("You failed to login, please make sure your user name and password is correct.");
 								}
 							}
 						} 
 						
 					} else {
 						$table["error"]["errorCode"] 	= 1;
-						$table["error"]["errorMessage"] = "You don't have right to add data.";
+						$table["error"]["errorMessage"] = gwords("You dont have right to add data.");
 					}
 					break;
 				case 3:
