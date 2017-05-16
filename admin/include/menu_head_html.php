@@ -105,7 +105,7 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<?php echo $CFG["secure_auth_return"]?>"><i class="fa fa-sign-out" aria-hidden="true"></i> <?php echo gwords("logout")?></a>
+                <a class="nav-link" href="<?php echo $CFG["secure_auth_return"]?>"><i class="fa fa-sign-out" aria-hidden="true"></i><?php echo gwords("logout")?></a>
             </li>
         </ul> 
     </nav>

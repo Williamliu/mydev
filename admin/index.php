@@ -17,17 +17,17 @@ $_SESSION[$sess_name] = "";
             font-size:    12px;
             color:        #000000;
             text-shadow:  1px 1px #ffffff; 
-            padding: 	  2px;
+            padding: 	  2px 4px;
         }
 
         a.wliu-lang-selected[lang],
         a.wliu-lang-selected[lang]:hover {
             color:            #ffffff;
-            background-color: #ff4444; 
+            background-color: #33b5e5; 
             text-shadow:      none; 
-            border:           1px solid #ff4444; 
+            border:           1px solid #187ea3; 
             border-radius:    4px;
-            font-size: 		  12px;
+            font-size: 		  14px;
             font-weight:      bold;
             padding: 	      2px 4px;
             text-shadow:      none; /* 1px 1px #000000; */ 
