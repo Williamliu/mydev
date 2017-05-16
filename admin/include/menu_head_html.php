@@ -5,7 +5,7 @@
         <!-- Logo -->
         <li>
             <div class="logo-wrapper waves-light">
-                <a href="#"><img src="https://mdbootstrap.com/img/logo/mdb-transparent.png" class="img-fluid flex-center"></a>
+                <a href="#"><img src="<?php echo $CFG["web_domain"];?>/theme/wliu/logo/ebuy88.png" class="img-fluid img-responsive flex-center"></a>
             </div>
         </li>
         <!--/. Logo -->

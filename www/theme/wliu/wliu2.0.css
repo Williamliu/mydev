@@ -9713,26 +9713,26 @@ a.pswp__share--download:hover {
     line-height: 56px;
     padding-left: 20px; }
   .side-nav .logo-wrapper {
-    height: 140px; }
+    height: 100px; }
     .side-nav .logo-wrapper a {
-      height: 140px;
+      height: 100px;
       width: 240px;
       padding: 0; }
     .side-nav .logo-wrapper img {
-      padding-left: 50px;
-      padding-right: 50px;
-      padding-top: 20%;
-      padding-bottom: 20%; }
+      padding-left: 30px;
+      padding-right: 30px;
+      padding-top: 10%;
+      padding-bottom: 10%; }
   @media (max-height: 910px) {
     .side-nav .logo-wrapper {
       height: 80px; }
       .side-nav .logo-wrapper a {
         height: 80px; }
       .side-nav .logo-wrapper img {
-        padding-left: 50px;
-        padding-right: 50px;
-        padding-top: 7%;
-        padding-bottom: 7%; } }
+        padding-left: 30px;
+        padding-right: 30px;
+        padding-top: 10%;
+        padding-bottom: 10%; } }
   .side-nav .about {
     padding: 1rem;
     border-bottom: 1px solid rgba(153, 153, 153, 0.298039); }
@@ -9838,10 +9838,10 @@ a.pswp__share--download:hover {
   .light-side-nav .logo-wrapper a {
     height: 80px; }
   .light-side-nav .logo-wrapper img {
-    padding-left: 50px;
-    padding-right: 50px;
-    padding-top: 7%;
-    padding-bottom: 7%; }
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 10%;
+    padding-bottom: 10%; }
 
 .light-side-nav p {
   color: #1C2331; }
