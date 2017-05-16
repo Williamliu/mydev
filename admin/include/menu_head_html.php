@@ -97,12 +97,15 @@
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fa fa-user"></i> <span class="hidden-sm-down">Profile</span>
+                    <i class="fa fa-user"></i> <span class="hidden-sm-down"><?php echo gwords("Profile")?></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="<?php echo $CFG["secure_auth_return"]?>"><i class="fa fa-sign-out" aria-hidden="true"></i> <?php echo gwords("logout")?></a>
+                    <a class="dropdown-item" href="<?php echo $CFG["secure_login_home"]?>"><i class="fa fa-user-circle-o" aria-hidden="true"></i> <?php echo gwords("my.account")?></a>
                     <a class="dropdown-item" href="<?php echo $CFG["secure_login_home"]?>"><i class="fa fa-user-circle-o" aria-hidden="true"></i> <?php echo gwords("my.account")?></a>
                 </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="<?php echo $CFG["secure_auth_return"]?>"><i class="fa fa-sign-out" aria-hidden="true"></i> <?php echo gwords("logout")?></a>
             </li>
         </ul> 
     </nav>
