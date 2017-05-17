@@ -24,7 +24,7 @@ function gwords($keyword, $arr) {
                 $ret_word = str_replace("{{$akey}}", $aval, $ret_word);
             }
         } else {
-            $ret_word = str_replace("{0}", $arr, $ret_word);
+            if($arr!="") $ret_word = str_replace("{0}", $arr, $ret_word);
         }
         return $ret_word;
     } else {
@@ -34,7 +34,7 @@ function gwords($keyword, $arr) {
                 $ret_keyword = str_replace("{{$akey}}", $aval, $ret_keyword);
             }
         } else {
-            $ret_keyword = str_replace("{0}", $arr, $ret_keyword);
+            if($arr!="") $ret_keyword = str_replace("{0}", $arr, $ret_keyword);
         }
         return $ret_keyword;
         //return ucwords(strtolower($keyword));

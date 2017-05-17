@@ -152,7 +152,7 @@ $_SESSION[$sess_name] = "";
                                         <input type="hidden"    scope="login"   name="url" value="<?php echo $_REQUEST["url"];?>">
                                         <input type="text"      scope="login"   name="login_user" id="login_user" class="form-control">
                                         <label for="login_user">
-                                            Your Email or User Name
+                                            <?php echo gwords("Your Email or User Name")?>
                                             <a wliu-form-col-error scope="login" name="login_user"></a>
                                         </label>
                                     </div>
@@ -161,13 +161,13 @@ $_SESSION[$sess_name] = "";
                                         <i class="fa fa-lock prefix"></i>
                                         <input type="password" scope="login" name="login_password" id="login_password" class="form-control">
                                         <label for="login_password">
-                                            Your password
+                                            <?php echo gwords("Your password")?>
                                             <a wliu-form-col-error scope="login" name="login_password"></a>
                                         </label>
                                     </div>
 
                                     <div class="text-center">
-                                        <button class="btn btn-deep-purple" onclick="login()">Login</button>
+                                        <button class="btn btn-deep-purple" onclick="login()"><?php echo gwords("login")?></button>
                                     </div>
 
                                 <!--Triggering button-->
@@ -198,7 +198,7 @@ $_SESSION[$sess_name] = "";
                                         <div class="md-form">
                                             <input type="text" scope="register" name="user_name" id="user_name" class="form-control" value="">
                                             <label for="user_name">
-                                                Login Name
+                                                <?php echo gwords("Login Name")?>                                                
                                                 <a wliu-form-col-error scope="register" name="user_name"></a>
                                             </label>
                                         </div>
@@ -207,7 +207,7 @@ $_SESSION[$sess_name] = "";
                                         <div class="md-form">
                                             <input type="text" scope="register" name="first_name" id="first_name" class="form-control">
                                             <label for="first_name">
-                                                First Name
+                                                <?php echo gwords("First Name")?>
                                                 <a wliu-form-col-error scope="register" name="first_name"></a>
                                             </label>
                                         </div>
@@ -219,7 +219,7 @@ $_SESSION[$sess_name] = "";
                                         <div class="md-form">
                                             <input type="text" scope="register" name="email" id="email" class="form-control">
                                             <label for="email">
-                                                Your Email
+                                                <?php echo gwords("Your Email")?>
                                                 <a wliu-form-col-error scope="register" name="email"></a>
                                             </label>
                                         </div>
@@ -228,7 +228,7 @@ $_SESSION[$sess_name] = "";
                                         <div class="md-form">
                                             <input type="text" scope="register" name="last_name" id="last_name" class="form-control">
                                             <label for="last_name">
-                                                Last Name
+                                                <?php echo gwords("Last Name")?>
                                                 <a wliu-form-col-error scope="register" name="last_name"></a>
                                             </label>
                                         </div>
@@ -240,7 +240,7 @@ $_SESSION[$sess_name] = "";
                                         <div class="md-form">
                                             <input type="password" scope="register" name="password" id="password" class="form-control">
                                             <label for="password">
-                                                Your password
+                                                <?php echo gwords("Your password")?>
                                                 <a wliu-form-col-error scope="register" name="password"></a>
                                             </label>
                                         </div>
@@ -249,7 +249,7 @@ $_SESSION[$sess_name] = "";
                                         <div class="md-form">
                                             <input type="text" scope="register" name="phone" id="phone" class="form-control">
                                             <label for="phone">
-                                                Phone
+                                                <?php echo gwords("Phone")?>
                                                 <a wliu-form-col-error scope="register" name="phone"></a>
                                             </label>
                                         </div>
@@ -261,7 +261,7 @@ $_SESSION[$sess_name] = "";
                                         <div class="md-form">
                                             <input type="password" scope="register" name="confirm_password" id="confirm_password" class="form-control">
                                             <label for="confirm_password">
-                                                Confirm password
+                                                <?php echo gwords("Confirm password")?>
                                                 <a wliu-form-col-error scope="register" name="confirm_password"></a>
                                             </label>
                                         </div>
@@ -269,16 +269,16 @@ $_SESSION[$sess_name] = "";
                                     <div class="col-md-6 col-xs-6 text-left">
                                             <div style="margin-top:5px;">
                                                 <select class="mdb-select" scope="register" name="country">
-                                                    <option value="">Choose your live in country</option>
-                                                    <option value="1">United State</option>
-                                                    <option value="2">China</option>
-                                                    <option value="3">Canada</option>
+                                                    <option value=""><?php echo gwords("Choose your live in country")?></option>
+                                                    <option value="1"><?php echo gwords("United State")?></option>
+                                                    <option value="2"><?php echo gwords("China")?></option>
+                                                    <option value="3"><?php echo gwords("Canada")?></option>
                                                 </select>
                                             </div>
                                     </div>
                                 </div>
                                 <div class="text-center">
-                                    <button class="btn btn-indigo" onclick="addData()">Sign up</button>
+                                    <button class="btn btn-indigo" onclick="addData()"><?php echo gwords("Sign Up")?></button>
                                 </div>
 
                                 <a class="rotate-btn" data-card="card-1" style="font-size:20px;"><i class="fa fa-undo"></i>&nbsp;&nbsp;<?php echo gwords("click.here.back.to")?> <span style="color:#0275d8;"><?php echo gwords("login")?></span></a>
