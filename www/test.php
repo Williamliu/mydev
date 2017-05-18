@@ -10,9 +10,41 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
 <html>
 <head>
 <?php include("public_head_test.php"); ?>
+<script>
 
+    var app = angular.module("myApp", []);
+    app.controller("myForm", function ($scope, $q) {
+
+        var dd = $q.defer();
+        var pp = dd.promise;
+        pp.then( 
+                    function(data) { alert("then1 ok: " + data);  return data + "222"; },
+                    function(data) { alert("then1 error: " + data); return $q.reject(5000); },
+                    function(data) { alert("then1 Notify: " + data); return data + "222"; }
+            )
+            /*
+            .then(
+                    
+                    function(data) { alert("then2 ok: " + data); return data + "3333"; },
+                    function(data) { alert("then2 error: " + data);  return data + "3333";},
+                    function(data) { alert("then2 Notify: " + data); return data + "3333";}
+            )
+            
+            .catch( function(data) { alert("catch: " + data); return data + " Catch"; } )
+            */
+            .finally( function(data) { alert("finally data: " + data); });
+        //dd.notify("Good");
+        dd.reject("No No");
+
+
+    });
+   
+
+
+
+</script>
 </head>
-<body>
+<body ng-app="myApp" ng-controller="myForm">
 
 
 <div wliu-nav-bg>
