@@ -4300,6 +4300,35 @@ wliu_table.directive("table.message", function (wliuTableService) {
     }
 });
 
+//for reference only : how to create filter select 
+wliu_table.directive("table.selectfilter", function () {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            data: "=",
+            name: "@",
+            list: "=",
+            key: "@",
+            text: "@",
+            fkey: "@",
+            fval: "@"
+        },
+        template: [
+            '<select style="min-width:160px;" ',
+                    'ng-model="data[name]" ',
+                    'ng-options="sObj[key] as sObj[text] for sObj in list | filter: {\'{{fkey}}\': data[fval]}"',
+            '>',
+             '<option value=""></option>',
+             '</select>'
+        ].join(""),
+        controller: function ($scope) {
+            $scope.key = $scope.key || "key";
+            $scope.text = $scope.text || "name";
+        }
+    }
+});
+
 
 /****** Form Service *********/
 wliu_table.service("wliuTableService", function () {

@@ -1,18 +1,49 @@
 <?php
 session_start();
 ini_set("display_errors", 0);
+/*
 include_once("../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
 include_once($CFG["include_path"] . "/wliu/language/language.php");
 include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
+*/
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 <?php include("public_head_test.php"); ?>
-
+<script>
+    var app = angular.module("myApp", ["ngRoute"]);
+    
+    app.config(function($routeProvider, $locationProvider) {
+        $routeProvider.when("/a", {
+            templateUrl: 'a.html',
+            controller: 'aController',
+            controllerAs: 'homeController'
+        })
+        .when("/b", {
+            template: function() {  return '<span>BPath: {{bval}}</span>111'; },
+            controller: 'bController'
+        })
+        .otherwise({
+            redirectTo: "/"
+        });
+    });
+    
+    app.controller("aController", function($scope, $location){
+        $scope.aval = " APath: " + $location.path();
+        console.log($location.search());
+        $scope.def = " defPath: " + $location.path();
+    });
+    app.controller("bController", function($scope, $location){
+        $scope.bval = " BPath: " + $location.path();
+    });
+</script>
 </head>
-<body>
+<body ng-app="myApp" ng-contoller="aController">
+<br>
+Path: {{ aval }} - {{ def }} 
+<br>
 
 
 <div wliu-nav-bg>
@@ -26,7 +57,7 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
             <div menu>
                 <ul left>
                     <li style="width:20px;"></li>
-                    <li><a href="http://www.dev.com/test.php?id=10">网站主页</a></li>
+                    <li><a href="#/a">网站主页</a></li>
                     <li><a>DEALS</a></li>
                     <li>
 
@@ -41,11 +72,11 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
 
 
                     </li>
-                    <li><a>Blob</a></li>
+                    <li><a href="#/b">Blob</a></li>
                     <li><a>Contact US</a></li>
                 </ul>
                 <ul right>
-                    <li><a>About</a></li>
+                    <li><a href="#/">About</a></li>
                     <li><a>Blog</a></li>
                     <li>
                         <div wliu-dropdown id="my menu">My Profile <i class="fa fa-caret-down" aria-hidden="true"></i>
@@ -64,7 +95,11 @@ include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
 </div>
 
 
-<div style="display:block; height:2000px; border:1px solid #green;"></div>
+
+<div style="display:block; height:2000px; border:1px solid #green;">
+    Here is NG View<br>
+    <div ng-view>{{ aval }}</div>
+</div>
 
 <!--
 <div class="navbar navbar-default navbar-fixed-top">

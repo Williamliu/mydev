@@ -6,6 +6,9 @@
 <script type="text/javascript" src="jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
 <link href='jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
 
+<script type="text/javascript" src="angularjs/angular-1.3.15/angular.min.js"></script>
+<script type="text/javascript" src="angularjs/angular-1.3.15/angular-route.min.js"></script>
+
 <link href='theme/bootstrap3.3/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
 <link href='theme/bootstrap3.3/css/bootstrap-theme.min.css' rel='stylesheet' type='text/css'>
 
