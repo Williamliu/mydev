@@ -4317,7 +4317,7 @@ wliu_table.directive("table.selectfilter", function () {
         template: [
             '<select style="min-width:160px;" ',
                     'ng-model="data[name]" ',
-                    'ng-options="sObj[key] as sObj[text] for sObj in list | filter: {\'{{fkey}}\': data[fval]}"',
+                    'ng-options="sObj[key] as sObj[text] for sObj in list | filter: {\'{{fkey}}\': (data[fval]?data[fval]:\'-1\')}"',
             '>',
              '<option value=""></option>',
              '</select>'
