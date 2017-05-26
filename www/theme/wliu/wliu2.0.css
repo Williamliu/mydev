@@ -16981,11 +16981,11 @@ a.wliu-website-lang-options {
 a.wliu-lang-selected[lang] {
 	background-color:  #33b5e5; 
 	border-radius:    4px;
-	border: 		  1px solid #187ea3;
+	border: 		  1px solid #cccccc;
 	font-size: 		  14px;
 	font-weight:      bold;
 	padding: 		  4px;
-	text-shadow:  	  none;
+	text-shadow:  	  1px 1px #666666;
 }
 
 span.seperator {

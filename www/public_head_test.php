@@ -2,6 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="dushuguoji.net, dushuguoji.com">
 
+<script type="text/javascript" src="angularjs/angular-1.3.15/angular.min.js"></script>
 <script type="text/javascript" src="jquery/min/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" src="jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
 <link href='jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>

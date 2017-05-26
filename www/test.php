@@ -1,49 +1,50 @@
 <?php
 session_start();
 ini_set("display_errors", 0);
-/*
 include_once("../include/config/config.php");
 include_once($CFG["include_path"] . "/wliu/database/database.php");
 include_once($CFG["include_path"] . "/wliu/language/language.php");
 include_once($CFG["include_path"] . "/wliu/secure/secure_client.php");
-*/
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 <?php include("public_head_test.php"); ?>
 <script>
-    var app = angular.module("myApp", ["ngRoute"]);
-    
-    app.config(function($routeProvider, $locationProvider) {
-        $routeProvider.when("/a", {
-            templateUrl: 'a.html',
-            controller: 'aController',
-            controllerAs: 'homeController'
-        })
-        .when("/b", {
-            template: function() {  return '<span>BPath: {{bval}}</span>111'; },
-            controller: 'bController'
-        })
-        .otherwise({
-            redirectTo: "/"
-        });
+
+    var app = angular.module("myApp", []);
+    app.controller("myForm", function ($scope, $q) {
+
+        var dd = $q.defer();
+        var pp = dd.promise;
+        pp.then( 
+                    function(data) { alert("then1 ok: " + data);  return data + "222"; },
+                    function(data) { alert("then1 error: " + data); return $q.reject(5000); },
+                    function(data) { alert("then1 Notify: " + data); return data + "222"; }
+            )
+            /*
+            .then(
+                    
+                    function(data) { alert("then2 ok: " + data); return data + "3333"; },
+                    function(data) { alert("then2 error: " + data);  return data + "3333";},
+                    function(data) { alert("then2 Notify: " + data); return data + "3333";}
+            )
+            
+            .catch( function(data) { alert("catch: " + data); return data + " Catch"; } )
+            */
+            .finally( function(data) { alert("finally data: " + data); });
+        //dd.notify("Good");
+        dd.reject("No No");
+
+
     });
-    
-    app.controller("aController", function($scope, $location){
-        $scope.aval = " APath: " + $location.path();
-        console.log($location.search());
-        $scope.def = " defPath: " + $location.path();
-    });
-    app.controller("bController", function($scope, $location){
-        $scope.bval = " BPath: " + $location.path();
-    });
+   
+
+
+
 </script>
 </head>
-<body ng-app="myApp" ng-contoller="aController">
-<br>
-Path: {{ aval }} - {{ def }} 
-<br>
+<body ng-app="myApp" ng-controller="myForm">
 
 
 <div wliu-nav-bg>
@@ -57,7 +58,7 @@ Path: {{ aval }} - {{ def }}
             <div menu>
                 <ul left>
                     <li style="width:20px;"></li>
-                    <li><a href="#/a">网站主页</a></li>
+                    <li><a href="http://www.dev.com/test.php?id=10">网站主页</a></li>
                     <li><a>DEALS</a></li>
                     <li>
 
@@ -72,11 +73,11 @@ Path: {{ aval }} - {{ def }}
 
 
                     </li>
-                    <li><a href="#/b">Blob</a></li>
+                    <li><a>Blob</a></li>
                     <li><a>Contact US</a></li>
                 </ul>
                 <ul right>
-                    <li><a href="#/">About</a></li>
+                    <li><a>About</a></li>
                     <li><a>Blog</a></li>
                     <li>
                         <div wliu-dropdown id="my menu">My Profile <i class="fa fa-caret-down" aria-hidden="true"></i>
@@ -95,11 +96,7 @@ Path: {{ aval }} - {{ def }}
 </div>
 
 
-
-<div style="display:block; height:2000px; border:1px solid #green;">
-    Here is NG View<br>
-    <div ng-view>{{ aval }}</div>
-</div>
+<div style="display:block; height:2000px; border:1px solid #green;"></div>
 
 <!--
 <div class="navbar navbar-default navbar-fixed-top">

@@ -25,12 +25,12 @@ $_SESSION[$sess_name] = "";
             color:            #ffffff;
             background-color: #33b5e5; 
             text-shadow:      none; 
-            border:           1px solid #187ea3; 
+            border:           1px solid #cccccc; 
             border-radius:    4px;
             font-size: 		  14px;
             font-weight:      bold;
             padding: 	      2px 4px;
-            text-shadow:      none; /* 1px 1px #000000; */ 
+            text-shadow:      1px 1px #666666;  
         }
     </style>
     <!-- //wliu components -->
